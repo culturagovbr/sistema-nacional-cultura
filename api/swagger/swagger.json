@@ -1,0 +1,138 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Essa é uma API aberta para acesso aos dados do portal [**SNC.**](http://snc.cultura.gov.br/adesao/consultar/) \n\nSNC é um sistema que faz a gestão das políticas públicas de cultura, em regime de colaboração entre União, estados, municípios e a sociedade civil.",
+    "version": "0.1-beta",
+    "title": "SNC API"
+  },
+  "host": "localhost:8000",
+  "basePath": "/v1",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json",
+    "application/xml",
+    "text/csv"
+  ],
+  "paths": {
+    "/acoesplanotrabalho/": {
+      "get": {
+        "tags": [
+          "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
+        ],
+        "summary": "Busca planos de trabalho dado uma combinação de valores diversos de pesquisa",
+        "operationId": "planodetrabalho_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Número de Planos de Trabalho a serem retornados",
+            "type": "integer"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número de paginação de resultados",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação bem-sucedida",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PlanoDeTrabalhoList"
+              }
+            }
+          },
+          "404": {
+            "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/acoesplanotrabalho/{id}/": {
+      "get": {
+        "tags": [
+          "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
+        ],
+        "summary": "Busca um único Plano de Trabalho",
+        "operationId": "planodetrabalho_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id do Plano de Trabalho",
+            "type": "integer"
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Formato de Retorno",
+            "type": "string",
+            "enum": [
+              "json",
+              "xml",
+              "csv"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação bem-sucedida",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PlanoDeTrabalhoDetail"
+              }
+            }
+          },
+          "404": {
+            "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PlanoDeTrabalhoList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "PlanoDeTrabalhoDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

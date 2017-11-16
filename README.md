@@ -87,13 +87,24 @@ O arquivo pode ser baixado de forma direta e rápida utilizando o comando wget -
      ```
      pip3 install -r requirements.txt
     ```
+9. Instale a biblioteca drf-hal-json
+    1. Clone o repositório [drf-hal-json](https://github.com/Artory/drf-hal-json)
+    2. Entre no diretório do repositório clonado
+     ```
+     cd  drf-hal-json/
 
-9. Configure o arquivo settings.py e altere o caminho para ele no ``` manage.py``` e no ```wsgi.py``` usando a  linha abaixo:
+     ```
+    3. Copie a pasta drf_hal_json/ para o core de packages do python do ambiente virtual
+    ```
+     cp -r drf_hal_json/ /caminho/para/o/ambiente/virtual/lib/python3.5/site-packages
+
+     ```
+10. Configure o arquivo settings.py e altere o caminho para ele no ``` manage.py``` e no ```wsgi.py``` usando a  linha abaixo:
 ```
   os.environ.setdefault("DJANGO_SETTINGS_MODULE", "snc.config.settings.local")
 ```
 
-10. Configure o banco de dados
+11. Configure o banco de dados
 Crie o banco dbsnc no seu serviço de acordo com o settings.py.
 ```
 sudo -u postgres psql
@@ -101,7 +112,7 @@ CREATE DATABASE dbsnc;
 \q
 ```
 
-11. Execute os comandos de criação do banco
+12. Execute os comandos de criação do banco
 
 Criação de migração para cada APP
 ```
@@ -128,12 +139,12 @@ python3 manage.py loaddata dump.json
 ```
 Obs.: caso seu dump não possua as mesmas colunas do código atual, adicione -i no loaddata
 
-12. Copie os arquivos estaticos do projeto
+13. Copie os arquivos estaticos do projeto
 ```
 python3 manage.py collectstatic
 ```
 
-13. Execute a aplicação (É preciso ter o ambiente virtual ativado)
+14. Execute a aplicação (É preciso ter o ambiente virtual ativado)
     ```
     python3 manage.py runserver
 

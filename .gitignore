@@ -8,7 +8,6 @@
 .pydevproject
 *.mo
 *.sqlite
-*.json
 *migrations*
 *settings_*
 manage.py
