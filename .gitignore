@@ -12,7 +12,7 @@
 *settings_*
 manage.py
 snc/wsgi.py
-
+snc/config/settings/local.py
 # ignore pycharm files
 *.idea
 
