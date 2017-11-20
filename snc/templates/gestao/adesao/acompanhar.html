@@ -33,7 +33,7 @@
             </thead>
             <tbody>
               {% for municipio in object_list %}
-<!--                  {% if municipio or municipio.usuario.data_publicacao_acordo %}-->
+                {% if municipio or municipio.usuario.data_publicacao_acordo %}
                     <tr class="odd gradeX">
                   {% if municipio.usuario %}
                     <td><center><a href="{% url 'gestao:detalhar' municipio.usuario.id %}"><i class="fa fa-file"></i></a></center></td>
@@ -102,8 +102,7 @@
 
                   {% endif %}
                 </tr>
-                
-<!--                  {% endif %}-->
+                {% endif %}
               {% endfor %}
             </tbody>
           </table>
