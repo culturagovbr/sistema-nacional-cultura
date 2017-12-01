@@ -49,6 +49,8 @@ THIRD_PARTY_APPS = (
     'rest_framework_csv',
     'django_hosts',
     'corsheaders',
+    'rest_framework_filters'
+    
 )
 
 # Apps specific for this project go here.
@@ -69,7 +71,7 @@ DEFAULT_HOST = 'www'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.HalLimitOffsetPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework_filters.backends.DjangoFilterBackend',),
     'DEFAULT_PARSER_CLASSES':
         ('rest_framework_xml.parsers.XMLParser',),
     'DEFAULT_RENDERER_CLASSES': (
