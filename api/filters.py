@@ -17,19 +17,25 @@ class CidadeFilter(filters.FilterSet):
         model = Cidade
         fields = {'nome_municipio'}
 
-# class PlanoTrabalhoFilter(filters.FilterSet):
-#     class Meta:
-#         model = PlanoTrabalho
-#         fields = {'id'}   
 
-# class ConselhoCulturalFilter(filters.FilterSet):
-#     planotrabalho = filters.RelatedFilter(PlanoTrabalhoFilter, name='planotrabalho', queryset=PlanoTrabalho.objects.all())
-#     class Meta:
-#         model = ConselhoCultural
-#         fields = {'situacao_ata',}
-
-
-
-
+class PlanoTrabalhoFilter(filters.FilterSet):
+    class Meta:
+        model = PlanoTrabalho
+        fields = {'conselho_cultural'}   
         
+class ConselhoCulturalFilter(filters.FilterSet):
+    planotrabalho = filters.RelatedFilter(PlanoTrabalhoFilter, 
+        name='planotrabalho', queryset=PlanoTrabalho.objects.all())
+    class Meta:
+        model = ConselhoCultural
+        fields = {'situacao_ata',}
+
+class SituacoesFilter(filters.FilterSet):
+    conselho = filters.RelatedFilter(ConselhoCulturalFilter, name='conselho', queryset=ConselhoCultural.objects.all())
+    class Meta:
+        model = SituacoesArquivoPlano
+        fields = {'id',}
+
+
+
 

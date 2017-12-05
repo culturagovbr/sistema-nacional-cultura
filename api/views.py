@@ -22,7 +22,6 @@ class  MunicipioList(generics.ListAPIView):
     
     filter_backends = (DjangoFilterBackend,)
     filter_class = MunicipioFilter
-    # filter_fields = ('situacao_lei')
     
     def get_queryset(self):
         queryset = Municipio.objects.filter().order_by('-id')
@@ -57,8 +56,8 @@ class PlanoTrabalhoList(generics.ListAPIView):
     serializer_class = PlanoTrabalhoSerializer 
 
     filter_backends = (DjangoFilterBackend,)
-    # filter_class = PlanoTrabalhoFilter
-    # filter_fields = ('situacao_relatorio_secretaria_id',)
+    filter_class = PlanoTrabalhoFilter
+    
     def get_queryset(self):
         queryset = PlanoTrabalho.objects.filter().order_by('-id')
         
@@ -81,8 +80,8 @@ class PlanoTrabalhoList(generics.ListAPIView):
                 'orgao_gestor__situacao_relatorio_secretaria_id':situacao_orgao,
                 'plano_cultura__situacao_lei_plano_id':situacao_plano,
                 'fundo_cultura__situacao_lei_plano_id':situacao_fundo,
-                'criacao_sistema__situacao_lei_sistema_id':situacao_lei}
-                # 'conselho_cultural__situacao_ata_id':situacao_conselho,
+                'criacao_sistema__situacao_lei_sistema_id':situacao_lei,
+                'conselho_cultural__situacao_ata_id':situacao_conselho}
 
         # Lista parâmetros não vazios
         arguments = {}
