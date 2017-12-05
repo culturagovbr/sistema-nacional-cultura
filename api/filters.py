@@ -1,41 +1,45 @@
 from rest_framework import viewsets
 import rest_framework_filters as filters
 from planotrabalho.models import * 
-from adesao.models import Municipio, Cidade, Usuario, Cidade
+from adesao.models import Municipio, Cidade, Usuario, Uf 
 
-# from .views import *
-
-# CLASSES DE PESQUISA 
-class MunicipioFilter(filters.FilterSet):
-    class Meta:
-        model = Municipio
-        fields = {'id'}        
-
+# Classes para filtros de pesquisa
 class CidadeFilter(filters.FilterSet):
-    municipio = filters.RelatedFilter(MunicipioFilter, name='municipio', queryset=Municipio.objects.all())
     class Meta:
         model = Cidade
         fields = {'nome_municipio'}
 
-
-class PlanoTrabalhoFilter(filters.FilterSet):
+class MunicipioFilter(filters.FilterSet):
+    cidade = filters.RelatedFilter(CidadeFilter, name='cidade', queryset=Cidade.objects.all())
     class Meta:
-        model = PlanoTrabalho
-        fields = {'conselho_cultural'}   
-        
-class ConselhoCulturalFilter(filters.FilterSet):
-    planotrabalho = filters.RelatedFilter(PlanoTrabalhoFilter, 
-        name='planotrabalho', queryset=PlanoTrabalho.objects.all())
-    class Meta:
-        model = ConselhoCultural
-        fields = {'situacao_ata',}
+        model = Municipio
+        fields = {'id','cnpj_prefeitura'}        
 
 class SituacoesFilter(filters.FilterSet):
-    conselho = filters.RelatedFilter(ConselhoCulturalFilter, name='conselho', queryset=ConselhoCultural.objects.all())
     class Meta:
         model = SituacoesArquivoPlano
+        fields = {'id','descricao',}
+
+# WIP: Não funciona
+class ConselhoCulturalFilter(filters.FilterSet):
+    situacao = filters.RelatedFilter(SituacoesFilter, name='situacao_ata', queryset=SituacoesArquivoPlano.objects.all())
+    class Meta:
+        model = ConselhoCultural
         fields = {'id',}
 
+class OrgaoGestorFilter(filters.FilterSet):
+    situacao = filters.RelatedFilter(SituacoesFilter, 
+            name='situacao_relatorio_secretaria', queryset=SituacoesArquivoPlano.objects.all())
+    class Meta:
+        model = OrgaoGestor
+        fields = {'id',}
 
-
-
+class PlanoTrabalhoFilter(filters.FilterSet):
+    criacao_conselho_cultural= filters.RelatedFilter(ConselhoCulturalFilter, 
+        name='conselho_cultural', queryset=ConselhoCultural.objects.all())
+    criacao_orgao_gestor= filters.RelatedFilter(OrgaoGestorFilter, 
+        name='orgao_gestor', queryset=OrgaoGestor.objects.all())
+    class Meta:
+        model = PlanoTrabalho
+        fields = {'id'}   
+ 
