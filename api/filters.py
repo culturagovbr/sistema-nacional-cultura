@@ -4,6 +4,11 @@ from planotrabalho.models import *
 from adesao.models import Municipio, Cidade, Usuario, Uf 
 
 # Classes para filtros de pesquisa
+class UfFilter(filters.FilterSet):
+    class Meta:
+        model = Uf 
+        fields = {'sigla'}
+
 class CidadeFilter(filters.FilterSet):
     class Meta:
         model = Cidade
@@ -11,6 +16,7 @@ class CidadeFilter(filters.FilterSet):
 
 class MunicipioFilter(filters.FilterSet):
     cidade = filters.RelatedFilter(CidadeFilter, name='cidade', queryset=Cidade.objects.all())
+    estado = filters.RelatedFilter(UfFilter, name='estado', queryset=Uf.objects.all())
     class Meta:
         model = Municipio
         fields = {'id','cnpj_prefeitura'}        
@@ -66,6 +72,9 @@ class PlanoTrabalhoFilter(filters.FilterSet):
         name='fundo_cultura', queryset=FundoCultura.objects.all())
     criacao_plano_cultura  = filters.RelatedFilter(PlanoCulturaFilter,
         name='plano_cultura', queryset=PlanoCultura.objects.all())
+
+    sistema_cultura = filters.RelatedFilter(MunicipioFilter,
+        name='usuario__municipio', queryset=Municipio.objects.all())
     class Meta:
         model = PlanoTrabalho
         fields = {'id'}   
