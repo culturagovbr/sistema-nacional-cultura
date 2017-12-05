@@ -27,6 +27,27 @@ class ConselhoCulturalFilter(filters.FilterSet):
         model = ConselhoCultural
         fields = {'id',}
 
+class CriacaoSistemaFilter(filters.FilterSet):
+    situacao = filters.RelatedFilter(SituacoesFilter, 
+            name='situacao_lei_sistema', queryset=SituacoesArquivoPlano.objects.all())
+    class Meta:
+        model = CriacaoSistema
+        fields = {'id',}
+
+class FundoCulturaFilter(filters.FilterSet):
+    situacao = filters.RelatedFilter(SituacoesFilter, 
+            name='situacao_lei_plano', queryset=SituacoesArquivoPlano.objects.all())
+    class Meta:
+        model = FundoCultura 
+        fields = {'id',}
+
+class PlanoCulturaFilter(filters.FilterSet):
+    situacao = filters.RelatedFilter(SituacoesFilter, 
+            name='situacao_lei_plano', queryset=SituacoesArquivoPlano.objects.all())
+    class Meta:
+        model = PlanoCultura 
+        fields = {'id',}
+
 class OrgaoGestorFilter(filters.FilterSet):
     situacao = filters.RelatedFilter(SituacoesFilter, 
             name='situacao_relatorio_secretaria', queryset=SituacoesArquivoPlano.objects.all())
@@ -37,8 +58,14 @@ class OrgaoGestorFilter(filters.FilterSet):
 class PlanoTrabalhoFilter(filters.FilterSet):
     criacao_conselho_cultural= filters.RelatedFilter(ConselhoCulturalFilter, 
         name='conselho_cultural', queryset=ConselhoCultural.objects.all())
-    criacao_orgao_gestor= filters.RelatedFilter(OrgaoGestorFilter, 
+    criacao_orgao_gestor = filters.RelatedFilter(OrgaoGestorFilter, 
         name='orgao_gestor', queryset=OrgaoGestor.objects.all())
+    criacao_lei_sistema_cultura = filters.RelatedFilter(CriacaoSistemaFilter, 
+        name='criacao_sistema', queryset=CriacaoSistema.objects.all())
+    criacao_fundo_cultura = filters.RelatedFilter(FundoCulturaFilter,
+        name='fundo_cultura', queryset=FundoCultura.objects.all())
+    criacao_plano_cultura  = filters.RelatedFilter(PlanoCulturaFilter,
+        name='plano_cultura', queryset=PlanoCultura.objects.all())
     class Meta:
         model = PlanoTrabalho
         fields = {'id'}   
