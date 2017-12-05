@@ -23,26 +23,27 @@ class  MunicipioList(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
     filter_class = MunicipioFilter
     
-    def get_queryset(self):
-        queryset = Municipio.objects.filter().order_by('-id')
+    # TODO: Remover após implementar os filtros no arquivo filters.py
+    #def get_queryset(self):
+        #queryset = Municipio.objects.filter().order_by('-id')
 
-        # Parâmetros de busca passados na requisição 
-        cnpj_prefeitura = self.request.query_params.get('cnpj_prefeitura',None)
-        sigla_estado = self.request.query_params.get('sigla_estado',None)
-        nome_municipio = self.request.query_params.get('nome_municipio',None)
+        ## Parâmetros de busca passados na requisição 
+        #cnpj_prefeitura = self.request.query_params.get('cnpj_prefeitura',None)
+        #sigla_estado = self.request.query_params.get('sigla_estado',None)
+        #nome_municipio = self.request.query_params.get('nome',None)
 
-        search_params = {'cnpj_prefeitura': cnpj_prefeitura, 'estado__sigla': sigla_estado,
-                         'cidade__nome_municipio': nome_municipio}
+        #search_params = {'cnpj_prefeitura': cnpj_prefeitura, 'estado__sigla': sigla_estado,
+                         #'cidade__nome_municipio': nome_municipio}
 
-        # Lista parâmetros não vazios
-        arguments = {}
-        for key, value in search_params.items():
-            if value:
-                arguments[key] = value
+        ## Lista parâmetros não vazios
+        #arguments = {}
+        #for key, value in search_params.items():
+            #if value:
+                #arguments[key] = value
 
-        queryset = Municipio.objects.filter(**arguments)
+        #queryset = Municipio.objects.filter(**arguments)
 
-        return queryset
+        #return queryset
 
 # Retorna um municipio especificado pela pk
 class MunicipioDetail(generics.RetrieveAPIView):
@@ -57,41 +58,42 @@ class PlanoTrabalhoList(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend,)
     filter_class = PlanoTrabalhoFilter
-    
-    def get_queryset(self):
-        queryset = PlanoTrabalho.objects.filter().order_by('-id')
+   
+    # TODO: Remover após implementar os filtros no arquivo filters.py
+    #def get_queryset(self):
+        #queryset = PlanoTrabalho.objects.filter().order_by('-id')
         
-        # Parâmetros de busca passados na requisição 
-        #situacao_acao = self.request.query_params.get('situacao_acao',None)
-        sistema_cultura_id = self.request.query_params.get('sistema_cultura_id',None)
-        sistema_cultura_nome_municipio = self.request.query_params.get(
-                'sistema_cultura_nome_municipio',None)
-        sistema_cultura_cnpj_prefeitura = self.request.query_params.get(
-                'sistema_cultura_cnpj_prefeitura', None)
-        situacao_orgao = self.request.query_params.get('situacao_orgao',None)
-        situacao_conselho = self.request.query_params.get('situacao_conselho',None)
-        situacao_plano = self.request.query_params.get('situacao_plano',None)
-        situacao_fundo = self.request.query_params.get('situacao_fundo',None)
-        situacao_lei = self.request.query_params.get('situacao_lei',None)
+        ## Parâmetros de busca passados na requisição 
+        ##situacao_acao = self.request.query_params.get('situacao_acao',None)
+        #sistema_cultura_id = self.request.query_params.get('sistema_cultura_id',None)
+        #sistema_cultura_nome_municipio = self.request.query_params.get(
+                #'sistema_cultura_nome_municipio',None)
+        #sistema_cultura_cnpj_prefeitura = self.request.query_params.get(
+                #'sistema_cultura_cnpj_prefeitura', None)
+        #situacao_orgao = self.request.query_params.get('situacao_orgao',None)
+        #situacao_conselho = self.request.query_params.get('situacao_conselho',None)
+        #situacao_plano = self.request.query_params.get('situacao_plano',None)
+        #situacao_fundo = self.request.query_params.get('situacao_fundo',None)
+        #situacao_lei = self.request.query_params.get('situacao_lei',None)
 
-        search_params = {'usuario__municipio_id': sistema_cultura_id, 
-                'usuario__municipio__cidade__nome_municipio': sistema_cultura_nome_municipio,
-                'usuario__municipio__cnpj_prefeitura': sistema_cultura_cnpj_prefeitura,
-                'orgao_gestor__situacao_relatorio_secretaria_id':situacao_orgao,
-                'plano_cultura__situacao_lei_plano_id':situacao_plano,
-                'fundo_cultura__situacao_lei_plano_id':situacao_fundo,
-                'criacao_sistema__situacao_lei_sistema_id':situacao_lei,
-                'conselho_cultural__situacao_ata_id':situacao_conselho}
+        #search_params = {'usuario__municipio_id': sistema_cultura_id, 
+                #'usuario__municipio__cidade__nome_municipio': sistema_cultura_nome_municipio,
+                #'usuario__municipio__cnpj_prefeitura': sistema_cultura_cnpj_prefeitura,
+                #'orgao_gestor__situacao_relatorio_secretaria_id':situacao_orgao,
+                #'plano_cultura__situacao_lei_plano_id':situacao_plano,
+                #'fundo_cultura__situacao_lei_plano_id':situacao_fundo,
+                #'criacao_sistema__situacao_lei_sistema_id':situacao_lei,
+                #'conselho_cultural__situacao_ata_id':situacao_conselho}
 
-        # Lista parâmetros não vazios
-        arguments = {}
-        for key, value in search_params.items():
-            if value:
-                arguments[key] = value
+        ## Lista parâmetros não vazios
+        #arguments = {}
+        #for key, value in search_params.items():
+            #if value:
+                #arguments[key] = value
 
-        queryset = PlanoTrabalho.objects.filter(**arguments)
+        #queryset = PlanoTrabalho.objects.filter(**arguments)
 
-        return queryset
+        #return queryset
         
 # Retorna um plano de trabalho especificado pela pk
 class PlanoTrabalhoDetail(generics.RetrieveAPIView):
