@@ -13,6 +13,6 @@ import sys
 from django.core.wsgi import get_wsgi_application
 
 sys.stderr = sys.__stderr__
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "snc.config.settings.local")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "snc.settings")
 
 application = get_wsgi_application()

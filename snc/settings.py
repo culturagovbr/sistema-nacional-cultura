@@ -8,16 +8,25 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
-from __future__ import absolute_import, unicode_literals
+# from __future__ import absolute_import, unicode_literals
 
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 
 env = environ.Env()
+env.read_env()
+
+ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
+
+# DEBUG
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
+DEBUG = env("DEBUG")
+
+# SECRET CONFIGURATION
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
+SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!')
 
 # APP CONFIGURATION
-# ------------------------------------------------------------------------------
 DJANGO_APPS = (
     # Default Django apps:
     'django.contrib.auth',
@@ -106,49 +115,44 @@ CORS_URLS_REGEX = r'^/v1/.*$'
 #     'sites': 'sistema-nacional-cultura.contrib.sites.migrations'
 # }
 
-# DEBUG
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool("DJANGO_DEBUG", False)
-
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
-FIXTURE_DIRS = (
-    str(ROOT_DIR.path('fixtures')),
-)
+# FIXTURE_DIRS = (
+#     str(ROOT_DIR.path('fixtures')),
+# )
 
 # EMAIL CONFIGURATION
-# ------------------------------------------------------------------------------
-DEFAULT_FROM_EMAIL = 'naoresponda@cultura.gov.br'
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cultura.gov.br')
+EMAIL_HOST = env('EMAIL_HOST', default='localhost')
+EMAIL_PORT = env('EMAIL_PORT', default=1025)
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # MANAGER CONFIGURATION
-# ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
     ("""Your Name""", 'Your email'),
 )
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': ''
+    }
+}
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
 # DATABASE CONFIGURATION
-# ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    # FIXME: Recomendo fortemente usar o postgres no ambiente de desenvolvimento, mas
-    # coloquei o sqllite aqui pra não quebrar o ambiente de dev da galera.
-    'default': env.db("DATABASE_URL", default="postgres://postgres:1234@localhost/dbsnc"),
-    # 'default': env.db("DATABASE_URL", default="sqlite:////" + str(ROOT_DIR) + "snc.sqlite"),
-
+    'default': env.db("DATABASE_URL", default="postgres://postgres:postgres123@localhost/dbsnc"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
 # GENERAL CONFIGURATION
-# ------------------------------------------------------------------------------
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -171,7 +175,6 @@ USE_L10N = True
 USE_TZ = True
 
 # TEMPLATE CONFIGURATION
-# ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#templates
 TEMPLATES = [
     {
