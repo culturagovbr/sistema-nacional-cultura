@@ -7,7 +7,7 @@ Django==1.8.1
 django-ckeditor==4.5.0
 django-clever-selects==0.6.9
 django-cors-headers==2.1.0
-django-environ==0.3.0
+django-environ==0.4.0
 django-extensions==1.5.5
 django-filter==1.0.4
 django-hosts==2.0
