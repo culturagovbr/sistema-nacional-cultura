@@ -71,3 +71,18 @@ def test_entidades_principais_sistema_cultura_local(client):
     for entidade in entidades:
         assert entidade in request.data
      
+
+def test_campos_do_objeto_governo_ao_retornar_sistema_cultura_local(client):
+
+    municipio = mommy.make('Municipio')
+
+    url = '/v1/sistemadeculturalocal/{}/'.format(municipio.id)
+    host_request = 'api'
+
+    request = client.get(url, HTTP_HOST=host_request,
+                         content_type="application/hal+json")
+
+    campos = set(["nome_prefeito", "email_institucional_prefeito",
+                  "tempo_posse_prefeito"])
+
+    assert campos.issubset(request.data["governo"])
