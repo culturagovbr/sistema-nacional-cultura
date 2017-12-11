@@ -10,8 +10,6 @@
 *.sqlite
 *migrations*
 *settings_*
-manage.py
-snc/wsgi.py
 
 # ignore pycharm files
 *.idea
@@ -24,4 +22,10 @@ snc.sln
 
 #ignore sublime
 *.sublime*
+
+# ignore vscode files
+**/.vscode
+
+**/.env
+**/.cache
 
