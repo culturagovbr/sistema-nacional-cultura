@@ -26,7 +26,6 @@ class SituacoesFilter(filters.FilterSet):
         model = SituacoesArquivoPlano
         fields = {'id','descricao',}
 
-# WIP: Não funciona
 class ConselhoCulturalFilter(filters.FilterSet):
     situacao = filters.RelatedFilter(SituacoesFilter, name='situacao_ata', queryset=SituacoesArquivoPlano.objects.all())
     class Meta:
@@ -62,16 +61,16 @@ class OrgaoGestorFilter(filters.FilterSet):
         fields = {'id',}
 
 class PlanoTrabalhoFilter(filters.FilterSet):
-    criacao_conselho_cultural= filters.RelatedFilter(ConselhoCulturalFilter, 
-        name='conselho_cultural', queryset=ConselhoCultural.objects.all())
-    criacao_orgao_gestor = filters.RelatedFilter(OrgaoGestorFilter, 
-        name='orgao_gestor', queryset=OrgaoGestor.objects.all())
-    criacao_lei_sistema_cultura = filters.RelatedFilter(CriacaoSistemaFilter, 
-        name='criacao_sistema', queryset=CriacaoSistema.objects.all())
-    criacao_fundo_cultura = filters.RelatedFilter(FundoCulturaFilter,
-        name='fundo_cultura', queryset=FundoCultura.objects.all())
-    criacao_plano_cultura  = filters.RelatedFilter(PlanoCulturaFilter,
-        name='plano_cultura', queryset=PlanoCultura.objects.all())
+    situacao_conselho= filters.RelatedFilter(SituacoesFilter, 
+        name='conselho_cultural__situacao_ata', queryset=ConselhoCultural.objects.all())
+    situacao_orgao = filters.RelatedFilter(SituacoesFilter, 
+        name='orgao_gestor__situacao_relatorio_secretaria', queryset=OrgaoGestor.objects.all())
+    situacao_lei = filters.RelatedFilter(SituacoesFilter, 
+        name='criacao_sistema__situacao_lei_sistema', queryset=CriacaoSistema.objects.all())
+    situacao_fundo = filters.RelatedFilter(SituacoesFilter,
+        name='fundo_cultura__situacao_lei_plano', queryset=FundoCultura.objects.all())
+    situacao_plano = filters.RelatedFilter(SituacoesFilter,
+        name='plano_cultura__situacao_lei_plano', queryset=PlanoCultura.objects.all())
 
     sistema_cultura = filters.RelatedFilter(MunicipioFilter,
         name='usuario__municipio', queryset=Municipio.objects.all())
