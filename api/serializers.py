@@ -103,7 +103,7 @@ class PlanoTrabalhoSerializer(hal_serializers.HalModelSerializer):
 
     def get_criacao_conselho_cultural(self, obj):
         if obj.conselho_cultural is not None:
-            serializer = CriacaoSistemaSerializer(obj.conselho_cultural)
+            serializer = ConselhoCulturalSerializer(obj.conselho_cultural)
             return serializer.data
         else:
             return None
