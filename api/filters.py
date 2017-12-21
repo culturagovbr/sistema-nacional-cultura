@@ -8,14 +8,11 @@ from adesao.models import Municipio, Cidade, Usuario, Uf
 class MunicipioFilter(filters.FilterSet):
     estado_sigla = filters.CharFilter(name='estado__sigla')
     nome_municipio = filters.CharFilter(name='cidade__nome_municipio')
+    situacao_adesao = filters.CharFilter(name='usuario__estado_processo', lookup_expr='istartswith')
     class Meta:
         model = Municipio
         fields = {'id','cnpj_prefeitura'}        
 
-class SituacoesFilter(filters.FilterSet):
-    class Meta:
-        model = SituacoesArquivoPlano
-        fields = {'descricao': ['istartswith'],}
 
 class PlanoTrabalhoFilter(filters.FilterSet):
     situacao_conselho_descricao = filters.CharFilter(name='conselho_cultural__situacao_ata__descricao',
