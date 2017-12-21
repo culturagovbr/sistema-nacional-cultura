@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 import environ
 
+import raven
+
 
 env = environ.Env()
 env.read_env()
@@ -43,6 +45,7 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
+    'raven.contrib.django.raven_compat',
     'wkhtmltopdf',
     'smart_selects',
     'localflavor',
@@ -318,3 +321,10 @@ CKEDITOR_CONFIGS = {
 
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
+
+RAVEN_CONFIG = {
+    'dsn': env('RAVEN_DSN_URL'),
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(str(ROOT_DIR)),
+}
