@@ -135,10 +135,11 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
     governo = serializers.SerializerMethodField()
     conselho = serializers.SerializerMethodField()
     _embedded = serializers.SerializerMethodField(method_name='get_embedded')
+    situacao_adesao = serializers.SerializerMethodField()
     
     class Meta:
         model = Municipio
-        fields = ('id','self','_embedded','ente_federado','governo','conselho')
+        fields = ('id','self','_embedded','ente_federado','governo','conselho', 'situacao_adesao',)
 
     # Retornando a lista de conselheiros do ConselhoCultural
     def get_conselho(self, obj):
@@ -211,6 +212,14 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
         
         return serializer.data
     
+    def get_situacao_adesao(self,obj):
+        try:
+            processo = obj.usuario.get_estado_processo_display()
+            serializer = {'situacao_adesao': processo}
+        except AttributeError:
+            serializer = None
+        return serializer
+        
 
 # Classes para estruturar os objetos de adesoes
 class EnteFederado(object):
