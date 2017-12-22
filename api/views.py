@@ -1,12 +1,14 @@
-from rest_framework import generics
 from django.shortcuts import render
+
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 from rest_framework import viewsets
 import rest_framework_filters as filters
-from planotrabalho.models import * 
+
+from .filters import *
 from adesao.models import Municipio, Cidade, Usuario, Cidade
 from api.serializers import MunicipioSerializer, UsuarioSerializer, PlanoTrabalhoSerializer
-from .filters import *
+from planotrabalho.models import * 
 
 
 # Swagger index page.
