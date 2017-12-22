@@ -1,14 +1,16 @@
-from rest_framework import serializers
+import json
 
 from drf_hal_json import serializers as hal_serializers
+from drf_hal_json.fields import HalHyperlinkedRelatedField, HalContributeToLinkField
+from rest_framework import serializers
 
 from adesao.models import Municipio, Uf, Cidade, Usuario
 from planotrabalho.models import (PlanoTrabalho, CriacaoSistema, OrgaoGestor,
 ConselhoCultural, FundoCultura, PlanoCultura, Conselheiro, SituacoesArquivoPlano)
-from drf_hal_json.fields import HalHyperlinkedRelatedField, HalContributeToLinkField
-import json
 
-# Criacao do Sistema 
+""" 
+Criacao do Sistema 
+"""
 class CriacaoSistemaSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.ReadOnlyField(
             source = 'situacao_lei_sistema.descricao')
@@ -16,7 +18,9 @@ class CriacaoSistemaSerializer(hal_serializers.HalModelSerializer):
         model = CriacaoSistema
         fields = ('lei_sistema_cultura', 'situacao')
 
-# Orgão gestor
+"""
+Orgão gestor
+"""
 class OrgaoGestorSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.ReadOnlyField(source = 'situacao_relatorio_secretaria.descricao')
 
@@ -25,7 +29,9 @@ class OrgaoGestorSerializer(hal_serializers.HalModelSerializer):
         fields = ('relatorio_atividade_secretaria',
                   'situacao')
 
-# Conselho Cultural
+""" 
+Conselho Cultural
+"""
 class ConselhoCulturalSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.ReadOnlyField(
             source = 'situacao_ata.descricao')
@@ -34,14 +40,18 @@ class ConselhoCulturalSerializer(hal_serializers.HalModelSerializer):
         model = ConselhoCultural
         fields = ('ata_regimento_aprovado','situacao')
 
-# Conselheiro
+"""
+Conselheiro
+"""
 class ConselheiroSerializer(hal_serializers.HalModelSerializer):
     class Meta:
         model = Conselheiro
         fields = ['nome','segmento','email','situacao', 'data_cadastro', 'data_situacao']
 
 
-# Fundo cultural
+""" 
+Fundo cultural
+"""
 class FundoCulturaSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.ReadOnlyField(
             source = 'situacao_lei_plano.descricao')
@@ -50,7 +60,9 @@ class FundoCulturaSerializer(hal_serializers.HalModelSerializer):
         fields = ('cnpj_fundo_cultura','lei_fundo_cultura',
                   'situacao')
 
-# Plano Cultural
+""" 
+Plano Cultural
+"""
 class PlanoCulturaSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.ReadOnlyField(
             source = 'situacao_lei_plano.descricao')
@@ -60,7 +72,9 @@ class PlanoCulturaSerializer(hal_serializers.HalModelSerializer):
                   'ata_reuniao_aprovacao_plano', 'ata_votacao_projeto_lei',
                   'lei_plano_cultura','situacao')
 
-# Plano de Trabalho
+""" 
+Plano de Trabalho
+"""
 class PlanoTrabalhoSerializer(hal_serializers.HalModelSerializer):
     criacao_lei_sistema_cultura = serializers.SerializerMethodField(source= 'criacao_sistema')
     criacao_orgao_gestor = serializers.SerializerMethodField(source= 'orgao_gestor')
@@ -108,7 +122,9 @@ class PlanoTrabalhoSerializer(hal_serializers.HalModelSerializer):
         else:
             return None
 
-# Usuario
+"""
+Usuario
+"""
 class UsuarioSerializer(hal_serializers.HalModelSerializer):
     #plano_trabalho = PlanoTrabalhoSerializer()
     #municipio = serializers.ReadOnlyField(source = 'municipio.cidade.nome_municipio')
@@ -118,18 +134,24 @@ class UsuarioSerializer(hal_serializers.HalModelSerializer):
         fields = ('responsavel','estado_processo',
                   'data_publicacao_acordo','plano_trabalho')
     
-# Cidade        
+"""
+Cidade
+"""        
 class CidadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cidade
         fields = ('codigo_ibge', 'nome_municipio')
-# UF
+"""
+UF
+"""
 class UfSerializer(serializers.ModelSerializer):
     class Meta:
         model = Uf 
         fields = ('codigo_ibge', 'sigla')
 
-# Municipio
+"""
+Municipio
+"""
 class MunicipioSerializer(hal_serializers.HalModelSerializer):
     ente_federado = serializers.SerializerMethodField() 
     governo = serializers.SerializerMethodField()
@@ -141,7 +163,9 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
         model = Municipio
         fields = ('id','self','_embedded','ente_federado','governo','conselho', 'situacao_adesao',)
 
-    # Retornando a lista de conselheiros do ConselhoCultural
+    """ 
+    Retornando a lista de conselheiros do ConselhoCultural
+    """
     def get_conselho(self, obj):
 
         try:
@@ -164,23 +188,31 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
         else:
             return  ({'conselheiros': lista})
 
-    # Retorna recursos embedded seguinto o padrão hal
+    """
+    Retorna recursos embedded seguinto o padrão hal
+    """
     def get_embedded(self,obj):
         embedded = ({'acoes_plano_trabalho':self.get_acoes_plano_trabalho(obj=obj)})
 
         return embedded
 
 
-    # Retorna o plano de trabalho do municipio
+    """
+    Retorna o plano de trabalho do municipio
+    """
     def get_acoes_plano_trabalho(self,obj):
 
-        # Checa se existe usuário atrelado ao muncipio
+        """
+        Checa se existe usuário atrelado ao muncipio
+        """
         try: 
             plano_trabalho = obj.usuario.plano_trabalho
         except Usuario.DoesNotExist:
             return None
 
-        # Checa se o usuario tem um plano de trabalho válido
+        """
+        Checa se o usuario tem um plano de trabalho válido
+        """
         if(plano_trabalho is None):
             return None
 
@@ -191,7 +223,9 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
 
         return serializer.data 
 
-    # Estrutura dados no objeto ente_federado
+    """
+    Estrutura dados no objeto ente_federado
+    """
     def get_ente_federado(self,obj):
         localizacao = Localizacao(estado=obj.estado, cidade=obj.cidade,
                 cep=obj.cep, bairro=obj.bairro, endereco=obj.endereco, complemento=obj.complemento)
@@ -203,7 +237,9 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
 
         return serializer.data 
 
-    # Estrutura dados no objeto governo
+    """
+    Estrutura dados no objeto governo
+    """
     def get_governo(self,obj):
         governo = Governo(nome_prefeito=obj.nome_prefeito,
                 email_institucional_prefeito=obj.email_institucional_prefeito,
@@ -221,7 +257,9 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
         return serializer
         
 
-# Classes para estruturar os objetos de adesoes
+"""
+Classes para estruturar os objetos de adesoes
+"""
 class EnteFederado(object):
     def __init__(self, cnpj_prefeitura, localizacao, endereco_eletronico, telefones):
         self.cnpj_prefeitura = cnpj_prefeitura
@@ -251,7 +289,9 @@ class Governo(object):
         self.email_institucional_prefeito = email_institucional_prefeito
         self.termo_posse_prefeito = termo_posse_prefeito
        
-# Serializers das classes de estruturação de adesoes
+"""
+Serializers das classes de estruturação de adesoes
+"""
 class LocalizacaoSerializer(serializers.Serializer):
     estado = UfSerializer() 
     cidade = CidadeSerializer()

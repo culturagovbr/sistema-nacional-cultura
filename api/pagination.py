@@ -1,6 +1,6 @@
 from rest_framework.pagination import CursorPagination, PageNumberPagination, LimitOffsetPagination
-from rest_framework.utils.urls import replace_query_param
 from rest_framework.response import Response
+from rest_framework.utils.urls import replace_query_param
 
 
 class HalLimitOffsetPagination(LimitOffsetPagination):
