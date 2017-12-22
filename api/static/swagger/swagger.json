@@ -1,366 +1,840 @@
 {
-  "swagger": "2.0",
-  "info": {
+    "swagger": "2.0",
+    "info": {
       "description": "Essa é uma API aberta para acesso aos dados do portal [**SNC.**](http://snc.cultura.gov.br/adesao/consultar/)\n\nSNC é um sistema que faz a gestão das políticas públicas de cultura, em regime de colaboração entre União, estados, municípios e a sociedade civil.",
       "version": "0.1-beta",
       "title": "SNC API"
-  },
-  "host": "api.localhost:8000",
-  "basePath": "/v1",
-  "schemes": [
+    },
+    "host": "api.localhost:8000/",
+    "basePath": "v1",
+    "schemes": [
       "http"
-  ],
-  "produces": [
+    ],
+    "produces": [
       "application/hal+json",
       "application/xml",
       "text/csv"
-  ],
-  "paths": {
+    ],
+    "paths": {
       "/acoesplanotrabalho/": {
-          "get": {
-              "tags": [
-                  "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
-              ],
-              "summary": "Busca planos de trabalho dado uma combinação de valores diversos de pesquisa",
-              "operationId": "planodetrabalho_list",
-              "parameters": [
-                  {
-                      "name": "limit",
-                      "in": "query",
-                      "required": false,
-                      "description": "Número de Planos de Trabalho a serem retornados",
-                      "type": "integer"
-                  },
-                  {
-                      "name": "offset",
-                      "in": "query",
-                      "description": "Número de paginação de resultados",
-                      "required": false,
-                      "type": "integer"
-                  },
-                  {
-                      "name": "format",
-                      "in": "query",
-                      "description": "Formato de retorno",
-                      "required": false,
-                      "type": "string"
+        "get": {
+          "tags": [
+            "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
+          ],
+          "summary": "Busca planos de trabalho dado uma combinação de valores diversos de pesquisa",
+          "operationId": "planodetrabalho_list",
+          "description": "Código da situação do documento enviado. (0 ao 6) <ul> <li>0 - Em preenchimento</li> <li>1 - Avaliando anexo</li> <li>2 - Concluída</li> <li>3 - Arquivo aprovado com ressalvas</li> <li>4 - Arquivo danificado</li> <li>5 - Arquivo incompleto</li> <li>6 - Arquivo incorreto</li> </ul>",
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "required": false,
+              "description": "Número de Planos de Trabalho a serem retornados",
+              "type": "integer"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Número de paginação de resultados",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "sistema_cultura",
+              "in": "query",
+              "description": "ID do Sistema de Cultura Local",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "situacao_lei_id",
+              "in": "query",
+              "description": "Codigo da situação do documento enviado",
+              "type": "string",
+              "required": false,
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "name": "situacao_lei_descricao",
+              "in": "query",
+              "description": "Descrição da situação do documento enviado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "situacao_plano_id",
+              "in": "query",
+              "description": "Codigo da situação do documento enviado",
+              "type": "string",
+              "required": false,
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "name": "situacao_plano_descricao",
+              "in": "query",
+              "description": "Descrição da situação do documento enviado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "situacao_conselho_id",
+              "in": "query",
+              "description": "Codigo da situação do documento enviado",
+              "type": "string",
+              "required": false,
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "name": "situacao_conselho_descricao",
+              "in": "query",
+              "description": "Descrição da situação do documento enviado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "situacao_fundo_id",
+              "in": "query",
+              "description": "Codigo da situação do documento enviado",
+              "type": "string",
+              "required": false,
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "name": "situacao_fundo_descricao",
+              "in": "query",
+              "description": "Descrição da situação do documento enviado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "situacao_orgao_id",
+              "in": "query",
+              "description": "Codigo da situação do documento enviado",
+              "type": "string",
+              "required": false,
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            {
+              "name": "situacao_orgao_descricao",
+              "in": "query",
+              "description": "Descrição da situação do documento enviado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "sistema_cultura__nome_municipio",
+              "in": "query",
+              "description": "Nome do município",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "sistema_cultura__estado_sigla",
+              "in": "query",
+              "description": "Sigla do Estado",
+              "type": "string",
+              "required": false
+            },
+            {
+              "name": "sistema_cultura__situacao_adesao",
+              "in": "query",
+              "description": "Código da situação da adesão.  (1 ao 6) <ul> <li>1 - Aguardando envio da documentação</li> <li>2 - Documentação Recebida - Aguarda Análise</li> <li>3 - Diligência Documental</li> <li>4 - Encaminhado para assinatura do Secretário SAI</li> <li>5 - Aguarda Publicação no DOU</li> <li>6 - Publicado no DOU</li> </ul>",
+              "type": "string",
+              "required": false
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operação bem-sucedida",
+              "produces": {
+                "application/hal+json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoList"
+                    }
                   }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Operação bem-sucedida",
-                      "content": {
-                          "application/hal+json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/definitions/PlanoDeTrabalhoList"
-                                  }
-                              }
-                          },
-                          "application/xml": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/definitions/PlanoDeTrabalhoList"
-                                  }
-                              }
-                          },
-                          "application/csv": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/definitions/PlanoDeTrabalhoList"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "404": {
-                      "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
-                      "schema": {
-                          "$ref": "#/definitions/Error"
-                      }
+                },
+                "application/xml": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoList"
+                    }
                   }
+                },
+                "application/csv": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoList"
+                    }
+                  }
+                }
+              },
+              "headers": {
+                "X-Rate-Limit-Limit": {
+                  "description": "Número de requisições permitidas no período",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Remaining": {
+                  "description": "Número de requisições restantes na janela de limite atual",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Reset": {
+                  "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                  "type": "integer"
+                },
+                "Retry-After": {
+                  "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                  "type": "integer"
+                },
+                "X-Total-Count": {
+                  "description": "Número total de objetos que atendem seu critério de busca",
+                  "type": "integer"
+                }
               }
+            },
+            "404": {
+              "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
           }
+        }
       },
       "/acoesplanotrabalho/{id}/": {
-          "get": {
-              "tags": [
-                  "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
-              ],
-              "summary": "Busca um único Plano de Trabalho",
-              "operationId": "planodetrabalho_detail",
-              "parameters": [
-                  {
-                      "name": "id",
-                      "in": "path",
-                      "required": true,
-                      "description": "Id do Plano de Trabalho",
-                      "type": "integer"
-                  },
-                  {
-                      "name": "format",
-                      "required": false,
-                      "in": "query",
-                      "description": "Formato de Retorno",
-                      "type": "string",
-                      "enum": [
-                          "json",
-                          "xml",
-                          "csv"
-                      ]
+        "get": {
+          "tags": [
+            "acoesplanotrabalho: Dados relativos ao Plano de Trabalho"
+          ],
+          "summary": "Busca um único Plano de Trabalho",
+          "operationId": "planodetrabalho_detail",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "Id do Plano de Trabalho",
+              "type": "integer"
+            },
+            {
+              "name": "format",
+              "required": false,
+              "in": "query",
+              "description": "Formato de Retorno",
+              "type": "string",
+              "enum": [
+                "json",
+                "xml",
+                "csv"
+              ]
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operação bem-sucedida",
+              "produces": {
+                "application/hal+json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoDetail"
+                    }
                   }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Operação bem-sucedida",
-                      "schema": {
-                          "type": "array",
-                          "items": {
-                              "$ref": "#/definitions/PlanoDeTrabalhoDetail"
-                          }
-                      }
-                  },
-                  "404": {
-                      "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
-                      "schema": {
-                          "$ref": "#/definitions/Error"
-                      }
+                },
+                "application/xml": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoDetail"
+                    }
                   }
+                },
+                "application/csv": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/PlanoDeTrabalhoDetail"
+                    }
+                  }
+                }
+              },
+              "headers": {
+                "X-Rate-Limit-Limit": {
+                  "description": "Número de requisições permitidas no período",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Remaining": {
+                  "description": "Número de requisições restantes na janela de limite atual",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Reset": {
+                  "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                  "type": "integer"
+                },
+                "Retry-After": {
+                  "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                  "type": "integer"
+                },
+                "X-Total-Count": {
+                  "description": "Número total de objetos que atendem seu critério de busca",
+                  "type": "integer"
+                }
               }
+            },
+            "404": {
+              "description": "Ações de Plano de Trabalho com esses parâmetros não encontrados",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
           }
+        }
       },
       "/sistemadeculturalocal/": {
-          "get": {
-              "tags": [
-                  "sistemadeculturalocal: Dados relativos ao Sistema de Cultura local"
-              ],
-              "summary": "Busca sistemas de cultura local dado uma combinação de valores diversos de pesquisa",
-              "operationId": "sistemadecultura_list",
-              "parameters": [
-                  {
-                      "name": "limit",
-                      "in": "query",
-                      "required": false,
-                      "description": "Número de Sistemas de Cultura a serem retornados",
-                      "type": "integer"
-                  },
-                  {
-                      "name": "offset",
-                      "in": "query",
-                      "description": "Número de paginação de resultados",
-                      "required": false,
-                      "type": "integer"
+        "get": {
+          "tags": [
+            "sistemadeculturalocal: Dados relativos ao Sistema de Cultura local"
+          ],
+          "summary": "Busca sistemas de cultura local dado uma combinação de valores diversos de pesquisa",
+          "operationId": "sistemadecultura_list",
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "required": false,
+              "description": "Número de Sistemas de Cultura a serem retornados",
+              "type": "integer"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "description": "Número de paginação de resultados",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "nome_municipio",
+              "in": "query",
+              "description": "Nome do município",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "estado_sigla",
+              "in": "query",
+              "description": "Sigla do Estado",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "cnpj_prefeitura",
+              "in": "query",
+              "description": "Cnpj da prefeitura",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "situacao_adesao",
+              "in": "query",
+              "type": "string",
+              "required": false,
+              "description": "Código da situação da adesão.  (1 ao 6) <ul> <li>1 - Aguardando envio da documentação</li> <li>2 - Documentação Recebida - Aguarda Análise</li> <li>3 - Diligência Documental</li> <li>4 - Encaminhado para assinatura do Secretário SAI</li> <li>5 - Aguarda Publicação no DOU</li> <li>6 - Publicado no DOU</li> </ul>",
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operação bem-sucedida",
+              "produces": {
+                "application/hal+json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalList"
+                    }
                   }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Operação bem-sucedida",
-                      "schema": {
-                          "type": "array",
-                          "items": {
-                              "$ref": "#/definitions/SistemaDeCulturaLocalList"
-                          }
-                      }
-                  },
-                  "404": {
-                      "description": "Ações do Sistema de Cultura Local com esses parâmetros não encontrados",
-                      "schema": {
-                          "$ref": "#/definitions/Error"
-                      }
+                },
+                "application/xml": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalList"
+                    }
                   }
+                },
+                "application/csv": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalList"
+                    }
+                  }
+                }
+              },
+              "headers": {
+                "X-Rate-Limit-Limit": {
+                  "description": "Número de requisições permitidas no período",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Remaining": {
+                  "description": "Número de requisições restantes na janela de limite atual",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Reset": {
+                  "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                  "type": "integer"
+                },
+                "Retry-After": {
+                  "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                  "type": "integer"
+                },
+                "X-Total-Count": {
+                  "description": "Número total de objetos que atendem seu critério de busca",
+                  "type": "integer"
+                }
               }
+            },
+            "404": {
+              "description": "Ações do Sistema de Cultura Local com esses parâmetros não encontrados",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
           }
+        }
       },
       "/sistemadeculturalocal/{id}/": {
-          "get": {
-              "tags": [
-                  "sistemadeculturalocal: Dados relativos ao Sistema de Cultura local"
-              ],
-              "summary": "Busca um único Sistema de Cultura",
-              "operationId": "sistemadecultura_detail",
-              "parameters": [
-                  {
-                      "name": "id",
-                      "in": "path",
-                      "required": true,
-                      "description": "Id do Sistema de Cultura",
-                      "type": "integer"
-                  },
-                  {
-                      "name": "format",
-                      "required": false,
-                      "in": "query",
-                      "description": "Formato de Retorno",
-                      "type": "string",
-                      "enum": [
-                          "json",
-                          "xml",
-                          "csv"
-                      ]
+        "get": {
+          "tags": [
+            "sistemadeculturalocal: Dados relativos ao Sistema de Cultura local"
+          ],
+          "summary": "Busca um único Sistema de Cultura",
+          "operationId": "sistemadecultura_detail",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "Id do Sistema de Cultura",
+              "type": "integer"
+            },
+            {
+              "name": "format",
+              "required": false,
+              "in": "query",
+              "description": "Formato de Retorno",
+              "type": "string",
+              "enum": [
+                "json",
+                "xml",
+                "csv"
+              ]
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operação bem-sucedida",
+              "produces": {
+                "application/hal+json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalDetail"
+                    }
                   }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Operação bem-sucedida",
-                      "schema": {
-                          "type": "array",
-                          "items": {
-                              "$ref": "#/definitions/SistemaDeCulturaLocalDetail"
-                          }
-                      },
-                      "headers": {
-                          "X-Rate-Limit-Limit": {
-                              "description": "Número de requisições permitidas no período",
-                              "type": "integer"
-                          },
-                          "X-Rate-Limit-Remaining": {
-                              "description": "Número de requisições restantes na janela de limite atual",
-                              "type": "integer"
-                          },
-                          "X-Rate-Limit-Reset": {
-                              "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
-                              "type": "integer"
-                          },
-                          "Retry-After": {
-                              "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
-                              "type": "integer"
-                          },
-                          "X-Total-Count": {
-                              "description": "Número total de objetos que atendem seu critério de busca",
-                              "type": "integer"
-                          }
-                      }
-                  },
-                  "404": {
-                      "description": "Ações do Sistema de Cultura com esses parâmetros não encontrados",
-                      "schema": {
-                          "$ref": "#/definitions/Error"
-                      }
+                },
+                "application/xml": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalDetail"
+                    }
                   }
-              }
-          }
-      }
-  },
-  "definitions": {
-      "PlanoDeTrabalhoList": {
-          "type": "object",
-          "properties": {
-              "id": {
+                },
+                "application/csv": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/SistemaDeCulturaLocalDetail"
+                    }
+                  }
+                }
+              },
+              "headers": {
+                "X-Rate-Limit-Limit": {
+                  "description": "Número de requisições permitidas no período",
                   "type": "integer"
+                },
+                "X-Rate-Limit-Remaining": {
+                  "description": "Número de requisições restantes na janela de limite atual",
+                  "type": "integer"
+                },
+                "X-Rate-Limit-Reset": {
+                  "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                  "type": "integer"
+                },
+                "Retry-After": {
+                  "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                  "type": "integer"
+                },
+                "X-Total-Count": {
+                  "description": "Número total de objetos que atendem seu critério de busca",
+                  "type": "integer"
+                }
               }
+            },
+            "404": {
+              "description": "Ações do Sistema de Cultura com esses parâmetros não encontrados",
+              "schema": {
+                "$ref": "#/definitions/Error"
+              }
+            }
           }
+        }
+      }
+    },
+    "definitions": {
+      "PlanoDeTrabalhoList": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
       },
       "PlanoDeTrabalhoDetail": {
-          "type": "object",
-          "properties": {
-              "id": {
-                  "type": "string"
-              }
+        "type": "object",
+        "properties": {
+          "plano_de_trabalho": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PlanoDeTrabalho"
+            }
           }
+        }
       },
       "SistemaDeCulturaLocalList": {
-          "type": "object",
-          "properties": {
-              "id": {
-                  "type": "integer"
-              }
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
           }
+        }
       },
       "SistemaDeCulturaLocalDetail": {
-          "type": "object",
-          "properties": {
-              "ente_federado": {
-                  "type": "array",
-                  "items": {
-                      "$ref": "#/definitions/EnteFederado"
-                  }
-              }
+        "type": "object",
+        "properties": {
+          "ente_federado": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/EnteFederado"
+            }
+          },
+          "governo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Governo"
+            }
+          },
+          "conselho": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Conselho"
+            }
+          },
+          "plano_trabalho": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PlanoDeTrabalho"
+            }
           }
+        }
       },
       "EnteFederado": {
-          "type": "object",
-          "properties": {
-              "cnpj": {
-                  "type": "string"
-              },
-              "localizacao": {
-                  "type": "array",
-                  "items": {
-                      "$ref": "#/definitions/Localizacao"
-                  }
-              },
-              "telefones": {
-                  "type": "array",
-                  "items": {
-                      "$ref": "#/definitions/Telefones"
-                  }
-              }
+        "type": "object",
+        "properties": {
+          "cnpj": {
+            "type": "string"
+          },
+          "localizacao": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Localizacao"
+            }
+          },
+          "telefones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Telefones"
+            }
+          },
+          "endereco_eletronico": {
+            "type": "string"
           }
+        }
       },
       "Localizacao": {
-          "type": "object",
-          "properties": {
-              "estado": {
-                  "type": "array",
-                  "items": {
-                      "$ref": "#/definitions/Estado"
-                  }
-              },
-              "cidade": {
-                  "type": "string"
-              },
-              "cep": {
-                  "type": "string"
-              },
-              "bairro": {
-                  "type": "string"
-              },
-              "endereco": {
-                  "type": "string"
-              },
-              "complemento": {
-                  "type": "string"
-              }
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Estado"
+            }
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "endereco": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
           }
+        }
       },
       "Estado": {
-          "type": "object",
-          "properties": {
-              "codigo_ibge": {
-                  "type": "integer"
-              },
-              "sigla": {
-                  "type": "string"
-              }
+        "type": "object",
+        "properties": {
+          "codigo_ibge": {
+            "type": "integer"
+          },
+          "sigla": {
+            "type": "string"
           }
+        }
       },
       "Telefones": {
-          "type": "object",
-          "properties": {
-              "telefone_um": {
-                  "type": "string"
-              },
-              "telefone_dois": {
-                  "type": "string"
-              },
-              "telefone_tres": {
-                  "type": "string"
-              }
+        "type": "object",
+        "properties": {
+          "telefone_um": {
+            "type": "string"
+          },
+          "telefone_dois": {
+            "type": "string"
+          },
+          "telefone_tres": {
+            "type": "string"
           }
+        }
+      },
+      "Governo": {
+        "type": "object",
+        "properties": {
+          "nome_prefeito": {
+            "type": "string"
+          },
+          "email_prefeito": {
+            "type": "string"
+          },
+          "termo_posse": {
+            "type": "string"
+          }
+        }
+      },
+      "Conselho": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Conselheiros"
+        }
+      },
+      "Conselheiros": {
+        "type": "object",
+        "properties": {
+          "nome_conselheiro": {
+            "type": "string"
+          },
+          "setor": {
+            "type": "string"
+          },
+          "email_conselheiro": {
+            "type": "string"
+          },
+          "situacao": {
+            "type": "string"
+          },
+          "data_cadastro": {
+            "type": "string",
+            "format": "date"
+          },
+          "data_situação": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "PlanoDeTrabalho": {
+        "type": "object",
+        "properties": {
+          "sistema_cultura": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/SistemaCultura"
+            }
+          },
+          "relatorio_gestor": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/RelatorioGestor"
+            }
+          },
+          "ata_conselho": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AtaConselho"
+            }
+          },
+          "fundo_cultura": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/FundoCultura"
+            }
+          },
+          "plano_cultura": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/PlanoCultura"
+            }
+          }
+        }
+      },
+      "SistemaCultura": {
+        "type": "object",
+        "properties": {
+          "lei": {
+            "type": "string"
+          },
+          "situacao": {
+            "type": "string"
+          }
+        }
+      },
+      "RelatorioGestor": {
+        "type": "object",
+        "properties": {
+          "relatorio": {
+            "type": "string"
+          },
+          "situacao": {
+            "type": "string"
+          }
+        }
+      },
+      "AtaConselho": {
+        "type": "object",
+        "properties": {
+          "data_planejada": {
+            "type": "string",
+            "format": "date"
+          },
+          "situacao": {
+            "type": "string"
+          }
+        }
+      },
+      "FundoCultura": {
+        "type": "object",
+        "properties": {
+          "cnpj": {
+            "type": "string"
+          },
+          "lei": {
+            "type": "string"
+          },
+          "situacao": {
+            "type": "string"
+          }
+        }
+      },
+      "PlanoCultura": {
+        "type": "object",
+        "properties": {
+          "relatorio_diretrizes": {
+            "type": "string"
+          },
+          "minuta": {
+            "type": "string"
+          },
+          "ata_aprovacao": {
+            "type": "string"
+          },
+          "ata_votacao": {
+            "type": "string"
+          },
+          "lei": {
+            "type": "string"
+          },
+          "situacao": {
+            "type": "string"
+          }
+        }
       },
       "Error": {
-          "type": "object",
-          "properties": {
-              "message": {
-                  "type": "string"
-              },
-              "code": {
-                  "type": "string"
-              }
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
           }
+        }
       }
+    }
   }
-}

@@ -1,7 +1,9 @@
 from django.conf.urls import url
+
 from rest_framework.urlpatterns import format_suffix_patterns
-from snc.urls import *
+
 from api import views
+from snc.urls import *
 
 urlpatterns = [
     url(r'^$',views.swagger_index),

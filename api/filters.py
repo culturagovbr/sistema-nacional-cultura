@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 import rest_framework_filters as filters
-from planotrabalho.models import * 
-from adesao.models import Municipio, Cidade, Usuario, Uf 
 
-# Classes para filtros de pesquisa
+from adesao.models import Municipio, Cidade, Usuario, Uf 
+from planotrabalho.models import * 
+
+"""Classes para filtros de pesquisa"""
 
 class MunicipioFilter(filters.FilterSet):
     estado_sigla = filters.CharFilter(name='estado__sigla')
