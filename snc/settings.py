@@ -18,7 +18,7 @@ import raven
 env = environ.Env()
 env.read_env()
 
-ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
+ROOT_DIR = environ.Path(__file__) - 1  # (/a/b/myfile.py - 3 = /)
 
 # DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -322,9 +322,10 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-RAVEN_CONFIG = {
-    'dsn': env('RAVEN_DSN_URL'),
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    'release': raven.fetch_git_sha(str(ROOT_DIR)),
-}
+if(DEBUG == 'False'):
+    RAVEN_CONFIG = {
+        'dsn': env('RAVEN_DSN_URL'),
+        # If you are using git, you can also automatically configure the
+        # release based on the git info.
+        'release': raven.fetch_git_sha(str(ROOT_DIR)),
+    }
