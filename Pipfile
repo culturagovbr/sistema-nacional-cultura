@@ -56,6 +56,3 @@ pygments = "==2.2.0"
 mccabe = "==0.3"
 
 
-[requires]
-
-python_version = "3.4"
