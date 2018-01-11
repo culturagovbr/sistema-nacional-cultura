@@ -5,7 +5,7 @@ Este aplicativo cadastra os entes federados e coordena o processo de adesao dess
 
 ## Da Tecnologia
 O cadastro do SNC é feito sobre o framework Django, usando Python3, com banco de dados PostgresSQL. É possível rodar em qualquer banco de dados, basta ajustar as settings.
-As dependencias de pacotes estão no requirements.txt
+As dependencias de pacotes estão no Pipfile.
 
 
 ## Requisitos
@@ -15,19 +15,19 @@ As dependencias de pacotes estão no requirements.txt
 * python3-virtualenv
 * Postgresql
 * wkhtmltopdf
+* pipenv
 * postgresql-server-dev-9.4
 
 ## Passos da Instalação para Debian/Ubuntu
 
 1. Instale o PIP que é o instalador de pacotes do python3
+    ```
+    sudo apt-get install python3-pip python3-dev
+    ```
 
+2. Instale o pipenv que é o gerenciador de pacotes e ambiente python
     ```
-    sudo apt-get install python3-pip
-    ```
-
-2. Instale o construtor de ambiente virtual
-    ```
-    sudo apt-get install python3-virtualenv python3-venv
+    pip3 install --user --upgrade pipenv
     ```
 
 3. Instale o wkhtmltopdf que é o aplicativo para renderizar html em pdf
@@ -40,42 +40,28 @@ As dependencias de pacotes estão no requirements.txt
     sudo apt-get install postgresql-9.4 libpq-dev
     ```    
 
-5. Crie o ambiente virtual
-    ```
-    pyvenv /caminho/para/o/ambiente/virtual
-
-    ```    
-    E depois entre no diretório
-    ```
-    cd  /caminho/para/o/ambiente/virtual
-    ```
-
-6. Clone o repositório do projeto do github
+5. Clone o repositório do projeto do github
     ```
     git clone https://github.com/culturagovbr/sistema-nacional-cultura.git snc
     ```
 
+6. Crie o ambiente virtual e instale as dependencias, dentro do diretório da aplicação
+    ```
+    cd snc
+    pipenv install
+    ```    
+
 7. Ative o ambiente virtual
     ```
-    source /caminho/para/o/ambiente/virtual/bin/activate
-    ```
-    E depois entre no diretório do projeto
-    ```
-    cd  /caminho/para/o/ambiente/virtual/snc/
+    pipenv shell
     ```
 
-8. Instale as dependências python do projeto
-    ```
-    sudo apt-get install python3-dev
-    pip3 install -r requirements.txt
-    ```
-
-10. Copie o template de configurações de ambiente e edite conforme necessário
+8. Copie o template de configurações de ambiente e edite conforme necessário
     ```
     cp env.tmpl snc/.env
     ```
 
-11. Configure o banco de dados
+9. Configure o banco de dados
     Crie o banco dbsnc no seu serviço de acordo com o settings.py ou seu arquivo .env
     ```
     sudo -u postgres psql
@@ -83,27 +69,23 @@ As dependencias de pacotes estão no requirements.txt
     \q
     ```
 
-12. Execute os comandos de criação do banco
-
+10. Execute os comandos de criação do banco
     Criação de migração para cada APP
     ```
-    python3 manage.py makemigrations planotrabalho
-    python3 manage.py makemigrations gestao
-    python3 manage.py makemigrations adesao
+    ./manage.py makemigrations planotrabalho gestao adesao
     ```
 
     Comando migrate para criar a estrutura do banco (DDL)
     ```
-    python3 manage.py migrate
+    ./manage.py migrate
     ```
 
-13. Copie os arquivos estaticos do projeto
+11. Copie os arquivos estaticos do projeto
     ```
-    python3 manage.py collectstatic
+    ./manage.py collectstatic
     ```
 
-14. Execute a aplicação (É preciso ter o ambiente virtual ativado)
+12. Execute a aplicação (É preciso ter o ambiente virtual ativado)
     ```
-    python3 manage.py runserver
-
+    ./manage.py runserver
     ```
