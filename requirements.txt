@@ -10,7 +10,6 @@ django-cors-headers==2.1.0
 django-environ==0.4.0
 django-extensions==1.5.5
 django-filter==1.0.4
-django-hosts==2.0
 django-localflavor==1.1
 django-piwik==0.1
 https://pypi.python.org/packages/source/d/django-smart-selects/django-smart-selects-1.1.1.tar.gz
