@@ -7,13 +7,12 @@ from model_mommy import mommy
 
 pytestmark = pytest.mark.django_db
 
-url_sistemadeculturalocal = '/v1/sistemadeculturalocal/'
-url_acoesplanotrabalho = '/v1/acoesplanotrabalho/'
-host_request = 'api'
+url_sistemadeculturalocal = '/api/v1/sistemadeculturalocal/'
+url_acoesplanotrabalho = '/api/v1/acoesplanotrabalho/'
 
 def test_municipios_list_endpoint_returning_200_OK(client):
 
-    request = client.get(url_sistemadeculturalocal, HTTP_HOST=host_request)
+    request = client.get(url_sistemadeculturalocal)
 
     assert request.status_code == status.HTTP_200_OK
 
@@ -22,7 +21,7 @@ def test_URL_sistema_cultura_local_retorna_10_sistemas(client):
 
     sistemas = mommy.make('Municipio', _quantity=12)
 
-    request = client.get(url_sistemadeculturalocal, HTTP_HOST=host_request,
+    request = client.get(url_sistemadeculturalocal,
                          content_type="application/hal+json")
 
     assert isinstance(request.data["_embedded"]["items"], list)
@@ -33,8 +32,7 @@ def test_404_recupera_ID_sistema_cultura_local(client):
 
     url = url_sistemadeculturalocal + '45/'
 
-    request = client.get(url, HTTP_HOST=host_request,
-                        content_type="application/hal+json")
+    request = client.get(url,content_type="application/hal+json")
 
     assert request.status_code == status.HTTP_404_NOT_FOUND
 
@@ -47,8 +45,7 @@ def test_recupera_ID_param_sistema_cultura_local(client):
     url = url_sistemadeculturalocal + municipio_id
 
 
-    request = client.get(url, HTTP_HOST=host_request,
-                        content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert request.status_code == status.HTTP_200_OK
     assert request.data["id"] == municipio.id
@@ -61,7 +58,7 @@ def test_entidades_principais_sistema_cultura_local(client):
 
     url = url_sistemadeculturalocal + municipio_id
 
-    request = client.get(url, HTTP_HOST=host_request, content_type="application/hal+json")
+    request = client.get(url,content_type="application/hal+json")
 
     entidades = set(["governo","ente_federado", "conselho",
         "_embedded","situacao_adesao","_links","id"])
@@ -76,8 +73,7 @@ def test_campos_do_objeto_governo_ao_retornar_sistema_cultura_local(client):
 
     url = url_sistemadeculturalocal + municipio_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-                         content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["nome_prefeito", "email_institucional_prefeito",
                   "termo_posse_prefeito"])
@@ -92,8 +88,7 @@ def test_campos_do_objeto_ente_federado_ao_retornar_sistema_cultura_local(client
 
     url = url_sistemadeculturalocal + municipio_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["cnpj_prefeitura","endereco_eletronico","telefones","localizacao"])
 
@@ -107,8 +102,7 @@ def test_campos_do_objeto_embedded_ao_retornar_sistema_cultura_local(client):
 
     url = url_sistemadeculturalocal + municipio_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["acoes_plano_trabalho"])
 
@@ -126,8 +120,7 @@ def test_campos_do_objeto_conselho_ao_retornar_sistema_cultura_local(client):
 
     url = url_sistemadeculturalocal + municipio_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["conselheiros"])
 
@@ -136,7 +129,7 @@ def test_campos_do_objeto_conselho_ao_retornar_sistema_cultura_local(client):
 
 def test_planotrabalho_list_endpoint_returning_200_OK(client):
 
-    request = client.get(url_acoesplanotrabalho, HTTP_HOST=host_request)
+    request = client.get(url_acoesplanotrabalho)
 
     assert request.status_code == status.HTTP_200_OK
 
@@ -145,7 +138,7 @@ def test_planotrabalho_list_retorna_lista_com_10(client):
 
     planos = mommy.make('PlanoTrabalho',13)
 
-    request = client.get(url_acoesplanotrabalho, HTTP_HOST=host_request,
+    request = client.get(url_acoesplanotrabalho,
             content_type="application/hal+json")
 
     assert isinstance(request.data["_embedded"]["items"], list) 
@@ -156,8 +149,7 @@ def test_acoesplanotrabalho_retorna_404_para_id_nao_valido(client):
 
     url = url_acoesplanotrabalho + '55/'
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert request.status_code == status.HTTP_404_NOT_FOUND
 
@@ -169,8 +161,7 @@ def test_acoesplanotrabalho_retorna_para_id_valido(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert request.status_code == status.HTTP_200_OK
     assert request.data["id"] == plano_trabalho.id
@@ -183,8 +174,7 @@ def test_campos_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["criacao_lei_sistema_cultura","criacao_orgao_gestor",
         "criacao_plano_cultura","criacao_fundo_cultura","criacao_conselho_cultural",
@@ -199,8 +189,7 @@ def test_objeto_embedded_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["sistema_cultura_local"])
 
@@ -215,8 +204,7 @@ def test_objeto_criacao_lei_sistema_cultura_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["lei_sistema_cultura","situacao"])
 
@@ -231,8 +219,7 @@ def test_objeto_criacao_orgao_gestor_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["relatorio_atividade_secretaria","situacao"])
 
@@ -247,8 +234,7 @@ def test_objeto_criacao_plano_cultura_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["relatorio_diretrizes_aprovadas","minuta_preparada",
         "ata_reuniao_aprovacao_plano","ata_votacao_projeto_lei",
@@ -265,8 +251,7 @@ def test_objeto_criacao_fundo_cultura_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["cnpj_fundo_cultura","lei_fundo_cultura","situacao"])
 
@@ -281,8 +266,7 @@ def test_objeto_criacao_conselho_cultural_acoesplanotrabalho(client):
 
     url = url_acoesplanotrabalho + plano_trabalho_id
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     campos = set(["ata_regimento_aprovado","situacao"])
 
@@ -296,8 +280,7 @@ def test_retorno_maximo_de_100_objetos_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + limit_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert len(request.data["_embedded"]["items"]) == 100
 
@@ -309,8 +292,7 @@ def test_retorno_maximo_de_100_objetos_acoes_plano_trabalho(client):
 
     url = url_acoesplanotrabalho + limit_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert len(request.data["_embedded"]["items"]) == 100
 
@@ -322,8 +304,7 @@ def test_pesquisa_por_cnpj_prefeitura_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + cnpj_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert len(request.data["_embedded"]["items"]) == 1
     assert request.data["_embedded"]["items"][0]["ente_federado"]["cnpj_prefeitura"] == municipio[0].cnpj_prefeitura
@@ -340,8 +321,7 @@ def test_pesquisa_por_nome_municipio_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + nome_municipio_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     assert len(request.data["_embedded"]["items"]) == 1
     assert request.data["_embedded"]["items"][0]["ente_federado"]["localizacao"]["cidade"]["nome_municipio"] == cidades[0].nome_municipio
@@ -355,8 +335,7 @@ def test_pesquisa_por_estado_sigla_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + estado_sigla_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["ente_federado"]["localizacao"]["estado"]["sigla"] == municipios[0].estado.sigla
@@ -375,8 +354,7 @@ def test_pesquisa_por_situacao_adesao_1_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Aguardando envio da documentação' 
@@ -395,8 +373,7 @@ def test_pesquisa_por_situacao_adesao_2_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Documentação Recebida - Aguarda Análise' 
@@ -415,8 +392,7 @@ def test_pesquisa_por_situacao_adesao_3_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Diligência Documental' 
@@ -435,8 +411,7 @@ def test_pesquisa_por_situacao_adesao_4_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Encaminhado para assinatura do Secretário SAI' 
@@ -455,8 +430,7 @@ def test_pesquisa_por_situacao_adesao_5_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Aguarda Publicação no DOU' 
@@ -475,8 +449,7 @@ def test_pesquisa_por_situacao_adesao_6_em_sistema_de_cultura(client):
 
     url = url_sistemadeculturalocal + situacao_adesao_param
 
-    request = client.get(url, HTTP_HOST=host_request,
-            content_type="application/hal+json")
+    request = client.get(url, content_type="application/hal+json")
 
     for municipio in request.data["_embedded"]["items"]:
         assert municipio["situacao_adesao"]["situacao_adesao"] == 'Publicado no DOU' 
