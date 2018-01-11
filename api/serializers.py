@@ -5,7 +5,7 @@ from drf_hal_json import serializers as hal_serializers
 from adesao.models import Municipio, Uf, Cidade, Usuario
 from planotrabalho.models import (PlanoTrabalho, CriacaoSistema, OrgaoGestor,
 ConselhoCultural, FundoCultura, PlanoCultura, Conselheiro, SituacoesArquivoPlano)
-from drf_hal_json.fields import HalHyperlinkedRelatedField, HalContributeToLinkField
+from drf_hal_json.fields import HalHyperlinkedIdentityField
 import json
 
 # Criacao do Sistema 
@@ -68,6 +68,7 @@ class PlanoTrabalhoSerializer(hal_serializers.HalModelSerializer):
     criacao_fundo_cultura = serializers.SerializerMethodField(source= 'fundo_cultura')
     criacao_conselho_cultural = serializers.SerializerMethodField(source= 'conselho_cultural')
     _embedded = serializers.SerializerMethodField(method_name='get_embedded')
+    self = HalHyperlinkedIdentityField(view_name='api:planotrabalho-detail')
 
     class Meta:
         model = PlanoTrabalho
@@ -141,7 +142,7 @@ class UsuarioSerializer(hal_serializers.HalModelSerializer):
         model = Usuario
         fields = ('responsavel','estado_processo',
                   'data_publicacao_acordo','plano_trabalho')
-    
+
 # Cidade        
 class CidadeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -154,7 +155,7 @@ class UfSerializer(serializers.ModelSerializer):
         fields = ('codigo_ibge', 'sigla')
 
 class MunicipioLinkSerializer(hal_serializers.HalModelSerializer):
-
+    self = HalHyperlinkedIdentityField(view_name='api:municipio-detail')
     class Meta:
         model = Municipio
         fields = ('self',)
@@ -166,6 +167,7 @@ class MunicipioSerializer(hal_serializers.HalModelSerializer):
     conselho = serializers.SerializerMethodField()
     _embedded = serializers.SerializerMethodField(method_name='get_embedded')
     situacao_adesao = serializers.SerializerMethodField()
+    self = HalHyperlinkedIdentityField(view_name='api:municipio-detail')
     
     class Meta:
         model = Municipio
