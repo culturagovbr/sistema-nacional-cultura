@@ -58,4 +58,4 @@ mccabe = "==0.3"
 
 [requires]
 
-python_version = "3.5"
+python_version = "3.4"
