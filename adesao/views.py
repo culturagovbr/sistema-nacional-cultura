@@ -1,6 +1,7 @@
 import csv
 import xlwt
 import xlsxwriter
+import environ
 from io import BytesIO
 from datetime import timedelta
 from threading import Thread
@@ -16,6 +17,7 @@ from django.utils import timezone
 from django.template.loader import render_to_string
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, Count
+from django.conf import settings
 
 from adesao.models import Municipio, Responsavel, Secretario, Usuario, Historico, Uf, Cidade
 from planotrabalho.models import Conselheiro, PlanoTrabalho
@@ -352,6 +354,27 @@ class CadastrarMunicipio(CreateView):
         kwargs = super(CadastrarMunicipio, self).get_form_kwargs()
         kwargs['user'] = self.request.user.usuario
         return kwargs
+
+    def get_success_url(self):
+        Thread(target=send_mail, args=(
+            'MINISTÉRIO DA CULTURA - SNC - SOLICITAÇÃO NOVA ADESÃO',
+            'Prezado Gestor,\n' +
+            'Um novo ente federado acabou de se cadastrar e fazer a solicitação de nova adesão.\n' +
+            'Segue abaixo os dados de contato do ente federado:\n\n' +
+            'Dados do Ente Federado:\n' +
+            'Cadastrador: ' + self.object.usuario.nome_usuario + '\n' +
+            'Nome do Prefeito: ' + self.object.nome_prefeito + '\n' +
+            'Cidade: ' + self.object.cidade.nome_municipio + '\n' +
+            'Estado: ' + self.object.estado.sigla + '\n' +
+            'Email Institucional: ' + self.object.email_institucional_prefeito + '\n' +
+            'Telefone de Contato: ' + self.object.telefone_um + '\n' +
+            'Link da Adesão: ' + 'http://snc.cultura.gov.br/gestao/detalhar/municipio/{}'.format(self.object.usuario.id) + '\n\n' +
+            'Equipe SNC\nMinistério da Cultura',
+            'naoresponda@cultura.gov.br',
+            [settings.RECEIVER_EMAIL],),
+            kwargs={'fail_silently': 'False', }
+            ).start()
+        return super(CadastrarMunicipio, self).get_success_url()
 
 
 class AlterarMunicipio(UpdateView):
