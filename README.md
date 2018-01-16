@@ -50,6 +50,10 @@ As dependencias de pacotes estão no Pipfile.
     cd snc
     pipenv install
     ```    
+    Você pode instalar as dependencias incluindo as necessárias ao desenvolvimento utilizando:
+    ```
+    pipenv install --dev
+    ```
 
 7. Ative o ambiente virtual
     ```
