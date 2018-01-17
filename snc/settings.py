@@ -18,7 +18,7 @@ import raven
 env = environ.Env()
 env.read_env()
 
-ROOT_DIR = environ.Path(__file__) - 1  # (/a/b/myfile.py - 3 = /)
+ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
 
 RECEIVER_EMAIL = env("RECEIVER_EMAIL", default="none@email.com")
 # DEBUG
