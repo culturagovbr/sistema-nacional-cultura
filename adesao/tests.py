@@ -57,6 +57,8 @@ def testa_envio_email_em_nova_adesao(client):
 
 
 def testa_envio_email_em_esqueceu_senha(client):
+    site = mommy.make('Site', name="SNC", domain="snc.cultura.gov.br")
+
     user = User.objects.create(username='teste',email='test@email.com')
     user.set_password('123456')
     user.save()
