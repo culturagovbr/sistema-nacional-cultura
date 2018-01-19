@@ -2,7 +2,7 @@ import pytest
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core import mail 
+from django.core import mail
 from django.conf import settings
 
 from model_mommy import mommy
@@ -55,3 +55,23 @@ def testa_envio_email_em_nova_adesao(client):
             'Link da Adesão: ' + 'http://snc.cultura.gov.br/gestao/detalhar/municipio/{}'.format(usuario.id) + '\n\n' +
             'Equipe SNC\nMinistério da Cultura')
 
+
+def testa_envio_email_em_esqueceu_senha(client):
+    user = User.objects.create(username='teste',email='test@email.com')
+    user.set_password('123456')
+    user.save()
+    usuario = mommy.make('Usuario',user=user)
+
+    response = client.post('/password_reset/',{'email': usuario.user.email})
+
+    assert len(mail.outbox) == 1
+
+
+def testa_template_em_esqueceu_senha(client):
+
+    response = client.get('/password_reset/')
+
+    assert response.template_name == 'registration/password_reset_form.html' 
+
+    # Pelo fato de o template padrão do django ter esse mesmo nome fizemos uma validação a mais
+    assert "Sistema Nacional de Cultura"  in response.rendered_content
