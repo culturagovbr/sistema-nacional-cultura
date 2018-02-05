@@ -4,6 +4,13 @@
 	<p>{{ ente_federado }}</p>
 	<p>{{ nome_arquivo }}</p>
 	<p>{{ data_envio }}</p>
+
+	<select>
+	{% for classificacao in classificacoes %}
+		<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
+	{% endfor %}
+	</select>
+
 	<button class='btn btn-primary'>Enviar</button>
 	<button class='btn btn-secondary'>Cancelar</button>
 {% endblock %}
