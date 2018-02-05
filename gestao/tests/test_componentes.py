@@ -14,7 +14,6 @@ def engine():
 
     return engine
 
-
 def test_existencia_template_diligencia(engine, client):
     """ Testando existência do template para criação da diligência"""
 
@@ -48,3 +47,19 @@ def test_gestao_template(engine, client):
     rendered_template = template.render(Context({}))
 
     assert "<!DOCTYPE html>" in rendered_template
+
+
+def test_informacoes_arquivo_enviado(engine, client):
+    """Testa se o template exibe as informações do arquivo enviado"""
+
+    template = engine.get_template(
+        template_name='gestao/diligencia/diligencia.html', dirs=engine.dirs
+    )
+    context = Context({'nome_arquivo': 'lei_sistema_para.pdf', 'data_envio': '10/08/2017', 'ente_federado': 'Pará'})
+    rendered_template = template.render(context)
+
+    # import ipdb; ipdb.set_trace()
+    
+    assert context['nome_arquivo'] in rendered_template
+    assert context['data_envio'] in rendered_template
+    assert context['ente_federado'] in rendered_template
