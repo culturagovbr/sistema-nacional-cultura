@@ -10,13 +10,11 @@
 		<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
 	{% endfor %}
 	</select>
-
-	{% for diligencia in historico_diligencias %}
-		{{ diligencia.nome_usuario }}
-		{{ diligencia.motivo }}
-		{{ diligencia.data }}
-		{{ diligencia.resumo }}
-	{% endfor %}
+	<div class="historico_diligencias">
+		{% for diligencia in historico_diligencias %}
+			<div>Usuário: {{ diligencia.nome_usuario }}, Motivo: {{ diligencia.motivo }}, Data: {{ diligencia.data }}, Resumo: {{ diligencia.resumo }}</div>
+		{% endfor %}
+	</div>
 	<button class='btn btn-primary'>Enviar</button>
 	<button class='btn btn-secondary'>Cancelar</button>
 {% endblock %}

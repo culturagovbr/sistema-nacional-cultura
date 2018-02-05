@@ -142,3 +142,35 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client):
         assert diligencia['motivo'] in rendered_template
         assert diligencia['data'] in rendered_template
         assert diligencia['resumo'] in rendered_template
+
+
+def test_formatacao_historico_de_diligencias(template,client):
+    """Testa a formatação do bloco de histórico de diligências em uma tag dev"""
+
+    rendered_template = template.render(Context({}))
+    
+    assert "<div class=\"historico_diligencias\">" in rendered_template
+
+def test_formatacao_individual_das_diligencias_no_historico(template, client):
+    """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
+
+    diligencias = [
+        {"nome_usuario": "Jaozin Silva", "motivo": "Arquivo Danificado", 
+            "data": "10/08/2018", "resumo": "Arquivo danificado, corrompido"},
+
+        {"nome_usuario": "Pedrin Silva", "motivo": "Arquivo Incompleto", 
+            "data": "10/08/2018", "resumo": "Arquivo incompleto, informações faltando"},
+        
+        {"nome_usuario": "Luizin Silva", "motivo": "Arquivo Incorreto", 
+            "data": "10/08/2018", "resumo": "Arquivo com informações incorretas"}
+    ]
+
+    context = Context({"historico_diligencias": diligencias})
+    rendered_template = template.render(context)
+
+    for diligencia in diligencias:
+        assert "<div>Usuário: {nome}, Motivo: {motivo}, Data: {data}, Resumo: {resumo}</div>".format(
+                                                                nome=diligencia['nome_usuario'],
+                                                                motivo=diligencia['motivo'],
+                                                                data=diligencia['data'],
+                                                                resumo=diligencia['resumo']) in rendered_template
