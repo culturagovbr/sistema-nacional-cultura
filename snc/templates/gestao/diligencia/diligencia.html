@@ -5,16 +5,20 @@
 	<p>{{ nome_arquivo }}</p>
 	<p>{{ data_envio }}</p>
 
+	<div id="campo_texto"></div>
+
 	<select>
 	{% for classificacao in classificacoes %}
 		<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
 	{% endfor %}
 	</select>
+
 	<div class="historico_diligencias">
 		{% for diligencia in historico_diligencias %}
 			<div>Usuário: {{ diligencia.nome_usuario }}, Motivo: {{ diligencia.motivo }}, Data: {{ diligencia.data }}, Resumo: {{ diligencia.resumo }}</div>
 		{% endfor %}
 	</div>
+
 	<button class='btn btn-primary'>Enviar</button>
 	<button class='btn btn-secondary'>Cancelar</button>
 {% endblock %}

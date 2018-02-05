@@ -174,3 +174,11 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client):
                                                                 motivo=diligencia['motivo'],
                                                                 data=diligencia['data'],
                                                                 resumo=diligencia['resumo']) in rendered_template
+
+
+def test_existencia_campo_texto_diligencia(template, client):
+    """Testa se há uma campo de texto para inserção da diligência na página de diligência"""
+
+    rendered_template = template.render(Context({}))
+
+    assert "<div id=\"campo_texto\"></div>" in rendered_template
