@@ -11,6 +11,12 @@
 	{% endfor %}
 	</select>
 
+	{% for diligencia in historico_diligencias %}
+		{{ diligencia.nome_usuario }}
+		{{ diligencia.motivo }}
+		{{ diligencia.data }}
+		{{ diligencia.resumo }}
+	{% endfor %}
 	<button class='btn btn-primary'>Enviar</button>
 	<button class='btn btn-secondary'>Cancelar</button>
 {% endblock %}

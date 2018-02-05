@@ -114,7 +114,31 @@ def test_opcoes_em_um_dropdown(template, client):
     context = Context({"classificacoes": opcoes})
     rendered_template = template.render(context)
 
-    assert "<select>" in  rendered_template
+    assert "<select>" in rendered_template
     for opcao in opcoes:
         assert "<option value=\"{value}\">{description}</option>".format(value=opcao['value'], description=opcao['description'])
     assert "</select>" in rendered_template
+
+
+def test_informacoes_do_historico_de_diligecias_do_componente(template, client):
+    """ Testa informações referente ao histórico de diligências do componente. """
+
+    diligencias = [
+        {"nome_usuario": "Jaozin Silva", "motivo": "Arquivo Danificado", 
+            "data": "10/08/2018", "resumo": "Arquivo danificado, corrompido"},
+
+        {"nome_usuario": "Pedrin Silva", "motivo": "Arquivo Incompleto", 
+            "data": "10/08/2018", "resumo": "Arquivo incompleto, informações faltando"},
+        
+        {"nome_usuario": "Luizin Silva", "motivo": "Arquivo Incorreto", 
+            "data": "10/08/2018", "resumo": "Arquivo com informações incorretas"}
+    ]
+
+    context = Context({"historico_diligencias": diligencias})
+    rendered_template = template.render(context)
+
+    for diligencia in diligencias:
+        assert diligencia['nome_usuario'] in rendered_template
+        assert diligencia['motivo'] in rendered_template
+        assert diligencia['data'] in rendered_template
+        assert diligencia['resumo'] in rendered_template
