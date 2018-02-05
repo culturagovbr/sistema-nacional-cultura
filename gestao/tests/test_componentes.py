@@ -63,3 +63,28 @@ def test_informacoes_arquivo_enviado(engine, client):
     assert context['nome_arquivo'] in rendered_template
     assert context['data_envio'] in rendered_template
     assert context['ente_federado'] in rendered_template
+
+
+def test_titulo_bloco_informacoes_arquivo(engine, client):
+    """Testa se o título Informações sobre o Arquivo Enviado está dentre de uma tag de título h2"""
+
+    template = engine.get_template(
+        template_name='gestao/diligencia/diligencia.html', dirs=engine.dirs
+    )
+    rendered_template = template.render(Context({}))
+
+    assert "<h2>Informações sobre o Arquivo Enviado</h2>" in rendered_template
+
+
+def test_formatacao_informacoes_sobre_arquivo_enviado(engine, client):
+    """Testa se cada informação sobre o arquivo enviado está formatada com a tag <p>"""
+
+    template = engine.get_template(
+        template_name='gestao/diligencia/diligencia.html', dirs=engine.dirs
+    )
+    context = Context({'nome_arquivo': 'lei_sistema_para.pdf', 'data_envio': '10/08/2017', 'ente_federado': 'Pará'})
+    rendered_template=template.render(context)
+
+    assert "<p>{}</p>".format(context['nome_arquivo']) in rendered_template
+    assert "<p>{}</p>".format(context['data_envio']) in rendered_template
+    assert "<p>{}</p>".format(context['ente_federado']) in rendered_template
