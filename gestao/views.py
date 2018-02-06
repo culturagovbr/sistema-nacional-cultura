@@ -558,7 +558,8 @@ class Prorrogacao(ListView):
 
 def diligencia_view(request, pk, componente):
     from django.http import HttpResponseNotFound
-
+    from django.http import HttpResponse
+    
     template_name = 'gestao/diligencia/diligencia.html'
 
     componentes = [
@@ -570,14 +571,18 @@ def diligencia_view(request, pk, componente):
     ]
 
     context = {
-        'ente_federado': '',
-        'nome_arquivo': '',
-        'data_envio': '',
-        'classificacoes': '',
-        'historico_diligencias': '',
+        'ente_federado': 'a',
+        'nome_arquivo': 'b',
+        'data_envio': 'c',
+        'classificacoes': 'd',
+        'historico_diligencias': 'e',
     }
-
-    if componente in componentes:
-        return render(request, template_name, context=context)
     
-    return HttpResponseNotFound()
+    if request.method == 'GET':   
+        if componente in componentes:
+            return render(request, template_name, context=context)
+        
+        return HttpResponseNotFound()
+
+    elif request.method == 'POST':
+        return HttpResponse(status=201)

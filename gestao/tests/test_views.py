@@ -85,3 +85,29 @@ def test_existencia_do_contexto_view(url, client):
 
     for context in contexts:
         assert context in request.context
+
+
+
+def test_valor_context_retornado_na_view(url, client):
+    """Testa se há informações retornadas na view"""
+    
+    request = client.get(url.format(id=1, componente="fundo_cultura"))
+
+    contexts = [
+        'ente_federado',
+        'nome_arquivo',
+        'data_envio',
+        'classificacoes',
+        'historico_diligencias',
+    ]
+
+    for context in contexts:
+        assert request.context[context] != ''
+
+
+def test_retorno_post_criacao_diligencia(url, client):
+    """Testa se retorna o status 201 na criação da diligência"""
+
+    request = client.post(url.format(id="2", componente="fundo_cultura"))
+
+    assert request.status_code == 201
