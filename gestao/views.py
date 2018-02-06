@@ -558,5 +558,17 @@ class Prorrogacao(ListView):
 
 def diligencia_view(request, pk, componente):
     from django.http import HttpResponse
+    from django.http import HttpResponseNotFound
 
-    return HttpResponse(status=200)
+    componentes = [
+        'fundo_cultura',
+        'orgao_gestor',
+        'conselho_cultural',
+        'plano_cultura',
+        'lei_sistema_cultura',
+    ]
+
+    if componente in componentes:
+        return HttpResponse(status=200)
+    
+    return HttpResponseNotFound()

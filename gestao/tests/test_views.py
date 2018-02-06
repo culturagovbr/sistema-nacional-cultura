@@ -6,42 +6,51 @@ from model_mommy import mommy
 pytestmark = pytest.mark.django_db
 
 
-def test_url_diligencia_retorna_200(client):
+@pytest.fixture
+def url():
+    """Retorna uma string contendo a URL preparada para ser formatada."""
+
+    return "/gestao/{id}/diligencia/{componente}"
+
+def test_url_diligencia_retorna_200(url, client):
     """Testa se há url referente à página de diligências. 
         A url teria o formato: gestao/id_plano_trabalho/diligencia/componente_plano_trabalho"""
 
     plano_trabalho = mommy.make("PlanoTrabalho")
 
-    request = client.get("/gestao/{}/diligencia/plano_cultura".format(plano_trabalho.id))
+    request = client.get(url.format(id=plano_trabalho.id, componente='plano_cultura'))
     
     assert request.status_code == 200
 
 
-def test_resolve_url_atraves_sua_view_name(client):
+def test_resolve_url_atraves_sua_view_name(url, client):
     """Testa se o Django retorna a url através da sua view_name"""
-    
-    url = "/gestao/1/diligencia/plano_cultura"
 
-    resolved = resolve(url)
+    resolved = resolve(url.format(id='1', componente='plano_cultura'))
 
     assert resolved.url_name == "diligencia_componente"
     assert resolved.kwargs["pk"] == "1"
 
 
-def test_recepcao_componente_na_url_diligencia(client):
+def test_recepcao_componente_na_url_diligencia(url, client):
     """Testa se a url esta recebendo o componente correspondente a diligencia que sera escrita"""
 
-    url = "/gestao/1/diligencia/lei_sistema"
-    resolved = resolve(url)
+    resolved = resolve(url.format(id="1", componente="lei_sistema"))
 
     assert resolved.kwargs["componente"] == "lei_sistema"
 
 
-def test_url_componente_retorna_200(client):
+def test_url_componente_retorna_200(url, client):
     """Testa se a url retorna 200 ao acessar um componente"""
 
-    url = "/gestao/2/diligencia/fundo_cultura"
-
-    request = client.get(url)
+    request = client.get(url.format(id="2", componente="fundo_cultura"))
 
     assert request.status_code == 200
+
+
+def test_url_retorna_404_caso_componente_nao_exista(url, client):
+    """Testa se a URL retorna 404 caso o componente não exista"""
+    
+    request = client.get(url.format(id=1, componente="um_componente_qualquer"))
+
+    assert request.status_code == 404
