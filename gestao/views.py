@@ -556,7 +556,7 @@ class Prorrogacao(ListView):
                 municipio__cidade__nome_municipio__icontains=q)
         return usuarios
 
-def diligencia_view(request, pk):
+def diligencia_view(request, pk, componente):
     from django.http import HttpResponse
 
     return HttpResponse(status=200)
