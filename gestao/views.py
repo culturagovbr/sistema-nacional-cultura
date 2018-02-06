@@ -569,6 +569,7 @@ def diligencia_view(request, pk, componente):
     ]
 
     if componente in componentes:
-        return HttpResponse(status=200)
+        response = "<!DOCTYPE html></html>"
+        return HttpResponse(response, status=200)
     
     return HttpResponseNotFound()

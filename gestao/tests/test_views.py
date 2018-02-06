@@ -54,3 +54,11 @@ def test_url_retorna_404_caso_componente_nao_exista(url, client):
     request = client.get(url.format(id=1, componente="um_componente_qualquer"))
 
     assert request.status_code == 404
+
+
+def test_renderiza_template(url, client):
+    """ Testa se o método da view renderiza um template"""
+
+    request = client.get(url.format(id=1, componente="lei_sistema_cultura"))
+    assert request.content
+    
