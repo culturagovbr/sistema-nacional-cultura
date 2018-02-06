@@ -557,8 +557,8 @@ class Prorrogacao(ListView):
         return usuarios
 
 def diligencia_view(request, pk, componente):
-    from django.http import HttpResponse
     from django.http import HttpResponseNotFound
+
     template_name = 'gestao/diligencia/diligencia.html'
 
     componentes = [
@@ -569,7 +569,15 @@ def diligencia_view(request, pk, componente):
         'lei_sistema_cultura',
     ]
 
+    context = {
+        'ente_federado': '',
+        'nome_arquivo': '',
+        'data_envio': '',
+        'classificacoes': '',
+        'historico_diligencias': '',
+    }
+
     if componente in componentes:
-        return render(request, template_name )
+        return render(request, template_name, context=context)
     
     return HttpResponseNotFound()

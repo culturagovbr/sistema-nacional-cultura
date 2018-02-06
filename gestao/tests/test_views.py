@@ -55,7 +55,6 @@ def test_url_retorna_404_caso_componente_nao_exista(url, client):
 
     assert request.status_code == 404
 
-
 def test_renderiza_template(url, client):
     """ Testa se o método da view renderiza um template"""
 
@@ -69,3 +68,20 @@ def test_renderiza_template_diligencia(url, client):
     request = client.get(url.format(id=1, componente="conselho_cultural"))
 
     assert "gestao/diligencia/diligencia.html" == request.templates[0].name
+
+
+def test_existencia_do_contexto_view(url, client):
+    """Testa se o contexto existe no retorno da view """
+    
+    contexts = [
+        'ente_federado',
+        'nome_arquivo',
+        'data_envio',
+        'classificacoes',
+        'historico_diligencias',
+    ]
+
+    request = client.get(url.format(id=1, componente="conselho_cultural"))
+
+    for context in contexts:
+        assert context in request.context
