@@ -62,3 +62,10 @@ def test_renderiza_template(url, client):
     request = client.get(url.format(id=1, componente="lei_sistema_cultura"))
     assert request.content
     
+
+def test_renderiza_template_diligencia(url, client):
+    """Testa se o template específico da diligência é renderizado corretamente"""
+
+    request = client.get(url.format(id=1, componente="conselho_cultural"))
+
+    assert "gestao/diligencia/diligencia.html" == request.templates[0].name
