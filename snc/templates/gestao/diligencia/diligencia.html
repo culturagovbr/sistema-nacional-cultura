@@ -5,13 +5,19 @@
 	<p>{{ nome_arquivo }}</p>
 	<p>{{ data_envio }}</p>
 
-	<div id="campo_texto"></div>
+	<div id="campo_texto">
+		<form method="POST">
+			<input name="texto_diligencia" />
+			<select name="classificacao_arquivo">
+				{% for classificacao in classificacoes %}
+					<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
+				{% endfor %}
+			</select>
+			{% csrf_token %}
+		</form>
+	</div>
 
-	<select>
-	{% for classificacao in classificacoes %}
-		<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
-	{% endfor %}
-	</select>
+	
 
 	<div class="historico_diligencias">
 		{% for diligencia in historico_diligencias %}

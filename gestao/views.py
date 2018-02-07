@@ -585,4 +585,4 @@ def diligencia_view(request, pk, componente):
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
-        return HttpResponse(status=201)
+        return HttpResponse(content=request.POST['texto_diligencia'], status=201)

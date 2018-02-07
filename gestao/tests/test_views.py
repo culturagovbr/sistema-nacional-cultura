@@ -108,6 +108,14 @@ def test_valor_context_retornado_na_view(url, client):
 def test_retorno_post_criacao_diligencia(url, client):
     """Testa se retorna o status 201 na criação da diligência"""
 
-    request = client.post(url.format(id="2", componente="fundo_cultura"))
+    request = client.post(url.format(id="2", componente="fundo_cultura"), data={'texto_diligencia':''})
 
     assert request.status_code == 201
+
+
+def test_envio_de_dados_atraves_do_POST(url, client):
+    """Testa se dados estão sendo enviados através do POST"""
+
+    request = client.post(url.format(id=1, componente="fundo_cultura"), data={'texto_diligencia': 'Um corpo top da diligencia'})
+
+    assert 'Um corpo top da diligencia' in request.content.decode()

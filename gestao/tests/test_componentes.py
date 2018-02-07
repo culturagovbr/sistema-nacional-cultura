@@ -23,6 +23,7 @@ def template(engine):
 
     return template
 
+
 def test_existencia_template_diligencia(engine, client):
     """ Testando existência do template para criação da diligência"""
 
@@ -114,7 +115,7 @@ def test_opcoes_em_um_dropdown(template, client):
     context = Context({"classificacoes": opcoes})
     rendered_template = template.render(context)
 
-    assert "<select>" in rendered_template
+    assert "<select name=\"classificacao_arquivo\">" in rendered_template
     for opcao in opcoes:
         assert "<option value=\"{value}\">{description}</option>".format(value=opcao['value'], description=opcao['description'])
     assert "</select>" in rendered_template
@@ -144,7 +145,7 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client):
         assert diligencia['resumo'] in rendered_template
 
 
-def test_formatacao_historico_de_diligencias(template,client):
+def test_formatacao_historico_de_diligencias(template, client):
     """Testa a formatação do bloco de histórico de diligências em uma tag dev"""
 
     rendered_template = template.render(Context({}))
@@ -181,4 +182,12 @@ def test_existencia_campo_texto_diligencia(template, client):
 
     rendered_template = template.render(Context({}))
 
-    assert "<div id=\"campo_texto\"></div>" in rendered_template
+    assert "<div id=\"campo_texto\">" in rendered_template
+
+
+def test_input_radio_para_classificar_arquivo(template, client):
+    """Testa se há um campo select para selecionar/fazer a classificação do arquivo"""
+
+    rendered_template = template.render(Context({}))
+
+    assert "<select name=\"classificacao_arquivo\">" in rendered_template
