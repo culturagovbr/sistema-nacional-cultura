@@ -108,14 +108,28 @@ def test_valor_context_retornado_na_view(url, client):
 def test_retorno_post_criacao_diligencia(url, client):
     """Testa se retorna o status 201 na criação da diligência"""
 
-    request = client.post(url.format(id="2", componente="fundo_cultura"), data={'texto_diligencia':''})
+    request = client.post(url.format(id="2", componente="fundo_cultura"), data={'texto_diligencia': 'bla', 'classificacao_arquivo': 'arquivo_incorreto'})
 
     assert request.status_code == 201
 
 
-def test_envio_de_dados_atraves_do_POST(url, client):
-    """Testa se dados estão sendo enviados através do POST"""
+def test_retorno_400_post_criacao_diligencia(url, client):
+    """ Testa se o status do retorno é 400 para requests sem os parâmetros esperados """
 
-    request = client.post(url.format(id=1, componente="fundo_cultura"), data={'texto_diligencia': 'Um corpo top da diligencia'})
+    request = client.post(url.format(id="2", componente="orgao_gestor"), data={'bla': ''})
 
-    assert 'Um corpo top da diligencia' in request.content.decode()
+    assert request.status_code == 400
+
+
+def test_retorna_400_POST_classificacao_inexistente(url, rf):
+    """
+    Testa se o status do retorno é 400 quando feito um POST com a classificao invalida
+    de um arquivo.
+    """
+    request = rf.post(url.format(id='2', componente="orgao_gestor"), data={'classificacao_arquivo': ''})
+
+    from gestao.views import diligencia_view
+
+    response = diligencia_view(request, 2, "orgao_gestor")
+
+    assert response.status_code == 400

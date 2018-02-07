@@ -577,7 +577,21 @@ def diligencia_view(request, pk, componente):
         'classificacoes': 'd',
         'historico_diligencias': 'e',
     }
-    
+
+    parametros = {
+        'classificacao_arquivo',
+        'texto_diligencia',
+    }
+
+    classificacoes = [
+        'arquivo_danificado',
+        'arquivo_incompleto',
+        'arquivo_incorreto'
+    ]
+
+    def superset(a, b):
+        return False if a is None or b is None else set(a).issuperset(set(b))
+
     if request.method == 'GET':   
         if componente in componentes:
             return render(request, template_name, context=context)
@@ -585,4 +599,12 @@ def diligencia_view(request, pk, componente):
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
-        return HttpResponse(content=request.POST['texto_diligencia'], status=201)
+        # import ipdb; ipdb.set_trace()
+        if not superset(parametros, request.POST.dict()):
+            return HttpResponse(status=400)
+
+        classificacao_arquivo = request.POST.dict().get('classificacao_arquivo')
+        if not superset(classificacoes, [classificacao_arquivo]):
+            return HttpResponse(status=400)
+
+        return HttpResponse(status=201)
