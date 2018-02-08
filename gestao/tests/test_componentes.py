@@ -37,15 +37,22 @@ def test_existencia_template_diligencia(engine, client):
     assert isinstance(template, Template)
 
 
-def test_botoes_acao_diligencia_template(template, client):
-    """Testa existencia dos botões de enviar e cancelar
+def test_botao_acao_cancelar_diligencia_template(template, client):
+    """Testa existencia dos botão de cancelar
     no template de diligência"""
 
     rendered_template = template.render(Context({}))
 
-    # __import__('ipdb').set_trace()
-    assert "<button class='btn btn-primary'>Enviar</button>" in rendered_template
     assert "<button class='btn btn-secondary'>Cancelar</button>" in rendered_template
+
+
+def test_botao_acao_enviar_diligencia_template(template, client):
+    """Testa existencia dos botão de enviar 
+    no template de diligência"""
+
+    rendered_template = template.render(Context({}))
+
+    assert "<input class=\"btn btn-primary\" type=\"submit\">Enviar/>" in rendered_template
 
 
 def test_gestao_template(template, client):
@@ -61,8 +68,6 @@ def test_informacoes_arquivo_enviado(template, client):
 
     context = Context({'nome_arquivo': 'lei_sistema_para.pdf', 'data_envio': '10/08/2017', 'ente_federado': 'Pará'})
     rendered_template = template.render(context)
-
-    # import ipdb; ipdb.set_trace()
     
     assert context['nome_arquivo'] in rendered_template
     assert context['data_envio'] in rendered_template
