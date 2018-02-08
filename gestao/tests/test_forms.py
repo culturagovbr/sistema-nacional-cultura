@@ -2,6 +2,9 @@ import pytest
 
 from gestao.forms import DiligenciaForm
 
+from ckeditor.widgets import CKEditorWidget
+
+
 pytestmark = pytest.mark.django_db
 
 def test_existencia_form_diligencia(client):
@@ -15,7 +18,8 @@ def test_campo_texto_diligencia_form(client):
     Testa existência do campo texto_diligência no form referente a diligência 
     """
     form = DiligenciaForm()
-    assert "<input id=\"id_texto_diligencia\" name=\"texto_diligencia\" type=\"text\" " in form.as_p()
+    assert "<textarea cols=\"40\" id=\"id_texto_diligencia\" name=\"texto_diligencia\" " in form.as_p()
+    
 
 
 def test_campo_classificao_arquivo_no_form_diligencia(client):
@@ -23,3 +27,20 @@ def test_campo_classificao_arquivo_no_form_diligencia(client):
 
     form = DiligenciaForm()
     assert "<select id=\"id_classificacao_arquivo\" name=\"classificacao_arquivo\"" in form.as_p()
+
+
+def test_uso_ck_widget_no_texto_diligencia(client):
+    """ Testa uso do widget ckeditor para input de texto rich no texto_diligência """
+
+    form = DiligenciaForm()
+    assert type(form.fields['texto_diligencia'].widget) is type(CKEditorWidget())
+
+
+def test_validacao_de_dados_invalidos(client):
+    """ Testa se a função is_valid retorna falso para dados inválidos na criação do form """
+
+    data = {'texto_diligencia':'', 'classificacao_arquivo':'bla'}
+
+    form = DiligenciaForm(data)
+
+    assert form.is_valid() == False

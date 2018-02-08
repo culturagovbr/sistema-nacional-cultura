@@ -175,7 +175,7 @@ CLASSIFICACAO_ARQUIVO = (
 
 
 class DiligenciaForm(forms.Form):
-    texto_diligencia = forms.CharField()
+    texto_diligencia = forms.CharField(widget=CKEditorWidget())
     classificacao_arquivo = forms.ChoiceField(choices=CLASSIFICACAO_ARQUIVO)
 
 
