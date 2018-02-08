@@ -3,6 +3,8 @@ import pytest
 from django.template import Context, Template, Engine
 from django.template.base import TemplateDoesNotExist
 
+from gestao.forms import DiligenciaForm
+
 pytestmark = pytest.mark.django_db
 
 
@@ -177,17 +179,19 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client):
                                                                 resumo=diligencia['resumo']) in rendered_template
 
 
-def test_existencia_campo_texto_diligencia(template, client):
-    """Testa se há uma campo de texto para inserção da diligência na página de diligência"""
-
-    rendered_template = template.render(Context({}))
-
-    assert "<div id=\"campo_texto\">" in rendered_template
-
-
 def test_input_radio_para_classificar_arquivo(template, client):
     """Testa se há um campo select para selecionar/fazer a classificação do arquivo"""
 
     rendered_template = template.render(Context({}))
 
     assert "<select name=\"classificacao_arquivo\">" in rendered_template
+
+
+def test_renderizacao_js_form_diligencia(template,client):
+    """Testa se o javascript do form está sendo renderizado corretamente"""
+    form = DiligenciaForm()
+    
+    context = Context({'form': form})
+    rendered_template = template.render(context)
+
+    assert "<script type=\"text/javascript\" src=\"/static/ckeditor/ckeditor/ckeditor.js\">" in rendered_template

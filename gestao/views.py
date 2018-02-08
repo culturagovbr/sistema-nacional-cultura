@@ -576,6 +576,7 @@ def diligencia_view(request, pk, componente):
         'data_envio': 'c',
         'classificacoes': 'd',
         'historico_diligencias': 'e',
+        'form': ''
     }
 
     parametros = {
@@ -591,15 +592,14 @@ def diligencia_view(request, pk, componente):
 
     def superset(a, b):
         return False if a is None or b is None else set(a).issuperset(set(b))
-
     if request.method == 'GET':   
         if componente in componentes:
+            context['form'] = DiligenciaForm()
             return render(request, template_name, context=context)
         
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
-        # import ipdb; ipdb.set_trace()
         if not superset(parametros, request.POST.dict()):
             return HttpResponse(status=400)
 

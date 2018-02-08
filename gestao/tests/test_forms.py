@@ -33,14 +33,14 @@ def test_uso_ck_widget_no_texto_diligencia(client):
     """ Testa uso do widget ckeditor para input de texto rich no texto_diligência """
 
     form = DiligenciaForm()
-    assert type(form.fields['texto_diligencia'].widget) is type(CKEditorWidget())
+    assert isinstance(form.fields['texto_diligencia'].widget, CKEditorWidget)
 
 
 def test_validacao_de_dados_invalidos(client):
     """ Testa se a função is_valid retorna falso para dados inválidos na criação do form """
 
-    data = {'texto_diligencia':'', 'classificacao_arquivo':'bla'}
+    data = {'texto_diligencia': 'ta certo, parceiro', 'classificacao_arquivo': 'bla'}
 
     form = DiligenciaForm(data)
 
-    assert form.is_valid() == False
+    assert not form.is_valid()

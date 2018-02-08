@@ -3,6 +3,9 @@ import pytest
 from django.core.urlresolvers import resolve
 from model_mommy import mommy
 
+from gestao.views import diligencia_view
+from gestao.forms import DiligenciaForm
+
 pytestmark = pytest.mark.django_db
 
 
@@ -66,7 +69,6 @@ def test_renderiza_template_diligencia(url, client):
     """Testa se o template específico da diligência é renderizado corretamente"""
 
     request = client.get(url.format(id=1, componente="conselho_cultural"))
-
     assert "gestao/diligencia/diligencia.html" == request.templates[0].name
 
 
@@ -128,8 +130,22 @@ def test_retorna_400_POST_classificacao_inexistente(url, rf):
     """
     request = rf.post(url.format(id='2', componente="orgao_gestor"), data={'classificacao_arquivo': ''})
 
-    from gestao.views import diligencia_view
-
     response = diligencia_view(request, 2, "orgao_gestor")
 
     assert response.status_code == 400
+
+
+def test_form_diligencia_utlizado_na_diligencia_view(url, client):
+    """Testa que existe um form no context da diligência view """
+
+    request = client.get(url.format(id='1', componente="orgao_gestor"))
+
+    assert request.context['form']
+
+
+def test_tipo_do_form_utilizado_na_diligencia_view(url, client):
+    """ Testa se o form utilizado na diligencia_view é do tipo DiligenciaForm """
+
+    request = client.get(url.format(id='1', componente="orgao_gestor"))
+
+    assert isinstance(request.context['form'], DiligenciaForm)
