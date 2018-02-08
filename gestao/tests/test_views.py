@@ -149,3 +149,19 @@ def test_tipo_do_form_utilizado_na_diligencia_view(url, client):
     request = client.get(url.format(id='1', componente="orgao_gestor"))
 
     assert isinstance(request.context['form'], DiligenciaForm)
+
+
+def test_invalido_form_para_post_diligencia(url, client):
+    """ Testa se o form invalida post com dados errados """
+
+    request = client.post(url.format(id='1', componente="orgao_gestor"), data={"classificacao_arquivo": "bla", "texto_diligencia": ''})
+
+    assert request.status_code == 400
+
+
+def test_valido_form_post_diligencia(url, client):
+    """ Testa se o form valida post com dados corretos """
+
+    request = client.post(url.format(id='1', componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": 'Ta errado cara'})
+
+    assert request.status_code == 201

@@ -561,6 +561,7 @@ def diligencia_view(request, pk, componente):
     from django.http import HttpResponse
     
     template_name = 'gestao/diligencia/diligencia.html'
+    form = DiligenciaForm()
 
     componentes = [
         'fundo_cultura',
@@ -576,35 +577,21 @@ def diligencia_view(request, pk, componente):
         'data_envio': 'c',
         'classificacoes': 'd',
         'historico_diligencias': 'e',
-        'form': ''
+        'form': form,
     }
-
-    parametros = {
-        'classificacao_arquivo',
-        'texto_diligencia',
-    }
-
-    classificacoes = [
-        'arquivo_danificado',
-        'arquivo_incompleto',
-        'arquivo_incorreto'
-    ]
 
     def superset(a, b):
         return False if a is None or b is None else set(a).issuperset(set(b))
     if request.method == 'GET':   
         if componente in componentes:
-            context['form'] = DiligenciaForm()
             return render(request, template_name, context=context)
         
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
-        if not superset(parametros, request.POST.dict()):
-            return HttpResponse(status=400)
+        form = DiligenciaForm(request.POST.dict())
+        
+        if form.is_valid():
+            return HttpResponse(status=201)
 
-        classificacao_arquivo = request.POST.dict().get('classificacao_arquivo')
-        if not superset(classificacoes, [classificacao_arquivo]):
-            return HttpResponse(status=400)
-
-        return HttpResponse(status=201)
+        return HttpResponse(status=400)
