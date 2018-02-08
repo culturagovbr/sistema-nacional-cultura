@@ -167,25 +167,16 @@ class AlterarSituacao(ModelForm):
         model = Usuario
         fields = ('estado_processo', 'data_publicacao_acordo')
 
+CLASSIFICACAO_ARQUIVO = (
+    ("arquivo_danificado", "Arquivo Danificado"),
+    ("arquivo_incorreto", "Arquivo incorreto"),
+    ("arquivo_incompleto", "Arquivo incompleto"),
+)
+
 
 class DiligenciaForm(forms.Form):
-    diligencia = forms.CharField(required=False, widget=CKEditorWidget())
-
-    def __init__(self, *args, **kwargs):
-        self.usuario = kwargs.pop('usuario', None)
-        super(DiligenciaForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        subject = '[Sistema Nacional de Cultura] Diligência em anexo'
-        Thread(target=send_mail, args=(
-            subject,
-            self.cleaned_data['diligencia'],
-            'naoresponda@cultura.gov.br',
-            [self.usuario.user.email],),
-            kwargs={
-                'fail_silently': 'False',
-                'html_message': self.cleaned_data['diligencia']}
-            ).start()
+    texto_diligencia = forms.CharField()
+    classificacao_arquivo = forms.ChoiceField(choices=CLASSIFICACAO_ARQUIVO)
 
 
 class AlterarCadastradorForm(ChainedChoicesForm):
