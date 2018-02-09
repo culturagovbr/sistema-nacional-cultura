@@ -580,8 +580,6 @@ def diligencia_view(request, pk, componente):
         'form': form,
     }
 
-    def superset(a, b):
-        return False if a is None or b is None else set(a).issuperset(set(b))
     if request.method == 'GET':   
         if componente in componentes:
             return render(request, template_name, context=context)
