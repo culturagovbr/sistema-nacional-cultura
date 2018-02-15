@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from adesao.models import Municipio
+
 CLASSIFICACAO_ARQUIVO = (
     ("arquivo_danificado", "Arquivo Danificado"),
     ("arquivo_incorreto", "Arquivo incorreto"),
@@ -13,7 +15,7 @@ class Diligencia(models.Model):
     classificacao_arquivo = models.CharField(
         max_length=25,
         choices=CLASSIFICACAO_ARQUIVO)
-    ente_federado = models.CharField(max_length=50)
+    ente_federado = models.ForeignKey(Municipio)
     componente_type = models.ForeignKey(ContentType)
     componente_id = models.PositiveIntegerField()
     componente = GenericForeignKey('componente_type', 'componente_id')

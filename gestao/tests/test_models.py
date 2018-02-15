@@ -1,5 +1,7 @@
 import pytest
+from django.db.models import ForeignKey
 
+from adesao.models import Municipio
 from gestao.models import Diligencia
 from planotrabalho.models import (CriacaoSistema, OrgaoGestor, 
                                   ConselhoCultural, FundoCultura, PlanoCultura)
@@ -82,3 +84,25 @@ def test_relacionamento_com_plano_diligencia_model():
     sistema.diligencias.add(diligencia)
 
     assert isinstance(diligencia.componente, PlanoCultura)
+
+
+def test_tipo_campo_ente_federado_model_diligencia():
+    """ Testa tipo do campo ente_federado na model Diligencia """
+
+    diligencia = Diligencia()
+    ente_field = diligencia._meta.get_field('ente_federado')
+
+    assert isinstance(ente_field, ForeignKey)
+
+
+def test_informacoes_ente_federado_na_diligencia():
+    """
+        Testa se as informacoes do ente federado na model de diligência
+    """
+
+    ente_federado = mommy.make('Municipio')
+    diligencia = mommy.make('Diligencia')
+    
+    ente_federado.diligencia_set.add(diligencia)
+
+    assert isinstance(diligencia.ente_federado, Municipio)
