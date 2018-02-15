@@ -1,6 +1,9 @@
 from django.db import models
 
-# Create your models here.
+from django.contrib.contenttypes.fields import GenericRelation
+
+from gestao.models import Diligencia
+
 SITUACAO_ENVIO = (
     (0, 'Em preenchimento'),
     (1, 'Avaliando anexo'),
@@ -49,6 +52,8 @@ class CriacaoSistema(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
+                                  object_id_field="componente_id")
     situacao_lei_sistema = models.ForeignKey('SituacoesArquivoPlano')
 
 
@@ -58,6 +63,8 @@ class OrgaoGestor(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
+                                  object_id_field="componente_id")
     situacao_relatorio_secretaria = models.ForeignKey('SituacoesArquivoPlano')
 
 
@@ -67,6 +74,8 @@ class ConselhoCultural(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
+                                  object_id_field="componente_id")
     situacao_ata = models.ForeignKey('SituacoesArquivoPlano')
 
 
@@ -82,6 +91,8 @@ class FundoCultura(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
+                                  object_id_field="componente_id")
     situacao_lei_plano = models.ForeignKey('SituacoesArquivoPlano')
 
 
@@ -111,6 +122,8 @@ class PlanoCultura(models.Model):
         max_length=255,
         blank=True,
         null=True)
+    diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
+                                  object_id_field="componente_id")
     situacao_lei_plano = models.ForeignKey('SituacoesArquivoPlano')
 
 
