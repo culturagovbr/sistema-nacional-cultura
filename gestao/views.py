@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import Http404, JsonResponse
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -557,14 +557,15 @@ class Prorrogacao(ListView):
                 municipio__cidade__nome_municipio__icontains=q)
         return usuarios
 
+
 def diligencia_view(request, pk, componente):
     from django.http import HttpResponseNotFound
     from django.http import HttpResponse
-    
+
     template_name = 'gestao/diligencia/diligencia.html'
     form = DiligenciaForm()
 
-    municipio = Municipio()    
+    municipio = Municipio()
 
     componentes = [
         'fundo_cultura',
@@ -584,15 +585,15 @@ def diligencia_view(request, pk, componente):
     }
 
     if request.method == 'GET':
-        if PlanoTrabalho.objects.get(pk=pk):
-            if componente in componentes:
-                return render(request, template_name, context=context)
-        
+        plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
+        if componente in componentes:
+            return render(request, template_name, context=context)
+
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
         form = DiligenciaForm(request.POST.dict())
-        
+
         if form.is_valid():
             return HttpResponse(status=201)
 

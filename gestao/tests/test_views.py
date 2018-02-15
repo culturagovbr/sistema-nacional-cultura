@@ -180,3 +180,10 @@ def test_obj_ente_federado(url, client, plano_trabalho):
 
     assert isinstance(request.context['ente_federado'], Municipio)
 
+
+def test_404_para_plano_trabalho_invalido_diligencia(url, client):
+    """ Testa se a view da diligência retorna 404 para um plano de trabalho inválido """
+
+    request = client.get(url.format(id='7', componente='orgao_gestor'))
+
+    assert request.status_code == 404
