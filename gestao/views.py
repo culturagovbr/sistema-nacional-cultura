@@ -7,8 +7,9 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, UpdateView
 
 from adesao.models import Usuario, Cidade, Municipio, Historico
-from planotrabalho.models import CriacaoSistema, PlanoCultura, FundoCultura, OrgaoGestor, ConselhoCultural, SituacoesArquivoPlano
+from planotrabalho.models import PlanoTrabalho, CriacaoSistema, PlanoCultura, FundoCultura, OrgaoGestor, ConselhoCultural, SituacoesArquivoPlano
 from gestao.utils import enviar_email_aprovacao_plano
+from gestao.models import Diligencia
 
 from .forms import AlterarSituacao, DiligenciaForm, AlterarDocumentosEnteFederadoForm
 from .forms import AlterarCadastradorForm, AlterarUsuarioForm, AlterarOrgaoForm
@@ -563,6 +564,8 @@ def diligencia_view(request, pk, componente):
     template_name = 'gestao/diligencia/diligencia.html'
     form = DiligenciaForm()
 
+    municipio = Municipio()    
+
     componentes = [
         'fundo_cultura',
         'orgao_gestor',
@@ -572,7 +575,7 @@ def diligencia_view(request, pk, componente):
     ]
 
     context = {
-        'ente_federado': 'a',
+        'ente_federado': municipio,
         'nome_arquivo': 'b',
         'data_envio': 'c',
         'classificacoes': 'd',
@@ -580,9 +583,10 @@ def diligencia_view(request, pk, componente):
         'form': form,
     }
 
-    if request.method == 'GET':   
-        if componente in componentes:
-            return render(request, template_name, context=context)
+    if request.method == 'GET':
+        if PlanoTrabalho.objects.get(pk=pk):
+            if componente in componentes:
+                return render(request, template_name, context=context)
         
         return HttpResponseNotFound()
 
