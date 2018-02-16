@@ -9,6 +9,7 @@ from django.template.defaultfilters import filesizeformat
 from adesao.models import Usuario, Historico, Uf, Municipio
 from planotrabalho.models import PlanoTrabalho, CriacaoSistema, FundoCultura
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
+from gestao.models import Diligencia
 
 from .utils import enviar_email_alteracao_situacao
 
@@ -174,9 +175,14 @@ CLASSIFICACAO_ARQUIVO = (
 )
 
 
-class DiligenciaForm(forms.Form):
+class DiligenciaForm(ModelForm):
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
     classificacao_arquivo = forms.ChoiceField(choices=CLASSIFICACAO_ARQUIVO)
+    
+    class Meta:
+        model = Diligencia
+        fields = ('texto_diligencia', 'ente_federado', 'classificacao_arquivo', 
+                  'componente_type', 'componente_id')
 
 
 class AlterarCadastradorForm(ChainedChoicesForm):
