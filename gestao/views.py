@@ -586,6 +586,9 @@ def diligencia_view(request, pk, componente):
 
     if request.method == 'GET':
         plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
+        ente_federado = plano_trabalho.usuario.municipio
+        context['ente_federado'] = ente_federado
+
         if componente in componentes:
             return render(request, template_name, context=context)
 

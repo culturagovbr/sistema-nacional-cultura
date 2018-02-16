@@ -14,6 +14,10 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def plano_trabalho():
     plano_trabalho = mommy.make("PlanoTrabalho")
+    ente_federado = mommy.make('Municipio')
+    usuario = mommy.make('Usuario', municipio=ente_federado,
+                         plano_trabalho=plano_trabalho)
+
     return plano_trabalho
 
 
@@ -23,12 +27,13 @@ def url():
 
     return "/gestao/{id}/diligencia/{componente}"
 
+
 def test_url_diligencia_retorna_200(url, client, plano_trabalho):
-    """Testa se há url referente à página de diligências. 
+    """Testa se há url referente à página de diligências.
         A url teria o formato: gestao/id_plano_trabalho/diligencia/componente_plano_trabalho"""
 
     request = client.get(url.format(id=plano_trabalho.id, componente='plano_cultura'))
-    
+
     assert request.status_code == 200
 
 
@@ -59,17 +64,18 @@ def test_url_componente_retorna_200(url, client, plano_trabalho):
 
 def test_url_retorna_404_caso_componente_nao_exista(url, client, plano_trabalho):
     """Testa se a URL retorna 404 caso o componente não exista"""
-    
+
     request = client.get(url.format(id=plano_trabalho.id, componente="um_componente_qualquer"))
 
     assert request.status_code == 404
+
 
 def test_renderiza_template(url, client, plano_trabalho):
     """ Testa se o método da view renderiza um template"""
 
     request = client.get(url.format(id=plano_trabalho.id, componente="lei_sistema_cultura"))
     assert request.content
-    
+
 
 def test_renderiza_template_diligencia(url, client, plano_trabalho):
     """Testa se o template específico da diligência é renderizado corretamente"""
@@ -80,7 +86,7 @@ def test_renderiza_template_diligencia(url, client, plano_trabalho):
 
 def test_existencia_do_contexto_view(url, client, plano_trabalho):
     """Testa se o contexto existe no retorno da view """
-    
+
     contexts = [
         'ente_federado',
         'nome_arquivo',
@@ -95,10 +101,9 @@ def test_existencia_do_contexto_view(url, client, plano_trabalho):
         assert context in request.context
 
 
-
 def test_valor_context_retornado_na_view(url, client, plano_trabalho):
     """Testa se há informações retornadas na view"""
-    
+
     request = client.get(url.format(id=plano_trabalho.id, componente="fundo_cultura"))
 
     contexts = [
@@ -175,7 +180,7 @@ def test_valido_form_post_diligencia(url, client, plano_trabalho):
 
 def test_obj_ente_federado(url, client, plano_trabalho):
     """ Testa se o objeto retornado ente_federado é uma instancia da model Municipio"""
-        
+
     request = client.get(url.format(id=plano_trabalho.id, componente='orgao_gestor'))
 
     assert isinstance(request.context['ente_federado'], Municipio)
@@ -187,3 +192,15 @@ def test_404_para_plano_trabalho_invalido_diligencia(url, client):
     request = client.get(url.format(id='7', componente='orgao_gestor'))
 
     assert request.status_code == 404
+
+
+def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
+    """
+    Testa se ente_federado retornado está relacionado com o plano trabalho passado como parâmetro
+    """
+
+    ente_federado = mommy.make('Municipio')
+
+    request = client.get(url.format(id=plano_trabalho.id, componente='conselho_cultural'))
+
+    assert request.context['ente_federado'] == plano_trabalho.usuario.municipio 
