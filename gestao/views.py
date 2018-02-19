@@ -559,6 +559,23 @@ class Prorrogacao(ListView):
         return usuarios
 
 
+def nome_arquivo_componente(componente):
+    nome_arquivo = ''
+
+    if isinstance(componente, CriacaoSistema):
+        nome_arquivo = componente.lei_sistema_cultura.name
+    elif isinstance(componente, FundoCultura):
+        nome_arquivo = componente.lei_fundo_cultura.name
+    elif isinstance(componente, ConselhoCultural):
+        nome_arquivo = componente.ata_regimento_aprovado.name
+    elif isinstance(componente, PlanoCultura):
+        nome_arquivo = componente.lei_plano_cultura.name
+    elif isinstance(componente, OrgaoGestor):
+        nome_arquivo = componente.relatorio_atividade_secretaria.name
+
+    return nome_arquivo
+
+
 def diligencia_view(request, pk, componente):
     from django.http import HttpResponseNotFound
     from django.http import HttpResponse
@@ -566,8 +583,10 @@ def diligencia_view(request, pk, componente):
     template_name = 'gestao/diligencia/diligencia.html'
     form = DiligenciaForm()
 
-    municipio = Municipio()
-    
+    plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
+    ente_federado = plano_trabalho.usuario.municipio
+    plano_componente = getattr(plano_trabalho, componente)
+
     """Chaves são os componentes esperados pela url, o valor é a model que cada um representa """
     componentes = {
         'fundo_cultura': 'fundocultura',
@@ -578,19 +597,16 @@ def diligencia_view(request, pk, componente):
     }
 
     context = {
-        'ente_federado': municipio,
-        'nome_arquivo': 'b',
+        'ente_federado': ente_federado,
+        'nome_arquivo': '',
         'data_envio': 'c',
-        'classificacoes': 'd',
         'historico_diligencias': 'e',
         'form': form,
     }
-    plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
-    ente_federado = plano_trabalho.usuario.municipio
+    
     
     if request.method == 'GET': 
-        context['ente_federado'] = ente_federado
-
+        context['nome_arquivo'] = nome_arquivo_componente(plano_componente)
         if componente in componentes.keys():
             return render(request, template_name, context=context)
 
@@ -600,8 +616,6 @@ def diligencia_view(request, pk, componente):
         if componente in componentes.keys():
             data = request.POST.dict()
             
-            plano_componente = getattr(plano_trabalho, componente)
-
             form = DiligenciaForm(data)
 
             form.instance.ente_federado = ente_federado

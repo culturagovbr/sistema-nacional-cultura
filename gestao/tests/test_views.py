@@ -14,11 +14,16 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def plano_trabalho():
-    fundo_cultura = mommy.make("FundoCultura")
-    plano_cultura = mommy.make("PlanoCultura")
-    orgao_gestor = mommy.make("OrgaoGestor")
-    conselho_cultural = mommy.make("ConselhoCultural")
-    lei_sistema = mommy.make("CriacaoSistema")
+    fundo_cultura = mommy.make("FundoCultura", _create_files=True, 
+                               _fill_optional=['lei_fundo_cultura'])
+    plano_cultura = mommy.make("PlanoCultura", _create_files=True, 
+                               _fill_optional=['lei_plano_cultura'])
+    orgao_gestor = mommy.make("OrgaoGestor", _create_files=True, 
+                              _fill_optional=['relatorio_atividade_secretaria'])
+    conselho_cultural = mommy.make("ConselhoCultural", _create_files=True, 
+                                   _fill_optional=['ata_regimento_aprovado'])
+    lei_sistema = mommy.make("CriacaoSistema", _create_files=True, 
+                             _fill_optional=['lei_sistema_cultura'])
 
     plano_trabalho = mommy.make("PlanoTrabalho", fundo_cultura=fundo_cultura,
                                 plano_cultura=plano_cultura, orgao_gestor=orgao_gestor,
@@ -120,10 +125,8 @@ def test_valor_context_retornado_na_view(url, client, plano_trabalho):
         'ente_federado',
         'nome_arquivo',
         'data_envio',
-        'classificacoes',
         'historico_diligencias',
     ]
-
     for context in contexts:
         assert request.context[context] != ''
 
@@ -221,3 +224,13 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho):
     
     assert url_redirect[1] == 'gestao/detalhar/municipio/{}'.format(plano_trabalho.usuario.id)
     assert request.status_code == 302
+
+
+def test_nome_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
+    """ Testa se o nome do arquivo enviado pelo componente está correto """
+
+    nome_arquivo = plano_trabalho.conselho_cultural.ata_regimento_aprovado.name 
+
+    request = client.get(url.format(id=plano_trabalho.id, componente="conselho_cultural"))
+
+    assert request.context['nome_arquivo'] == nome_arquivo
