@@ -168,21 +168,13 @@ class AlterarSituacao(ModelForm):
         model = Usuario
         fields = ('estado_processo', 'data_publicacao_acordo')
 
-CLASSIFICACAO_ARQUIVO = (
-    ("arquivo_danificado", "Arquivo Danificado"),
-    ("arquivo_incorreto", "Arquivo incorreto"),
-    ("arquivo_incompleto", "Arquivo incompleto"),
-)
-
 
 class DiligenciaForm(ModelForm):
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
-    classificacao_arquivo = forms.ChoiceField(choices=CLASSIFICACAO_ARQUIVO)
     
     class Meta:
         model = Diligencia
-        fields = ('texto_diligencia', 'ente_federado', 'classificacao_arquivo', 
-                  'componente_type', 'componente_id')
+        fields = ('texto_diligencia', 'classificacao_arquivo')
 
 
 class AlterarCadastradorForm(ChainedChoicesForm):

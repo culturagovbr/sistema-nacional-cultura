@@ -8,12 +8,22 @@ from gestao.forms import DiligenciaForm
 
 from gestao.models import Diligencia
 from adesao.models import Municipio
+from planotrabalho.models import OrgaoGestor
 
 pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def plano_trabalho():
-    plano_trabalho = mommy.make("PlanoTrabalho")
+    fundo_cultura = mommy.make("FundoCultura")
+    plano_cultura = mommy.make("PlanoCultura")
+    orgao_gestor = mommy.make("OrgaoGestor")
+    conselho_cultural = mommy.make("ConselhoCultural")
+    lei_sistema = mommy.make("CriacaoSistema")
+
+    plano_trabalho = mommy.make("PlanoTrabalho", fundo_cultura=fundo_cultura,
+                                plano_cultura=plano_cultura, orgao_gestor=orgao_gestor,
+                                conselho_cultural=conselho_cultural, criacao_sistema=lei_sistema)
+                                
     ente_federado = mommy.make('Municipio')
     usuario = mommy.make('Usuario', municipio=ente_federado,
                          plano_trabalho=plano_trabalho)
@@ -73,7 +83,7 @@ def test_url_retorna_404_caso_componente_nao_exista(url, client, plano_trabalho)
 def test_renderiza_template(url, client, plano_trabalho):
     """ Testa se o método da view renderiza um template"""
 
-    request = client.get(url.format(id=plano_trabalho.id, componente="lei_sistema_cultura"))
+    request = client.get(url.format(id=plano_trabalho.id, componente="criacao_sistema"))
     assert request.content
 
 
@@ -204,3 +214,18 @@ def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
     request = client.get(url.format(id=plano_trabalho.id, componente='conselho_cultural'))
 
     assert request.context['ente_federado'] == plano_trabalho.usuario.municipio 
+
+
+def test_salvar_informacoes_no_banco(url, client, plano_trabalho):
+    """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
+
+    response = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), 
+                           data={'classificacao_arquivo':'arquivo_incorreto',
+                                 'texto_diligencia':'bla'})
+
+    diligencia = Diligencia.objects.first()
+
+    assert Diligencia.objects.count() == 1
+    assert diligencia.texto_diligencia == 'bla'
+    assert diligencia.classificacao_arquivo == 'arquivo_incorreto'    
+    assert isinstance(diligencia.componente, OrgaoGestor)

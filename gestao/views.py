@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, UpdateView
+from django.contrib.contenttypes.models import ContentType
 
 from adesao.models import Usuario, Cidade, Municipio, Historico
 from planotrabalho.models import PlanoTrabalho, CriacaoSistema, PlanoCultura, FundoCultura, OrgaoGestor, ConselhoCultural, SituacoesArquivoPlano
@@ -566,14 +567,15 @@ def diligencia_view(request, pk, componente):
     form = DiligenciaForm()
 
     municipio = Municipio()
-
-    componentes = [
-        'fundo_cultura',
-        'orgao_gestor',
-        'conselho_cultural',
-        'plano_cultura',
-        'lei_sistema_cultura',
-    ]
+    
+    """Chaves são os componentes esperados pela url, o valor é a model que cada um representa """
+    componentes = {
+        'fundo_cultura': 'fundocultura',
+        'orgao_gestor': 'orgaogestor',
+        'conselho_cultural': 'conselhocultural',
+        'plano_cultura': 'planocultura',
+        'criacao_sistema': 'criacaosistema',
+    }
 
     context = {
         'ente_federado': municipio,
@@ -583,21 +585,33 @@ def diligencia_view(request, pk, componente):
         'historico_diligencias': 'e',
         'form': form,
     }
-
-    if request.method == 'GET':
-        plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
-        ente_federado = plano_trabalho.usuario.municipio
+    plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
+    ente_federado = plano_trabalho.usuario.municipio
+    
+    if request.method == 'GET': 
         context['ente_federado'] = ente_federado
 
-        if componente in componentes:
+        if componente in componentes.keys():
             return render(request, template_name, context=context)
 
         return HttpResponseNotFound()
 
     elif request.method == 'POST':
-        form = DiligenciaForm(request.POST.dict())
+        if componente in componentes.keys():
+            data = request.POST.dict()
+            
+            plano_componente = getattr(plano_trabalho, componente)
 
-        if form.is_valid():
-            return HttpResponse(status=201)
+            form = DiligenciaForm(data)
+
+            form.instance.ente_federado = ente_federado
+            form.instance.componente_id = plano_componente.id
+            form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])                                                        
+ 
+            if form.is_valid():
+                form.save()
+                return HttpResponse(status=201)
 
         return HttpResponse(status=400)
+
+    

@@ -66,7 +66,6 @@ def test_fields_form_diligencia(client):
     """Testa as fields dentro do form Diligencia"""
 
     form = DiligenciaForm()
-    fields = ('texto_diligencia', 'componente_id', 'ente_federado', 
-              'classificacao_arquivo', 'componente_type', )
+    fields = ('texto_diligencia', 'classificacao_arquivo')
 
     assert set(form.Meta.fields).issuperset(set(fields))
