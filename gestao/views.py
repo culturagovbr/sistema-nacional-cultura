@@ -610,7 +610,7 @@ def diligencia_view(request, pk, componente):
  
             if form.is_valid():
                 form.save()
-                return HttpResponse(status=201)
+                return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
 
         return HttpResponse(status=400)
 

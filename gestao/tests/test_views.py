@@ -128,14 +128,6 @@ def test_valor_context_retornado_na_view(url, client, plano_trabalho):
         assert request.context[context] != ''
 
 
-def test_retorno_post_criacao_diligencia(url, client, plano_trabalho):
-    """Testa se retorna o status 201 na criação da diligência"""
-
-    request = client.post(url.format(id=plano_trabalho.id, componente="fundo_cultura"), data={'texto_diligencia': 'bla', 'classificacao_arquivo': 'arquivo_incorreto'})
-
-    assert request.status_code == 201
-
-
 def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho):
     """ Testa se o status do retorno é 400 para requests sem os parâmetros esperados """
 
@@ -180,14 +172,6 @@ def test_invalido_form_para_post_diligencia(url, client, plano_trabalho):
     assert request.status_code == 400
 
 
-def test_valido_form_post_diligencia(url, client, plano_trabalho):
-    """ Testa se o form valida post com dados corretos """
-
-    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": 'Ta errado cara'})
-
-    assert request.status_code == 201
-
-
 def test_obj_ente_federado(url, client, plano_trabalho):
     """ Testa se o objeto retornado ente_federado é uma instancia da model Municipio"""
 
@@ -209,8 +193,6 @@ def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
     Testa se ente_federado retornado está relacionado com o plano trabalho passado como parâmetro
     """
 
-    ente_federado = mommy.make('Municipio')
-
     request = client.get(url.format(id=plano_trabalho.id, componente='conselho_cultural'))
 
     assert request.context['ente_federado'] == plano_trabalho.usuario.municipio 
@@ -229,3 +211,13 @@ def test_salvar_informacoes_no_banco(url, client, plano_trabalho):
     assert diligencia.texto_diligencia == 'bla'
     assert diligencia.classificacao_arquivo == 'arquivo_incorreto'    
     assert isinstance(diligencia.componente, OrgaoGestor)
+
+
+def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho):
+    """ Testa se há o redirecionamento de página após o POST da diligência """ 
+
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": 'Ta errado cara'})
+    url_redirect = request.url.split('http://testserver/')
+    
+    assert url_redirect[1] == 'gestao/detalhar/municipio/{}'.format(plano_trabalho.usuario.id)
+    assert request.status_code == 302
