@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseNotFound
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
@@ -577,15 +577,11 @@ def nome_arquivo_componente(componente):
 
 
 def diligencia_view(request, pk, componente):
-    from django.http import HttpResponseNotFound
-    from django.http import HttpResponse
-
     template_name = 'gestao/diligencia/diligencia.html'
     form = DiligenciaForm()
 
     plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
     ente_federado = plano_trabalho.usuario.municipio
-    plano_componente = getattr(plano_trabalho, componente)
 
     """Chaves são os componentes esperados pela url, o valor é a model que cada um representa """
     componentes = {
@@ -599,18 +595,23 @@ def diligencia_view(request, pk, componente):
     context = {
         'ente_federado': ente_federado,
         'nome_arquivo': '',
-        'data_envio': 'c',
-        'historico_diligencias': 'e',
+        'data_envio': '--/--/----',
+        'historico_diligencias': '',
         'form': form,
     }
-    
+
+    try:
+        plano_componente = getattr(plano_trabalho, componente)
+    except AttributeError:
+        return HttpResponseNotFound()
     
     if request.method == 'GET': 
         context['nome_arquivo'] = nome_arquivo_componente(plano_componente)
-        if componente in componentes.keys():
-            return render(request, template_name, context=context)
 
-        return HttpResponseNotFound()
+        historico_diligencias = plano_componente.diligencias.all().order_by('-data_criacao')
+        context['historico_diligencias'] = historico_diligencias[:3]
+
+        return render(request, template_name, context=context)
 
     elif request.method == 'POST':
         if componente in componentes.keys():

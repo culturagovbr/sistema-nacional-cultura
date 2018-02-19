@@ -106,7 +106,6 @@ def test_existencia_do_contexto_view(url, client, plano_trabalho):
         'ente_federado',
         'nome_arquivo',
         'data_envio',
-        'classificacoes',
         'historico_diligencias',
     ]
 
@@ -234,3 +233,15 @@ def test_nome_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
     request = client.get(url.format(id=plano_trabalho.id, componente="conselho_cultural"))
 
     assert request.context['nome_arquivo'] == nome_arquivo
+
+
+def test_exibicao_historico_diligencia(url, client, plano_trabalho):
+    """Testa se o histórico de diligências é retornado pelo contexto"""
+
+    diligencia = mommy.make('Diligencia', _quantity=4, componente=plano_trabalho.orgao_gestor)
+    diligencias = plano_trabalho.orgao_gestor.diligencias.all().order_by('-data_criacao')[:3]
+
+    request = client.get(url.format(id=plano_trabalho.id, componente="orgao_gestor"))
+    diferenca_listas = set(diligencias).symmetric_difference(set(request.context['historico_diligencias']))
+    assert diferenca_listas == set()
+
