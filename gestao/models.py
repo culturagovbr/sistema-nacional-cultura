@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -15,7 +17,11 @@ class Diligencia(models.Model):
     classificacao_arquivo = models.CharField(
         max_length=25,
         choices=CLASSIFICACAO_ARQUIVO)
+    data_criacao = models.DateField(default=datetime.date.today)
     ente_federado = models.ForeignKey(Municipio)
     componente_type = models.ForeignKey(ContentType)
     componente_id = models.PositiveIntegerField()
     componente = GenericForeignKey('componente_type', 'componente_id')
+
+    def __str__(self):
+        return str(self.id)

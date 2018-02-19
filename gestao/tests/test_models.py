@@ -1,4 +1,5 @@
 import pytest
+import datetime
 from django.db.models import ForeignKey
 
 from adesao.models import Municipio
@@ -16,9 +17,17 @@ def test_existencia_campos_atributo_models():
     
     diligencia = Diligencia()
     fields = ('id', 'texto_diligencia', 'classificacao_arquivo', 
-              'ente_federado', 'componente')
+              'ente_federado', 'componente', 'data_criacao')
     for field in fields:
         assert diligencia._meta.get_field(field)
+
+
+def test_campo_data_criacao_diligencia():
+    """ Testa se o campo data_criacao presente na model Diligencia está sendo iniciado corretamente """
+
+    diligencia = mommy.make('Diligencia')
+    
+    assert diligencia.data_criacao == datetime.date.today()
 
 
 def test_relacionamento_com_lei_sistema_diligencia_model():
