@@ -88,9 +88,9 @@ def test_formatacao_informacoes_sobre_arquivo_enviado(template, client):
     context = Context({'nome_arquivo': 'lei_sistema_para.pdf', 'data_envio': '10/08/2017', 'ente_federado': 'Pará'})
     rendered_template = template.render(context)
 
-    assert "<p>{}</p>".format(context['nome_arquivo']) in rendered_template
-    assert "<p>{}</p>".format(context['data_envio']) in rendered_template
-    assert "<p>{}</p>".format(context['ente_federado']) in rendered_template
+    assert "<p>Download do arquivo: {}</p>".format(context['nome_arquivo']) in rendered_template
+    assert "<p>Data de Envio do Arquivo: {}</p>".format(context['data_envio']) in rendered_template
+    assert "<p>Ente Federado: {}</p>".format(context['ente_federado']) in rendered_template
 
 
 def test_opcoes_de_classificacao_da_diligencia(template, client):
