@@ -14,6 +14,18 @@ from planotrabalho.models import OrgaoGestor
 pytestmark = pytest.mark.django_db
 
 @pytest.fixture
+def login(client):
+    user = User.objects.create(username='teste')
+    user.set_password('123456')
+    user.save()
+    usuario = mommy.make('Usuario', user=user)
+
+    login = client.login(username=user.username, password='123456')
+
+    return usuario
+
+
+@pytest.fixture
 def plano_trabalho():
     fundo_cultura = mommy.make("FundoCultura", _create_files=True, 
                                _fill_optional=['lei_fundo_cultura'])
@@ -131,7 +143,7 @@ def test_valor_context_retornado_na_view(url, client, plano_trabalho):
         assert request.context[context] != ''
 
 
-def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho):
+def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho, login):
     """ Testa se o status do retorno é 400 para requests sem os parâmetros esperados """
 
     request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={'bla': ''})
@@ -139,12 +151,14 @@ def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho):
     assert request.status_code == 400
 
 
-def test_retorna_400_POST_classificacao_inexistente(url, rf, plano_trabalho):
+def test_retorna_400_POST_classificacao_inexistente(url, rf, plano_trabalho, login):
     """
     Testa se o status do retorno é 400 quando feito um POST com a classificao invalida
     de um arquivo.
     """
     request = rf.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={'classificacao_arquivo': ''})
+    user = login.user
+    request.user = user
 
     response = diligencia_view(request, plano_trabalho.id, "orgao_gestor")
 
@@ -167,7 +181,7 @@ def test_tipo_do_form_utilizado_na_diligencia_view(url, client, plano_trabalho):
     assert isinstance(request.context['form'], DiligenciaForm)
 
 
-def test_invalido_form_para_post_diligencia(url, client, plano_trabalho):
+def test_invalido_form_para_post_diligencia(url, client, plano_trabalho, login):
     """ Testa se o form invalida post com dados errados """
 
     request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "bla", "texto_diligencia": ''})
@@ -201,7 +215,7 @@ def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
     assert request.context['ente_federado'] == plano_trabalho.usuario.municipio 
 
 
-def test_salvar_informacoes_no_banco(url, client, plano_trabalho):
+def test_salvar_informacoes_no_banco(url, client, plano_trabalho, login):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
 
     response = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), 
@@ -216,7 +230,7 @@ def test_salvar_informacoes_no_banco(url, client, plano_trabalho):
     assert isinstance(diligencia.componente, OrgaoGestor)
 
 
-def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho):
+def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login):
     """ Testa se há o redirecionamento de página após o POST da diligência """ 
 
     request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": 'Ta errado cara'})
@@ -247,20 +261,14 @@ def test_exibicao_historico_diligencia(url, client, plano_trabalho):
     assert diferenca_listas == set()
 
 
-def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho):
+def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho, login):
     """
         Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
     """
-    user = User.objects.create(username='teste')
-    user.set_password('123456')
-    user.save()
-    usuario = mommy.make('Usuario',user=user)
-
-    login = client.login(username=user.username, password='123456')
     
     request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": "Muito legal"})
     
     diligencia = Diligencia.objects.last()
 
-    assert diligencia.usuario == usuario
+    assert diligencia.usuario == login
 
