@@ -3,7 +3,6 @@ import datetime
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import AnonymousUser
 
 from adesao.models import Municipio 
 from adesao.models import Usuario
