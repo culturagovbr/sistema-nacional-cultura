@@ -1,6 +1,7 @@
 import pytest
 
 from django.core.urlresolvers import resolve
+from django.contrib.auth.models import User
 from model_mommy import mommy
 
 from gestao.views import diligencia_view
@@ -244,4 +245,22 @@ def test_exibicao_historico_diligencia(url, client, plano_trabalho):
     request = client.get(url.format(id=plano_trabalho.id, componente="orgao_gestor"))
     diferenca_listas = set(diligencias).symmetric_difference(set(request.context['historico_diligencias']))
     assert diferenca_listas == set()
+
+
+def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho):
+    """
+        Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
+    """
+    user = User.objects.create(username='teste')
+    user.set_password('123456')
+    user.save()
+    usuario = mommy.make('Usuario',user=user)
+
+    login = client.login(username=user.username, password='123456')
+    
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": "Muito legal"})
+    
+    diligencia = Diligencia.objects.last()
+
+    assert diligencia.usuario == usuario
 

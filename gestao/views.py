@@ -583,6 +583,7 @@ def diligencia_view(request, pk, componente):
     plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
     ente_federado = plano_trabalho.usuario.municipio
 
+
     """Chaves são os componentes esperados pela url, o valor é a model que cada um representa """
     componentes = {
         'fundo_cultura': 'fundocultura',
@@ -618,7 +619,8 @@ def diligencia_view(request, pk, componente):
         data = request.POST.dict()
 
         form = DiligenciaForm(data)
-
+        
+        form.instance.usuario = request.user.usuario
         form.instance.ente_federado = ente_federado
         form.instance.componente_id = plano_componente.id
         form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])

@@ -9,7 +9,7 @@
 
 	<div class="historico_diligencias">
 		{% for diligencia in historico_diligencias %}
-		<div>Usuário: {{ diligencia.usuario }}, Motivo: {{ diligencia.get_classificacao_arquivo_display }}, Data: {{ diligencia.data_criacao }}, Resumo: {{ diligencia.texto_diligencia}}
+		<div>Usuário: {{ diligencia.usuario.nome_usuario }}, Motivo: {{ diligencia.get_classificacao_arquivo_display }}, Data: {{ diligencia.data_criacao }}, Resumo: {{ diligencia.texto_diligencia}}
 		</div>
 		{% endfor %}
 	</div>

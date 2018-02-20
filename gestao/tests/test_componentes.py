@@ -132,13 +132,13 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client):
     """ Testa informações referente ao histórico de diligências do componente. """
 
     diligencias = [
-        {"usuario": "Jaozin Silva", "get_classificacao_arquivo_display": "Arquivo Danificado", 
+        {"usuario": {"nome_usuario": "Jaozin Silva"}, "get_classificacao_arquivo_display": "Arquivo Danificado", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo danificado, corrompido"},
 
-        {"usuario": "Pedrin Silva", "get_classificacao_arquivo_display": "Arquivo Incompleto", 
+        {"usuario": {"nome_usuario": "Pedrin Silva"}, "get_classificacao_arquivo_display": "Arquivo Incompleto", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo incompleto, informações faltando"},
         
-        {"usuario": "Luizin Silva", "get_classificacao_arquivo_display": "Arquivo Incorreto", 
+        {"usuario": {"nome_usuario": "Luizin Silva"}, "get_classificacao_arquivo_display": "Arquivo Incorreto", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo com informações incorretas"}
     ]
 
@@ -146,7 +146,7 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client):
     rendered_template = template.render(context)
 
     for diligencia in diligencias:
-        assert diligencia['usuario'] in rendered_template
+        assert diligencia['usuario']["nome_usuario"] in rendered_template
         assert diligencia['get_classificacao_arquivo_display'] in rendered_template
         assert diligencia['data_criacao'] in rendered_template
         assert diligencia['texto_diligencia'] in rendered_template
@@ -159,17 +159,18 @@ def test_formatacao_historico_de_diligencias(template, client):
     
     assert "<div class=\"historico_diligencias\">" in rendered_template
 
+
 def test_formatacao_individual_das_diligencias_no_historico(template, client):
     """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
 
     diligencias = [
-        {"usuario": "Jaozin Silva", "get_classificacao_arquivo_display": "Arquivo Danificado", 
+        {"usuario": {"nome_usuario": "Jaozin Silva" }, "get_classificacao_arquivo_display": "Arquivo Danificado", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo danificado, corrompido"},
 
-        {"usuario": "Pedrin Silva", "get_classificacao_arquivo_display": "Arquivo Incompleto", 
+        {"usuario": {"nome_usuario": "Pedrin Silva" }, "get_classificacao_arquivo_display": "Arquivo Incompleto", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo incompleto, informações faltando"},
         
-        {"usuario": "Luizin Silva", "get_classificacao_arquivo_display": "Arquivo Incorreto", 
+        {"usuario": {"nome_usuario": "Luizin Silva" }, "get_classificacao_arquivo_display": "Arquivo Incorreto", 
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo com informações incorretas"}
     ]
 
@@ -178,7 +179,7 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client):
 
     for diligencia in diligencias:
         assert "<div>Usuário: {nome}, Motivo: {motivo}, Data: {data}, Resumo: {resumo}".format(
-                                                                nome=diligencia['usuario'],
+                                                                nome=diligencia['usuario']["nome_usuario"],
                                                                 motivo=diligencia['get_classificacao_arquivo_display'],
                                                                 data=diligencia['data_criacao'],
                                                                 resumo=diligencia['texto_diligencia']) in rendered_template

@@ -3,8 +3,10 @@ import datetime
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import AnonymousUser
 
-from adesao.models import Municipio
+from adesao.models import Municipio 
+from adesao.models import Usuario
 
 CLASSIFICACAO_ARQUIVO = (
     ("arquivo_danificado", "Arquivo Danificado"),
@@ -23,6 +25,7 @@ class Diligencia(models.Model):
     componente_type = models.ForeignKey(ContentType)
     componente_id = models.PositiveIntegerField()
     componente = GenericForeignKey('componente_type', 'componente_id')
+    usuario = models.ForeignKey(Usuario)
 
     def __str__(self):
         return str(self.id)

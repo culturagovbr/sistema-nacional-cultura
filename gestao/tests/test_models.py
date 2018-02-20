@@ -17,7 +17,7 @@ def test_existencia_campos_atributo_models():
     
     diligencia = Diligencia()
     fields = ('id', 'texto_diligencia', 'classificacao_arquivo', 
-              'ente_federado', 'componente', 'data_criacao')
+              'ente_federado', 'componente', 'data_criacao', 'usuario')
     for field in fields:
         assert diligencia._meta.get_field(field)
 
