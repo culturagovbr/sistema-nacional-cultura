@@ -609,6 +609,10 @@ def diligencia_view(request, pk, componente):
     
     if request.method == 'GET': 
         context['nome_arquivo'] = nome_arquivo_componente(plano_componente)
+        if ente_federado.cidade:
+            context['ente_federado'] = "{} - {}".format(ente_federado.cidade.nome_municipio, ente_federado.estado.sigla)
+        else:
+            context['ente_federado'] = ente_federado.estado.sigla
 
         historico_diligencias = plano_componente.diligencias.all().order_by('-data_criacao')
         context['historico_diligencias'] = historico_diligencias[:3]

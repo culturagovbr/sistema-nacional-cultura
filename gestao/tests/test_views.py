@@ -190,11 +190,12 @@ def test_invalido_form_para_post_diligencia(url, client, plano_trabalho, login):
 
 
 def test_obj_ente_federado(url, client, plano_trabalho):
-    """ Testa se o objeto retornado ente_federado é uma instancia da model Municipio"""
+    """ Testa se o objeto retornado ente_federado é uma String"""
 
     request = client.get(url.format(id=plano_trabalho.id, componente='orgao_gestor'))
 
-    assert isinstance(request.context['ente_federado'], Municipio)
+    assert isinstance(request.context['ente_federado'], str)
+    assert request.context['ente_federado'] == plano_trabalho.usuario.municipio.estado.sigla
 
 
 def test_404_para_plano_trabalho_invalido_diligencia(url, client):
@@ -212,7 +213,7 @@ def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
 
     request = client.get(url.format(id=plano_trabalho.id, componente='conselho_cultural'))
 
-    assert request.context['ente_federado'] == plano_trabalho.usuario.municipio 
+    assert request.context['ente_federado'] == plano_trabalho.usuario.municipio.estado.sigla
 
 
 def test_salvar_informacoes_no_banco(url, client, plano_trabalho, login):
