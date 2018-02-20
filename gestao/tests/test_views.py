@@ -117,7 +117,7 @@ def test_existencia_do_contexto_view(url, client, plano_trabalho):
 
     contexts = [
         'ente_federado',
-        'nome_arquivo',
+        'arquivo',
         'data_envio',
         'historico_diligencias',
     ]
@@ -135,7 +135,7 @@ def test_valor_context_retornado_na_view(url, client, plano_trabalho):
 
     contexts = [
         'ente_federado',
-        'nome_arquivo',
+        'arquivo',
         'data_envio',
         'historico_diligencias',
     ]
@@ -241,14 +241,14 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login
     assert request.status_code == 302
 
 
-def test_nome_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
-    """ Testa se o nome do arquivo enviado pelo componente está correto """
+def test_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
+    """ Testa se o arquivo enviado pelo componente está correto """
 
-    nome_arquivo = plano_trabalho.conselho_cultural.ata_regimento_aprovado.name 
+    arquivo = plano_trabalho.conselho_cultural.ata_regimento_aprovado
 
     request = client.get(url.format(id=plano_trabalho.id, componente="conselho_cultural"))
 
-    assert request.context['nome_arquivo'] == nome_arquivo
+    assert request.context['arquivo'] == arquivo
 
 
 def test_exibicao_historico_diligencia(url, client, plano_trabalho):

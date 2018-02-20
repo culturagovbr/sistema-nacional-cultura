@@ -1,8 +1,8 @@
 {% extends 'gestao/base_gestao.html' %} {% block content %}
 <h2>Informações sobre o Arquivo Enviado</h2>
 <p>Ente Federado: {{ ente_federado }}</p>
-<p>Download do arquivo: {{ nome_arquivo }}</p>
 <p>Data de Envio do Arquivo: {{ data_envio }}</p>
+<p><a href = {{arquivo.url}}> Download do arquivo </a></p>
 
 <form method="POST">
 	{% csrf_token %}

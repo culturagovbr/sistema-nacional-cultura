@@ -559,21 +559,25 @@ class Prorrogacao(ListView):
         return usuarios
 
 
-def nome_arquivo_componente(componente):
-    nome_arquivo = ''
+def arquivo_componente(componente):
+    arquivo = None
 
     if isinstance(componente, CriacaoSistema):
-        nome_arquivo = componente.lei_sistema_cultura.name
+        arquivo = componente.lei_sistema_cultura
     elif isinstance(componente, FundoCultura):
-        nome_arquivo = componente.lei_fundo_cultura.name
+        arquivo = componente.lei_fundo_cultura
     elif isinstance(componente, ConselhoCultural):
-        nome_arquivo = componente.ata_regimento_aprovado.name
+        arquivo = componente.ata_regimento_aprovado
     elif isinstance(componente, PlanoCultura):
-        nome_arquivo = componente.lei_plano_cultura.name
+        arquivo = componente.lei_plano_cultura
     elif isinstance(componente, OrgaoGestor):
-        nome_arquivo = componente.relatorio_atividade_secretaria.name
-
-    return nome_arquivo
+       arquivo = componente.relatorio_atividade_secretaria
+    try:
+        assert arquivo
+    except AssertionError:
+        arquivo = None
+        
+    return arquivo
 
 
 def diligencia_view(request, pk, componente):
@@ -595,7 +599,7 @@ def diligencia_view(request, pk, componente):
 
     context = {
         'ente_federado': ente_federado,
-        'nome_arquivo': '',
+        'arquivo': '',
         'data_envio': '--/--/----',
         'historico_diligencias': '',
         'form': form,
@@ -608,7 +612,7 @@ def diligencia_view(request, pk, componente):
         return HttpResponseNotFound()
     
     if request.method == 'GET': 
-        context['nome_arquivo'] = nome_arquivo_componente(plano_componente)
+        context['arquivo'] = arquivo_componente(plano_componente)
         if ente_federado.cidade:
             context['ente_federado'] = "{} - {}".format(ente_federado.cidade.nome_municipio, ente_federado.estado.sigla)
         else:
