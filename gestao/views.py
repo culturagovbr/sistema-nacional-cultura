@@ -602,7 +602,8 @@ def diligencia_view(request, pk, componente):
 
     try:
         plano_componente = getattr(plano_trabalho, componente)
-    except AttributeError:
+        assert plano_componente
+    except (AssertionError, AttributeError):
         return HttpResponseNotFound()
     
     if request.method == 'GET': 
@@ -614,18 +615,17 @@ def diligencia_view(request, pk, componente):
         return render(request, template_name, context=context)
 
     elif request.method == 'POST':
-        if componente in componentes.keys():
-            data = request.POST.dict()
-            
-            form = DiligenciaForm(data)
+        data = request.POST.dict()
 
-            form.instance.ente_federado = ente_federado
-            form.instance.componente_id = plano_componente.id
-            form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])                                                        
- 
-            if form.is_valid():
-                form.save()
-                return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
+        form = DiligenciaForm(data)
+
+        form.instance.ente_federado = ente_federado
+        form.instance.componente_id = plano_componente.id
+        form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])
+
+        if form.is_valid():
+            form.save()
+            return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
 
         return HttpResponse(status=400)
 

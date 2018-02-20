@@ -8,9 +8,10 @@ from adesao.models import Municipio
 
 CLASSIFICACAO_ARQUIVO = (
     ("arquivo_danificado", "Arquivo Danificado"),
-    ("arquivo_incorreto", "Arquivo incorreto"),
-    ("arquivo_incompleto", "Arquivo incompleto"),
+    ("arquivo_incorreto", "Arquivo Incorreto"),
+    ("arquivo_incompleto", "Arquivo Incompleto"),
 )
+
 
 class Diligencia(models.Model):
     texto_diligencia = models.TextField(max_length=200)

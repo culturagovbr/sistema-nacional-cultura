@@ -1,30 +1,20 @@
-{% extends 'gestao/base_gestao.html' %}
-{% block content %}
-	<h2>Informações sobre o Arquivo Enviado</h2>
-	<p>{{ ente_federado }}</p>
-	<p>{{ nome_arquivo }}</p>
-	<p>{{ data_envio }}</p>
+{% extends 'gestao/base_gestao.html' %} {% block content %}
+<h2>Informações sobre o Arquivo Enviado</h2>
+<p>{{ ente_federado }}</p>
+<p>{{ nome_arquivo }}</p>
+<p>{{ data_envio }}</p>
 
-	<form method="POST">
-		{{form}}
-		{{form.media}}
-		{% csrf_token %}
-	</form>
-	
-	<input name="texto_diligencia" />
-	<select name="classificacao_arquivo">
-		{% for classificacao in classificacoes %}
-			<option value="{{ classificacao.value }}">{{ classificacao.description }}</option>
-		{% endfor %}
-	</select>
-	
+<form method="POST">
+	{{form}} {{form.media}} {% csrf_token %}
 
 	<div class="historico_diligencias">
 		{% for diligencia in historico_diligencias %}
-			<div>Usuário: {{ diligencia.nome_usuario }}, Motivo: {{ diligencia.motivo }}, Data: {{ diligencia.data }}, Resumo: {{ diligencia.resumo }}</div>
+		<div>Usuário: {{ diligencia.usuario }}, Motivo: {{ diligencia.get_classificacao_arquivo_display }}, Data: {{ diligencia.data_criacao }}, Resumo: {{ diligencia.texto_diligencia}}
+		</div>
 		{% endfor %}
 	</div>
 
-	<input class="btn btn-primary" type="submit">Enviar/>
+	<input class="btn btn-primary" type="submit"></input>
 	<button class='btn btn-secondary'>Cancelar</button>
+</form>
 {% endblock %}
