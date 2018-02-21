@@ -1,6 +1,7 @@
 import pytest
 
 from django.core.urlresolvers import resolve
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from model_mommy import mommy
 
@@ -25,26 +26,43 @@ def login(client):
     return usuario
 
 
+
+def arquivo_componentes(plano_trabalho):
+    componentes = (
+        'fundo_cultura',
+        'plano_cultura',
+        'criacao_sistema',
+        'orgao_gestor',
+        'conselho_cultural'
+        )
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    for componente in componentes:
+        comp = getattr(plano_trabalho, componente)
+        comp.arquivo = arquivo
+        comp.save()
+
+    return plano_trabalho
+
+
 @pytest.fixture
 def plano_trabalho():
-    fundo_cultura = mommy.make("FundoCultura", _create_files=True, 
-                               _fill_optional=['lei_fundo_cultura'])
-    plano_cultura = mommy.make("PlanoCultura", _create_files=True, 
-                               _fill_optional=['lei_plano_cultura'])
-    orgao_gestor = mommy.make("OrgaoGestor", _create_files=True, 
-                              _fill_optional=['relatorio_atividade_secretaria'])
-    conselho_cultural = mommy.make("ConselhoCultural", _create_files=True, 
-                                   _fill_optional=['ata_regimento_aprovado'])
-    lei_sistema = mommy.make("CriacaoSistema", _create_files=True, 
-                             _fill_optional=['lei_sistema_cultura'])
+    fundo_cultura = mommy.make("FundoCultura")
+    plano_cultura = mommy.make("PlanoCultura")
+    orgao_gestor = mommy.make("OrgaoGestor")
+    conselho_cultural = mommy.make("ConselhoCultural")
+    lei_sistema = mommy.make("CriacaoSistema")
+                            
+    ente_federado = mommy.make('Municipio')
 
     plano_trabalho = mommy.make("PlanoTrabalho", fundo_cultura=fundo_cultura,
                                 plano_cultura=plano_cultura, orgao_gestor=orgao_gestor,
                                 conselho_cultural=conselho_cultural, criacao_sistema=lei_sistema)
-                                
-    ente_federado = mommy.make('Municipio')
+
     usuario = mommy.make('Usuario', municipio=ente_federado,
                          plano_trabalho=plano_trabalho)
+    
+    plano_trabalho = arquivo_componentes(plano_trabalho)
 
     return plano_trabalho
 
@@ -244,11 +262,20 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login
 def test_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
     """ Testa se o arquivo enviado pelo componente está correto """
 
-    arquivo = plano_trabalho.conselho_cultural.ata_regimento_aprovado
+    arquivo = plano_trabalho.conselho_cultural.arquivo
 
     request = client.get(url.format(id=plano_trabalho.id, componente="conselho_cultural"))
 
     assert request.context['arquivo'] == arquivo
+
+def test_arquivo_enviado_salvo_no_diretorio_do_componente(url, client, plano_trabalho):
+    """ Testa se o arquivo enviando pelo componente está sendo salvo no
+    diretório especifico dentro da pasta do ente federado."""
+
+    arquivo = SimpleUploadedFile('conselho_cultural.pdf', '', content_type="application/pdf")
+    request = client.post(url.format(id=plano_trabalho.id, componente="conselho_cultural"))
+
+    assert request.context['arquivo'] == arquivo 
 
 
 def test_exibicao_historico_diligencia(url, client, plano_trabalho):
@@ -272,4 +299,3 @@ def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho, 
     diligencia = Diligencia.objects.last()
 
     assert diligencia.usuario == login
-

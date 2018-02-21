@@ -612,7 +612,8 @@ def diligencia_view(request, pk, componente):
         return HttpResponseNotFound()
     
     if request.method == 'GET': 
-        context['arquivo'] = arquivo_componente(plano_componente)
+        context['arquivo'] = plano_componente.arquivo
+
         if ente_federado.cidade:
             context['ente_federado'] = "{} - {}".format(ente_federado.cidade.nome_municipio, ente_federado.estado.sigla)
         else:
@@ -637,6 +638,6 @@ def diligencia_view(request, pk, componente):
             form.save()
             return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
 
-        return HttpResponse(status=400)
+        return HttpResponse(status=400, content=form.errors)
 
     

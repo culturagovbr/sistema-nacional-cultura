@@ -7,10 +7,15 @@ from django.contrib.contenttypes.models import ContentType
 from adesao.models import Municipio 
 from adesao.models import Usuario
 
+ARQUIVO_DANIFICADO = "Arquivo Danificado"
+ARQUIVO_INCOMPLETO = "Arquivo Incompleto"
+ARQUIVO_INCORRETO = "Arquivo Incorreto"
+
+
 CLASSIFICACAO_ARQUIVO = (
-    ("arquivo_danificado", "Arquivo Danificado"),
-    ("arquivo_incorreto", "Arquivo Incorreto"),
-    ("arquivo_incompleto", "Arquivo Incompleto"),
+    ("arquivo_danificado", ARQUIVO_DANIFICADO),
+    ("arquivo_incompleto", ARQUIVO_INCOMPLETO),
+    ("arquivo_incorreto", ARQUIVO_INCORRETO),
 )
 
 
