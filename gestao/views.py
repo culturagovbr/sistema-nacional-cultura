@@ -1,14 +1,16 @@
-from django.shortcuts import redirect, render
-from django.http import Http404, JsonResponse
+from django.shortcuts import redirect, render, get_object_or_404
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseNotFound
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, UpdateView
+from django.contrib.contenttypes.models import ContentType
 
 from adesao.models import Usuario, Cidade, Municipio, Historico
-from planotrabalho.models import CriacaoSistema, PlanoCultura, FundoCultura, OrgaoGestor, ConselhoCultural, SituacoesArquivoPlano
+from planotrabalho.models import PlanoTrabalho, CriacaoSistema, PlanoCultura, FundoCultura, OrgaoGestor, ConselhoCultural, SituacoesArquivoPlano
 from gestao.utils import enviar_email_aprovacao_plano
+from gestao.models import Diligencia
 
 from .forms import AlterarSituacao, DiligenciaForm, AlterarDocumentosEnteFederadoForm
 from .forms import AlterarCadastradorForm, AlterarUsuarioForm, AlterarOrgaoForm
@@ -556,40 +558,89 @@ class Prorrogacao(ListView):
                 municipio__cidade__nome_municipio__icontains=q)
         return usuarios
 
+
+def arquivo_componente(componente):
+    arquivo = None
+
+    if isinstance(componente, CriacaoSistema):
+        arquivo = componente.lei_sistema_cultura
+    elif isinstance(componente, FundoCultura):
+        arquivo = componente.lei_fundo_cultura
+    elif isinstance(componente, ConselhoCultural):
+        arquivo = componente.ata_regimento_aprovado
+    elif isinstance(componente, PlanoCultura):
+        arquivo = componente.lei_plano_cultura
+    elif isinstance(componente, OrgaoGestor):
+       arquivo = componente.relatorio_atividade_secretaria
+    try:
+        assert arquivo
+    except AssertionError:
+        arquivo = None
+
+    return arquivo
+
+
 def diligencia_view(request, pk, componente):
-    from django.http import HttpResponseNotFound
-    from django.http import HttpResponse
-    
     template_name = 'gestao/diligencia/diligencia.html'
     form = DiligenciaForm()
 
-    componentes = [
-        'fundo_cultura',
-        'orgao_gestor',
-        'conselho_cultural',
-        'plano_cultura',
-        'lei_sistema_cultura',
-    ]
+    plano_trabalho = get_object_or_404(PlanoTrabalho, pk=pk)
+    ente_federado = plano_trabalho.usuario.municipio
+
+
+    """Chaves são os componentes esperados pela url, o valor é a model que cada um representa """
+    componentes = {
+        'fundo_cultura': 'fundocultura',
+        'orgao_gestor': 'orgaogestor',
+        'conselho_cultural': 'conselhocultural',
+        'plano_cultura': 'planocultura',
+        'criacao_sistema': 'criacaosistema',
+    }
 
     context = {
-        'ente_federado': 'a',
-        'nome_arquivo': 'b',
-        'data_envio': 'c',
-        'classificacoes': 'd',
-        'historico_diligencias': 'e',
+        'ente_federado': ente_federado,
+        'arquivo': '',
+        'data_envio': '--/--/----',
+        'historico_diligencias': '',
         'form': form,
     }
 
-    if request.method == 'GET':   
-        if componente in componentes:
-            return render(request, template_name, context=context)
-        
+    try:
+        plano_componente = getattr(plano_trabalho, componente)
+        assert plano_componente
+    except (AssertionError, AttributeError):
         return HttpResponseNotFound()
 
-    elif request.method == 'POST':
-        form = DiligenciaForm(request.POST.dict())
-        
-        if form.is_valid():
-            return HttpResponse(status=201)
+    if request.method == 'GET':
+        context['arquivo'] = plano_componente.arquivo
 
-        return HttpResponse(status=400)
+        if ente_federado.cidade:
+            context['ente_federado'] = "{} - {}".format(ente_federado.cidade.nome_municipio, ente_federado.estado.sigla)
+        else:
+            context['ente_federado'] = ente_federado.estado.sigla
+
+        historico_diligencias = plano_componente.diligencias.all().order_by('-data_criacao')
+        context['historico_diligencias'] = historico_diligencias[:3]
+
+        return render(request, template_name, context=context)
+
+    elif request.method == 'POST':
+        data = request.POST.dict()
+
+        form = DiligenciaForm(data)
+
+        form.instance.usuario = request.user.usuario
+        form.instance.ente_federado = ente_federado
+        form.instance.componente_id = plano_componente.id
+        form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])
+
+        if form.is_valid():
+        
+            diligencia = form.save()
+            plano_componente.situacao = diligencia.classificacao_arquivo
+            plano_componente.save()
+
+            return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
+
+        return HttpResponse(status=400, content=form.errors)
+

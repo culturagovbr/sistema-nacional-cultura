@@ -9,6 +9,8 @@ from django.template.defaultfilters import filesizeformat
 from adesao.models import Usuario, Historico, Uf, Municipio
 from planotrabalho.models import PlanoTrabalho, CriacaoSistema, FundoCultura
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
+from planotrabalho.models import SituacoesArquivoPlano
+from gestao.models import Diligencia
 
 from .utils import enviar_email_alteracao_situacao
 
@@ -167,16 +169,18 @@ class AlterarSituacao(ModelForm):
         model = Usuario
         fields = ('estado_processo', 'data_publicacao_acordo')
 
-CLASSIFICACAO_ARQUIVO = (
-    ("arquivo_danificado", "Arquivo Danificado"),
-    ("arquivo_incorreto", "Arquivo incorreto"),
-    ("arquivo_incompleto", "Arquivo incompleto"),
-)
 
-
-class DiligenciaForm(forms.Form):
+class DiligenciaForm(ModelForm):
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
-    classificacao_arquivo = forms.ChoiceField(choices=CLASSIFICACAO_ARQUIVO)
+    
+    def __init__(self, *args, **kwargs):
+        super(DiligenciaForm, self).__init__(*args, **kwargs)
+        self.fields['classificacao_arquivo'].queryset = SituacoesArquivoPlano.objects.filter(id__gte=4)
+
+    
+    class Meta:
+        model = Diligencia
+        fields = ('texto_diligencia', 'classificacao_arquivo')
 
 
 class AlterarCadastradorForm(ChainedChoicesForm):
