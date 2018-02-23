@@ -324,3 +324,9 @@ def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho, 
     assert diligencia.usuario == login
 
 
+def test_muda_situacao_arquivo_componente(url, client, situacoes, plano_trabalho):
+    """ Testa se ao realizar o post da diligência a situação do arquivo do componente é alterada """
+
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": 4, "texto_diligencia": "Não vai rolar"})
+
+    assert OrgaoGestor.objects.first().situacao.id == 4

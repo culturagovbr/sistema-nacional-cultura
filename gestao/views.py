@@ -576,7 +576,7 @@ def arquivo_componente(componente):
         assert arquivo
     except AssertionError:
         arquivo = None
-        
+
     return arquivo
 
 
@@ -610,8 +610,8 @@ def diligencia_view(request, pk, componente):
         assert plano_componente
     except (AssertionError, AttributeError):
         return HttpResponseNotFound()
-    
-    if request.method == 'GET': 
+
+    if request.method == 'GET':
         context['arquivo'] = plano_componente.arquivo
 
         if ente_federado.cidade:
@@ -628,16 +628,19 @@ def diligencia_view(request, pk, componente):
         data = request.POST.dict()
 
         form = DiligenciaForm(data)
-        
+
         form.instance.usuario = request.user.usuario
         form.instance.ente_federado = ente_federado
         form.instance.componente_id = plano_componente.id
         form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho',  model=componentes[componente])
 
         if form.is_valid():
-            form.save()
+        
+            diligencia = form.save()
+            plano_componente.situacao = diligencia.classificacao_arquivo
+            plano_componente.save()
+
             return redirect('gestao:detalhar', pk=plano_trabalho.usuario.id)
 
         return HttpResponse(status=400, content=form.errors)
 
-    
