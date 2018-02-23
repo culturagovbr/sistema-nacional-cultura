@@ -21,9 +21,7 @@ CLASSIFICACAO_ARQUIVO = (
 
 class Diligencia(models.Model):
     texto_diligencia = models.TextField(max_length=200)
-    classificacao_arquivo = models.CharField(
-        max_length=25,
-        choices=CLASSIFICACAO_ARQUIVO)
+    classificacao_arquivo = models.ForeignKey('planotrabalho.SituacoesArquivoPlano')
     data_criacao = models.DateField(default=datetime.date.today)
     ente_federado = models.ForeignKey(Municipio)
     componente_type = models.ForeignKey(ContentType)

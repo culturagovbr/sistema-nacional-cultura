@@ -9,6 +9,7 @@ from django.template.defaultfilters import filesizeformat
 from adesao.models import Usuario, Historico, Uf, Municipio
 from planotrabalho.models import PlanoTrabalho, CriacaoSistema, FundoCultura
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
+from planotrabalho.models import SituacoesArquivoPlano
 from gestao.models import Diligencia
 
 from .utils import enviar_email_alteracao_situacao
@@ -171,6 +172,11 @@ class AlterarSituacao(ModelForm):
 
 class DiligenciaForm(ModelForm):
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
+    
+    def __init__(self, *args, **kwargs):
+        super(DiligenciaForm, self).__init__(*args, **kwargs)
+        self.fields['classificacao_arquivo'].queryset = SituacoesArquivoPlano.objects.filter(id__gte=4)
+
     
     class Meta:
         model = Diligencia
