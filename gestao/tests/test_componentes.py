@@ -3,9 +3,28 @@ import pytest
 from django.template import Context, Template, Engine
 from django.template.base import TemplateDoesNotExist
 
+from planotrabalho.models import SituacoesArquivoPlano
 from gestao.forms import DiligenciaForm
 
 pytestmark = pytest.mark.django_db
+
+@pytest.fixture
+def situacoes():
+    """Cria situações dos arquivos do Plano Trabalho enviados no banco de testes"""
+    situacoes = (
+        (0, 'Em preenchimento'),
+        (1, 'Avaliando anexo'),
+        (2, 'Concluída'),
+        (3, 'Arquivo aprovado com ressalvas'),
+        (4, 'Arquivo danificado'),
+        (5, 'Arquivo incompleto'),
+        (6, 'Arquivo incorreto')        
+    )
+
+    for situacao in situacoes:
+        SituacoesArquivoPlano.objects.create(id=situacao[0], descricao=situacao[1])
+
+    return SituacoesArquivoPlano.objects.all()
 
 
 @pytest.fixture
@@ -13,7 +32,7 @@ def engine():
     """ Configura a engine de Templates do Django """
 
     engine = Engine.get_default()
-
+    
     return engine
 
 @pytest.fixture
@@ -92,21 +111,21 @@ def test_formatacao_informacoes_sobre_arquivo_enviado(template, client):
     assert "<p>Ente Federado: {}</p>".format(context['ente_federado']) in rendered_template
 
 
-def test_opcoes_de_classificacao_da_diligencia(template, client):
+def test_opcoes_de_classificacao_da_diligencia(template, client, situacoes):
     """Testa se a Classificação(Motivo) apresenta as opções conforme a especificação."""
 
-    opcoes = [
-        {"description": "Arquivo Danificado", "value": "arquivo_danificado"},
-        {"description": "Arquivo Incompleto", "value": "arquivo_incompleto"},
-        {"description": "Arquivo Incorreto", "value": "arquivo_incorreto"}
-    ]
+    opcoes = ("Arquivo danificado",
+              "Arquivo incompleto",
+              "Arquivo incorreto"
+              )
+
     form = DiligenciaForm()
     context = Context({"classificacoes": opcoes, 'form': form})
     rendered_template = template.render(context)
-
-    assert opcoes[0]['description'] in rendered_template
-    assert opcoes[1]['description'] in rendered_template
-    assert opcoes[2]['description'] in rendered_template
+    
+    assert opcoes[0] in rendered_template
+    assert opcoes[1] in rendered_template
+    assert opcoes[2] in rendered_template
 
 
 def test_opcoes_em_um_dropdown(template, client):

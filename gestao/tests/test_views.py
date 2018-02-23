@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 import datetime
 
 from django.core.urlresolvers import resolve
@@ -12,8 +12,29 @@ from gestao.forms import DiligenciaForm
 from gestao.models import Diligencia
 from adesao.models import Municipio
 from planotrabalho.models import OrgaoGestor
+from planotrabalho.models import SituacoesArquivoPlano
 
 pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture
+def situacoes():
+    """Cria situações dos arquivos do Plano Trabalho enviados no banco de testes"""
+    situacoes = (
+        (0, 'Em preenchimento'),
+        (1, 'Avaliando anexo'),
+        (2, 'Concluída'),
+        (3, 'Arquivo aprovado com ressalvas'),
+        (4, 'Arquivo danificado'),
+        (5, 'Arquivo incompleto'),
+        (6, 'Arquivo incorreto')
+    )
+
+    for situacao in situacoes:
+        SituacoesArquivoPlano.objects.create(id=situacao[0], descricao=situacao[1])
+
+    return SituacoesArquivoPlano.objects.all()
+
 
 @pytest.fixture
 def login(client):
@@ -203,7 +224,7 @@ def test_tipo_do_form_utilizado_na_diligencia_view(url, client, plano_trabalho):
 def test_invalido_form_para_post_diligencia(url, client, plano_trabalho, login):
     """ Testa se o form invalida post com dados errados """
 
-    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "bla", "texto_diligencia": ''})
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "", "texto_diligencia": ''})
 
     assert request.status_code == 400
 
@@ -235,25 +256,24 @@ def test_ente_federado_retornado_na_diligencia(url, client, plano_trabalho):
     assert request.context['ente_federado'] == plano_trabalho.usuario.municipio.estado.sigla
 
 
-def test_salvar_informacoes_no_banco(url, client, plano_trabalho, login):
+def test_salvar_informacoes_no_banco(url, client, plano_trabalho, login, situacoes):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
 
     response = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"),
-                           data={'classificacao_arquivo':'arquivo_incorreto',
-                                 'texto_diligencia':'bla'})
-
+                           data={'classificacao_arquivo': '4',
+                                 'texto_diligencia': 'bla'})
     diligencia = Diligencia.objects.first()
 
     assert Diligencia.objects.count() == 1
     assert diligencia.texto_diligencia == 'bla'
-    assert diligencia.classificacao_arquivo == 'arquivo_incorreto'
+    assert diligencia.classificacao_arquivo.id == 4
     assert isinstance(diligencia.componente, OrgaoGestor)
 
 
-def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login):
+def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login, situacoes):
     """ Testa se há o redirecionamento de página após o POST da diligência """
 
-    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": 'Ta errado cara'})
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "4", "texto_diligencia": 'Ta errado cara'})
     url_redirect = request.url.split('http://testserver/')
 
     assert url_redirect[1] == 'gestao/detalhar/municipio/{}'.format(plano_trabalho.usuario.id)
@@ -269,12 +289,13 @@ def test_arquivo_enviado_pelo_componente(url, client, plano_trabalho):
 
     assert request.context['arquivo'] == arquivo
 
+
 def test_arquivo_enviado_salvo_no_diretorio_do_componente(url, client, plano_trabalho, login):
     """ Testa se o arquivo enviando pelo componente está sendo salvo no
     diretório especifico dentro da pasta do ente federado."""
 
     arquivo = plano_trabalho.fundo_cultura.arquivo
-    
+
     assert arquivo.url == '/media/{id}/docs/{componente}/{arquivo}'.format(id=login.municipio.id,
                                                                           componente=plano_trabalho.fundo_cultura._meta.object_name.lower(),
                                                                           arquivo=plano_trabalho.fundo_cultura.arquivo.name.split('/')[3])
@@ -291,12 +312,12 @@ def test_exibicao_historico_diligencia(url, client, plano_trabalho):
     assert diferenca_listas == set()
 
 
-def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho, login):
+def test_captura_nome_usuario_logado_na_diligencia(url, client, plano_trabalho, login, situacoes):
     """
         Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
     """
 
-    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "arquivo_incorreto", "texto_diligencia": "Muito legal"})
+    request = client.post(url.format(id=plano_trabalho.id, componente="orgao_gestor"), data={"classificacao_arquivo": "4", "texto_diligencia": "Muito legal"})
 
     diligencia = Diligencia.objects.last()
 
