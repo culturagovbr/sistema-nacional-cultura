@@ -39,8 +39,8 @@
                   <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
                   <td>{{ usuario.plano_trabalho.orgao_gestor.data_final_estruturacao_secretaria }}</td>
                   <td>
-                    {% if usuario.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria %}
-                    <a href="{{ usuario.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria.url }}">Download</a>
+                    {% if usuario.plano_trabalho.orgao_gestor.arquivo %}
+                    <a href="{{ usuario.plano_trabalho.orgao_gestor.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">

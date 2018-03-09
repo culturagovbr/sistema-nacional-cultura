@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
 
 from . import views
 
@@ -128,5 +129,11 @@ urlpatterns = [
 
     # ajax mudança de cadastrador
     url(r'^ajax_cadastrador_cpf$', staff_member_required(views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
+
+
+    # Diligência de Componente
+
+    url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])', 
+        staff_member_required(views.diligencia_view), name="diligencia_componente")
 
     ]

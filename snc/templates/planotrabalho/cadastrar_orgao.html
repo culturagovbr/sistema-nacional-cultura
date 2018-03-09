@@ -13,18 +13,18 @@
   </h5>
 
   <div class="form-group">
-    <label for="{{ form.relatorio_atividade_secretaria.id_for_label }}">
+    <label for="{{ form.arquivo.id_for_label }}">
       Comprovação de criação do órgão gestor
     </label>
-    {% if form.relatorio_atividade_secretaria.value %}
-    <p><a href="{{ form.relatorio_atividade_secretaria.value.url }}">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao_relatorio_secretaria != 2 %}
-    <p>Modificar: {% render_field form.relatorio_atividade_secretaria %}</p>
+    {% if form.arquivo.value %}
+    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+    {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao.id != 2 %}
+    <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
-    <p>{% render_field form.relatorio_atividade_secretaria %}</p>
+    <p>{% render_field form.arquivo %}</p>
     {% endif %}
-    {{ form.relatorio_atividade_secretaria.errors }}
+    {{ form.arquivo.errors }}
   </div>
 
   <div class="alert alert-info" role="alert">

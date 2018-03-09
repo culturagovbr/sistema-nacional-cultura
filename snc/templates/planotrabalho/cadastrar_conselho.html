@@ -12,18 +12,18 @@
   </h5>
 
   <div class="form-group">
-    <label for="{{ form.ata_regimento_aprovado.id_for_label }}">
+    <label for="{{ form.arquivo.id_for_label }}">
       Ata da última reunião realizada pelo conselho
     </label>
-    {% if form.ata_regimento_aprovado.value %}
-    <p><a href="{{ form.ata_regimento_aprovado.value.url }}">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao_ata != 2 %}
-    <p>Modificar: {% render_field form.ata_regimento_aprovado %}</p>
+    {% if form.arquivo.value %}
+    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+    {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao.id != 2 %}
+    <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
-    <p>{% render_field form.ata_regimento_aprovado %}</p>
+    <p>{% render_field form.arquivo %}</p>
     {% endif %}
-    {{ form.ata_regimento_aprovado.errors }}
+    {{ form.arquivo.errors }}
   </div>
 
   <label for={{ form.data_final_instalacao_conselho.id_for_label }} class="col-sm-12">

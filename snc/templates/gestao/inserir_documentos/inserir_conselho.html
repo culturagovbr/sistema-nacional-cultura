@@ -39,8 +39,8 @@
                   <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
                   <td>{{ usuario.plano_trabalho.conselho_cultural.data_final_instalacao_conselho }}</td>
                   <td>
-                    {% if usuario.plano_trabalho.conselho_cultural.ata_regimento_aprovado %}
-                    <a href="{{ usuario.plano_trabalho.conselho_cultural.ata_regimento_aprovado.url }}">Download</a>
+                    {% if usuario.plano_trabalho.conselho_cultural.arquivo %}
+                    <a href="{{ usuario.plano_trabalho.conselho_cultural.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">

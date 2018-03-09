@@ -10,16 +10,16 @@
   </p>
 
   <div class="form-group">
-    <label for="{{ form.lei_sistema_cultura.id_for_label }}">Lei do Sistema de Cultura</label>
-    {% if form.lei_sistema_cultura.value %}
-    <p><a href="{{form.lei_sistema_cultura.value.url}}">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao_lei != 2 %}
-    <p>Modificar: {% render_field form.lei_sistema_cultura %}</p>
+    <label for="{{ form.arquivo.id_for_label }}">Lei do Sistema de Cultura</label>
+    {% if form.arquivo.value %}
+    <p><a href="{{form.arquivo.value.url}}">Baixar arquivo atual</a></p>
+    {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao.id != 2 %}
+    <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
-    <p>{% render_field form.lei_sistema_cultura %}</p>
+    <p>{% render_field form.arquivo %}</p>
     {% endif %}
-    {{ form.lei_sistema_cultura.errors }}
+    {{ form.arquivo.errors }}
   </div>
 
   <div class="alert alert-info" role="alert">

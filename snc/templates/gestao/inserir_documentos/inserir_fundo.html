@@ -41,8 +41,8 @@
                   <td>{{ usuario.plano_trabalho.fundo_cultura.cnpj_fundo_cultura }}</td>
                   <td>{{ usuario.plano_trabalho.fundo_cultura.data_final_instituicao_fundo_cultura }}</td>
                   <td>
-                    {% if usuario.plano_trabalho.fundo_cultura.lei_fundo_cultura %}
-                    <a href="{{ usuario.plano_trabalho.fundo_cultura.lei_fundo_cultura.url }}">Download</a>
+                    {% if usuario.plano_trabalho.fundo_cultura.arquivo %}
+                    <a href="{{ usuario.plano_trabalho.fundo_cultura.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">

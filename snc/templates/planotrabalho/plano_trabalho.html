@@ -39,8 +39,8 @@
       <p>
         Lei de Criação do Sistema de Cultura
       </p>
-      {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao_lei_sistema.id != 2 %}
-      {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao_lei_sistema.id == 1 %}
+      {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao.id != 2 %}
+      {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao.id == 1 %}
       <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:sistema' %}">Aguarda Análise</a>
       {% elif request.user.usuario.estado_processo == '6' %}
       <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:sistema' %}">Enviar Comprovação</a>
@@ -58,8 +58,8 @@
         <p>
           a) Órgão Gestor
         </p>
-        {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao_relatorio_secretaria.id != 2 %}
-        {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao_relatorio_secretaria.id == 1 %}
+        {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao.id != 2 %}
+        {% if request.user.usuario.plano_trabalho.orgao_gestor.situacao.id == 1 %}
         <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:gestor' %}">Aguarda Análise</a>
         {% elif request.user.usuario.estado_processo == '6' %}
         <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:gestor' %}" />Enviar Comprovação</a>
@@ -69,8 +69,8 @@
         <p>
           b) Conselho de Política Cultural
         </p>
-        {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao_ata.id != 2 %}
-        {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao_ata.id == 1 %}
+        {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao.id != 2 %}
+        {% if request.user.usuario.plano_trabalho.conselho_cultural.situacao.id == 1 %}
         <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:conselho' %}">Aguarda Análise</a>
         {% elif request.user.usuario.estado_processo == '6'%}
         <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:conselho' %}" >Enviar Comprovação</a>
@@ -80,8 +80,8 @@
         <p>
           c) Fundo de Cultura
         </p>
-        {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao_lei_plano.id != 2 %}
-        {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao_lei_plano.id == 1 %}
+        {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao.id != 2 %}
+        {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao.id == 1 %}
         <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:fundo' %}">Aguarda Análise</a>
         {% elif request.user.usuario.estado_processo == '6'%}
         <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:fundo' %}" >Enviar Comprovação</a>
@@ -98,8 +98,8 @@
         <p>
           Plano de Cultura
         </p>
-        {% if request.user.usuario.plano_trabalho.plano_cultura.situacao_lei_plano.id != 2 %}
-        {% if request.user.usuario.plano_trabalho.plano_cultura.situacao_lei_plano.id == 1 %}
+        {% if request.user.usuario.plano_trabalho.plano_cultura.situacao.id != 2 %}
+        {% if request.user.usuario.plano_trabalho.plano_cultura.situacao.id == 1 %}
         <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:plano' %}">Aguarda Análise</a>
         {% elif request.user.usuario.estado_processo == '6'%}
         <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:plano' %}" >Enviar Comprovação</a>

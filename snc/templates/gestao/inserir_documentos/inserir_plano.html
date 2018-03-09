@@ -41,8 +41,8 @@
                     {{ usuario.plano_trabalho.plano_cultura.data_final_sancao_lei_plano_cultura }}
                   </td>
                   <td>
-                    {% if usuario.plano_trabalho.plano_cultura.lei_plano_cultura %}
-                    <a href="{{ usuario.plano_trabalho.plano_cultura.lei_plano_cultura.url }}">Download</a>
+                    {% if usuario.plano_trabalho.plano_cultura.arquivo %}
+                    <a href="{{ usuario.plano_trabalho.plano_cultura.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">

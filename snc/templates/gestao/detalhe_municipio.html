@@ -123,7 +123,7 @@
   </div>
 
   <div class="panel-body">
-  {% if object.plano_trabalho.criacao_sistema.lei_sistema_cultura %}
+  {% if object.plano_trabalho.criacao_sistema.arquivo %}
     <div class="list-group row">
         <div class="col-md-12">
             <div  class="list-group-item col-xs-8">
@@ -131,20 +131,20 @@
             </div>
 
             <div class="list-group-item col-xs-2 text-center">
-              <a href="{{ object.plano_trabalho.criacao_sistema.lei_sistema_cultura.url }}">Download</a>
+              <a href="{{ object.plano_trabalho.criacao_sistema.arquivo.url}}">Download</a>
             </div>
-        {% if object.plano_trabalho.criacao_sistema.situacao_lei_sistema_id == 1 %}
+        {% if object.plano_trabalho.criacao_sistema.situacao.id == 1 %}
 
               <div class="list-group-item col-xs-1 text-center ">
-                <a data-toggle="modal" data-target="#criacaosistema"><i class="fa fa-thumbs-down"></i></a>
+                <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='criacao_sistema' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
             </div>
 
             <div class="list-group-item col-xs-1 text-center">
-                <a href="{% url 'gestao:concluir_etapa' 'criacao_sistema' 'situacao_lei_sistema_id' usuario.id %}"><i class="fa fa-thumbs-up"></i></a>
+                <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='criacao_sistema' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
             </div>
             {% else %}
             <div class="list-group-item col-xs-2 text-center">
-                <b>{{ object.plano_trabalho.criacao_sistema.situacao_lei_sistema.descricao }}</b>
+                <b>{{ object.plano_trabalho.criacao_sistema.situacao.descricao }}</b>
             </div>
         {% endif %}
 
@@ -152,7 +152,7 @@
     </div>
   {% endif %}
 
-    {% if object.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria %}
+    {% if object.plano_trabalho.orgao_gestor.arquivo %}
     <div class="list-group row">
       <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -160,20 +160,20 @@
           </div>
 
           <div class="list-group-item col-xs-2 text-center">
-            <a href="{{ object.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria.url }}">Download</a>
+            <a href="{{ object.plano_trabalho.orgao_gestor.arquivo.url }}">Download</a>
           </div>
-          {% if object.plano_trabalho.orgao_gestor.situacao_relatorio_secretaria.id == 1 %}
+          {% if object.plano_trabalho.orgao_gestor.situacao.id  == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a data-toggle="modal" data-target="#orgaogestorr"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='orgao_gestor' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:concluir_etapa' 'orgao_gestor' 'situacao_relatorio_secretaria_id' usuario.id %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='orgao_gestor' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.plano_trabalho.orgao_gestor.situacao_relatorio_secretaria.descricao }}</b>
+              <b>{{ object.plano_trabalho.orgao_gestor.situacao.descricao }}</b>
           </div>
           {% endif %}
 
@@ -181,7 +181,7 @@
     </div>
     {% endif %}
 
-    {% if object.plano_trabalho.conselho_cultural.ata_regimento_aprovado %}
+    {% if object.plano_trabalho.conselho_cultural.arquivo %}
     <div class="list-group row">
       <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -189,20 +189,20 @@
           </div>
 
           <div class="list-group-item col-xs-2 text-center">
-            <a href="{{ object.plano_trabalho.conselho_cultural.ata_regimento_aprovado.url }}">Download</a>
+            <a href="{{ object.plano_trabalho.conselho_cultural.arquivo.url }}">Download</a>
           </div>
-          {% if object.plano_trabalho.conselho_cultural.situacao_ata.id == 1 %}
+          {% if object.plano_trabalho.conselho_cultural.situacao.id == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a  data-toggle="modal" data-target="#conselhocultural"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='conselho_cultural' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:concluir_etapa' 'conselho_cultural' 'situacao_ata_id' usuario.id %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='conselho_cultural' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.plano_trabalho.conselho_cultural.situacao_ata.descricao }}</b>
+              <b>{{ object.plano_trabalho.conselho_cultural.situacao.descricao }}</b>
           </div>
           {% endif %}
 
@@ -210,7 +210,7 @@
     </div>
     {% endif %}
 
-    {% if object.plano_trabalho.fundo_cultura.lei_fundo_cultura %}
+    {% if object.plano_trabalho.fundo_cultura.arquivo %}
     <div class="list-group row">
        <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -218,20 +218,20 @@
           </div>
 
           <div class="list-group-item col-xs-2 text-center">
-            <a href="{{ object.plano_trabalho.fundo_cultura.lei_fundo_cultura.url }}">Download</a>
+            <a href="{{ object.plano_trabalho.fundo_cultura.arquivo.url }}">Download</a>
           </div>
-          {% if object.plano_trabalho.fundo_cultura.situacao_lei_plano.id == 1 %}
+          {% if object.plano_trabalho.fundo_cultura.situacao.id == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a data-toggle="modal" data-target="#fundocultura"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='fundo_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:concluir_etapa' 'fundo_cultura' 'situacao_lei_plano_id' usuario.id %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='fundo_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.plano_trabalho.fundo_cultura.situacao_lei_plano.descricao }}</b>
+              <b>{{ object.plano_trabalho.fundo_cultura.situacao.descricao }}</b>
           </div>
           {% endif %}
 
@@ -241,7 +241,7 @@
 
 
 
-    {% if object.plano_trabalho.plano_cultura.lei_plano_cultura %}
+    {% if object.plano_trabalho.plano_cultura.arquivo %}
     <div class="list-group row">
         <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -249,20 +249,20 @@
           </div>
 
           <div class="list-group-item col-xs-2 text-center">
-            <a href="{{ object.plano_trabalho.plano_cultura.lei_plano_cultura.url }}">Download</a>
+            <a href="{{ object.plano_trabalho.plano_cultura.arquivo.url}}">Download</a>
           </div>
-          {% if object.plano_trabalho.plano_cultura.situacao_lei_plano.id == 1 %}
+          {% if object.plano_trabalho.plano_cultura.situacao.id == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a data-toggle="modal" data-target="#planocultura"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='plano_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:concluir_etapa' 'plano_cultura' 'situacao_lei_plano_id' usuario.id %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='plano_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.plano_trabalho.plano_cultura.situacao_lei_plano.descricao }}</b>
+              <b>{{ object.plano_trabalho.plano_cultura.situacao.descricao }}</b>
           </div>
           {% endif %}
 

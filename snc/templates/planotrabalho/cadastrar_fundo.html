@@ -20,18 +20,18 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form.lei_fundo_cultura.id_for_label }}">
+    <label for="{{ form.arquivo.id_for_label }}">
       Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
     </label>
-    {% if form.lei_fundo_cultura.value %}
-    <p><a href="{{ form.lei_fundo_cultura.value.url }}">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao_lei_plano != 2 %}
-    <p>Modificar: {% render_field form.lei_fundo_cultura %}</p>
+    {% if form.arquivo.value %}
+    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+    {% if request.user.usuario.plano_trabalho.fundo_cultura.situacao.id != 2 %}
+    <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
-    <p>{% render_field form.lei_fundo_cultura %}</p>
+    <p>{% render_field form.arquivo %}</p>
     {% endif %}
-    {{ form.lei_fundo_cultura.errors }}
+    {{ form.arquivo.errors }}
   </div>
 
   <div class="alert alert-info" role="alert">

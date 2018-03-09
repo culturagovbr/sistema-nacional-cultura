@@ -1,0 +1,58 @@
+{% extends 'gestao/base_gestao.html' %} {% block content %}
+
+<style>
+	#painel-diligencia{
+		background-color: #eee;
+		margin-top: 2rem;
+		width: 83.5rem;
+	}
+
+	#lista-diligencia{
+		margin-bottom: 2rem;
+	}
+</style>
+
+<div id="painel-diligencia" class="row panel panel-default">
+	<div class="panel-body">
+		<h2>Informações sobre o Arquivo Enviado</h2>				
+		<p><b>Ente Federado:</b> {{ ente_federado }}</p>
+		<p><b>Data de Envio do Arquivo:</b> {{ data_envio }}</p>
+		<a href = {{arquivo.url}}> <b>Download do arquivo</b></a> 
+	</div>
+</div>
+
+<div class="row">
+	<form method="POST">
+		{% csrf_token %}
+		{{form.texto_diligencia}}
+		<br>
+		<b>Classificação do Arquivo:</b> {{form.classificacao_arquivo}}
+		{{form.media}}
+		<br><br>
+		<input class="btn btn-primary" type="submit"></input>			
+		<a href="{% url 'gestao:detalhar' pk=usuario_id %}" class="btn btn-danger">Cancelar</a>			
+	</form>
+</div>
+<br>
+
+{% if historico_diligencias %}
+	<div class="row panel panel-info">
+		<div class="panel-heading">
+			Histórico de Diligências						
+		</div>
+
+		{% for diligencia in historico_diligencias %}
+		<div id="lista-diligencia" class="col-md-12">
+			<ul class="list-group"></ul>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.classificacao_arquivo.descricao}}</li>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
+			</ul>
+		</div>
+		{% endfor %}
+
+	</div>
+{% endif %}
+
+{% endblock %}
