@@ -70,10 +70,12 @@ def testa_envio_email_em_esqueceu_senha(client):
 
 
 def testa_template_em_esqueceu_senha(client):
+    '''
+    Testa qual template é utilizado na tela de redefinição de senha.
+    '''
 
     response = client.get('/password_reset/')
 
     assert response.template_name == 'registration/password_reset_form.html' 
 
-    # Pelo fato de o template padrão do django ter esse mesmo nome fizemos uma validação a mais
     assert "Sistema Nacional de Cultura"  in response.rendered_content
