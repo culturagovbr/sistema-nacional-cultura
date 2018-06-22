@@ -1,4 +1,7 @@
 import pytest
+from datetime import datetime
+
+from django.utils import timezone
 
 from model_mommy import mommy
 
@@ -7,6 +10,7 @@ from adesao.models import Usuario
 from adesao.models import Municipio
 from adesao.models import Secretario
 from adesao.models import Responsavel
+from adesao.models import SistemaCulturaManager
 from planotrabalho.models import PlanoTrabalho
 
 
@@ -36,6 +40,21 @@ def test_atributo_uf_de_um_SistemaCultura():
     sistema = SistemaCultura()
 
     assert sistema._meta.get_field('uf')
+
+
+def test_atributo_data_criacao_de_um_SistemaCultura():
+
+    sistema = SistemaCultura()
+
+    assert sistema._meta.get_field('data_criacao')
+
+
+def test_timezone_now_data_criacao_SistemaCultura():
+
+    sistema = SistemaCultura()
+
+    assert sistema.data_criacao.replace(second=0, microsecond=0) ==\
+        timezone.now().replace(second=0, microsecond=0)
 
 
 def test_alterar_cadastrador_SistemaCultura(plano_trabalho):
@@ -78,3 +97,20 @@ def test_limpa_cadastrador_alterado_SistemaCultura(plano_trabalho):
     assert cadastrador.responsavel is None
     assert cadastrador.user.is_active is False
 
+
+def test_manager_usado_SistemaCultura():
+    """ Testa se a model SistemaCultura utiliza o manager correto """
+
+    assert isinstance(SistemaCultura.objects.db_manager(), SistemaCulturaManager)
+
+
+def test_retorna_ativo_SistemaCultura():
+    """ Retorna o último Sistema cultura criado sendo ele o ativo """
+
+    mommy.make('SistemaCultura',
+               data_criacao=datetime(2018, 2, 3, 0, tzinfo=timezone.utc))
+    sistema_ativo = mommy.make('SistemaCultura')
+
+    assert SistemaCultura.objects.ativo() == sistema_ativo
+
+    SistemaCultura.objects.all().delete()

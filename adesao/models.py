@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
@@ -167,6 +168,11 @@ class Historico(models.Model):
     descricao = models.TextField(blank=True, null=True)
 
 
+class SistemaCulturaManager(models.Manager):
+    def ativo(self):
+        return self.latest('data_criacao')
+
+
 class SistemaCultura(models.Model):
     """
     Entidade que representa um Sistema de Cultura
@@ -175,6 +181,8 @@ class SistemaCultura(models.Model):
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True)
     cidade = models.ForeignKey("Cidade", on_delete=models.SET_NULL, null=True)
     uf = models.ForeignKey("Uf", on_delete=models.SET_NULL, null=True)
+    data_criacao = models.DateTimeField(default=timezone.now)
+    objects = SistemaCulturaManager()
 
     def limpa_cadastrador_alterado(self, cadastrador):
         """
