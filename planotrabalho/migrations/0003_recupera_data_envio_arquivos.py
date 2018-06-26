@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db import migrations, models
 
 
-def recupera_data(apps):
+def recupera_data(apps, schema_editor):
 
     PlanoTrabalho = apps.get_model("planotrabalho", "PlanoTrabalho")
     componentes = (
