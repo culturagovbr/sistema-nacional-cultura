@@ -1,18 +1,15 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 certifi = "==2017.7.27.1"
 chardet = "==3.0.4"
 coreapi = "==2.3.3"
 coreschema = "==0.0.4"
 defusedxml = "==0.5.0"
-django = "==2.0.4"
+django = "*"
 django-ckeditor = "*"
 django-cors-headers = "==2.2.0"
 django-environ = "==0.4.4"
@@ -29,21 +26,19 @@ itypes = "==1.1.0"
 "jinja2" = "==2.9.6"
 markupsafe = "==1.0"
 openapi-codec = "==1.3.2"
-"psycopg2" = "==2.7.2"
 raven = "*"
 drf-hal-json = { git = "https://github.com/Artory/drf-hal-json" }
 xlsxwriter = "==1.0.2"
 xlwt = "==1.3.0"
 django-autocomplete-light = "*"
 "psycopg2-binary" = "*"
-coverage = "*"
-pytest-cov = "*"
-
+django-extensions = "*"
 
 [dev-packages]
-
-pytest = "==3.5.1"
-pytest-django = "==3.2.1"
+pytest = "*"
+pytest-django = "*"
+pytest-cov = "*"
+coverage = "*"
 model-mommy = "*"
 pyflakes = "==1.6.0"
 pygments = "==2.2.0"
@@ -52,5 +47,5 @@ pygments = "==2.2.0"
 "pep257" = "==0.5.0"
 "pep8" = "==1.5.7"
 mccabe = "==0.6"
-django-extensions = "==2.0.6"
+django-extensions = "*"
 ipdb = "*"
