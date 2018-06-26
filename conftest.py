@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime
+from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
@@ -50,7 +50,7 @@ def login(client):
 
     login = client.login(username=user.username, password='123456')
 
-    yield
+    yield usuario
 
     client.logout()
     usuario.secretario.delete()
@@ -84,7 +84,7 @@ def plano_trabalho(login):
     Cria um plano de trabalho associado a um usuário comum.
     """
 
-    usuario = Usuario.objects.first()
+    usuario = login
     situacao = SituacoesArquivoPlano.objects.first()
     conselho_cultural = mommy.make('ConselhoCultural', situacao_ata=situacao)
     fundo_cultura = mommy.make('FundoCultura', situacao_lei_plano=situacao)
@@ -102,7 +102,7 @@ def plano_trabalho(login):
 
     usuario.municipio = ente_federado
     usuario.plano_trabalho = plano_trabalho
-    usuario.data_publicacao_acordo = datetime.today()
+    usuario.data_publicacao_acordo = date.today()
     usuario.save()
 
     componentes = (
