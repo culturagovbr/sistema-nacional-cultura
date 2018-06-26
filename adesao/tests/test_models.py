@@ -38,6 +38,24 @@ def test_atributo_uf_de_um_SistemaCultura():
     assert sistema._meta.get_field('uf')
 
 
+def test_SistemaCultura_save_cria_nova_instancia():
+    """
+    SistemaCultura deve sempre retornar uma nova instancia quando da tentativa
+    de salvar os dados de uma instancia existente.
+    """
+
+    sistema = mommy.make('SistemaCultura')
+    user = mommy.make('Usuario')
+
+    sistema.cadastrador = user
+    sistema.save()
+
+    assert SistemaCultura.objects.count() == 2
+
+    user.delete()
+    [sistema.delete() for sistema in SistemaCultura.objects.all()]
+
+
 def test_alterar_cadastrador_SistemaCultura(plano_trabalho):
     """ Testa método alterar_cadastrador da model SistemaCultura"""
 

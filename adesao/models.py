@@ -176,6 +176,33 @@ class SistemaCultura(models.Model):
     cidade = models.ForeignKey("Cidade", on_delete=models.SET_NULL, null=True)
     uf = models.ForeignKey("Uf", on_delete=models.SET_NULL, null=True)
 
+    def compara_valores(self, obj_anterior, propriedade):
+        """
+        Compara os valores de determinada propriedade entre dois objetos.
+        """
+
+        return getattr(obj_anterior, propriedade.attname) == getattr(self, propriedade.attname)
+
+    def save(self, *args, **kwargs):
+        """
+        Salva uma nova instancia de SistemaCultura sempre que alguma informação
+        é alterada.
+        """
+
+        if self.pk:
+            fields = self._meta.fields[1:]
+            anterior = SistemaCultura.objects\
+                    .get(pk=self.pk)
+
+            comparacao = (self.compara_valores(anterior, field) for field in
+                          fields)
+
+            if False in comparacao:
+                self.pk = None
+
+        super(SistemaCultura, self).save(*args, **kwargs)
+
+
     def limpa_cadastrador_alterado(self, cadastrador):
         """
         Remove referência do cadastrador alterado para as tabelas PlanoTrabalho,
