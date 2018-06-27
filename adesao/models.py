@@ -154,6 +154,44 @@ class Usuario(models.Model):
     def __str__(self):
         return self.user.username
 
+    def limpa_cadastrador(self):
+        """
+        Remove referência do cadastrador alterado para as tabelas PlanoTrabalho,
+        Secretario, Reponsavel e Municipio
+        """
+        self.plano_trabalho = None
+        self.municipio = None
+        self.responsavel = None
+        self.secretario = None
+        self.user.save()
+
+        self.save()
+
+    def transfere_propriedade(self, propriedade, valor):
+        """
+        Transfere um determinado valor para uma propriedade da instancia de
+        Usuario
+        """
+        setattr(self, propriedade, valor)
+
+    def recebe_permissoes_sistema_cultura(self, usuario):
+        """
+        Recebe de um outro usuário o seu PlanoTrabalho, Municipio, Secretario,
+        Responsavel, DataPublicacaoAcordo e EstadoProcesso.
+        """
+
+
+        propriedades = ("plano_trabalho", "municipio", "secretario",
+                        "responsavel", "data_publicacao_acordo",
+                        "estado_processo")
+
+        for propriedade in propriedades:
+            valor = getattr(usuario, propriedade, None)
+            self.transfere_propriedade(propriedade, valor)
+
+        usuario.limpa_cadastrador()
+        self.save()
+
 
 class Historico(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
@@ -181,7 +219,7 @@ class SistemaCultura(models.Model):
         Compara os valores de determinada propriedade entre dois objetos.
         """
 
-        return getattr(obj_anterior, propriedade.attname) == getattr(self, propriedade.attname)
+        return getattr(obj_anterior, propriedade) == getattr(self, propriedade)
 
     def save(self, *args, **kwargs):
         """
@@ -194,50 +232,22 @@ class SistemaCultura(models.Model):
             anterior = SistemaCultura.objects\
                     .get(pk=self.pk)
 
-            comparacao = (self.compara_valores(anterior, field) for field in
+            comparacao = (self.compara_valores(anterior, field.attname) for field in
                           fields)
 
             if False in comparacao:
                 self.pk = None
 
+            if not self.compara_valores(anterior, "cadastrador"):
+                self.alterar_cadastrador(anterior.cadastrador)
+
         super(SistemaCultura, self).save(*args, **kwargs)
 
-
-    def limpa_cadastrador_alterado(self, cadastrador):
+    def alterar_cadastrador(self, cadastrador_atual):
         """
-        Remove referência do cadastrador alterado para as tabelas PlanoTrabalho,
-        Secretario, Reponsavel e Municipio
+        Altera cadastrador de um ente federado fazendo as alterações 
+        necessárias nas models associadas ao cadastrador, gerando uma nova
+        versão do sistema cultura
         """
-        cadastrador.plano_trabalho = None
-        cadastrador.municipio = None
-        cadastrador.responsavel = None
-        cadastrador.secretario = None
-        cadastrador.user.is_active = False
-        cadastrador.user.save()
-
-        return cadastrador.save()
-
-    def alterar_cadastrador(self):
-        """
-        Altera cadastrador de um ente federado fazendo as alterações necessárias
-        nas models associadas ao cadastrador, gerando uma nova versão do sistema cultura
-        """
-        if self.cidade:
-            ente_federado = Municipio.objects.get(cidade=self.cidade)
-        else:
-            ente_federado = Municipio.objects.get(estado=self.uf)
-
-        cadastrador_atual = ente_federado.usuario
-        cadastrador_novo = self.cadastrador
-
-        cadastrador_novo.plano_trabalho = cadastrador_atual.plano_trabalho
-        cadastrador_novo.municipio = ente_federado
-        cadastrador_novo.secretario = cadastrador_atual.secretario
-        cadastrador_novo.responsavel = cadastrador_atual.responsavel
-        cadastrador_novo.data_publicacao_acordo = cadastrador_atual.\
-                                                    data_publicacao_acordo
-        cadastrador_novo.estado_processo = cadastrador_atual.estado_processo
-        self.limpa_cadastrador_alterado(cadastrador_atual)
-        cadastrador_novo.save()
-
-        return self.save()
+        cadastrador = self.cadastrador
+        cadastrador.recebe_permissoes_sistema_cultura(cadastrador_atual)

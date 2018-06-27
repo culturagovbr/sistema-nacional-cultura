@@ -295,7 +295,6 @@ def test_arquivo_enviado_salvo_no_diretorio_do_componente(
     diretório especifico dentro da pasta do ente federado."""
 
     arquivo = plano_trabalho.fundo_cultura.arquivo
-    login = Usuario.objects.first()
 
     assert arquivo.url == "/media/{id}/docs/{componente}/{arquivo}".format(
         id=login.municipio.id,

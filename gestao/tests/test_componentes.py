@@ -17,7 +17,6 @@ def usuario(plano_trabalho):
     """ Retorna um usuario associado a um
     plano de trabalho e um ente_federado """
 
-    plano_trabalho = PlanoTrabalho.objects.first()
     return plano_trabalho.usuario
 
 @pytest.fixture
