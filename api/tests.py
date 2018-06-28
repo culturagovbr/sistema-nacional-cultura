@@ -54,6 +54,17 @@ def plano_trabalho():
 
 
 @pytest.fixture
+def entes_municipais_estaduais():
+    estadual = mommy.make('Municipio')
+    cidade = mommy.make('Cidade')
+    municipio = mommy.make('Municipio', cidade=cidade)
+
+    yield estadual, municipio
+
+    estadual.delete()
+    municipio.delete()
+
+@pytest.fixture
 def sistema_de_cultura(plano_trabalho):
     municipio = mommy.make('Municipio')
     mommy.make('Usuario', municipio=municipio, plano_trabalho=plano_trabalho,
@@ -653,3 +664,29 @@ def test_choices_situacao_conselheiro(client):
         situacao_list.append({'id': situacao[0], 'description': situacao[1]})
 
     assert request.data['conselho']['situacao']['choices'] == situacao_list
+
+
+def test_retorno_sistemas_cultura_municipios(client, entes_municipais_estaduais):
+    """ Testa retorno de sistema culturas que são referentes a adesões
+    de entes federados municipais """
+    estado, municipio = entes_municipais_estaduais
+    url = url_sistemadeculturalocal + '?municipal=true'
+
+    response = client.get(url)
+    municipio_response = response.data['_embedded']['items'][0]['ente_federado']['localizacao']['cidade']['nome_municipio']
+
+    assert len(response.data['_embedded']['items']) == 1
+    assert municipio_response == municipio.cidade.nome_municipio
+ 
+def test_retorno_sistemas_cultura_estados(client, entes_municipais_estaduais):
+    """ Testa retorno de sistema culturas que são referentes a adesões
+    de entes federados estaduais """
+    estadual, municipio = entes_municipais_estaduais
+    url = url_sistemadeculturalocal + '?estadual=true'
+
+    response = client.get(url)
+    municipio_response = response.data['_embedded']['items'][0]['ente_federado']['localizacao']['estado']['sigla']
+
+    assert len(response.data['_embedded']['items']) == 1
+    assert municipio_response == estadual.estado.sigla
+ 
