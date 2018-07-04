@@ -321,7 +321,7 @@ class AcompanharSistema(ListView):
 
         if anexo == 'lei_sistema_cultura':
             usuarios = usuarios.filter(
-                plano_trabalho__criacao_sistema__situacao_lei_sistema=1)
+                plano_trabalho__criacao_sistema__situacao=1)
             usuarios = usuarios.exclude(
                 plano_trabalho__criacao_sistema__lei_sistema_cultura='')
         else:
@@ -343,7 +343,7 @@ class AcompanharOrgao(ListView):
         usuarios = Usuario.objects.filter(estado_processo='6')
         usuarios = usuarios.exclude(plano_trabalho__orgao_gestor=None)
         usuarios = usuarios.filter(
-            plano_trabalho__orgao_gestor__situacao_relatorio_secretaria=1)
+            plano_trabalho__orgao_gestor__situacao=1)
         usuarios = usuarios.exclude(
             plano_trabalho__orgao_gestor__relatorio_atividade_secretaria='')
         if q:
@@ -361,7 +361,7 @@ class AcompanharConselho(ListView):
         usuarios = Usuario.objects.filter(estado_processo='6')
         usuarios = usuarios.exclude(plano_trabalho__conselho_cultural=None)
         usuarios = usuarios.filter(
-            plano_trabalho__conselho_cultural__situacao_ata=1)
+            plano_trabalho__conselho_cultural__situacao=1)
         usuarios = usuarios.exclude(
             plano_trabalho__conselho_cultural__ata_regimento_aprovado='')
         if q:
@@ -379,7 +379,7 @@ class AcompanharFundo(ListView):
         usuarios = Usuario.objects.filter(estado_processo='6')
         usuarios = usuarios.exclude(plano_trabalho__fundo_cultura=None)
         usuarios = usuarios.filter(
-            plano_trabalho__fundo_cultura__situacao_lei_plano=1)
+            plano_trabalho__fundo_cultura__situacao=1)
         usuarios = usuarios.exclude(
             plano_trabalho__fundo_cultura__lei_fundo_cultura='')
         if q:
@@ -402,7 +402,7 @@ class AcompanharPlano(ListView):
 
         if anexo == 'lei_plano_cultura':
             usuarios = usuarios.filter(
-                plano_trabalho__plano_cultura__situacao_lei_plano=1)
+                plano_trabalho__plano_cultura__situacao=1)
             usuarios = usuarios.exclude(
                 plano_trabalho__plano_cultura__lei_plano_cultura='')
         else:
