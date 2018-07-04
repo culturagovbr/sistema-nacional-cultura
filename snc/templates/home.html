@@ -1,79 +1,80 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
-<h2>{% blocktrans %}Título da tela home{% endblocktrans %}
+<h2>{% blocktrans %}Bem Vindo ao Sistema Nacional Cultura{% endblocktrans %}
   <a class="anchorjs-link" href="#auto-truncating">
     <span class="anchorjs-icon"></span>
   </a>
 </h2>
 {% if request.user.usuario.estado_processo == '0' %}
-<div class="alert alert-info" role="alert">
-  <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
-  <a href="{% url 'adesao:alterar_cadastrador' %}" target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
-  - Preencha com os dados do novo responsável e do prefeito.<br>
-  - Encaminhe para assinatura do prefeito. <br>
-  - Digitalize e envie para nosso email: acordosnc@cultura.gov.br
-</div>
-<p>{% blocktrans %}Primeiro parágrafo da mensagem da tela home{% endblocktrans %}</p>
-<p>{% blocktrans %}Segundo parágrafo da mensagem da tela home{% endblocktrans %}</p>
-{% elif request.user.usuario.estado_processo == '1' %} {% include "conclusao_cadastro.html" %} {% elif request.user.usuario.estado_processo == '2' %}
-<p>
-  Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
-</p>
+  <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura (SNC) é um instrumento 
+  de gestão compartilhada de políticas públicas de cultura entre os ente federados e a sociedade civil. 
+  Seu principal objetivo é fortalecer as políticas culturais da União, Estados, Distrito Federal e Municípios 
+  por meio da institucionalização e amplificação da participação social para promover desenvolvimento - humano,
+  social e econômico - com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
+  <p style="text-align: justify;">{% blocktrans %}Clique nas abas "Ente Federado", "Interlocutor" e "Responsável" 
+  e preencha as informações para gerar o Acordo de Cooperação Federativa e a Solicitação de Integração ao SNC.
+  {% endblocktrans %}</p>
+{% elif request.user.usuario.estado_processo == '1' %} 
+  {% include "conclusao_cadastro.html" %} 
+{% elif request.user.usuario.estado_processo == '2' %}
+  <p>
+    Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
+  </p>
 
-<p>
-  Nossa equipe realizará os procedimentos necessários à sua adesão.
-</p>
+  <p>
+    Nossa equipe realizará os procedimentos necessários à sua adesão.
+  </p>
 
-<p>
-  Aguarde nosso contato.
-</p>
+  <p>
+    Aguarde nosso contato.
+  </p>
 
-<p>
-  Atenciosamente,
-  <br> Equipe SNC
-</p>
+  <p>
+    Atenciosamente,
+    <br> Equipe SNC
+  </p>
 {% elif request.user.usuario.estado_processo == '3' %}
-<p>
-  Consta em nossos registros a pendência da seguinte documentação física necessária para
-  efetivar a Adesão ao SNC:<br><br>
-  <strong>{{ historico.0.descricao }}</strong>
-</p>
+  <p>
+    Consta em nossos registros a pendência da seguinte documentação física necessária para
+    efetivar a Adesão ao SNC:<br><br>
+    <strong>{{ historico.0.descricao }}</strong>
+  </p>
 
-<p>
-  <font color="red">Seu prazo para o envio é de <strong>30 dias</strong> corridos.</font>
-</p>
+  <p>
+    <font color="red">Seu prazo para o envio é de <strong>30 dias</strong> corridos.</font>
+  </p>
 
-<p>
-  Atenciosamente,<br>
-  Equipe SNC
-</p>
+  <p>
+    Atenciosamente,<br>
+    Equipe SNC
+  </p>
 {% elif request.user.usuario.estado_processo == '4' %}
-<p>
-  Prezad@ {{ request.user.usuario.nome_usuario }},
-</p>
-<p>
-  O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante do ministério na assinatura do acordo. Em seguida, providenciaremos a publicação no Diário Oficial da União.
-</p>
-<p>
-  Aguarde nosso contato.
-</p>
-<p>
-  Atenciosamente,<br>
-  Equipe SNC
-</p>
+  <p>
+    Prezad@ {{ request.user.usuario.nome_usuario }},
+  </p>
+  <p>
+    O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante do ministério na assinatura do acordo. Em seguida, providenciaremos a publicação no Diário Oficial da União.
+  </p>
+  <p>
+    Aguarde nosso contato.
+  </p>
+  <p>
+    Atenciosamente,<br>
+    Equipe SNC
+  </p>
 {% elif request.user.usuario.estado_processo == '5' %}
-<p>
-  Prezad@ {{ request.user.usuario.nome_usuario }}
-</p>
-<p>
-  Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no Diário Oficial da União.
-</p>
-<p>
-  Aguarde nosso contato.
-</p>
-<p>
-  Atenciosamente,<br>
-  Equipe SNC
-</p>
+  <p>
+    Prezad@ {{ request.user.usuario.nome_usuario }}
+  </p>
+  <p>
+    Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no Diário Oficial da União.
+  </p>
+  <p>
+    Aguarde nosso contato.
+  </p>
+  <p>
+    Atenciosamente,<br>
+    Equipe SNC
+  </p>
 {% elif request.user.usuario.estado_processo == '6' %}
   <p>
     Parabéns! Seu Acordo de Cooperação Federativa foi publicado no Diário Oficial da União (DOU).
