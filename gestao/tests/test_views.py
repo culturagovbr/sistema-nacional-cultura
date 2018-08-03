@@ -744,25 +744,39 @@ def test_filtra_ufs_por_nome(client):
 def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
                                                     login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
-    por data de envio do componente prioritário CriacaoSistema"""
+    por data de envio mais antiga entre os componentes"""
 
-    user = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
-    user.plano_trabalho.criacao_sistema = mommy.make('CriacaoSistema')
-    user.plano_trabalho.save()
-    user.plano_trabalho.criacao_sistema.situacao = SituacoesArquivoPlano.objects.get(pk=1)
-    user.plano_trabalho.criacao_sistema.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.criacao_sistema.save()
+    user_sem_analise_recente = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_sem_analise_recente.plano_trabalho.criacao_sistema = mommy.make('CriacaoSistema')
+    user_sem_analise_recente.plano_trabalho.save()
+    user_sem_analise_recente.plano_trabalho.criacao_sistema.situacao = SituacoesArquivoPlano.objects.get(pk=1)
+    user_sem_analise_recente.plano_trabalho.criacao_sistema.data_envio = datetime.date(2018, 1, 1)
+    user_sem_analise_recente.plano_trabalho.criacao_sistema.save()
+
+    user_sem_analise_antigo = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_sem_analise_antigo.plano_trabalho.orgao_gestor = mommy.make('OrgaoGestor')
+    user_sem_analise_antigo.plano_trabalho.save()
+    user_sem_analise_antigo.plano_trabalho.orgao_gestor.situacao = SituacoesArquivoPlano.objects.get(pk=1)
+    user_sem_analise_antigo.plano_trabalho.orgao_gestor.data_envio = datetime.date(2017, 1, 1)
+    user_sem_analise_antigo.plano_trabalho.orgao_gestor.save()
+
+    user_com_analise_antigo = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_com_analise_antigo.plano_trabalho.fundo_cultura = mommy.make('FundoCultura')
+    user_com_analise_antigo.plano_trabalho.save()
+    user_com_analise_antigo.plano_trabalho.fundo_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=2)
+    user_com_analise_antigo.plano_trabalho.fundo_cultura.data_envio = datetime.date(2016, 1, 1)
+    user_com_analise_antigo.plano_trabalho.fundo_cultura.save()
 
     url = reverse('gestao:acompanhar_adesao')
     response = client.get(url)
 
-    assert response.context_data['object_list'][0] == user.municipio
+    assert response.context_data['object_list'][0] == user_sem_analise_antigo.municipio
 
 
 def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho,
                                                    login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
-    por data de envio do componente prioritário CriacaoSistema e
+    por data de envio mais antiga entre os componentes e
     estado do processo da adesão """
 
     user = mommy.make('Usuario', estado_processo=1,

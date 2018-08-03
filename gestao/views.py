@@ -3,7 +3,8 @@ from threading import Thread
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 
-from django.db.models import Q, Case, When, BooleanField
+from django.db.models import Q, Case, When, BooleanField, DateField
+from django.db.models.functions import Least
 
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -192,12 +193,35 @@ class AcompanharAdesao(ListView):
             entes = Municipio.objects.all()
 
         entes = entes.annotate(
-            concluido=Case(
-                When(usuario__plano_trabalho__criacao_sistema__situacao=1, then=True),
+            data_lei_sem_analise=Case(
+                When(usuario__plano_trabalho__criacao_sistema__situacao=1, then='usuario__plano_trabalho__criacao_sistema__data_envio'),
                 default=None,
-                output_field=BooleanField(),
+                output_field=DateField(),
             ),
-        ).order_by('concluido', '-usuario__estado_processo', 'usuario__plano_trabalho__criacao_sistema__data_envio')
+             data_orgao_sem_analise=Case(
+                When(usuario__plano_trabalho__orgao_gestor__situacao=1, then='usuario__plano_trabalho__orgao_gestor__data_envio'),
+                default=None,
+                output_field=DateField(),
+            ),
+             data_conselho_sem_analise=Case(
+                When(usuario__plano_trabalho__conselho_cultural__situacao=1, then='usuario__plano_trabalho__conselho_cultural__data_envio'),
+                default=None,
+                output_field=DateField(),
+            ),
+             data_plano_sem_analise=Case(
+                When(usuario__plano_trabalho__plano_cultura__situacao=1, then='usuario__plano_trabalho__plano_cultura__data_envio'),
+                default=None,
+                output_field=DateField(),
+            ),
+            data_fundo_sem_analise=Case(
+                When(usuario__plano_trabalho__fundo_cultura__situacao=1, then='usuario__plano_trabalho__fundo_cultura__data_envio'),
+                default=None,
+                output_field=DateField(),
+            )
+        ).annotate(
+            mais_antigo=Least('data_lei_sem_analise', 'data_orgao_sem_analise', 'data_conselho_sem_analise', 'data_plano_sem_analise',
+                'data_fundo_sem_analise')
+        ).order_by('-usuario__estado_processo', 'mais_antigo')
 
         return entes
 
