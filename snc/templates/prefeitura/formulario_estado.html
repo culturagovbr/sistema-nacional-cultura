@@ -35,7 +35,7 @@
 
   </div>
 
-  <div class="form-group  {% if form.rg_prefeito.errors %} has-error {% endif %}">
+  <div class="form-group {% if form.rg_prefeito.errors %} has-error {% endif %}">
     <label for="{{ form.rg_prefeito.id_for_label }}" class="col-sm-4 control-label">RG do Governador</label>
 
     <div class="col-sm-3">
@@ -215,9 +215,12 @@
     </div>
   </div>
 
-  <div style="display:none;" class="form-group telefone3">
+  <div style="display:none;" class="form-group telefone3 {% if form.telefone_tres.errors %} has-error {% endif %}">
     <div class="col-sm-offset-4 col-sm-4">
-      {% render_field form.telefone_tres class="form-control telefone" %} {{ form.telefone_tres.errors }}
+      {% render_field form.telefone_tres class="form-control telefone" %}
+      {% if form.telefone_tres.errors %} 
+        <span class="help-block">{{ form.telefone_tres.errors }}</span>
+      {% endif %}
     </div>
   </div>
 
