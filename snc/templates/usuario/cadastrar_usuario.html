@@ -4,79 +4,73 @@
   <p>Preencha o formulário abaixo com os seus dados.</p>
 </div>
 <form class="form-horizontal" method="post">{% csrf_token %}
-  <div class="form-group">
+  <div class="form-group {% if form.username.errors %} has-error {% endif %}">
     <label for="{{ form.username.id_for_label }}" class="col-sm-3 control-label">CPF</label>
 
     <div class="col-sm-4">
-      {% render_field form.username class="form-control cpf" %} {% if form.username.errors %}
-      <div class="alert alert-danger">
-        {{ form.username.errors }}
-      </div>
+      {% render_field form.username class="form-control cpf" %}
+      {% if form.username.errors %} 
+        <span class="help-block">{{ form.username.errors }}</span>
       {% endif %}
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form-group {% if form.nome_usuario.errors %} has-error {% endif %}">
     <label for="{{ form.nome_usuario.id_for_label }}" class="col-sm-3 control-label">Nome Completo</label>
 
     <div class="col-sm-9">
-      {% render_field form.nome_usuario class="form-control" %} {% if form.nome_usuario.errors %}
-      <div class="alert alert-danger">
-        {{ form.nome_usuario.errors }}
-      </div>
+      {% render_field form.nome_usuario class="form-control" %}
+      {% if form.nome_usuario.errors %} 
+        <span class="help-block">{{ form.nome_usuario.errors }}</span>
       {% endif %}
     </div>
 
-  </div>
+  </div>  
 
-  <div class="form-group">
+  <div class="form-group {% if form.email.errors %} has-error {% endif %}">
     <label for="{{ form.email.id_for_label }}" class="col-sm-3 control-label">E-mail</label>
 
     <div class="col-sm-9">
-      {% render_field form.email class="form-control" %} {% if form.email.errors %}
-      <div class="alert alert-danger">
-        {{ form.email.errors }}
-      </div>
+      {% render_field form.email class="form-control" %}
+      {% if form.email.errors %} 
+        <span class="help-block">{{ form.email.errors }}</span>
       {% endif %}
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form-group {% if form.confirmar_email.errors %} has-error {% endif %}">
     <label for="{{ form.confirmar_email.id_for_label }}" class="col-sm-3 control-label">Repita o E-mail</label>
 
     <div class="col-sm-9">
-      {% render_field form.confirmar_email class="form-control" %} {% if form.confirmar_email.errors %}
-      <div class="alert alert-danger">
-        {{ form.confirmar_email.errors }}
-      </div>
+      {% render_field form.confirmar_email class="form-control" %}
+      {% if form.confirmar_email.errors %} 
+        <span class="help-block">{{ form.confirmar_email.errors }}</span>
       {% endif %}
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form-group {% if form.password1.errors %} has-error {% endif %}">
     <label for="{{ form.password1.id_for_label }}" class="col-sm-3 control-label">Senha</label>
 
     <div class="col-sm-9">
-      {% render_field form.password1 class="form-control" %} {% if form.password1.errors %}
-      <div class="alert alert-danger">
-        {{ form.password1.errors }}
-      </div>
+      {% render_field form.password1 class="form-control" %}
+      {% if form.password1.errors %} 
+        <span class="help-block">{{ form.password1.errors }}</span>
       {% endif %}
     </div>
 
   </div>
 
-  <div class="form-group">
+  <div class="form-group {% if form.password2.errors %} has-error {% endif %}">
     <label for="{{ form.password2.id_for_label }}" class="col-sm-3 control-label">Confirme sua senha</label>
 
     <div class="col-sm-9">
-      {% render_field form.password2 class="form-control" %} {% if form.password2.errors %}
-      <div class="alert alert-danger">
-        {{ form.password2.errors }}
-      </div>
+      {% render_field form.password2 class="form-control" %}
+      {% if form.password2.errors %} 
+        <span class="help-block">{{ form.password2.errors }}</span>
       {% endif %}
     </div>
 

@@ -74,12 +74,7 @@
                     </td>
                   {% else %}
                   <td>Município sem cadastrador
-                   {% if municipio.cidade %}
                    <a href="{% url 'gestao:alterar_cadastrador' %}" title="Alterar Cadastrador"><i class="fa fa-wrench" />
-                   {% else %}
-                   <a href="{% url 'gestao:alterar_cadastrador_estado' %}" title="Alterar Cadastrador"><i class="fa fa-wrench" />
-                   {% endif %}</td>
-
                   {% endif %}
                 </tr>
               {% endfor %}
