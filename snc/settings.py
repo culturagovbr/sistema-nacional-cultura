@@ -16,7 +16,9 @@ import environ
 import raven
 
 
-env = environ.Env()
+env = environ.Env(
+    DEBUG=(bool, False),
+    )
 env.read_env()
 
 ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
@@ -32,6 +34,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!')
 
 # Allowed Hosts
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['localhost'])
+
+INTERNAL_IPS = ("127.0.0.1",)
 
 # APP CONFIGURATION
 
@@ -65,7 +69,6 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     'raven.contrib.django.raven_compat',
     'localflavor',
-    'django_extensions',
     'ckeditor',
     'widget_tweaks',
     'rest_framework',
@@ -85,8 +88,17 @@ LOCAL_APPS = (
     'api',
 )
 
+# App used on development process
+DEVELOPMENT_SUPPORT_APPS = (
+    'django_extensions',
+    'debug_toolbar',
+)
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+if DEBUG:
+    INSTALLED_APPS = INSTALLED_APPS + DEVELOPMENT_SUPPORT_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.HalLimitOffsetPagination',
@@ -115,6 +127,9 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
+
+if DEBUG:
+    MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -327,10 +342,10 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-if(DEBUG == 'False'):
+if not DEBUG:
     RAVEN_CONFIG = {
-        'dsn': env('RAVEN_DSN_URL'),
+        'dsn': env('RAVEN_DSN_URL', default='http://something'),
         # If you are using git, you can also automatically configure the
         # release based on the git info.
-        'release': raven.fetch_git_sha(str(ROOT_DIR)),
+        # 'release': raven.fetch_git_sha(str(ROOT_DIR)),
     }
