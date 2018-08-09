@@ -8,7 +8,6 @@ ENV DEBUG False
 
 RUN apk add --no-cache libpq
 RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates postgresql-dev gcc musl-dev linux-headers git
-RUN apk add wkhtmltopdf --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
 RUN pip install pipenv
 RUN adduser -D -s /bin/false -u 1000 nonroot
 
