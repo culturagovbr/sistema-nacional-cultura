@@ -12,10 +12,10 @@
   </h5>
 
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}" class="col-sm-12">
+    <label for="{{ form.data_publicacao.id_for_label }}">
       Data de publicação
     </label>
-    {% render_field form.data_publicacao class="form-control date" %}
+    {% render_field form.data_publicacao class="form-control date half-width" %}
     {{ form.data_publicacao.errors }}
   </div>
 

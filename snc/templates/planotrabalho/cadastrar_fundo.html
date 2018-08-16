@@ -15,17 +15,17 @@
     <label for="{{ form.cnpj_fundo_cultura.id_for_label }}" class="col-sm-12">
       CNPJ
     </label>
-    {% render_field form.cnpj_fundo_cultura class="form-control cnpj" %}
+    {% render_field form.cnpj_fundo_cultura class="form-control cnpj half-width" %}
     {% if form.cnpj_fundo_cultura.errors %} 
       <span class="help-block">{{ form.cnpj_fundo_cultura.errors }}</span>
     {% endif %}
   </div>
 
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}" class="col-sm-12">
+    <label for="{{ form.data_publicacao.id_for_label }}">
       Data de publicação
     </label>
-    {% render_field form.data_publicacao class="form-control date" %}
+    {% render_field form.data_publicacao class="form-control date half-width" %}
     {{ form.data_publicacao.errors }}
   </div>
 
