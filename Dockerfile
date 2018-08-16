@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PIPENV_VENV_IN_PROJECT True
 ENV DEBUG False
 
-RUN apk add --no-cache libpq
+RUN apk add --no-cache libpq libffi-dev zlib-dev jpeg-dev
 RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates postgresql-dev gcc musl-dev linux-headers git
 RUN pip install pipenv
 RUN adduser -D -s /bin/false -u 1000 nonroot
