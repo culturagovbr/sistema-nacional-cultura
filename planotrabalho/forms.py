@@ -62,7 +62,7 @@ class CriarSistemaForm(ModelForm):
 
     class Meta:
         model = CriacaoSistema
-        fields = ['arquivo', ]
+        fields = ['arquivo', 'data_publicacao']
 
 
 class OrgaoGestorForm(ModelForm):
@@ -94,7 +94,7 @@ class OrgaoGestorForm(ModelForm):
 
     class Meta:
         model = OrgaoGestor
-        fields = ['arquivo']
+        fields = ['arquivo', 'data_publicacao']
 
 
 class ConselhoCulturalForm(ModelForm):
@@ -142,7 +142,7 @@ class ConselhoCulturalForm(ModelForm):
 
     class Meta:
         model = ConselhoCultural
-        fields = ['arquivo', ]
+        fields = ['arquivo', 'data_publicacao']
 
 
 class FundoCulturaForm(ModelForm):
@@ -186,7 +186,7 @@ class FundoCulturaForm(ModelForm):
 
     class Meta:
         model = FundoCultura
-        fields = ['cnpj_fundo_cultura', 'arquivo']
+        fields = ['cnpj_fundo_cultura', 'arquivo', 'data_publicacao']
 
 
 class PlanoCulturaForm(ModelForm):
@@ -223,7 +223,7 @@ class PlanoCulturaForm(ModelForm):
 
     class Meta:
         model = PlanoCultura
-        fields = ['arquivo', ]
+        fields = ['arquivo', 'data_publicacao']
 
 
 class CriarConselheiroForm(ModelForm):

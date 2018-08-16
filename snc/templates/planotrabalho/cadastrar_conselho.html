@@ -12,6 +12,14 @@
   </h5>
 
   <div class="form-group">
+    <label for="{{ form.data_publicacao.id_for_label }}" class="col-sm-12">
+      Data de publicação
+    </label>
+    {% render_field form.data_publicacao class="form-control date" %}
+    {{ form.data_publicacao.errors }}
+  </div>
+
+  <div class="form-group">
     <label for="{{ form.arquivo.id_for_label }}">
       Ata da última reunião realizada pelo conselho
     </label>

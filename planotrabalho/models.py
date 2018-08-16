@@ -90,6 +90,9 @@ class CriacaoSistema(ArquivoComponente):
         max_length=255,
         blank=True,
         null=True)
+    data_publicacao = models.DateField(
+        blank=True,
+        null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
                                   object_id_field="componente_id")
 
@@ -100,6 +103,9 @@ class OrgaoGestor(ArquivoComponente):
         max_length=255,
         blank=True,
         null=True)
+    data_publicacao = models.DateField(
+        blank=True,
+        null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
                                   object_id_field="componente_id")
 
@@ -108,6 +114,9 @@ class ConselhoCultural(ArquivoComponente):
     ata_regimento_aprovado = models.FileField(
         upload_to='regimentos',
         max_length=255,
+        blank=True,
+        null=True)
+    data_publicacao = models.DateField(
         blank=True,
         null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
@@ -124,6 +133,9 @@ class FundoCultura(ArquivoComponente):
     lei_fundo_cultura = models.FileField(
         upload_to='lei_fundo_cultura',
         max_length=255,
+        blank=True,
+        null=True)
+    data_publicacao = models.DateField(
         blank=True,
         null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
@@ -154,6 +166,9 @@ class PlanoCultura(ArquivoComponente):
     lei_plano_cultura = models.FileField(
         upload_to='lei_plano_cultura',
         max_length=255,
+        blank=True,
+        null=True)
+    data_publicacao = models.DateField(
         blank=True,
         null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
