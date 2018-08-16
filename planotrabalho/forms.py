@@ -36,6 +36,7 @@ SETORIAIS = (
 class CriarSistemaForm(ModelForm):
     minuta_projeto_lei = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.usuario = kwargs.pop('user')
@@ -68,6 +69,7 @@ class CriarSistemaForm(ModelForm):
 class OrgaoGestorForm(ModelForm):
     arquivo = forms.FileField(
         required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.usuario = kwargs.pop('user')
@@ -99,6 +101,7 @@ class OrgaoGestorForm(ModelForm):
 
 class ConselhoCulturalForm(ModelForm):
     arquivo = forms.FileField(required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.usuario = kwargs.pop('user')
@@ -147,6 +150,7 @@ class ConselhoCulturalForm(ModelForm):
 
 class FundoCulturaForm(ModelForm):
     arquivo = forms.FileField(required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.usuario = kwargs.pop('user')
@@ -196,6 +200,7 @@ class PlanoCulturaForm(ModelForm):
     ata_reuniao_aprovacao_plano = forms.FileField(
         required=False, widget=FileInput)
     arquivo = forms.FileField(required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
         self.usuario = kwargs.pop('user')

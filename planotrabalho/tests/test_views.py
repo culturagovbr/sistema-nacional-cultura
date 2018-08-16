@@ -13,6 +13,7 @@ from model_mommy import mommy
     (reverse('planotrabalho:fundo'), 'fundo_cultura'),
     (reverse('planotrabalho:plano'), 'plano_cultura'),
 ])
+
 def test_arquivo_upload_lei_sistema(client, login, url, componente):
     """ Testa upload do arquivo relativo a lei do sistema pelo cadastrador """
 
@@ -28,7 +29,8 @@ def test_arquivo_upload_lei_sistema(client, login, url, componente):
     )
 
     response = client.post(url, data={"arquivo": arquivo,
-                                      'cnpj_fundo_cultura': '39791103000152'})
+                                      'cnpj_fundo_cultura': '39791103000152',
+                                      'data_publicacao': '28/06/2018'})
 
     plano.refresh_from_db()
     sistema = getattr(plano, componente)
