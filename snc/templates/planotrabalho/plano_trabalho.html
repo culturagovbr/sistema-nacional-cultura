@@ -1,27 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-  <p>
-    <strong>Você está no ambiente do Plano de Trabalho. Nesta fase,
-      será necessário anexar arquivos que comprovem a criação de cada
-      um dos componentes que deverão ser instituídos.</strong>
+  <p style="text-align: justify;">
+    Você está no ambiente do Plano de Trabalho. Nesta fase, é preciso anexar as comprovações de execução de cada um dos componentes do sistema de cultura local (como leis, decretos e demais normativas), bem como a data de publicação de cada uma delas, nos campos específicos disponíveis nesta plataforma.
   </p>
-  <p>
-    <strong>Lembramos que o prazo limite para a execução de todas as
-      etapas do Plano de Trabalho é de 2 anos, contados a partir da
-      publicação do Acordo de Cooperação Federativa no Diário Oficial
-      da União. Caso o Plano de Trabalho esteja próximo do prazo final,
-      e as etapas ainda não estejam totalmente concluídas, será
-      necessário solicitar a prorrogação, por meio de ofício assinado
-      pelo Chefe do Executivo.</strong>
+  <p style="text-align: justify;">
+    Tais arquivos serão validados pela equipe do Ministério da Cultura responsável pelo SNC que enviará uma mensagem após conclusão do procedimento, para o e-mail cadastrado pelo ente federado (estado/município). É importante manter suas informações sempre atualizadas.
   </p>
-  <p>
-    <strong>No momento em que as tarefas forem sendo concluídas, será
-      preciso anexar comprovações de execução de cada uma delas (em
-      campos disponíveis na plataforma) para serem validadas pela
-      Secretaria de Articulação e Desenvolvimento Institucional (SADI)
-      deste Ministério. Com isso, o progresso de execução do Plano de
-      Trabalho poderá ser acompanhado.</strong>
+  <p style="text-align: justify;">
+    OBS: Conforme Acordo de Cooperação Federativa assinado, o ente federado compromete-se a cumprir com o Plano de Trabalho em até dois anos contados da data de publicação do referido Acordo no Diário Oficial da União (DOU). Caso o prazo não seja cumprido, é necessário que o ente federado envie um Oficio assinado pelo Governador – Estado ou Prefeito – Município, solicitando prorrogação por mais dois anos para o e-mail <strong>snc@cultura.gov.br</strong>. Vide tutorial <a href="http://www.cultura.gov.br/documents/1440656/0/%255bNOVA+PLATAFORMA%255d+Como+preencher+o+Plano+de+Trabalho+-+atual..pdf/265b3f60-0e0e-4fd2-a813-85bb3790e64b">“Ofício de Prazo do Plano de Trabalho”</a>
   </p>
   {% if request.user.usuario.estado_processo == '6' %}
   <p>
