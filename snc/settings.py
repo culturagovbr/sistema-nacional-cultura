@@ -342,9 +342,9 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-if not DEBUG:
+if env('RAVEN_DSN_URL'):
     RAVEN_CONFIG = {
-        'dsn': env('RAVEN_DSN_URL', default='http://something'),
+        'dsn': env('RAVEN_DSN_URL'),
         # If you are using git, you can also automatically configure the
         # release based on the git info.
         # 'release': raven.fetch_git_sha(str(ROOT_DIR)),
