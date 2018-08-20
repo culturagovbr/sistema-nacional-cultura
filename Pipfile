@@ -32,6 +32,7 @@ xlwt = "==1.3.0"
 django-autocomplete-light = "*"
 "psycopg2-binary" = "*"
 django-templated-email = "*"
+uwsgi = "*"
 
 [dev-packages]
 pytest = "*"
