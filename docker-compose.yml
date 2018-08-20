@@ -4,15 +4,15 @@ services:
   db:
     image: postgres:10.4
     environment:
-      - POSTGRES_DB=dbsnc
-      - POSTGRES_USER=dbsnc
+      - POSTGRES_DB=dbminc_snc
+      - POSTGRES_USER=usr_snc
       - POSTGRES_PASSWORD=dbsnc
     volumes:
       - postgres_data:/var/lib/postgresql/data/
   web:
     build: .
     environment:
-      - DATABASE_URL=postgres://dbsnc:dbsnc@db/dbsnc
+      - DATABASE_URL=postgres://usr_snc:dbsnc@db/dbminc_snc
     command: python /code/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
