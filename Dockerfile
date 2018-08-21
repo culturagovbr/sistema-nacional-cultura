@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM alpine:3.8
 
 LABEL maintainer LabLivre/UFABC team
 
@@ -10,24 +10,18 @@ ENV PIPENV_VENV_IN_PROJECT True
 ENV DEBUG $DEBUG
 ENV RAVEN_DSN_URL $RAVEN_DSN_URL
 
-RUN apk add --no-cache libpq libffi-dev zlib-dev jpeg-dev
-RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates postgresql-dev gcc musl-dev linux-headers git
-RUN pip install pipenv
-RUN adduser -D -s /bin/false -u 1000 nonroot
-
-
 COPY . /code/
 WORKDIR /code/
 
 RUN apk -U --no-cache upgrade && \
-	apk add cairo pango --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
-	apk add --no-cache libpq ca-certificates && \
-	apk add --no-cache --virtual=build-dependencies wget postgresql-dev gcc musl-dev linux-headers git libffi-dev zlib-dev jpeg-dev cairo-dev pango-dev && \
-	pip install pipenv && \
-	adduser -D -s /bin/false -u 1000 nonroot && \
-	pipenv install --system --deploy --ignore-pipfile && \
+	apk add --no-cache python3 libpq ca-certificates cairo-gobject cairo pango libffi glib jpeg && \
+	apk add --no-cache --virtual=build-dependencies python3-dev wget postgresql-dev gcc musl-dev linux-headers git libffi-dev zlib-dev jpeg-dev cairo-dev pango-dev && \
+	pip3 install pipenv && \
+	pipenv install --dev --system --deploy --ignore-pipfile && \
 	apk del build-dependencies && \
-	python ./manage.py collectstatic --noinput
+	python3 ./manage.py collectstatic --noinput && \
+	adduser -D -s /bin/false -u 1000 nonroot && \
+	chown -R nonroot: *
 
 EXPOSE 8000 8001
 
