@@ -26,7 +26,7 @@ ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
 RECEIVER_EMAIL = env("RECEIVER_EMAIL", default="none@email.com")
 # DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=False)
 
 # SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
