@@ -2,24 +2,58 @@ version: '3'
 
 services:
   db:
-    image: postgres:10.4
+    image: postgres:9.6
     environment:
       - POSTGRES_DB=dbminc_snc
       - POSTGRES_USER=usr_snc
       - POSTGRES_PASSWORD=dbsnc
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-  web:
-    build: .
+
+  # snc-base-img:
+  #   build: .
+  #   image: snc:alpine-dev
+  #   restart: "no"
+
+  migrations:
+    image: snc:alpine-dev
+    environment:
+      - DATABASE_URL=postgres://dbsnc:dbsnc@db/dbsnc
+    depends_on:
+      - db
+    restart: "no"
+    entrypoint: sh -c 'while ! nc -z db 5432 2>/dev/null; do sleep 1; done; python3 ./manage.py migrate'
+
+  statics:
+    image: snc:alpine-dev
+    restart: "no"
+    entrypoint: python3 ./manage.py collectstatic --noinput
+    volumes:
+        - static:/code/staticfiles
+
+  app:
+    image: snc:alpine-dev
     environment:
       - DATABASE_URL=postgres://usr_snc:dbsnc@db/dbminc_snc
     command: python /code/manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
+      - media:/code/media
+      - static:/code/staticfiles
     depends_on:
       - db
+      - migrations
+      - statics
+    restart: always
+
+  nginx:
+    image: nginx
+    volumes:
+      - media:/media
+      - static:/staticfiles
+    depends_on:
+      - app
 
 volumes:
   postgres_data:
+  media: 
+  static: 
