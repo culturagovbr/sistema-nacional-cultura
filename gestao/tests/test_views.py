@@ -760,6 +760,13 @@ def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
     user_sem_analise_antigo.plano_trabalho.orgao_gestor.data_envio = datetime.date(2017, 1, 1)
     user_sem_analise_antigo.plano_trabalho.orgao_gestor.save()
 
+    user_com_diligencia_antigo = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_com_diligencia_antigo.plano_trabalho.fundo_cultura = mommy.make('FundoCultura')
+    user_com_diligencia_antigo.plano_trabalho.save()
+    user_com_diligencia_antigo.plano_trabalho.fundo_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=4)
+    user_com_diligencia_antigo.plano_trabalho.fundo_cultura.data_envio = datetime.date(2016, 1, 1)
+    user_com_diligencia_antigo.plano_trabalho.fundo_cultura.save()
+
     user_com_analise_antigo = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
     user_com_analise_antigo.plano_trabalho.fundo_cultura = mommy.make('FundoCultura')
     user_com_analise_antigo.plano_trabalho.save()
@@ -771,6 +778,9 @@ def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
     response = client.get(url)
 
     assert response.context_data['object_list'][0] == user_sem_analise_antigo.municipio
+    assert response.context_data['object_list'][1] == user_sem_analise_recente.municipio
+    assert response.context_data['object_list'][2] == user_com_diligencia_antigo.municipio
+    assert response.context_data['object_list'][3] == user_com_analise_antigo.municipio
 
 
 def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho,
