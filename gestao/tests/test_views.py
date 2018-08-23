@@ -777,6 +777,11 @@ def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
     url = reverse('gestao:acompanhar_adesao')
     response = client.get(url)
 
+    print("1- ", response.context_data['object_list'][0], '\n')
+    print("2- ", response.context_data['object_list'][1], '\n')
+    print("3- ", response.context_data['object_list'][2], '\n')
+    print("4- ", response.context_data['object_list'][3], '\n')
+
     assert response.context_data['object_list'][0] == user_sem_analise_antigo.municipio
     assert response.context_data['object_list'][1] == user_sem_analise_recente.municipio
     assert response.context_data['object_list'][2] == user_com_diligencia_antigo.municipio
