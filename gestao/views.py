@@ -173,6 +173,29 @@ class AcompanharAdesao(ListView):
     template_name = 'gestao/adesao/acompanhar.html'
     paginate_by = 10
 
+    def componentes_por_situacao(componentes, *args):
+        componentes.filter(
+            Q(usuario__plano_trabalho__criacao_sistema__situacao__in=args) |
+            Q(usuario__plano_trabalho__orgao_gestor__situacao__in=args) | 
+            Q(usuario__plano_trabalho__conselho_cultural__situacao__in=args) |
+            Q(usuario__plano_trabalho__plano_cultura__situacao__in=args) |
+            Q(usuario__plano_trabalho__fundo_cultura__situacao__in=args) 
+        )
+
+        return componentes
+
+    def annotate_componente_mais_antigo(componentes):
+        componentes.annotate(
+            mais_antigo=Least('usuario__plano_trabalho__criacao_sistema__data_envio', 
+                'usuario__plano_trabalho__orgao_gestor__data_envio', 
+                'usuario__plano_trabalho__conselho_cultural__data_envio', 
+                'usuario__plano_trabalho__plano_cultura__data_envio',
+                'usuario__plano_trabalho__fundo_cultura__data_envio')
+        )
+
+        return componentes
+
+
     def get_queryset(self):
         situacao = self.request.GET.get('situacao', None)
         ente_federado = self.request.GET.get('municipio', None)
@@ -192,36 +215,19 @@ class AcompanharAdesao(ListView):
         else:
             entes = Municipio.objects.all()
 
-        entes = entes.annotate(
-            data_lei_sem_analise=Case(
-                When(usuario__plano_trabalho__criacao_sistema__situacao=1, then='usuario__plano_trabalho__criacao_sistema__data_envio'),
-                default=None,
-                output_field=DateField(),
-            ),
-             data_orgao_sem_analise=Case(
-                When(usuario__plano_trabalho__orgao_gestor__situacao=1, then='usuario__plano_trabalho__orgao_gestor__data_envio'),
-                default=None,
-                output_field=DateField(),
-            ),
-             data_conselho_sem_analise=Case(
-                When(usuario__plano_trabalho__conselho_cultural__situacao=1, then='usuario__plano_trabalho__conselho_cultural__data_envio'),
-                default=None,
-                output_field=DateField(),
-            ),
-             data_plano_sem_analise=Case(
-                When(usuario__plano_trabalho__plano_cultura__situacao=1, then='usuario__plano_trabalho__plano_cultura__data_envio'),
-                default=None,
-                output_field=DateField(),
-            ),
-            data_fundo_sem_analise=Case(
-                When(usuario__plano_trabalho__fundo_cultura__situacao=1, then='usuario__plano_trabalho__fundo_cultura__data_envio'),
-                default=None,
-                output_field=DateField(),
-            )
-        ).annotate(
-            mais_antigo=Least('data_lei_sem_analise', 'data_orgao_sem_analise', 'data_conselho_sem_analise', 'data_plano_sem_analise',
-                'data_fundo_sem_analise')
-        ).order_by('-usuario__estado_processo', 'mais_antigo')
+        entes_concluidos = componentes_por_situacao(entes, 2, 3)
+        entes_concluidos = annotate_componente_mais_antigo(entes_concluidos).order_by(
+            '-usuario__estado_processo', 'mais_antigo')
+
+        entes_diligencia = componentes_por_situacao(entes, 4, 5, 6)
+        entes_diligencia = annotate_componente_mais_antigo(entes_diligencia).order_by(
+            '-usuario__estado_processo', 'mais_antigo')
+
+        entes_nao_analisados = entes.componentes_por_situacao(entes, 1)
+        entes_nao_analisados = annotate_componente_mais_antigo(entes_nao_analisados).order_by(
+            '-usuario__estado_processo', 'mais_antigo')
+
+        entes = entes_nao_analisados | entes_diligencia | entes_concluidos
 
         return entes
 
