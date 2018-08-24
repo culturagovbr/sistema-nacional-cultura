@@ -3,7 +3,7 @@ from threading import Thread
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 
-from django.db.models import Q, Case, When, BooleanField, DateField
+from django.db.models import Case, When, DateField, Count, Q
 from django.db.models.functions import Least
 
 from django.shortcuts import redirect
@@ -229,14 +229,14 @@ class AcompanharAdesao(ListView):
         else:
             entes = Municipio.objects.all()
 
-        entes_concluidos = self.annotate_componente_mais_antigo_por_situacao(entes, 2, 3).order_by(
-            '-usuario__estado_processo', 'mais_antigo')
+        entes_concluidos = self.annotate_componente_mais_antigo_por_situacao(entes, 2, 3).annotate(
+            cadastrador=Count('usuario')).order_by('-cadastrador', '-usuario__estado_processo', 'mais_antigo')
 
-        entes_diligencia = self.annotate_componente_mais_antigo_por_situacao(entes, 4, 5, 6).order_by(
-            '-usuario__estado_processo', 'mais_antigo')
+        entes_diligencia = self.annotate_componente_mais_antigo_por_situacao(entes, 4, 5, 6).annotate(
+            cadastrador=Count('usuario')).order_by('-cadastrador', '-usuario__estado_processo', 'mais_antigo')
 
-        entes_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(entes, 1).order_by(
-            '-usuario__estado_processo', 'mais_antigo')
+        entes_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(entes, 1).annotate(
+            cadastrador=Count('usuario')).order_by('-cadastrador', '-usuario__estado_processo', 'mais_antigo')
 
         entes = entes_nao_analisados | entes_diligencia | entes_concluidos
 

@@ -828,8 +828,7 @@ def test_acompanhar_adesao_ordenar_data_com_plano_com_mais_de_um_componente(clie
     assert response.context_data['object_list'][2] == user_plano_2.municipio
 
 
-def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho,
-                                                   login_staff):
+def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes e
     estado do processo da adesão """
@@ -839,14 +838,19 @@ def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho,
     user.plano_trabalho.criacao_sistema = mommy.make(
             'CriacaoSistema', situacao_id=1, data_envio=datetime.date(2018, 1, 1))
     user.plano_trabalho.save()
-    ente_federado = plano_trabalho.usuario.municipio
-    ente_federado.usuario.estado_processo = 6
-    ente_federado.usuario.save()
+
+    ente_federado_publicado = plano_trabalho.usuario.municipio
+    ente_federado_publicado.usuario.estado_processo = 6
+    ente_federado_publicado.usuario.save()
+
+    ente_sem_cadastrador = mommy.make('Municipio')
 
     url = reverse('gestao:acompanhar_adesao')
     response = client.get(url)
 
-    assert response.context_data['object_list'][0] == ente_federado
+    assert response.context_data['object_list'][0] == ente_federado_publicado
+    assert response.context_data['object_list'][1] == user.municipio
+    assert response.context_data['object_list'][2] == ente_sem_cadastrador
 
 
 def test_alterar_dados_adesao_detalhe_municipio(client, login_staff):
