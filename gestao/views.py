@@ -238,7 +238,9 @@ class AcompanharAdesao(ListView):
         entes_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(entes, 1).order_by(
             '-usuario__estado_processo', 'mais_antigo')
 
-        entes = list(chain(entes_nao_analisados, entes_diligencia, entes_concluidos))
+        entes = entes_nao_analisados | entes_diligencia | entes_concluidos
+
+        return entes
 
 
 # Acompanhamento dos planos de trabalho

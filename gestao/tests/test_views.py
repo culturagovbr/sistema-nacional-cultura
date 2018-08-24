@@ -741,8 +741,7 @@ def test_filtra_ufs_por_nome(client):
     assert request.json()["results"][0]['text'] == mg.sigla
 
 
-def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
-                                                    login_staff):
+def test_acompanhar_adesao_ordenar_data_um_componente_por_plano(client, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes"""
 
@@ -777,15 +776,56 @@ def test_acompanhar_adesao_ordenar_data_componentes(client, plano_trabalho,
     url = reverse('gestao:acompanhar_adesao')
     response = client.get(url)
 
-    print("1- ", response.context_data['object_list'][0], '\n')
-    print("2- ", response.context_data['object_list'][1], '\n')
-    print("3- ", response.context_data['object_list'][2], '\n')
-    print("4- ", response.context_data['object_list'][3], '\n')
-
     assert response.context_data['object_list'][0] == user_sem_analise_antigo.municipio
     assert response.context_data['object_list'][1] == user_sem_analise_recente.municipio
     assert response.context_data['object_list'][2] == user_com_diligencia_antigo.municipio
     assert response.context_data['object_list'][3] == user_com_analise_antigo.municipio
+
+
+def test_acompanhar_adesao_ordenar_data_com_plano_com_mais_de_um_componente(client, login_staff):
+    """ Testa se na página de acompanhamento de adesões, quando há planos com múltiplos 
+    componentes, o correto é considerado para ordenação pela data """
+
+    user_plano_1 = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_plano_1.plano_trabalho.criacao_sistema = mommy.make('CriacaoSistema')
+    user_plano_1.plano_trabalho.save()
+    user_plano_1.plano_trabalho.criacao_sistema.situacao = SituacoesArquivoPlano.objects.get(pk=5)
+    user_plano_1.plano_trabalho.criacao_sistema.data_envio = datetime.date(2016, 1, 1)
+    user_plano_1.plano_trabalho.criacao_sistema.save()
+
+    user_plano_1.plano_trabalho.orgao_gestor = mommy.make('OrgaoGestor')
+    user_plano_1.plano_trabalho.save()
+    user_plano_1.plano_trabalho.orgao_gestor.situacao = SituacoesArquivoPlano.objects.get(pk=1)
+    user_plano_1.plano_trabalho.orgao_gestor.data_envio = datetime.date(2017, 1, 1)
+    user_plano_1.plano_trabalho.orgao_gestor.save()
+
+    user_plano_2 = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_plano_2.plano_trabalho.fundo_cultura = mommy.make('FundoCultura')
+    user_plano_2.plano_trabalho.save()
+    user_plano_2.plano_trabalho.fundo_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=4)
+    user_plano_2.plano_trabalho.fundo_cultura.data_envio = datetime.date(2017, 1, 1)
+    user_plano_2.plano_trabalho.fundo_cultura.save()
+
+    user_plano_2.plano_trabalho.plano_cultura = mommy.make('PlanoCultura')
+    user_plano_2.plano_trabalho.save()
+    user_plano_2.plano_trabalho.plano_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=3)
+    user_plano_2.plano_trabalho.plano_cultura.data_envio = datetime.date(2018, 1, 1)
+    user_plano_2.plano_trabalho.plano_cultura.save()
+
+    user_plano_3 = mommy.make('Usuario', _fill_optional=['plano_trabalho', 'municipio'])
+    user_plano_3.plano_trabalho.conselho_cultural = mommy.make('ConselhoCultural')
+    user_plano_3.plano_trabalho.save()
+    user_plano_3.plano_trabalho.conselho_cultural.situacao = SituacoesArquivoPlano.objects.get(pk=1)
+    user_plano_3.plano_trabalho.conselho_cultural.data_envio = datetime.date(2018, 1, 1)
+    user_plano_3.plano_trabalho.conselho_cultural.save()
+
+    url = reverse('gestao:acompanhar_adesao')
+    response = client.get(url)
+
+    assert len(response.context_data['object_list']) == 3
+    assert response.context_data['object_list'][0] == user_plano_1.municipio
+    assert response.context_data['object_list'][1] == user_plano_3.municipio
+    assert response.context_data['object_list'][2] == user_plano_2.municipio
 
 
 def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho,
