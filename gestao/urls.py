@@ -107,7 +107,10 @@ urlpatterns = [
         views.InserirSistema.as_view(),
         login_url='adesao:login'), name='inserir_sistema'),
     # Inserção de documentos da criação do órgão gestor
-    url(r'^inserir-documentos/orgao$', staff_member_required(
+    url(r'^listar-documentos/orgao$', staff_member_required(
+        views.ListarOrgaos.as_view(),
+        login_url='adesao:login'), name='listar_orgaos'),
+    url(r'^inserir-documentos/orgao/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirOrgao.as_view(),
         login_url='adesao:login'), name='inserir_orgao'),
     # Inserção de documentos da criação do conselho cultural

@@ -58,6 +58,7 @@ from .forms import AlterarPlanoForm
 from .forms import AlterarConselhoForm
 from .forms import AlterarSistemaForm
 from .forms import CriarSistemaForm
+from .forms import CriarOrgaoForm
 
 from itertools import chain
 
@@ -537,7 +538,7 @@ class InserirSistema(CreateView):
 
 
 class AlterarSistema(UpdateView):
-    template_name = 'gestao/inserir_documentos/alterar_sistema.html'
+    template_name = 'gestao/inserir_documentos/inserir_sistema.html'
     form_class = AlterarSistemaForm
     model = CriacaoSistema
 
@@ -545,14 +546,13 @@ class AlterarSistema(UpdateView):
         return reverse_lazy('gestao:listar_sistemas')
 
 
-class InserirOrgao(ListView):
-    template_name = 'gestao/inserir_documentos/inserir_orgao.html'
+class ListarOrgaos(ListView):
+    template_name = 'gestao/inserir_documentos/listar_orgaos.html'
     paginate_by = 10
 
     def get_queryset(self):
         q = self.request.GET.get('q', None)
         usuarios = Usuario.objects.filter(estado_processo='6')
-        usuarios = usuarios.exclude(plano_trabalho__orgao_gestor=None)
 
         if q:
             usuarios = usuarios.filter(
@@ -560,13 +560,28 @@ class InserirOrgao(ListView):
         return usuarios
 
 
+class InserirOrgao(UpdateView):
+    template_name = 'gestao/inserir_documentos/inserir_orgao.html'
+    form_class = CriarOrgaoForm
+    model = OrgaoGestor
+
+    def get_form_kwargs(self):
+        kwargs = super(InserirOrgao, self).get_form_kwargs()
+        pk = self.kwargs['pk']
+        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('gestao:listar_orgaos')
+
+
 class AlterarOrgao(UpdateView):
-    template_name = 'gestao/inserir_documentos/alterar_orgao.html'
+    template_name = 'gestao/inserir_documentos/inserir_orgao.html'
     form_class = AlterarOrgaoForm
     model = OrgaoGestor
 
     def get_success_url(self):
-        return reverse_lazy('gestao:inserir_orgao')
+        return reverse_lazy('gestao:listar_orgaos')
 
 
 class InserirConselho(ListView):
