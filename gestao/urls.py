@@ -100,7 +100,10 @@ urlpatterns = [
         staff_member_required(views.AlterarDocumentosEnteFederado.as_view()), name='alterar_entefederado'),
 
     # Inserção de documentos da criação do sistema de cultura
-    url(r'^inserir-documentos/sistema$', staff_member_required(
+    url(r'^listar-documentos/sistema$', staff_member_required(
+        views.ListarSistemas.as_view(),
+        login_url='adesao:login'), name='listar_sistemas'),
+    url(r'^inserir-documentos/sistema/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirSistema.as_view(),
         login_url='adesao:login'), name='inserir_sistema'),
     # Inserção de documentos da criação do órgão gestor
