@@ -492,8 +492,8 @@ def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
     assert name == arquivo.name
 
 
-def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff):
-    """ Testa se funcionalidade de inserir documento para sistema de cultura na
+def test_alterar_documentos_criacao_sistema(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de alterar documento para sistema de cultura na
     tela de gestão salva no field arquivo """
 
     arquivo = SimpleUploadedFile(
@@ -504,11 +504,34 @@ def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff)
         "gestao:alterar_sistema", kwargs={"pk": plano_trabalho.criacao_sistema.id}
     )
 
-    client.post(url, data={"arquivo": arquivo})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     name = CriacaoSistema.objects.first().arquivo.name.split("criacaosistema/")[1]
+    situacao = CriacaoSistema.objects.first().situacao
 
     assert name == arquivo.name
+    assert situacao == 1
+
+
+def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de inserir documento para sistema de cultura na
+    tela de gestão salva no field arquivo """
+
+    arquivo = SimpleUploadedFile(
+        "sistema_cultura.txt", b"file_content", content_type="text/plain"
+    )
+
+    url = reverse(
+        "gestao:inserir_sistema", kwargs={"pk": plano_trabalho.id}
+    )
+
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+
+    name = CriacaoSistema.objects.first().arquivo.name.split("criacaosistema/")[1]
+    situacao = CriacaoSistema.objects.first().situacao
+
+    assert name == arquivo.name
+    assert situacao == 1
 
 
 def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
