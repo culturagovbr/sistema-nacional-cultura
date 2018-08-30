@@ -475,8 +475,8 @@ def test_criacao_diligencia_exclusiva_para_gestor(client, url, plano_trabalho, l
     assert url_redirect[0] == url_login
 
 
-def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
-    """ Testa se funcionalidade de inserir documento para orgão gestor na
+def test_alterar_documentos_orgao_gestor(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de alterar documento para orgão gestor na
     tela de gestão salva no field arquivo """
 
     arquivo = SimpleUploadedFile(
@@ -485,11 +485,32 @@ def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
 
     url = reverse("gestao:alterar_orgao", kwargs={"pk": plano_trabalho.orgao_gestor.id})
 
-    client.post(url, data={"arquivo": arquivo})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     name = OrgaoGestor.objects.first().arquivo.name.split("orgaogestor/")[1]
+    situacao = OrgaoGestor.objects.first().situacao
 
     assert name == arquivo.name
+    assert situacao.id == 1
+
+
+def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de inserir documento para orgão gestor na
+    tela de gestão salva no field arquivo """
+
+    arquivo = SimpleUploadedFile(
+        "orgao.txt", b"file_content", content_type="text/plain"
+    )
+
+    url = reverse("gestao:inserir_orgao", kwargs={"pk": plano_trabalho.id})
+
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+
+    name = OrgaoGestor.objects.last().arquivo.name.split("orgaogestor/")[1]
+    situacao = OrgaoGestor.objects.last().situacao
+
+    assert name == arquivo.name
+    assert situacao.id == 1
 
 
 def test_alterar_documentos_criacao_sistema(client, plano_trabalho, login_staff):
