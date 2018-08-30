@@ -188,6 +188,16 @@ class AlterarSistemaForm(ModelForm):
         max_upload_size=max_upload_size)
     data_publicacao = forms.DateField(required=True)
 
+    def save(self, commit=True, *args, **kwargs):
+        sistema = super(AlterarSistemaForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            sistema.situacao_id = 1
+
+        if commit:
+            sistema.save()
+
+        return sistema
+
     class Meta:
         model = CriacaoSistema
         fields = ('arquivo', 'data_publicacao')
