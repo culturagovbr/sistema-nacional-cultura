@@ -510,7 +510,7 @@ def test_alterar_documentos_criacao_sistema(client, plano_trabalho, login_staff)
     situacao = CriacaoSistema.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao == 1
+    assert situacao.id == 1
 
 
 def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff):
@@ -527,11 +527,11 @@ def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff)
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = CriacaoSistema.objects.first().arquivo.name.split("criacaosistema/")[1]
-    situacao = CriacaoSistema.objects.first().situacao
+    name = CriacaoSistema.objects.last().arquivo.name.split("criacaosistema/")[1]
+    situacao = CriacaoSistema.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao == 1
+    assert situacao.id == 1
 
 
 def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
