@@ -100,28 +100,22 @@ urlpatterns = [
         staff_member_required(views.AlterarDocumentosEnteFederado.as_view()), name='alterar_entefederado'),
 
     # Inserção de documentos da criação do sistema de cultura
-    url(r'^listar-documentos/sistema$', staff_member_required(
-        views.ListarSistemas.as_view(),
-        login_url='adesao:login'), name='listar_sistemas'),
+    url(r'^listar-documentos/(?P<template>\w+)$', staff_member_required(
+        views.ListarDocumentosComponentes.as_view(),
+        login_url='adesao:login'), name='listar_documentos'),
     url(r'^inserir-documentos/sistema/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirSistema.as_view(),
         login_url='adesao:login'), name='inserir_sistema'),
     # Inserção de documentos da criação do órgão gestor
-    url(r'^listar-documentos/orgao$', staff_member_required(
-        views.ListarOrgaos.as_view(),
-        login_url='adesao:login'), name='listar_orgaos'),
     url(r'^inserir-documentos/orgao/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirOrgao.as_view(),
         login_url='adesao:login'), name='inserir_orgao'),
     # Inserção de documentos da criação do conselho cultural
-    url(r'^listar-documentos/conselho$', staff_member_required(
-        views.ListarConselhos.as_view(),
-        login_url='adesao:login'), name='listar_conselhos'),
     url(r'^inserir-documentos/conselho/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirConselho.as_view(),
         login_url='adesao:login'), name='inserir_conselho'),
     # Inserção de documentos da criação do fundo de cultura
-    url(r'^inserir-documentos/fundo$', staff_member_required(
+    url(r'^inserir-documentos/fundo/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirFundo.as_view(),
         login_url='adesao:login'), name='inserir_fundo'),
     # Inserção de documentos da elaboração do plano de cultura

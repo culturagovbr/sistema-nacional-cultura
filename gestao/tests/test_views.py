@@ -475,6 +475,22 @@ def test_criacao_diligencia_exclusiva_para_gestor(client, url, plano_trabalho, l
     assert url_redirect[0] == url_login
 
 
+def test_listar_documentos(client, plano_trabalho, login_staff):
+    """ Testa funcionalidade de listagem de entes federados para alterar seus documentos 
+    na tela de gestão """
+
+    templates = ["listar_sistemas", "listar_orgaos", "listar_fundos", "listar_conselhos"]
+
+    for template in templates:
+
+        url = reverse("gestao:listar_documentos", kwargs={"template": template})
+        response = client.get(url)
+
+        for usuario in response.context_data['object_list']:
+            assert usuario.estado_processo == 6
+            assert usuario.plano_trabalho != None
+
+
 def test_alterar_documentos_orgao_gestor(client, plano_trabalho, login_staff):
     """ Testa se funcionalidade de alterar documento para orgão gestor na
     tela de gestão salva no field arquivo """
