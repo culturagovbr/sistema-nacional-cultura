@@ -572,7 +572,7 @@ def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff)
 
 
 def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
-    """ Testa se funcionalidade de inserir documento para na fundo de cultura na
+    """ Testa se funcionalidade de inserir documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
 
     arquivo = SimpleUploadedFile(
@@ -583,11 +583,34 @@ def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
         "gestao:alterar_fundo", kwargs={"pk": plano_trabalho.fundo_cultura.id}
     )
 
-    client.post(url, data={"arquivo": arquivo})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = FundoCultura.objects.first().arquivo.name.split("fundocultura/")[1]
+    name = FundoCultura.objects.last().arquivo.name.split("fundocultura/")[1]
+    situacao = FundoCultura.objects.last().situacao
 
     assert name == arquivo.name
+    assert situacao.id == 1
+
+
+def test_alterar_documentos_fundo_cultura(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de alterar documento para o fundo de cultura na
+    tela de gestão salva no field arquivo """
+
+    arquivo = SimpleUploadedFile(
+        "fundo_cultura.txt", b"file_content", content_type="text/plain"
+    )
+
+    url = reverse(
+        "gestao:alterar_fundo", kwargs={"pk": plano_trabalho.fundo_cultura.id}
+    )
+
+    client.post(url, data={"arquivo": arquivo,  "data_publicacao": "28/06/2018"})
+
+    name = FundoCultura.objects.first().arquivo.name.split("fundocultura/")[1]
+    situacao = FundoCultura.objects.first().situacao
+
+    assert name == arquivo.name
+    assert situacao.id == 1
 
 
 def test_inserir_documentos_plano_cultura(client, plano_trabalho, login_staff):
@@ -602,11 +625,34 @@ def test_inserir_documentos_plano_cultura(client, plano_trabalho, login_staff):
         "gestao:alterar_plano", kwargs={"pk": plano_trabalho.plano_cultura.id}
     )
 
-    client.post(url, data={"arquivo": arquivo})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = PlanoCultura.objects.first().arquivo.name.split("planocultura/")[1]
+    name = PlanoCultura.objects.last().arquivo.name.split("planocultura/")[1]
+    situacao = PlanoCultura.objects.last().situacao
 
     assert name == arquivo.name
+    assert situacao.id == 1
+
+
+def test_alterar_documentos_plano_cultura(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de alterar documento para plano de cultura na
+    tela de gestão salva no field arquivo """
+
+    arquivo = SimpleUploadedFile(
+        "plano_cultura.txt", b"file_content", content_type="text/plain"
+    )
+
+    url = reverse(
+        "gestao:alterar_plano", kwargs={"pk": plano_trabalho.plano_cultura.id}
+    )
+
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+
+    name = PlanoCultura.objects.first().arquivo.name.split("planocultura/")[1]
+    situacao = PlanoCultura.objects.first().situacao
+
+    assert name == arquivo.name
+    assert situacao.id == 1
 
 
 def test_alterar_documentos_conselho_cultural(client, plano_trabalho, login_staff):
