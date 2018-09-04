@@ -275,7 +275,7 @@ class CriarOrgaoForm(ModelForm):
         return sistema
 
     class Meta:
-        model = CriacaoSistema
+        model = OrgaoGestor
         fields = ('arquivo', 'data_publicacao')
 
 
