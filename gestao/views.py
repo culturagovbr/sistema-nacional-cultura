@@ -563,10 +563,9 @@ class ListarOrgaos(ListView):
         return usuarios
 
 
-class InserirOrgao(UpdateView):
+class InserirOrgao(CreateView):
     template_name = 'gestao/inserir_documentos/inserir_orgao.html'
     form_class = CriarOrgaoForm
-    model = OrgaoGestor
 
     def get_form_kwargs(self):
         kwargs = super(InserirOrgao, self).get_form_kwargs()
