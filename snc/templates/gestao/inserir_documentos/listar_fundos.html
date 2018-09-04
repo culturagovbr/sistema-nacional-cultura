@@ -1,0 +1,87 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Anexo da etapa do Fundo de Cultura do Plano de Trabalho
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <form method="get" action="">
+          <div class="input-group custom-search-form col-lg-3">
+              <input type="text" name="q" class="form-control" placeholder="Município ou Estado">
+              <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">
+                      <i class="fa fa-search"></i>
+                  </button>
+              </span>
+          </div>
+        </form>
+        <div class="dataTable_wrapper">
+          <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Município/Estado</th>
+                <th>CNPJ</th>
+                <th>CNPJ do Fundo</th>
+                <th>Data</th>
+                <th>Anexo Atual</th>
+                <th align="center" >Upload</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for usuario in object_list %}
+                <tr class="odd gradeX">
+                {% if usuario.municipio.cidade %}
+                  <td>{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</td>
+                {% else %}
+                  <td>{{ usuario.municipio.estado.nome_uf }}</td>
+                {% endif %}
+                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
+                  <td>{{ usuario.plano_trabalho.fundo_cultura.cnpj_fundo_cultura }}</td>
+                  <td>{{ usuario.plano_trabalho.fundo_cultura.data_final_instituicao_fundo_cultura }}</td>
+                  <td>
+                    {% if usuario.plano_trabalho.fundo_cultura.arquivo %}
+                    <a href="{{ usuario.plano_trabalho.fundo_cultura.arquivo.url }}">Download</a>
+                    {% endif %}
+                  </td>
+                  <td align="center">
+                    {% if usuario.plano_trabalho.fundo_cultura.arquivo %}
+                      <a href="{% url 'gestao:alterar_fundo' usuario.plano_trabalho.fundo_cultura.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                    {% else %}
+                      <a href="{% url 'gestao:inserir_fundo' usuario.plano_trabalho.id %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% if is_paginated %}
+          <div class="dataTables_paginate paging_simple_numbers">
+            <ul class="pagination">
+              {% if page_obj.has_previous %}
+              <li>
+                <a class="paginate_button previous" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
+              </li>
+              {% endif %}
+              <li>
+                <a>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
+              </li>
+              {% if page_obj.has_next %}
+              <li>
+                <a class="paginate_button next" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /.col-lg-12 -->
+</div>
+{% endblock content %}

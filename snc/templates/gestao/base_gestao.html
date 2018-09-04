@@ -182,7 +182,7 @@
                                   </a>
                                 <div class="collapse" id="sistemacult" style="height: 0px;">
                                   <ul class="nav nav-third-level">
-                                    <li><a href="{% url 'gestao:listar_sistemas' %}">Lei</a></li>
+                                    <li><a href="{% url 'gestao:listar_documentos' template='listar_sistemas' %}">Lei</a></li>
                                   </ul>
                                 </div>
                               </li>
@@ -193,7 +193,7 @@
                                 </a>
                                 <div class="collapse" id="orgaogestor" style="height: 0px;">
                                   <ul class="nav nav-third-level">
-                                    <li><a href="{% url 'gestao:listar_orgaos' %}">Ato normativo</a></li>
+                                    <li><a href="{% url 'gestao:listar_documentos' template='listar_orgaos' %}">Ato normativo</a></li>
                                   </ul>
                                 </div>
                               </li>
@@ -204,7 +204,7 @@
                                 </a>
                                 <div class="collapse" id="conselhocult" style="height: 0px;">
                                   <ul class="nav nav-third-level">
-                                    <li><a href="{% url 'gestao:listar_conselhos' %}">Ata</a></li>
+                                    <li><a href="{% url 'gestao:listar_documentos' template='listar_conselhos' %}">Ata</a></li>
                                   </ul>
                                 </div>
                               </li>
@@ -215,7 +215,7 @@
                                 </a>
                                 <div class="collapse" id="fundocult" style="height: 0px;">
                                   <ul class="nav nav-third-level">
-                                    <li><a href="{% url 'gestao:inserir_fundo' %}">Lei</a></li>
+                                    <li><a href="{% url 'gestao:listar_documentos' template='listar_fundos' %}">Lei</a></li>
                                   </ul>
                                 </div>
                               </li>

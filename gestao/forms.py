@@ -231,6 +231,34 @@ class CriarSistemaForm(ModelForm):
         fields = ('arquivo', 'data_publicacao')
 
 
+class CriarFundoForm(ModelForm):
+    arquivo = RestrictedFileField(
+        content_types=content_types,
+        max_upload_size=max_upload_size)
+    data_publicacao = forms.DateField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.plano_trabalho = kwargs.pop('plano')
+        super(CriarFundoForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True, *args, **kwargs):
+        fundo = super(CriarFundoForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            fundo.situacao_id = 1
+
+        if commit:
+            fundo.planotrabalho = self.plano_trabalho
+            fundo.save()
+            self.plano_trabalho.fundo_cultura = fundo
+            self.plano_trabalho.save()
+
+        return fundo
+
+    class Meta:
+        model = FundoCultura
+        fields = ('arquivo', 'data_publicacao')
+
+
 class AlterarFundoForm(ModelForm):
     arquivo = RestrictedFileField(
         content_types=content_types,
@@ -262,17 +290,17 @@ class CriarOrgaoForm(ModelForm):
         super(CriarOrgaoForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True, *args, **kwargs):
-        sistema = super(CriarOrgaoForm, self).save(commit=False)
+        orgao = super(CriarOrgaoForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
-            sistema.situacao_id = 1
+            orgao.situacao_id = 1
 
         if commit:
-            sistema.planotrabalho = self.plano_trabalho
-            sistema.save()
-            self.plano_trabalho.orgao_gestor = sistema
+            orgao.planotrabalho = self.plano_trabalho
+            orgao.save()
+            self.plano_trabalho.orgao_gestor = orgao
             self.plano_trabalho.save()
 
-        return sistema
+        return orgao
 
     class Meta:
         model = OrgaoGestor
@@ -301,17 +329,17 @@ class CriarConselhoForm(ModelForm):
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True, *args, **kwargs):
-        sistema = super(CriarConselhoForm, self).save(commit=False)
+        conselho = super(CriarConselhoForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
-            sistema.situacao_id = 1
+            conselho.situacao_id = 1
 
         if commit:
-            sistema.planotrabalho = self.plano_trabalho
-            sistema.save()
-            self.plano_trabalho.conselho_cultural = sistema
+            conselho.planotrabalho = self.plano_trabalho
+            conselho.save()
+            self.plano_trabalho.conselho_cultural = conselho
             self.plano_trabalho.save()
 
-        return sistema
+        return conselho
 
     class Meta:
         model = ConselhoCultural
