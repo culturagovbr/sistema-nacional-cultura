@@ -593,8 +593,8 @@ def test_inserir_documentos_plano_cultura(client, plano_trabalho, login_staff):
     assert name == arquivo.name
 
 
-def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staff):
-    """ Testa se funcionalidade de inserir documento para conselho cultural na
+def test_alterar_documentos_conselho_cultural(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de alterar documento para conselho cultural na
     tela de gestão salva no field arquivo """
 
     arquivo = SimpleUploadedFile(
@@ -605,10 +605,34 @@ def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staf
         "gestao:alterar_conselho", kwargs={"pk": plano_trabalho.conselho_cultural.id}
     )
 
-    client.post(url, data={"arquivo": arquivo})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     name = ConselhoCultural.objects.first().arquivo.name.split("conselhocultural/")[1]
+    situacao = ConselhoCultural.objects.first().situacao
+
     assert name == arquivo.name
+    assert situacao.id == 1
+
+
+def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staff):
+    """ Testa se funcionalidade de inserção documentos para conselho cultural na
+    tela de gestão salva no field arquivo """
+
+    arquivo = SimpleUploadedFile(
+        "conselho_cultural.txt", b"file_content", content_type="text/plain"
+    )
+
+    url = reverse(
+        "gestao:inserir_conselho", kwargs={"pk": plano_trabalho.id}
+    )
+
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+
+    name = ConselhoCultural.objects.last().arquivo.name.split("conselhocultural/")[1]
+    situacao = ConselhoCultural.objects.last().situacao
+
+    assert name == arquivo.name
+    assert situacao.id == 1
 
 
 def test_retorna_200_para_diligencia_geral(client, url, plano_trabalho, login_staff):

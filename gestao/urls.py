@@ -114,7 +114,10 @@ urlpatterns = [
         views.InserirOrgao.as_view(),
         login_url='adesao:login'), name='inserir_orgao'),
     # Inserção de documentos da criação do conselho cultural
-    url(r'^inserir-documentos/conselho$', staff_member_required(
+    url(r'^listar-documentos/conselho$', staff_member_required(
+        views.ListarConselhos.as_view(),
+        login_url='adesao:login'), name='listar_conselhos'),
+    url(r'^inserir-documentos/conselho/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirConselho.as_view(),
         login_url='adesao:login'), name='inserir_conselho'),
     # Inserção de documentos da criação do fundo de cultura

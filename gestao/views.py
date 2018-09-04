@@ -59,6 +59,7 @@ from .forms import AlterarConselhoForm
 from .forms import AlterarSistemaForm
 from .forms import CriarSistemaForm
 from .forms import CriarOrgaoForm
+from .forms import CriarConselhoForm
 
 from itertools import chain
 
@@ -586,8 +587,8 @@ class AlterarOrgao(UpdateView):
         return reverse_lazy('gestao:listar_orgaos')
 
 
-class InserirConselho(ListView):
-    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
+class ListarConselhos(ListView):
+    template_name = 'gestao/inserir_documentos/listar_conselhos.html'
     paginate_by = 10
 
     def get_queryset(self):
@@ -601,13 +602,27 @@ class InserirConselho(ListView):
         return usuarios
 
 
+class InserirConselho(CreateView):
+    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
+    form_class = CriarConselhoForm
+
+    def get_form_kwargs(self):
+        kwargs = super(InserirConselho, self).get_form_kwargs()
+        pk = self.kwargs['pk']
+        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('gestao:listar_conselhos')
+
+
 class AlterarConselho(UpdateView):
-    template_name = 'gestao/inserir_documentos/alterar_conselho.html'
+    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
     form_class = AlterarConselhoForm
     model = ConselhoCultural
 
     def get_success_url(self):
-        return reverse_lazy('gestao:inserir_conselho')
+        return reverse_lazy('gestao:listar_conselhos')
 
 
 class InserirFundo(ListView):
