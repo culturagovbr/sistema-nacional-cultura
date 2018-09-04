@@ -119,7 +119,7 @@ urlpatterns = [
         views.InserirFundo.as_view(),
         login_url='adesao:login'), name='inserir_fundo'),
     # Inserção de documentos da elaboração do plano de cultura
-    url(r'^inserir-documentos/plano$', staff_member_required(
+    url(r'^inserir-documentos/plano/(?P<pk>[0-9]+)$', staff_member_required(
         views.InserirPlano.as_view(),
         login_url='adesao:login'), name='inserir_plano'),
 
