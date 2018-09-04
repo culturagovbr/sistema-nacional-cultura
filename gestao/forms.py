@@ -290,11 +290,40 @@ class AlterarOrgaoForm(ModelForm):
         fields = ('arquivo', 'data_publicacao')
 
 
+class CriarConselhoForm(ModelForm):
+    arquivo = RestrictedFileField(
+        content_types=content_types,
+        max_upload_size=max_upload_size)
+    data_publicacao = forms.DateField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.plano_trabalho = kwargs.pop('plano')
+        super(CriarConselhoForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True, *args, **kwargs):
+        sistema = super(CriarConselhoForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            sistema.situacao_id = 1
+
+        if commit:
+            sistema.planotrabalho = self.plano_trabalho
+            sistema.save()
+            self.plano_trabalho.conselho_cultural = sistema
+            self.plano_trabalho.save()
+
+        return sistema
+
+    class Meta:
+        model = ConselhoCultural
+        fields = ('arquivo', 'data_publicacao')
+
+
 class AlterarConselhoForm(ModelForm):
     arquivo = RestrictedFileField(
         content_types=content_types,
         max_upload_size=max_upload_size)
+    data_publicacao = forms.DateField(required=True)
 
     class Meta:
         model = ConselhoCultural
-        fields = ('arquivo',)
+        fields = ('arquivo', 'data_publicacao')
