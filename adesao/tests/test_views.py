@@ -134,3 +134,50 @@ def testa_template_em_esqueceu_senha(client):
 
     # Pelo fato de o template padrão do django ter esse mesmo nome fizemos uma validação a mais
     assert "Sistema Nacional de Cultura" in response.rendered_content
+
+
+def test_cadastro_de_um_ente_tipo_estado(login, client):
+    """Testa a situação da Issue #251 Erro ao Cadastrar um ente do tipo Estado
+    Ao cadastrar um ente do tipo estado, um erro ocorre ao enviar o
+    email de confirmação ao cadastrador. A falta da Cidade nas
+    informações faz com que o sistema dispare uma exceção e interrompa
+    a execução.
+    """
+
+    url = reverse("adesao:cadastrar_municipio", kwargs={"tipo_ente": 1})
+    estado = mommy.make("Uf")
+
+    client.force_login(login.user)
+
+    response = client.post(
+        url,
+        {
+            "estado": estado.codigo_ibge,
+            "cnpj_prefeitura": "95.876.554/0001-63",
+            "cpf_prefeito": "381.390.630-29",
+            "uf": estado,
+            "rg_prefeito": "48.464.068-9",
+            "orgao_expeditor_rg": "SSP",
+            "estado_expeditor": estado.codigo_ibge,
+            "nome_prefeito": "Joao silva",
+            "email_institucional_prefeito": "joao@email.com",
+            "endereco_eletronico": "teste.com.br",
+            "cep": "60751-110",
+            "complemento": "casa 22",
+            "bairro": "rua teste",
+            "telefone_um": "6299999999",
+            "endereco": "rua do pao",
+            "termo_posse_prefeito": SimpleUploadedFile(
+                "test_file.pdf", bytes("test text", "utf-8")
+            ),
+            "cpf_copia_prefeito": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+            "rg_copia_prefeito": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+        },
+    )
+
+    client.get(response.url)
+    assert len(mail.outbox) == 1
