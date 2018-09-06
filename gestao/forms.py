@@ -25,6 +25,9 @@ from gestao.models import Diligencia
 
 from .utils import enviar_email_alteracao_situacao
 
+from adesao.utils import validar_cpf
+
+
 
 content_types = [
     'image/png',
@@ -153,6 +156,20 @@ class AlterarCadastradorForm(forms.Form):
     )
 
     data_publicacao_acordo = forms.DateField(required=False)
+
+    def clean_cpf(self):
+        if not validar_cpf(self.cleaned_data['cpf_usuario']):
+            raise forms.ValidationError('Por favor, digite um CPF válido!')
+
+        try:
+            User.objects.get(username=''.join(re.findall(
+                '\d+',
+                self.cleaned_data['cpf_usuario'])))
+            return self.cleaned_data['cpf_usuario']
+        except User.DoesNotExist:
+            raise forms.ValidationError('Esse CPF não está cadastrado.')
+
+        return self.cleaned_data['cpf_usuario']
 
     def save(self):
         cadastrador_novo = Usuario.objects.get(

@@ -76,6 +76,7 @@ class AlterarCadastrador(FormView):
     success_url = reverse_lazy('gestao:acompanhar_adesao')
 
     def form_valid(self, form):
+        form.clean_cpf()
         form.save()
         return super(AlterarCadastrador, self).form_valid(form)
 
@@ -85,7 +86,7 @@ class CidadeChain(autocomplete.Select2QuerySetView):
         """ Filtra todas as cidade de uma determinada UF """
 
         uf_pk = self.forwarded.get('estado', None)
-        
+
         if uf_pk:
             choices = Cidade.objects\
                 .filter(Q(uf__pk=uf_pk) & Q(nome_municipio__icontains=self.q))\
@@ -828,11 +829,3 @@ class DiligenciaView(CreateView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-
-
-
-
-
-
-
-
