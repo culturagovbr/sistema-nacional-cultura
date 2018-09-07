@@ -85,6 +85,7 @@ def test_envio_email_em_nova_adesao(client):
     municipio = Municipio.objects.last()
 
     texto = f"""Prezado Gestor,
+
 Um novo ente federado acabou de se cadastrar e fazer a solicitação de nova adesão.
 Segue abaixo os dados de contato do ente federado:
 
