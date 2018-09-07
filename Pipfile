@@ -31,6 +31,7 @@ XlsxWriter = "==1.0.2"
 xlwt = "==1.3.0"
 django-autocomplete-light = "*"
 "psycopg2-binary" = "*"
+django-templated-email = "*"
 
 [dev-packages]
 pytest = "*"
