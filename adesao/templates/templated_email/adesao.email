@@ -1,0 +1,17 @@
+{% block subject %}MINISTÉRIO DA CULTURA - SNC - SOLICITAÇÃO NOVA ADESÃO{% endblock %}
+{% block plain %}Prezado Gestor,
+
+Um novo ente federado acabou de se cadastrar e fazer a solicitação de nova adesão.
+Segue abaixo os dados de contato do ente federado:
+
+Dados do Ente Federado:
+Cadastrador: {{object.usuario.nome_usuario}}
+Nome do Prefeito: {{form_data.nome_prefeito}}
+Cidade: {{object.cidade.nome_municipio}}
+Estado: {{form_data.uf}}
+Email Institucional: {{form_data.email_institucional_prefeito}}
+Telefone de Contato: {{form_data.telefone_um}}
+Link da Adesão: http://snc.cultura.gov.br/gestao/detalhar/municipio/{{object.usuario.id}}
+
+Equipe SNC
+Ministério da Cultura{% endblock %}

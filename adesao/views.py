@@ -20,6 +20,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.conf import settings
 
+from templated_email.generic_views import TemplatedEmailFormViewMixin
+
 from adesao.models import Municipio, Responsavel, Secretario, Usuario, Historico, Uf, Cidade
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm
@@ -303,6 +305,7 @@ class CadastrarUsuario(CreateView):
     success_url = reverse_lazy('adesao:sucesso_usuario')
 
     def get_success_url(self):
+        # TODO: Refatorar para usar django-templated-email
         Thread(target=send_mail, args=(
             'MINISTÉRIO DA CULTURA - SNC - CREDENCIAIS DE ACESSO',
             'Prezad@ ' + self.object.usuario.nome_usuario + ',\n' +
@@ -329,14 +332,25 @@ def sucesso_municipio(request):
     return render(request, 'prefeitura/mensagem_sucesso_prefeitura.html')
 
 
-class CadastrarMunicipio(CreateView):
+class CadastrarMunicipio(TemplatedEmailFormViewMixin, CreateView):
     form_class = CadastrarMunicipioForm
+    model = Municipio
     template_name = 'prefeitura/cadastrar_prefeitura.html'
+    templated_email_template_name = 'adesao'
+    templated_email_from_email = 'naoresponda@cultura.gov.br'
     success_url = reverse_lazy('adesao:sucesso_municipio')
+
+    def templated_email_get_recipients(self, form):
+        return [settings.RECEIVER_EMAIL]
 
     def get_context_data(self, **kwargs):
         context = super(CadastrarMunicipio, self).get_context_data(**kwargs)
         context['tipo_ente'] = self.kwargs['tipo_ente']
+        return context
+
+    def templated_email_get_context_data(self, **kwargs):
+        context = super().templated_email_get_context_data(**kwargs)
+        context['object'] = self.object
         return context
 
     def form_valid(self, form):
@@ -355,27 +369,6 @@ class CadastrarMunicipio(CreateView):
         kwargs = super(CadastrarMunicipio, self).get_form_kwargs()
         kwargs['user'] = self.request.user.usuario
         return kwargs
-
-    def get_success_url(self):
-        Thread(target=send_mail, args=(
-            'MINISTÉRIO DA CULTURA - SNC - SOLICITAÇÃO NOVA ADESÃO',
-            'Prezado Gestor,\n' +
-            'Um novo ente federado acabou de se cadastrar e fazer a solicitação de nova adesão.\n' +
-            'Segue abaixo os dados de contato do ente federado:\n\n' +
-            'Dados do Ente Federado:\n' +
-            'Cadastrador: ' + self.object.usuario.nome_usuario + '\n' +
-            'Nome do Prefeito: ' + self.object.nome_prefeito + '\n' +
-            'Cidade: ' + self.object.cidade.nome_municipio + '\n' +
-            'Estado: ' + self.object.estado.sigla + '\n' +
-            'Email Institucional: ' + self.object.email_institucional_prefeito + '\n' +
-            'Telefone de Contato: ' + self.object.telefone_um + '\n' +
-            'Link da Adesão: ' + 'http://snc.cultura.gov.br/gestao/detalhar/municipio/{}'.format(self.object.usuario.id) + '\n\n' +
-            'Equipe SNC\nMinistério da Cultura',
-            'naoresponda@cultura.gov.br',
-            [settings.RECEIVER_EMAIL],),
-            kwargs={'fail_silently': 'False', }
-            ).start()
-        return super(CadastrarMunicipio, self).get_success_url()
 
 
 class AlterarMunicipio(UpdateView):
