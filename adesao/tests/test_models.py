@@ -324,5 +324,27 @@ def test_alterar_cadastrador_municipio_sem_cadastrador_previo():
     assert municipio.usuario == cadastrador
 
     cadastrador.delete()
-    sistema.delete()
+    SistemaCultura.objects.all().delete()
     municipio.delete()
+
+@pytest.mark.parametrize('tipo', range(5))
+def test_criar_componente_lei_sistema(tipo):
+    """ Testa criar um novo componente Legislacao para um SistemaCultura """
+    
+    SistemaCultura.objects.all().delete()
+
+    cadastrador = mommy.make("Usuario")
+    sistema = mommy.make("SistemaCultura", cadastrador=cadastrador)
+
+    legislacao = mommy.make("Componente", tipo=tipo)
+
+    sistema.legislacao = legislacao
+    sistema.save()
+
+    sistemas = SistemaCultura.objects.count()
+
+    assert sistemas == 2
+
+    legislacao.delete()
+    SistemaCultura.objects.all().delete()
+    cadastrador.delete()

@@ -36,4 +36,4 @@ def test_arquivo_upload_lei_sistema(client, login, url, componente):
     sistema = getattr(plano, componente)
 
     assert response.status_code == 302
-    assert sistema.arquivo.file.name.split('/')[-1] == arquivo.name
+    assert arquivo.name.split(".")[0] in sistema.arquivo.file.name.split('/')[-1]

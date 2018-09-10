@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from planotrabalho.models import PlanoTrabalho
+from planotrabalho.models import Componente
 
 
 LISTA_ESTADOS_PROCESSO = (
@@ -248,6 +249,12 @@ class SistemaCultura(models.Model):
     cidade = models.ForeignKey("Cidade", on_delete=models.SET_NULL, null=True)
     uf = models.ForeignKey("Uf", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
+    legislacao = models.ForeignKey(Componente, null=True, on_delete=models.SET_NULL, related_name="sistema_cultura", limit_choices_to={'tipo': 0})
+    # orgao_gestor = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura", limit_choices_to={'tipo': 1})
+    # fundo_cultura = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
+    # conselho = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
+    # plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
+
     objects = SistemaCulturaManager()
 
     def compara_valores(self, obj_anterior, propriedade):

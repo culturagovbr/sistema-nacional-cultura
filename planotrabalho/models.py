@@ -6,10 +6,25 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 from gestao.models import Diligencia
 
-SITUACAO_CONSELHEIRO = (
-    ('1', 'Habilitado'),
-    ('0', 'Desabilitado')
-    )
+SITUACAO_CONSELHEIRO = (("1", "Habilitado"), ("0", "Desabilitado"))
+
+LISTA_TIPOS_COMPONENTES = (
+    (0, 'Lei Sistema'),
+    (1, 'Órgão Gestor'),
+    (2, 'Fundo Cultura'),
+    (3, 'Conselho Cultural'),
+    (4, 'Plano Cultura'),
+)
+
+LISTA_SITUACAO_ARQUIVO = (
+    (0, "Em preenchimento"),
+    (1, "Avaliando anexo"),
+    (2, "Concluída"),
+    (3, "Arquivo aprovado com ressalvas"),
+    (4, "Arquivo danificado"),
+    (5, "Arquivo incompleto"),
+    (6, "Arquivo incorreto"),
+)
 
 def upload_to_componente(instance, filename):
     name = ''
@@ -34,6 +49,20 @@ def upload_to_componente(instance, filename):
     return name
 
 
+def upload_to(instance, filename):
+    import ipdb; ipdb.set_trace()
+    name = ""
+    ext = slugify(filename.split(".").pop(-1))
+    new_name = slugify(filename.rsplit(".", 1)[0])
+    componente = slugify(LISTA_TIPOS_COMPONENTES[instance.tipo][1])
+
+    entefederado = instance.sistema_cultura.all()[0].uf
+    name = "{entefederado}/docs/{componente}/{new_name}.{ext}".format(
+        entefederado=entefederado, componente=componente, new_name=new_name, ext=ext
+    )
+
+    return name
+
 class ArquivoComponente(models.Model):
     arquivo = models.FileField(upload_to=upload_to_componente, null=True, blank=True)
     situacao = models.ForeignKey('SituacoesArquivoPlano',
@@ -46,12 +75,21 @@ class ArquivoComponente(models.Model):
         abstract = True
 
 
+class ArquivoComponente2(models.Model):
+    arquivo = models.FileField(upload_to=upload_to, null=True, blank=True)
+    situacao = models.IntegerField("Situação do Arquivo", choices=LISTA_SITUACAO_ARQUIVO,
+        default=0,
+    )
+    data_envio = models.DateField(default=datetime.date.today)
+
+    class Meta:
+        abstract = True
+
+
 class PlanoTrabalho(models.Model):
     criacao_sistema = models.OneToOneField(
-        'CriacaoSistema',
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True)
+        "CriacaoSistema", on_delete=models.CASCADE, blank=True, null=True
+    )
     orgao_gestor = models.OneToOneField(
         'OrgaoGestor',
         on_delete=models.CASCADE,
@@ -74,6 +112,21 @@ class PlanoTrabalho(models.Model):
         null=True)
     diligencias = GenericRelation(Diligencia, content_type_field="componente_type",
                                   object_id_field="componente_id")
+
+    def __str__(self):
+        return str(self.id)
+
+
+class Componente(ArquivoComponente2):
+    tipo = models.IntegerField(
+        max_length=1,
+        choices=LISTA_TIPOS_COMPONENTES,
+        default=0)
+    diligencias = GenericRelation(
+        Diligencia,
+        content_type_field="componente_type",
+        object_id_field="componente_id",
+    )
 
     def __str__(self):
         return str(self.id)
