@@ -3,6 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from model_mommy import mommy
 from model_mommy.recipe import Recipe, foreign_key
 
+from adesao.models import SistemaCultura
 from planotrabalho.models import Componente
 
 
@@ -15,8 +16,8 @@ def test_criacao_novo_componente(client):
     )
 
     uf = mommy.make("Uf")
-    componente = mommy.make("Componente", tipo=2)
-    sistema = mommy.make("SistemaCultura", make_m2m=True, uf=uf, legislacao=componente)
+    componente = mommy.make("Componente", tipo=0)
+    sistema = mommy.make("SistemaCultura", uf=uf, legislacao=componente)
 
     componente.arquivo = arquivo
     componente.save()
@@ -24,3 +25,4 @@ def test_criacao_novo_componente(client):
     assert Componente.objects.get(pk=componente.pk) == componente
 
     Componente.objects.all().delete()
+    SistemaCultura.objects.all().delete()
