@@ -76,7 +76,6 @@ class AlterarCadastrador(FormView):
     success_url = reverse_lazy('gestao:acompanhar_adesao')
 
     def form_valid(self, form):
-        form.clean_cpf()
         form.save()
         return super(AlterarCadastrador, self).form_valid(form)
 

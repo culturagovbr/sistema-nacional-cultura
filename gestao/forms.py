@@ -27,6 +27,7 @@ from .utils import enviar_email_alteracao_situacao
 
 from adesao.utils import validar_cpf
 
+import re
 
 
 content_types = [
@@ -157,7 +158,7 @@ class AlterarCadastradorForm(forms.Form):
 
     data_publicacao_acordo = forms.DateField(required=False)
 
-    def clean_cpf(self):
+    def clean_cpf_usuario(self):
         if not validar_cpf(self.cleaned_data['cpf_usuario']):
             raise forms.ValidationError('Por favor, digite um CPF válido!')
 

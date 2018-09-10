@@ -60,17 +60,17 @@
           <div class="form-group">
             <div class="col-sm-offset-3 col-sm-10">
               <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
-              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="submit" class="btn btn-primary" id="submitButton">Salvar</button>
             </div>
           </div>
 
           <script>
-            $(document).ready(function () {
-              $("form").submit(function () {
-                event.preventDefault();
-                $("#myModal").modal({backdrop: 'static', keyboard: false})
-                $("#myModal").modal('show');
-              });
+            $(document).ready(function(){
+              $("#submitButton").click(function(){
+              $("#myModal").modal();
+              $("#myModal").modal({backdrop: 'static', keyboard: false})
+              return false;
+            });
 
               function submit() {
                 $("form").unbind('submit').submit();
