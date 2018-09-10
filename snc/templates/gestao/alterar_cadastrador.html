@@ -66,11 +66,13 @@
 
           <script>
             $(document).ready(function(){
-              $("#submitButton").click(function(){
-              $("#myModal").modal();
-              $("#myModal").modal({backdrop: 'static', keyboard: false})
-              return false;
-            });
+              
+              $("form").submit(function (event) {
+                event.preventDefault();
+                $("#myModal").modal({backdrop: 'static', keyboard: false})
+                $("#myModal").modal('show');
+              });
+
 
               function submit() {
                 $("form").unbind('submit').submit();
