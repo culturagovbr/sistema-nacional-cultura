@@ -26,6 +26,7 @@ LISTA_SITUACAO_ARQUIVO = (
     (6, "Arquivo incorreto"),
 )
 
+
 def upload_to_componente(instance, filename):
     name = ''
     ext = slugify(filename.split('.').pop(-1))
@@ -50,16 +51,22 @@ def upload_to_componente(instance, filename):
 
 
 def upload_to(instance, filename):
-    import ipdb; ipdb.set_trace()
+    componentes = {
+            0: "legislacao",
+            1: "orgao_gestor",
+            2: "fundo_cultura",
+            3: "conselho",
+            4: "plano",
+            }
+
     name = ""
     ext = slugify(filename.split(".").pop(-1))
     new_name = slugify(filename.rsplit(".", 1)[0])
-    componente = slugify(LISTA_TIPOS_COMPONENTES[instance.tipo][1])
+    componente = componentes.get(instance.tipo)
+    instance_componente = getattr(instance, componente)
+    entefederado = instance_componente.all()[0].uf
 
-    entefederado = instance.sistema_cultura.all()[0].uf
-    name = "{entefederado}/docs/{componente}/{new_name}.{ext}".format(
-        entefederado=entefederado, componente=componente, new_name=new_name, ext=ext
-    )
+    name = f"{entefederado}/docs/{componente}/{new_name}.{ext}"
 
     return name
 
