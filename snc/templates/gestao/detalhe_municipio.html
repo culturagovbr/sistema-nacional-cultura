@@ -373,20 +373,19 @@
                             <a href="{% url 'gestao:detalhar' object.id %}" class="btn btn-default btn-xs" value="Cancelar" >Cancelar</a>
                           </div>
                       </div>
-
-                      <script>
-                          $(document).ready(function () {
-                            $("form").submit(function () {
-                              event.preventDefault();
-                              $("#myModal").modal({backdrop: 'static', keyboard: false})
-                              $("#myModal").modal('show');
-                            });
+                      
               
-                            function submit() {
-                              $("form").unbind('submit').submit();
-                            }
+                      <script>
+                        $(document).ready(function(){
+                          
+                          $("form").submit(function (event) {
+                            event.preventDefault();
+                            $("#myModal").modal({backdrop: 'static', keyboard: false})
+                            $("#myModal").modal('show');
                           });
-                        </script>
+                        });
+                      </script>
+                    
               
               
               
