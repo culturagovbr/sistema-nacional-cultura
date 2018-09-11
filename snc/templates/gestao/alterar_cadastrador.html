@@ -64,6 +64,7 @@
             </div>
           </div>
 
+          {% if form.errors %}
           <script>
             $(document).ready(function(){
               
@@ -72,15 +73,9 @@
                 $("#myModal").modal({backdrop: 'static', keyboard: false})
                 $("#myModal").modal('show');
               });
-
-
-              function submit() {
-                $("form").unbind('submit').submit();
-              }
             });
           </script>
-
-
+          {% endif %}
 
           <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
