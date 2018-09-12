@@ -7,9 +7,7 @@ Segue abaixo os dados de contato do ente federado:
 Dados do Ente Federado:
 Cadastrador: {{object.usuario.nome_usuario}}
 Nome do Prefeito: {{form_data.nome_prefeito}}
-{% if object.cidade.nome_municipio %}
-Cidade: {{object.cidade.nome_municipio}}
-{% endif %}
+{% if object.cidade.nome_municipio %}Cidade: {{object.cidade.nome_municipio}}{% endif %}
 Estado: {{form_data.uf}}
 Email Institucional: {{form_data.email_institucional_prefeito}}
 Telefone de Contato: {{form_data.telefone_um}}
