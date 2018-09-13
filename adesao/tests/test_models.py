@@ -9,6 +9,7 @@ from adesao.models import Usuario
 from adesao.models import Municipio
 from adesao.models import Secretario
 from adesao.models import Responsavel
+from adesao.models import Funcionario
 from adesao.models import SistemaCulturaManager
 from planotrabalho.models import PlanoTrabalho
 
@@ -348,3 +349,18 @@ def test_criar_componente_lei_sistema(tipo):
     legislacao.delete()
     SistemaCultura.objects.all().delete()
     cadastrador.delete()
+
+
+def test_criacao_funcionario(client):
+    """
+    Verifica se é possível criar um novo componente.
+    """
+
+    secretario = mommy.make("Funcionario", tipo_funcionario=0)
+    responsavel = mommy.make("Funcionario", tipo_funcionario=1)
+    sistema = mommy.make("SistemaCultura", secretario=secretario, responsavel=responsavel)
+  
+    assert SistemaCultura.objects.get(pk=sistema.pk) == sistema
+
+    Funcionario.objects.all().delete()
+    SistemaCultura.objects.all().delete()

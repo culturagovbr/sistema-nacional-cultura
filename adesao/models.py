@@ -16,6 +16,10 @@ LISTA_ESTADOS_PROCESSO = (
     ('6', 'Publicado no DOU'),
     ('7', 'Responsável confirmado'),)
 
+LISTA_TIPOS_FUNCIONARIOS = (
+    (0, 'Secretário'),
+    (1, 'Responsável'),)
+
 
 # Create your models here.
 class Uf(models.Model):
@@ -240,6 +244,28 @@ class SistemaCulturaManager(models.Manager):
         return sistemas
 
 
+class Funcionario(models.Model):
+    cpf = models.CharField(
+        max_length=14,
+        verbose_name='CPF')
+    rg = models.CharField(max_length=25, verbose_name='RG')
+    orgao_expeditor_rg = models.CharField(max_length=50)
+    estado_expeditor = models.ForeignKey('Uf', on_delete=models.CASCADE)
+    nome = models.CharField(max_length=100)
+    cargo = models.CharField(max_length=100)
+    instituicao = models.CharField(max_length=100)
+    telefone_um = models.CharField(max_length=25)
+    telefone_dois = models.CharField(max_length=25, blank=True)
+    telefone_tres = models.CharField(max_length=25, blank=True)
+    email_institucional = models.EmailField()
+    tipo_funcionario = models.IntegerField(
+        choices=LISTA_TIPOS_FUNCIONARIOS,
+        default='0')
+
+    def __str__(self):
+        return self.cpf
+
+
 class SistemaCultura(models.Model):
     """
     Entidade que representa um Sistema de Cultura
@@ -254,6 +280,8 @@ class SistemaCultura(models.Model):
     fundo_cultura = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
     conselho = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
+    secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
+    responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
 
     objects = SistemaCulturaManager()
 
