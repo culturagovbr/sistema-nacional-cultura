@@ -223,6 +223,24 @@ class Historico(models.Model):
     descricao = models.TextField(blank=True, null=True)
 
 
+class Sede(models.Model):
+    localizacao = models.CharField(max_length=50, blank=True)
+    cnpj = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ')
+    endereco = models.CharField(max_length=255)
+    complemento = models.CharField(max_length=255)
+    cep = models.CharField(max_length=10)
+    bairro = models.CharField(max_length=50)
+    telefone_um = models.CharField(max_length=100)
+    telefone_dois = models.CharField(max_length=25, blank=True)
+    telefone_tres = models.CharField(max_length=25, blank=True)
+    endereco_eletronico = models.URLField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.cnpj
+
+
 class SistemaCulturaManager(models.Manager):
     def ativo(self, uf, cidade=None):
         """ Retorna último SistemaCultura ativo relativo a um ente federado """
@@ -282,6 +300,7 @@ class SistemaCultura(models.Model):
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
     secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
     responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
+    sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
 
     objects = SistemaCulturaManager()
 
