@@ -11,6 +11,7 @@ from adesao.models import Secretario
 from adesao.models import Responsavel
 from adesao.models import Funcionario
 from adesao.models import Sede
+from adesao.models import Gestor
 from adesao.models import SistemaCulturaManager
 from planotrabalho.models import PlanoTrabalho
 
@@ -380,3 +381,16 @@ def test_criacao_sede(client):
     Sede.objects.all().delete()
     SistemaCultura.objects.all().delete()
 
+
+def test_criacao_gestor(client):
+    """
+    Verifica se é possível criar um novo gestor.
+    """
+
+    gestor = mommy.make("Gestor", tipo_funcionario=2)
+    sistema = mommy.make("SistemaCultura", gestor=gestor)
+  
+    assert SistemaCultura.objects.get(pk=sistema.pk) == sistema
+
+    Gestor.objects.all().delete()
+    SistemaCultura.objects.all().delete()

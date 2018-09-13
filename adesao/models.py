@@ -18,7 +18,8 @@ LISTA_ESTADOS_PROCESSO = (
 
 LISTA_TIPOS_FUNCIONARIOS = (
     (0, 'Secretário'),
-    (1, 'Responsável'),)
+    (1, 'Responsável'),
+    (2, 'Gestor'),)
 
 
 # Create your models here.
@@ -284,6 +285,14 @@ class Funcionario(models.Model):
         return self.cpf
 
 
+class Gestor(Funcionario):
+    termo_posse = models.FileField(
+        upload_to='termo_posse',
+        max_length=255,
+        blank=True,
+        null=True)
+
+
 class SistemaCultura(models.Model):
     """
     Entidade que representa um Sistema de Cultura
@@ -300,6 +309,7 @@ class SistemaCultura(models.Model):
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
     secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
     responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
+    gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
     sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
 
     objects = SistemaCulturaManager()
