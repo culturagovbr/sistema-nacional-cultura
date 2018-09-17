@@ -5,9 +5,13 @@ from django.template import Engine
 from django.template import Template
 from django.template import TemplateDoesNotExist
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from planotrabalho.models import PlanoTrabalho
 from gestao.forms import DiligenciaForm
+from gestao.models import Diligencia
+
+from model_mommy import mommy
 
 pytestmark = pytest.mark.django_db
 
@@ -194,27 +198,31 @@ def test_renderizacao_js_form_diligencia(template, client, context):
     assert "<script type=\"text/javascript\" src=\"/static/ckeditor/ckeditor/ckeditor.js\">" in rendered_template
 
 
-def test_opcao_avaliacao_negativa_documentos_plano_de_trabalho(client, plano_trabalho, login_staff):
+def test_opcao_avaliacao_negativa_documentos_plano_de_trabalho(client, login_staff):
     """ Testa se há a opção de avaliar negativamente um documento enviado do Plano Trabalho """
 
     componentes = (
         'orgao_gestor',
-        'plano_cultura',
-        'fundo_cultura',
-        'criacao_sistema',
-        'conselho_cultural',
     )
 
-    plano_trabalho = PlanoTrabalho.objects.first()
+    legislacao = mommy.make("Componente", tipo=0, situacao=1)
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    diligencia = mommy.make("Diligencia")
+    orgao_gestor = mommy.make("Componente", arquivo=arquivo, tipo=1, situacao=1)
+    orgao_gestor.diligencias.add(diligencia)
+    orgao_gestor.save()
+    fundo = mommy.make("Componente", tipo=2, situacao=1)
+    conselho = mommy.make("Componente", tipo=3, situacao=1)
+    plano = mommy.make("Componente", tipo=4, situacao=1)
 
-    usuario = plano_trabalho.usuario
-    usuario.estado_processo = '6'
-    usuario.save()
+    sistema_cultura = mommy.make("SistemaCultura", legislacao=legislacao, orgao_gestor=orgao_gestor,
+        fundo_cultura=fundo, conselho=conselho, plano=plano, estado_processo='6')
 
-    request = client.get('/gestao/detalhar/municipio/{}'.format(usuario.id))
+    request = client.get('/gestao/detalhar/municipio/{}'.format(sistema_cultura.id))
+    print(request.rendered_content)
 
     for componente in componentes:
-        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(plano_trabalho.id, componente, "0") in request.rendered_content
+        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "0") in request.rendered_content
 
 
 def test_opcao_avaliacao_positiva_documentos_plano_de_trabalho(client, plano_trabalho, login_staff):
@@ -223,7 +231,7 @@ def test_opcao_avaliacao_positiva_documentos_plano_de_trabalho(client, plano_tra
         'orgao_gestor',
         'plano_cultura',
         'fundo_cultura',
-        'criacao_sistema',
+        'legislacao',
         'conselho_cultural',
     )
 

@@ -149,14 +149,14 @@
             <div class="list-group-item col-xs-2 text-center">
               <a href="{{ object.legislacao.arquivo.url}}">Download</a>
             </div>
-            {% if object.legislacao.situacao.id == 1 %}
+            {% if object.legislacao.situacao == 1 %}
 
               <div class="list-group-item col-xs-1 text-center ">
-                <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='criacao_sistema' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+                <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='legislacao' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
             </div>
 
             <div class="list-group-item col-xs-1 text-center">
-                <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='criacao_sistema' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+                <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='legislacao' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
             </div>
             {% else %}
             <div class="list-group-item col-xs-2 text-center">
@@ -178,18 +178,18 @@
           <div class="list-group-item col-xs-2 text-center">
             <a href="{{ object.orgao_gestor.arquivo.url }}">Download</a>
           </div>
-          {% if object.orgao_gestor.situacao.id  == 1 %}
+          {% if object.orgao_gestor.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='orgao_gestor' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='orgao_gestor' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='orgao_gestor' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='orgao_gestor' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.orgao_gestor.situacao.descricao }}</b>
+              <b>aa</b>
           </div>
           {% endif %}
 
@@ -207,14 +207,14 @@
           <div class="list-group-item col-xs-2 text-center">
             <a href="{{ object.conselho_cultural.arquivo.url }}">Download</a>
           </div>
-          {% if object.conselho_cultural.situacao.id == 1 %}
+          {% if object.conselho_cultural.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='conselho_cultural' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho_cultural' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='conselho_cultural' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho_cultural' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
@@ -236,14 +236,14 @@
           <div class="list-group-item col-xs-2 text-center">
             <a href="{{ object.fundo_cultura.arquivo.url }}">Download</a>
           </div>
-          {% if object.fundo_cultura.situacao.id == 1 %}
+          {% if object.fundo_cultura.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='fundo_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='fundo_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='fundo_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='fundo_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
@@ -267,14 +267,14 @@
           <div class="list-group-item col-xs-2 text-center">
             <a href="{{ object.plano_cultura.arquivo.url}}">Download</a>
           </div>
-          {% if object.plano_cultura.situacao.id == 1 %}
+          {% if object.plano_cultura.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='plano_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='plano_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
@@ -295,7 +295,7 @@
               <b>Situação Geral do Plano de Trabalho</b>
             </div>
                 <div class="list-group-item col-xs-4 text-center">
-                    <a href="{% url 'gestao:diligencia_componente' pk=object.plano_trabalho.id componente='plano_trabalho' resultado='1'%}">Criar Diligência</a>
+                    <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano_trabalho' resultado='1'%}">Criar Diligência</a>
                 </div>
           </div>
         </div>

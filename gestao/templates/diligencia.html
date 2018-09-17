@@ -1,0 +1,116 @@
+{% extends 'gestao/base_gestao.html' %} {% block content %}
+
+<style>
+	#painel-diligencia{
+		background-color: #eee;
+		margin-top: 2rem;
+		width: 83.5rem;
+	}
+	#lista-diligencia{
+		margin-bottom: 2rem;
+	}
+	.glyphicon.glyphicon-remove {
+		color: #d9534f;
+	}
+	.glyphicon.glyphicon-ok {
+		color: #337ab7;
+	}
+</style>
+
+<div id="painel-diligencia" class="row panel panel-default">
+	<div class="panel-body">
+		{% if componente == plano_trabalho  %}
+			<h2>Informações sobre o Plano Trabalho</h2>
+			<br>
+			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
+
+            <p><b>Criação Sistema: </b> {{ situacoes.criacao_sistema }}
+                {% if situacoes.criacao_sistema != 'Concluída' %}
+                    <i class="glyphicon glyphicon-remove"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-ok"></i>
+                {% endif %}
+            </p>
+            <p><b>Fundo Cultura: </b> {{ situacoes.fundo_cultura }}
+                {% if situacoes.fundo_cultura != 'Concluída' %}
+                <i class="glyphicon glyphicon-remove"></i>
+                {% else %}
+                <i class="glyphicon glyphicon-ok"></i>
+                {% endif %}
+            </p>
+            <p><b>Conselho Cultural: </b> {{ situacoes.conselho_cultural }}
+                {% if situacoes.conselho_cultural != 'Concluída' %}
+                    <i class="glyphicon glyphicon-remove"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-ok"></i>
+                {% endif %}
+            </p>
+            <p><b>Orgao Gestor: </b> {{ situacoes.orgao_gestor }}
+                {% if situacoes.orgao_gestor != 'Concluída' %}
+                    <i class="glyphicon glyphicon-remove"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-ok"></i>
+                {% endif %}
+            </p>
+            <p><b>Plano Cultura: </b> {{ situacoes.plano_cultura }}
+                {% if situacoes.plano_cultura != 'Concluída' %}
+                    <i class="glyphicon glyphicon-remove"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-ok"></i>
+                {% endif %}
+            </p>
+
+		{% else %}
+
+			<h2>Informações sobre o Arquivo Enviado</h2>
+			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
+			<p><b>Data de Envio do Arquivo:</b> {{ data_envio }}</p>
+			<a href = {{arquivo.url}}> <b>Download do arquivo</b></a>
+
+		{% endif %}
+	</div>
+</div>
+
+
+<div class="row">
+	<form method="POST">
+		{% csrf_token %}
+		{{form.texto_diligencia}}
+		<br>
+
+		{% if componente != plano_trabalho %}
+			<b>Classificação do Arquivo:</b> {{form.classificacao_arquivo}}
+		{% endif %}
+
+		{{form.media}}
+		<br><br>
+		<input class="btn btn-primary" type="submit"></input>
+		<a href="{% url 'gestao:detalhar' pk=usuario_id %}" class="btn btn-danger">Cancelar</a>
+	</form>
+</div>
+<br>
+
+{% if historico_diligencias %}
+	<div class="row panel panel-info">
+		<div class="panel-heading">
+			Histórico de Diligências
+		</div>
+
+		{% for diligencia in historico_diligencias %}
+		<div id="lista-diligencia" class="col-md-12">
+			<ul class="list-group"></ul>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
+                {% if diligencia.tipo_diligencia != 'geral'%}
+                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.classificacao_arquivo.descricao }}</li>
+                {% endif %}
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
+				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Tipo da Diligência:</b> {{diligencia.get_tipo_diligencia_display }}</li>
+			</ul>
+		</div>
+		{% endfor %}
+
+	</div>
+{% endif %}
+
+{% endblock %}
