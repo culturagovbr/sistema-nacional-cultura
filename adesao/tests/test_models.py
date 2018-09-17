@@ -394,3 +394,28 @@ def test_criacao_gestor(client):
 
     Gestor.objects.all().delete()
     SistemaCultura.objects.all().delete()
+
+
+@pytest.mark.xfail
+def test_entidade_ente_federado():
+    """
+    Testa a existencia da entidade EnteFederado
+    """
+
+    with pytest.raises(ImportError):
+        from adesao.models import EnteFederado
+
+
+def test_campos_entidade_EnteFederado():
+    """
+    Testa a existenca das seguintes propriedades em uma instacia de
+    EnteFederado: ("cod_ibge", "nome", "mandatario", "territorio", "populacao",
+    "densidade", "idh", "receita", "despesas", "pib")
+    """
+
+    from adesao.models import EnteFederado
+
+    campos = {"cod_ibge", "nome", "mandatario", "territorio", "populacao", "densidade",
+            "idh", "receita", "despesas", "pib"}
+
+    assert campos in set(EnteFederado._meta.fields)

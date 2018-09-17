@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
@@ -33,6 +34,19 @@ class Uf(models.Model):
 
     class Meta:
         ordering = ['sigla']
+
+
+class EnteFederado(models.Model):
+    cod_ibge = models.IntegerField(_('Código IBGE'))
+    nome = models.CharField(_("Nome do EnteFederado"), max_length=300)
+    mandatario = models.CharField(_("Nome do Mandataio"), max_length=300)
+    territorio = models.DecimalField(_("Área territorial - km²"), decimal_places=3)
+    população = models.IntegerField(_("População Estimada - pessoas"))
+    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), decimal_places=2)
+    idh = models.DecimalField(_("IDH / IDHM"), decimal_places=3)
+    receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"))
+    despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"))
+    pib = models.DecimalField(_("PIB per capita - R$"), decimal_places=2)
 
 
 class Cidade(models.Model):
