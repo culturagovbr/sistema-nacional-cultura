@@ -305,6 +305,16 @@ class Gestor(Funcionario):
         max_length=255,
         blank=True,
         null=True)
+    rg_copia = models.FileField(
+        upload_to='rg_copia',
+        max_length=255,
+        blank=True,
+        null=True)
+    cpf_copia = models.FileField(
+        upload_to='cpf_copia',
+        max_length=255,
+        blank=True,
+        null=True)
 
 
 class SistemaCultura(models.Model):
@@ -325,6 +335,13 @@ class SistemaCultura(models.Model):
     responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
     sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
+    estado_processo = models.CharField(
+        max_length=1,
+        choices=LISTA_ESTADOS_PROCESSO,
+        default='0')
+    data_publicacao_acordo = models.DateField(blank=True, null=True)
+    link_publicacao_acordo = models.CharField(max_length=100, blank=True, null=True)
+    processo_sei = models.CharField(max_length=100, blank=True, null=True)
 
     objects = SistemaCulturaManager()
 

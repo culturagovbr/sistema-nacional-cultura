@@ -73,7 +73,7 @@ urlpatterns = [
 
     # Detalhar usuário
     url(r'^detalhar/municipio/(?P<pk>[0-9]+)$',
-        staff_member_required(views.DetalharUsuario.as_view()),
+        staff_member_required(views.DetalharEnte.as_view()),
         name='detalhar'),
     url(r'^usuarios/',
         staff_member_required(

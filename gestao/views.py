@@ -455,6 +455,34 @@ class DetalharUsuario(DetailView):
         return context
 
 
+class DetalharEnte(DetailView):
+    model = SistemaCultura
+    template_name = 'detalhe_municipio.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetalharEnte, self).get_context_data(**kwargs)
+        #situacao = context['usuario'].estado_processo
+        #context['processo_sei'] = context['usuario'].processo_sei
+        #municipio = Municipio.objects.get(id=context['municipio'].id)
+
+        if context['sistemacultura'].cidade:
+            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(context['sistemacultura'].uf, 
+                context['sistemacultura'].cidade)
+        else:
+            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(context['sistemacultura'].uf)
+        """
+        try:
+
+            if situacao == '2':
+                context['dado_situacao'] = municipio.localizacao
+
+            elif situacao == '4':
+                context['dado_situacao'] = municipio.numero_processo         
+        except:
+            pass"""
+        return context
+
+
 class ListarUsuarios(ListView):
     model = Usuario
     template_name = 'gestao/listar_usuarios.html'
