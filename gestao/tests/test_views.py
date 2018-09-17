@@ -366,21 +366,6 @@ def test_insere_link_publicacao_dou(client, plano_trabalho, login_staff):
     assert user.link_publicacao_acordo == "https://www.google.com/"
 
 
-def test_se_link_da_publicacao_esta_no_context(client, plano_trabalho, login_staff):
-    """ Testa se ao detalhar um municipio com processo sei, essa informacao é transmitida"""
-
-    usuario = plano_trabalho.usuario
-    url = reverse('gestao:alterar_dados_adesao', kwargs={'pk': usuario.id})
-
-    client.post(url, data={'estado_processo': '6', 'data_publicacao_acordo': '28/06/2018',
-        'link_publicacao_acordo': 'https://www.google.com/'})
-
-    request = client.get('/gestao/detalhar/municipio/{}'.format(usuario.id))
-
-    usuario.refresh_from_db()
-    assert request.context['link_publicacao'] == usuario.link_publicacao_acordo
-
-
 def test_insere_sei(client, plano_trabalho, login_staff):
     """ Testa se ao inserir sei o objeto usuario é alterado """
 
@@ -395,23 +380,11 @@ def test_insere_sei(client, plano_trabalho, login_staff):
     assert user.processo_sei == "123456"
 
 
-def test_se_processo_sei_esta_no_context(client, plano_trabalho, login_staff):
-    """ Testa se ao detalhar um municipio com processo sei, essa informacao é transmitida"""
-
-    plano_trabalho.usuario.processo_sei = "123456"
-    plano_trabalho.usuario.save()
-
-    usuario_id = plano_trabalho.usuario.id
-    request = client.get('/gestao/detalhar/municipio/{}'.format(usuario_id))
-
-    assert request.context['processo_sei'] == plano_trabalho.usuario.processo_sei
-
-
 def test_retorno_200_para_detalhar_municipio(client, plano_trabalho, login_staff):
     """ Testa se página de detalhamento do município retorna 200 """
 
-    usuario_id = plano_trabalho.usuario.id
-    request = client.get("/gestao/detalhar/municipio/{}".format(usuario_id))
+    sistema_cultura = mommy.make("SistemaCultura")
+    request = client.get("/gestao/detalhar/municipio/{}".format(sistema_cultura.id))
     assert request.status_code == 200
 
 
