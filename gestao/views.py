@@ -461,25 +461,14 @@ class DetalharEnte(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetalharEnte, self).get_context_data(**kwargs)
-        #situacao = context['usuario'].estado_processo
-        #context['processo_sei'] = context['usuario'].processo_sei
-        #municipio = Municipio.objects.get(id=context['municipio'].id)
+        sistema_cultura = context['sistemacultura']
 
-        if context['sistemacultura'].cidade:
-            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(context['sistemacultura'].uf, 
-                context['sistemacultura'].cidade)
+        if sistema_cultura.cidade:
+            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(sistema_cultura.uf, 
+                sistema_cultura.cidade)
         else:
-            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(context['sistemacultura'].uf)
-        """
-        try:
+            context['historico_sistemas'] = SistemaCultura.objects.por_municipio(sistema_cultura.uf)
 
-            if situacao == '2':
-                context['dado_situacao'] = municipio.localizacao
-
-            elif situacao == '4':
-                context['dado_situacao'] = municipio.numero_processo         
-        except:
-            pass"""
         return context
 
 

@@ -342,6 +342,8 @@ class SistemaCultura(models.Model):
     data_publicacao_acordo = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=100, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
+    localizacao = models.CharField(max_length=50, blank=True)
+    numero_processo = models.CharField(max_length=50, blank=True)
 
     objects = SistemaCulturaManager()
 

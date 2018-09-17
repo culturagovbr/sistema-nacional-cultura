@@ -355,8 +355,8 @@
                       <div class="form-group">
                         <textarea id="justificativa_situacao" name="justificativa" class="form-control hide" style="resize:none" placeholder="Justificativa" rows="4" cols="20">{% if object.estado_processo == '3' %} {{dado_situacao}} {% endif %}</textarea>
                         <input type="text" id="data_acordo_situacao" name="data_publicacao_acordo" class="form-control date hide" value="{% if object.estado_processo == '6' %} {{object.data_publicacao_acordoa}} {% endif %}" placeholder="Data de Publicação"></input>
-                        <input type="text" id="localizacao_situacao" name="localizacao" class="form-control hide" placeholder="Localização" value="{% if object.estado_processo == '2' %} {{dado_situacao}} {% endif %}"></input>
-                        <input type="text" id="num_processo_situacao" name="num_processo" class="form-control hide" placeholder="Número do Processo" value="{% if object.estado_processo == '4' %} {{dado_situacao}} {% endif %}"></input>
+                        <input type="text" id="localizacao_situacao" name="localizacao" class="form-control hide" placeholder="Localização" value="{% if object.estado_processo == '2' %} {{object.localizacao}} {% endif %}"></input>
+                        <input type="text" id="num_processo_situacao" name="num_processo" class="form-control hide" placeholder="Número do Processo" value="{% if object.estado_processo == '4' %} {{object.num_processo}} {% endif %}"></input>
                       </div>
 
                       <div class="form-group">
