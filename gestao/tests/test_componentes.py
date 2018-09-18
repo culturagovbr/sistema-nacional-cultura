@@ -198,52 +198,53 @@ def test_renderizacao_js_form_diligencia(template, client, context):
     assert "<script type=\"text/javascript\" src=\"/static/ckeditor/ckeditor/ckeditor.js\">" in rendered_template
 
 
-def test_opcao_avaliacao_negativa_documentos_plano_de_trabalho(client, login_staff):
-    """ Testa se há a opção de avaliar negativamente um documento enviado do Plano Trabalho """
+def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff):
+    """ Testa se há a opção de avaliar negativamente e positivamente um documento enviado do Plano Trabalho """
 
     componentes = (
         'orgao_gestor',
+        'fundo_cultura',
+        'legislacao',
+        'conselho',
+        'plano'
     )
 
     legislacao = mommy.make("Componente", tipo=0, situacao=1)
     arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
     diligencia = mommy.make("Diligencia")
-    orgao_gestor = mommy.make("Componente", arquivo=arquivo, tipo=1, situacao=1)
-    orgao_gestor.diligencias.add(diligencia)
-    orgao_gestor.save()
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     fundo = mommy.make("Componente", tipo=2, situacao=1)
     conselho = mommy.make("Componente", tipo=3, situacao=1)
     plano = mommy.make("Componente", tipo=4, situacao=1)
 
-    sistema_cultura = mommy.make("SistemaCultura", legislacao=legislacao, orgao_gestor=orgao_gestor,
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='uf', legislacao=legislacao, orgao_gestor=orgao_gestor,
         fundo_cultura=fundo, conselho=conselho, plano=plano, estado_processo='6')
 
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.diligencias.add(diligencia)
+    orgao_gestor.save()
+
+    legislacao.arquivo = arquivo
+    legislacao.diligencias.add(diligencia)
+    legislacao.save()
+
+    conselho.arquivo = arquivo
+    conselho.diligencias.add(diligencia)
+    conselho.save()
+
+    fundo.arquivo = arquivo
+    fundo.diligencias.add(diligencia)
+    fundo.save()
+
+    plano.arquivo = arquivo
+    plano.diligencias.add(diligencia)
+    plano.save()
+
     request = client.get('/gestao/detalhar/municipio/{}'.format(sistema_cultura.id))
-    print(request.rendered_content)
 
     for componente in componentes:
         assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "0") in request.rendered_content
-
-
-def test_opcao_avaliacao_positiva_documentos_plano_de_trabalho(client, plano_trabalho, login_staff):
-
-    componentes = (
-        'orgao_gestor',
-        'plano_cultura',
-        'fundo_cultura',
-        'legislacao',
-        'conselho_cultural',
-    )
-
-    plano_trabalho = PlanoTrabalho.objects.first()
-    usuario = plano_trabalho.usuario
-    usuario.estado_processo = '6'
-    usuario.save()
-
-    request = client.get('/gestao/detalhar/municipio/{}'.format(usuario.id))
-
-    for componente in componentes:
-        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(plano_trabalho.id, componente, "1") in request.rendered_content
+        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "1") in request.rendered_content
 
 
 def test_informacoes_diligencia_componente(plano_trabalho, client, login_staff):

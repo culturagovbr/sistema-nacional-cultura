@@ -189,7 +189,7 @@
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>aa</b>
+              <b>{{ object.orgao_gestor.situacao.descricao }}</b>
           </div>
           {% endif %}
 
@@ -197,7 +197,7 @@
     </div>
     {% endif %}
 
-    {% if object.conselho_cultural.arquivo %}
+    {% if object.conselho.arquivo %}
     <div class="list-group row">
       <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -205,20 +205,20 @@
           </div>
 
           <div class="list-group-item col-xs-2 text-center">
-            <a href="{{ object.conselho_cultural.arquivo.url }}">Download</a>
+            <a href="{{ object.conselho.arquivo.url }}">Download</a>
           </div>
-          {% if object.conselho_cultural.situacao == 1 %}
+          {% if object.conselho.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho_cultural' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho_cultural' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='conselho' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.conselho_cultural.situacao.descricao }}</b>
+              <b>{{ object.conselho.situacao.descricao }}</b>
           </div>
           {% endif %}
 
@@ -257,7 +257,7 @@
 
 
 
-    {% if object.plano_cultura.arquivo %}
+    {% if object.plano.arquivo %}
     <div class="list-group row">
         <div class="col-md-12">
           <div  class="list-group-item col-xs-8">
@@ -267,18 +267,18 @@
           <div class="list-group-item col-xs-2 text-center">
             <a href="{{ object.plano_cultura.arquivo.url}}">Download</a>
           </div>
-          {% if object.plano_cultura.situacao == 1 %}
+          {% if object.plano.situacao == 1 %}
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
           </div>
 
           <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
+              <a href="{% url 'gestao:diligencia_componente' pk=object.id componente='plano' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.plano_cultura.situacao.descricao }}</b>
+              <b>{{ object.plano.situacao.descricao }}</b>
           </div>
           {% endif %}
 
