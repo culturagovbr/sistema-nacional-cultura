@@ -49,6 +49,8 @@ django-extensions = "*"
 ipdb = "*"
 tox = "*"
 coverage = "*"
+ipython = "*"
+rows = {version = "*", extras = ["ods"]}
 
 [requires]
 python_version = "3.6"
