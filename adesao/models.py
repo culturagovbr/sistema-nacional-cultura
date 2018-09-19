@@ -39,14 +39,14 @@ class Uf(models.Model):
 class EnteFederado(models.Model):
     cod_ibge = models.IntegerField(_('Código IBGE'))
     nome = models.CharField(_("Nome do EnteFederado"), max_length=300)
-    mandatario = models.CharField(_("Nome do Mandataio"), max_length=300)
-    territorio = models.DecimalField(_("Área territorial - km²"), decimal_places=3)
-    população = models.IntegerField(_("População Estimada - pessoas"))
-    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), decimal_places=2)
-    idh = models.DecimalField(_("IDH / IDHM"), decimal_places=3)
-    receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"))
-    despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"))
-    pib = models.DecimalField(_("PIB per capita - R$"), decimal_places=2)
+    mandatario = models.CharField(_("Nome do Mandataio"), max_length=300, null=True, blank=True)
+    territorio = models.DecimalField(_("Área territorial - km²"), max_digits=10, decimal_places=3)
+    populacao = models.IntegerField(_("População Estimada - pessoas"))
+    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), max_digits=10, decimal_places=2)
+    idh = models.DecimalField(_("IDH / IDHM"), max_digits=10, decimal_places=3)
+    receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"), null=True, blank=True)
+    despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"), null=True, blank=True)
+    pib = models.DecimalField(_("PIB per capita - R$"), max_digits=10, decimal_places=2)
 
 
 class Cidade(models.Model):
@@ -355,7 +355,6 @@ class SistemaCultura(models.Model):
                 self.alterar_cadastrador(anterior.cadastrador)
 
         super().save(*args, **kwargs)
-
 
     def alterar_cadastrador(self, cadastrador_atual):
         """
