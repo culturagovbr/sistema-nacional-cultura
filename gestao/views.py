@@ -869,11 +869,11 @@ class DiligenciaView2(CreateView):
                   ' acabou de ser realizada.\n' +
                   'O corpo da mensagem é: ' + self.object.texto_diligencia + '\n' +
                   'As situações dos arquivos enviados de cada componente são: \n' +
-                  'Lei de Criação do Sistema de Cultura: ' + situacoes['criacao_sistema'] + ';\n' +
+                  'Lei de Criação do Sistema de Cultura: ' + situacoes['legislacao'] + ';\n' +
                   'Órgão Gestor: ' + situacoes['orgao_gestor'] + ';\n' +
-                  'Conselho de Política Cultural: ' + situacoes['conselho_cultural'] + ';\n' +
+                  'Conselho de Política Cultural: ' + situacoes['conselho'] + ';\n' +
                   'Fundo de Cultura: ' + situacoes['fundo_cultura'] + ';\n' +
-                  'Plano de Cultura: ' + situacoes['plano_cultura'] + '.\n\n' +
+                  'Plano de Cultura: ' + situacoes['plano'] + '.\n\n' +
                   'Atenciosamente,\n\n' +
                   'Equipe SNC\nMinistério da Cultura',
                   'naoresponda@cultura.gov.br',
@@ -912,8 +912,6 @@ class DiligenciaView2(CreateView):
                 assert componente
             except(AssertionError, AttributeError):
                 raise Http404('Componente não existe')
-        else:
-            componente = None
 
         return componente
 
@@ -930,15 +928,28 @@ class DiligenciaView2(CreateView):
         return name
 
     def get_historico_diligencias(self):
-        componente = self.get_componente()
+        if(self.kwargs['componente'] != 'plano_trabalho'):
+            componente = self.get_componente()
 
-        historico_diligencias = componente.diligencias.all().order_by('-data_criacao').order_by('-id')
+            historico_diligencias = componente.diligencias.all().order_by('-data_criacao').order_by('-id')
+        else:
+            historico_diligencias = self.get_sistema_cultura().diligencia_geral.all().order_by('-data_criacao').order_by('-id')
 
         return historico_diligencias[:3]
 
     def get_componente_descricao(self, componente):
+        LISTA_SITUACAO_ARQUIVO = (
+            (0, "Em preenchimento"),
+            (1, "Avaliando anexo"),
+            (2, "Concluída"),
+            (3, "Arquivo aprovado com ressalvas"),
+            (4, "Arquivo danificado"),
+            (5, "Arquivo incompleto"),
+            (6, "Arquivo incorreto"),
+        )
+
         try:
-            descricao = componente.situacao.descricao
+            descricao = LISTA_SITUACAO_ARQUIVO[componente.situacao][1]
         except AttributeError:
             descricao = 'Inexistente'
 
@@ -980,13 +991,18 @@ class DiligenciaView2(CreateView):
         return context
 
     def form_valid(self, form):
-        componente = self.get_componente()
-        self.object = form.save()
+        if(self.kwargs['componente'] != 'plano_trabalho'):
+            componente = self.get_componente()
+            self.object = form.save()
 
-        componente.situacao = self.object.classificacao_arquivo
-        componente.save()
+            componente.situacao = self.object.classificacao_arquivo
+            componente.save()
+        else:
+            sistema_cultura = self.get_sistema_cultura()
+            self.object = form.save()
+            sistema_cultura.diligencia_geral.add(self.object)
+            sistema_cultura.save()
 
-        if(self.kwargs['componente'] == 'plano_trabalho'):
             self.send_email_diligencia()
 
         return HttpResponseRedirect(self.get_success_url())
@@ -998,14 +1014,15 @@ class DiligenciaView2(CreateView):
         componente = self.get_componente()
         form = self.get_form()
 
-        if(self.kwargs['componente'] == 'plano_trabalho'):
+        if(self.kwargs['componente'] != 'plano_trabalho'):
             form.instance.tipo_diligencia = 'geral'
+            form.instance.componente_id = componente.id
         else:
             form.instance.tipo_diligencia = 'componente'
+            form.instance.componente_id = 1
 
         form.instance.usuario = request.user.usuario
-        #form.instance.ente_federado = self.get_ente_federado()
-        form.instance.componente_id = componente.id
+        form.instance.sistema_cultura = self.get_sistema_cultura()
         form.instance.componente_type = ContentType.objects.get(app_label='planotrabalho', model=self.componentes[self.kwargs['componente']])
 
         if form.is_valid():

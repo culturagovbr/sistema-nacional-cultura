@@ -120,6 +120,16 @@ class AlterarDadosAdesao(ModelForm):
 
 
 class DiligenciaForm(ModelForm):
+    SITUACOES = (
+        (0, "Em preenchimento"),
+        (1, "Avaliando anexo"),
+        (2, "Concluída"),
+        (3, "Arquivo aprovado com ressalvas"),
+        (4, "Arquivo danificado"),
+        (5, "Arquivo incompleto"),
+        (6, "Arquivo incorreto")
+    )
+
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
 
     def __init__(self, resultado, componente, *args, **kwargs):
@@ -130,9 +140,9 @@ class DiligenciaForm(ModelForm):
 
         if componente != 'plano_trabalho':
             if resultado == '1':
-                self.fields['classificacao_arquivo'].queryset = SituacoesArquivoPlano.objects.filter(pk=2)
+                self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
             else:
-                self.fields['classificacao_arquivo'].queryset = SituacoesArquivoPlano.objects.filter(id__gte=4, id__lte=6)
+                self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
         else:
             self.fields.pop('classificacao_arquivo')
 

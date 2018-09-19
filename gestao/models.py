@@ -8,14 +8,24 @@ TIPOS_DILIGENCIA = (
     ('geral', 'Geral'),
     ('componente', 'Específica'),)
 
+LISTA_SITUACAO_ARQUIVO = (
+    (0, "Em preenchimento"),
+    (1, "Avaliando anexo"),
+    (2, "Concluída"),
+    (3, "Arquivo aprovado com ressalvas"),
+    (4, "Arquivo danificado"),
+    (5, "Arquivo incompleto"),
+    (6, "Arquivo incorreto"),
+)
+
 
 class Diligencia(models.Model):
     texto_diligencia = models.TextField(max_length=200)
-    classificacao_arquivo = models.ForeignKey('planotrabalho.SituacoesArquivoPlano',
-                                              on_delete=models.CASCADE,
-                                              null=True, blank=True)
+    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO, 
+                                                null=True, blank=True)
     data_criacao = models.DateField(default=datetime.date.today)
-    ente_federado = models.ForeignKey('adesao.Municipio', on_delete=models.CASCADE)
+    sistema_cultura = models.ForeignKey('adesao.SistemaCultura', on_delete=models.CASCADE, 
+                                        null=True, blank=True)
     componente_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     componente_id = models.PositiveIntegerField()
     componente = GenericForeignKey('componente_type', 'componente_id')

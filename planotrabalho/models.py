@@ -126,7 +126,6 @@ class PlanoTrabalho(models.Model):
 
 class Componente(ArquivoComponente2):
     tipo = models.IntegerField(
-        max_length=1,
         choices=LISTA_TIPOS_COMPONENTES,
         default=0)
     diligencias = GenericRelation(

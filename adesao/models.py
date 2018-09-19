@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.fields import GenericRelation
 
 from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
+from gestao.models import Diligencia
 
 
 LISTA_ESTADOS_PROCESSO = (
@@ -344,6 +346,11 @@ class SistemaCultura(models.Model):
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     localizacao = models.CharField(max_length=50, blank=True)
     numero_processo = models.CharField(max_length=50, blank=True)
+    diligencia_geral = GenericRelation(
+        Diligencia,
+        content_type_field="componente_type",
+        object_id_field="componente_id",
+    )
 
     objects = SistemaCulturaManager()
 
