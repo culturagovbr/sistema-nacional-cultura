@@ -921,11 +921,11 @@ class DiligenciaView2(CreateView):
         ente_federado = self.get_ente_federado()
         name = None
 
-        if ente_federado.cidade:
-            name = ente_federado.nome_municipio
+        #if ente_federado.cidade:
+        name = ente_federado.nome_municipio
 
-        else:
-            name = ente_federado.sigla
+        #else:
+         #   name = ente_federado.sigla
 
         return name
 
@@ -972,7 +972,7 @@ class DiligenciaView2(CreateView):
         context['form'] = form
         context['ente_federado'] = self.get_ente_federado_name()
         context['historico_diligencias'] = self.get_historico_diligencias()
-        context['usuario_id'] = sistema_cultura.cadastrador.id
+        context['usuario_id'] = self.get_sistema_cultura().cadastrador.id
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
         #context['plano_trabalho'] = self.get_plano_trabalho()

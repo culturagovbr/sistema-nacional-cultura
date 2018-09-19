@@ -142,6 +142,6 @@ urlpatterns = [
     # Diligência de Componente
 
     url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
-        staff_member_required(views.DiligenciaView.as_view()), name="diligencia_componente")
+        staff_member_required(views.DiligenciaView2.as_view()), name="diligencia_componente")
 
     ]
