@@ -43,7 +43,7 @@ class EnteFederado(models.Model):
     territorio = models.DecimalField(_("Área territorial - km²"), max_digits=10, decimal_places=3)
     populacao = models.IntegerField(_("População Estimada - pessoas"))
     densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), max_digits=10, decimal_places=2)
-    idh = models.DecimalField(_("IDH / IDHM"), max_digits=10, decimal_places=3)
+    idh = models.DecimalField(_("IDH / IDHM"), max_digits=10, decimal_places=3, null=True, blank=True)
     receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"), null=True, blank=True)
     despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"), null=True, blank=True)
     pib = models.DecimalField(_("PIB per capita - R$"), max_digits=10, decimal_places=2)
