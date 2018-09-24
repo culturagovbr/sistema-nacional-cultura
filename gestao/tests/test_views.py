@@ -368,7 +368,7 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
     url_redirect = request.url.split("http://testserver/")
 
     assert url_redirect[0] == "/gestao/detalhar/municipio/{}".format(
-        plano_trabalho.usuario.id
+        sistema_cultura.id
     )
     assert request.status_code == 302
 
@@ -408,18 +408,25 @@ def test_arquivo_enviado_salvo_no_diretorio_do_componente(
 
 def test_exibicao_historico_diligencia(url, client, plano_trabalho, login_staff):
     """Testa se o histórico de diligências é retornado pelo contexto"""
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
 
     diligencia = mommy.make(
-        "Diligencia", _quantity=4, componente=plano_trabalho.orgao_gestor
+        "Diligencia", _quantity=4, componente=sistema_cultura.orgao_gestor
     )
     diligencias = (
-        plano_trabalho.orgao_gestor.diligencias.all()
+        sistema_cultura.orgao_gestor.diligencias.all()
         .order_by("-data_criacao")
         .order_by("-id")[:3]
     )
 
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0")
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
     )
     diferenca_listas = set(diligencias).symmetric_difference(
         set(request.context["historico_diligencias"])
@@ -505,33 +512,47 @@ def test_retorno_200_para_detalhar_municipio(client, plano_trabalho, login_staff
     assert request.status_code == 200
 
 
-def test_retorno_do_form_da_diligencia(url, client, plano_trabalho, login_staff):
+def test_retorno_do_form_da_diligencia(url, client, login_staff):
     """ Testa se form retornado no contexto tem as opções corretas dependendo do tipo de resultado"""
 
+    SITUACOES = (
+        (0, "Em preenchimento"),
+        (1, "Avaliando anexo"),
+        (2, "Concluída"),
+        (3, "Arquivo aprovado com ressalvas"),
+        (4, "Arquivo danificado"),
+        (5, "Arquivo incompleto"),
+        (6, "Arquivo incorreto")
+    )
+
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request_aprova = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado=1)
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado=1)
     )
     request_recusa = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado=0)
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado=0)
     )
 
     classificacao_aprova = set(
-        request_aprova.context["form"].fields["classificacao_arquivo"].queryset
+        request_aprova.context["form"].fields["classificacao_arquivo"].choices
     )
     classificacao_recusa = set(
-        request_recusa.context["form"].fields["classificacao_arquivo"].queryset
+        request_recusa.context["form"].fields["classificacao_arquivo"].choices
     )
 
     assert (
-        classificacao_aprova.symmetric_difference(
-            SituacoesArquivoPlano.objects.filter(pk=2)
-        )
+        classificacao_aprova.symmetric_difference(SITUACOES[2:3])
         == set()
     )
     assert (
-        classificacao_recusa.symmetric_difference(
-            SituacoesArquivoPlano.objects.filter(id__gte=4, id__lte=6)
-        )
+        classificacao_recusa.symmetric_difference(SITUACOES[4:7])
         == set()
     )
 
@@ -800,33 +821,36 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
 
 
 def test_salvar_informacoes_no_banco_diligencia_geral(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
 
     response = client.post(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="1"),
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"),
         data={"texto_diligencia": "bla"},
     )
     diligencia = Diligencia.objects.first()
     assert Diligencia.objects.count() == 1
     assert diligencia.texto_diligencia == "bla"
-    assert isinstance(diligencia.componente, PlanoTrabalho)
 
 
 def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """ Testa se há o redirecionamento de página após o POST da diligência """
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="1"),
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"),
         data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
     )
     url_redirect = request.url.split("http://testserver/")
 
     assert url_redirect[0] == "/gestao/detalhar/municipio/{}".format(
-        plano_trabalho.usuario.id
+        sistema_cultura.id
     )
     assert request.status_code == 302
 
@@ -834,31 +858,42 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
 def test_situacoes_componentes_diligencia(url, client, plano_trabalho, login_staff):
     """ Testa as informações referentes aos componentes do
     plano de trabalho na diligência geral """
+    legislacao = mommy.make("Componente", tipo=0, situacao=1)
+    orgao = mommy.make("Componente", tipo=1, situacao=2)
+    fundo = mommy.make("Componente", tipo=2, situacao=3)
+    conselho = mommy.make("Componente", tipo=3, situacao=4)
+    plano = mommy.make("Componente", tipo=4, situacao=5)
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], legislacao=legislacao, orgao_gestor=orgao, 
+        fundo_cultura=fundo, conselho=conselho, plano=plano)
 
     response = client.get(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="1")
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1")
     )
     situacoes = response.context["situacoes"]
 
-    assert situacoes["criacao_sistema"] == plano_trabalho.criacao_sistema.situacao.descricao
-    assert situacoes["orgao_gestor"] == plano_trabalho.orgao_gestor.situacao.descricao
-    assert situacoes["fundo_cultura"] == plano_trabalho.fundo_cultura.situacao.descricao
+    assert situacoes["legislacao"] == sistema_cultura.legislacao.get_situacao_display()
+    assert situacoes["orgao_gestor"] == sistema_cultura.orgao_gestor.get_situacao_display()
+    assert situacoes["fundo_cultura"] == sistema_cultura.fundo_cultura.get_situacao_display()
     assert (
-        situacoes["conselho_cultural"]
-        == plano_trabalho.conselho_cultural.situacao.descricao
+        situacoes["conselho"]
+        == sistema_cultura.conselho.get_situacao_display()
     )
-    assert situacoes["plano_cultura"] == plano_trabalho.plano_cultura.situacao.descricao
+    assert situacoes["plano"] == sistema_cultura.plano.get_situacao_display()
 
 
-def test_tipo_diligencia_geral(url, client, plano_trabalho, login_staff):
+def test_tipo_diligencia_geral(url, client, login_staff):
     """ Testa tipo da dilgência para diligência geral """
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="0"),
         data={"texto_diligencia": "Ta errado cara"},
     )
 
-    assert Diligencia.objects.first().tipo_diligencia == "geral"
+    assert sistema_cultura.diligencia_geral.all().first().tipo_diligencia == "geral"
 
 
 def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
@@ -876,11 +911,11 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
         data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
     )
 
-    diligencias = SistemaCultura.objects.first().orgao_gestor.diligencias
-    assert diligencias.first().tipo_diligencia == "componente"
+    assert len(Diligencia.objects.all()) == 1
+    assert Diligencia.objects.first().tipo_diligencia == "componente"
 
 
-def test_envio_email_diligencia_geral(url, client, plano_trabalho, login_staff):
+def test_envio_email_diligencia_geral(url, client, login_staff):
     """ Testa envio do email para diligência geral """
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'cadastrador'])

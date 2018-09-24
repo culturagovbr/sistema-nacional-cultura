@@ -218,7 +218,7 @@
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ object.conselho.situacao.descricao }}</b>
+              <b>{{ object.conselho.get_situacao_display }}</b>
           </div>
           {% endif %}
 

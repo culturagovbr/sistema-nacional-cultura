@@ -922,18 +922,8 @@ class DiligenciaView2(CreateView):
         return historico_diligencias[:3]
 
     def get_componente_descricao(self, componente):
-        LISTA_SITUACAO_ARQUIVO = (
-            (0, "Em preenchimento"),
-            (1, "Avaliando anexo"),
-            (2, "Concluída"),
-            (3, "Arquivo aprovado com ressalvas"),
-            (4, "Arquivo danificado"),
-            (5, "Arquivo incompleto"),
-            (6, "Arquivo incorreto"),
-        )
-
         try:
-            descricao = LISTA_SITUACAO_ARQUIVO[componente.situacao][1]
+            descricao = componente.get_situacao_display()
         except AttributeError:
             descricao = 'Inexistente'
 
@@ -998,12 +988,12 @@ class DiligenciaView2(CreateView):
         componente = self.get_componente()
         form = self.get_form()
 
-        if(self.kwargs['componente'] != 'plano_trabalho'):
+        if(self.kwargs['componente'] == 'plano_trabalho'):
             form.instance.tipo_diligencia = 'geral'
-            form.instance.componente_id = componente.id
+            form.instance.componente_id = 1
         else:
             form.instance.tipo_diligencia = 'componente'
-            form.instance.componente_id = 1
+            form.instance.componente_id = componente.id
 
         form.instance.usuario = request.user.usuario
         form.instance.sistema_cultura = self.get_sistema_cultura()
