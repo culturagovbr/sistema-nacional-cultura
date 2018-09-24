@@ -14,7 +14,9 @@ from gestao.forms import DiligenciaForm
 from gestao.models import Diligencia
 from adesao.models import Uf
 from adesao.models import Usuario
+from adesao.models import SistemaCultura
 
+from planotrabalho.models import Componente
 from planotrabalho.models import OrgaoGestor
 from planotrabalho.models import CriacaoSistema
 from planotrabalho.models import FundoCultura
@@ -36,14 +38,21 @@ def url():
     return "/gestao/{id}/diligencia/{componente}/{resultado}"
 
 
-def test_url_diligencia_retorna_200(url, client, plano_trabalho, login_staff):
+def test_url_diligencia_retorna_200(url, client, login_staff):
     """
     Testa se há url referente à página de diligências.
-    A url teria o formato: gestao/id_plano_trabalho/diligencia/componente_plano_trabalho
+    A url teria o formato: gestao/id_sistema_cultura/diligencia/componente_plano_trabalho
     """
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
 
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+    
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="plano_cultura", resultado="0")
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
     )
 
     assert request.status_code == 200
@@ -70,11 +79,19 @@ def test_recepcao_componente_na_url_diligencia(url, client, plano_trabalho):
     assert resolved.kwargs["componente"] == "lei_sistema"
 
 
-def test_url_componente_retorna_200(url, client, plano_trabalho, login_staff):
+def test_url_componente_retorna_200(url, client, login_staff):
     """Testa se a url retorna 200 ao acessar um componente"""
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="fundo_cultura", resultado="0")
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
     )
 
     assert request.status_code == 200
@@ -103,33 +120,57 @@ def test_renderiza_template(url, client, plano_trabalho, login_staff):
     assert request.content
 
 
-def test_renderiza_template_diligencia(url, client, plano_trabalho, login_staff):
+def test_renderiza_template_diligencia(url, client, login_staff):
     """Testa se o template específico da diligência é renderizado corretamente"""
 
+    conselho = mommy.make("Componente", tipo=3, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], conselho=conselho)
+
+    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
+    conselho.arquivo = arquivo
+    conselho.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="conselho_cultural", resultado="0")
+        url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
     )
     assert "gestao/diligencia/diligencia.html" == request.templates[0].name
 
 
-def test_existencia_do_contexto_view(url, client, plano_trabalho, login_staff):
+def test_existencia_do_contexto_view(url, client, login_staff):
     """Testa se o contexto existe no retorno da view """
 
     contexts = ["ente_federado", "arquivo", "data_envio", "historico_diligencias"]
 
+    conselho = mommy.make("Componente", tipo=3, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], conselho=conselho)
+
+    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
+    conselho.arquivo = arquivo
+    conselho.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="conselho_cultural", resultado="0")
+        url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
     )
 
     for context in contexts:
         assert context in request.context
 
 
-def test_valor_context_retornado_na_view(url, client, plano_trabalho, login_staff):
+def test_valor_context_retornado_na_view(url, client, login_staff):
     """Testa se há informações retornadas na view"""
 
+    fundo = mommy.make("Componente", tipo=2, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], fundo_cultura=fundo)
+
+    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
+    fundo.arquivo = arquivo
+    fundo.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="fundo_cultura", resultado="0")
+        url.format(id=sistema_cultura.id, componente="fundo_cultura", resultado="0")
     )
 
     contexts = [
@@ -143,11 +184,19 @@ def test_valor_context_retornado_na_view(url, client, plano_trabalho, login_staf
         assert request.context[context] != ""
 
 
-def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho, login_staff):
+def test_retorno_400_post_criacao_diligencia(url, client, login_staff):
     """ Testa se o status do retorno é 400 para requests sem os parâmetros esperados """
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"bla": ""},
     )
 
@@ -155,14 +204,22 @@ def test_retorno_400_post_criacao_diligencia(url, client, plano_trabalho, login_
 
 
 def test_retorna_400_POST_classificacao_inexistente(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """
     Testa se o status do retorno é 400 quando feito um POST com a classificao invalida
     de um arquivo.
     """
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": ""},
     )
     user = login_staff.user
@@ -172,53 +229,74 @@ def test_retorna_400_POST_classificacao_inexistente(
 
 
 def test_form_diligencia_utlizado_na_diligencia_view(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """Testa que existe um form no context da diligência view """
 
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="0")
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="0")
     )
     assert request.context["form"]
 
 
 def test_tipo_do_form_utilizado_na_diligencia_view(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """ Testa se o form utilizado na diligencia_view é do tipo DiligenciaForm """
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0")
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
     )
 
     assert isinstance(request.context["form"], DiligenciaForm)
 
 
-def test_invalido_form_para_post_diligencia(url, client, plano_trabalho, login_staff):
+def test_invalido_form_para_post_diligencia(url, client, login_staff):
     """ Testa se o form invalida post com dados errados """
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": "", "texto_diligencia": ""},
     )
 
     assert request.status_code == 400
 
 
-def test_obj_ente_federado(url, client, plano_trabalho, login_staff):
+def test_obj_ente_federado(url, client, login_staff):
     """ Testa se o objeto retornado ente_federado é uma String"""
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0")
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
     )
 
-    ente_federado = "{} - {}".format(
-        plano_trabalho.usuario.municipio.cidade.nome_municipio,
-        plano_trabalho.usuario.municipio.estado.sigla,
-        )
-
     assert isinstance(request.context["ente_federado"], str)
-    assert request.context["ente_federado"] == ente_federado
+    assert request.context["ente_federado"] == sistema_cultura.ente_federado.nome
 
 
 def test_404_para_plano_trabalho_invalido_diligencia(url, client, login_staff):
@@ -230,42 +308,61 @@ def test_404_para_plano_trabalho_invalido_diligencia(url, client, login_staff):
 
 
 def test_ente_federado_retornado_na_diligencia(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """
     Testa se ente_federado retornado está relacionado com o plano trabalho passado como parâmetro
     """
 
+    conselho = mommy.make("Componente", tipo=3, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], conselho=conselho)
+
+    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
+    conselho.arquivo = arquivo
+    conselho.save()
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="conselho_cultural", resultado="0")
+        url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
     )
 
-    ente_federado = "{} - {}".format(
-        plano_trabalho.usuario.municipio.cidade.nome_municipio,
-        plano_trabalho.usuario.municipio.estado.sigla
-        )
-    assert request.context["ente_federado"] == ente_federado
+    assert request.context["ente_federado"] == sistema_cultura.ente_federado.nome
 
 
-def test_salvar_informacoes_no_banco(url, client, plano_trabalho, login_staff):
+def test_salvar_informacoes_no_banco(url, client, login_staff):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     response = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": "4", "texto_diligencia": "bla"},
     )
     diligencia = Diligencia.objects.first()
     assert Diligencia.objects.count() == 1
     assert diligencia.texto_diligencia == "bla"
-    assert diligencia.classificacao_arquivo.id == 4
-    assert isinstance(diligencia.componente, OrgaoGestor)
+    assert diligencia.classificacao_arquivo == 4
 
 
-def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login_staff):
+def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
     """ Testa se há o redirecionamento de página após o POST da diligência """
 
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
     )
     url_redirect = request.url.split("http://testserver/")
@@ -279,13 +376,19 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, plano_trabalho, login
 def test_arquivo_enviado_pelo_componente(url, client, plano_trabalho, login_staff):
     """ Testa se o arquivo enviado pelo componente está correto """
 
-    arquivo = plano_trabalho.conselho_cultural.arquivo
+    conselho = mommy.make("Componente", tipo=3, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], conselho=conselho)
+
+    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
+    conselho.arquivo = arquivo
+    conselho.save()
 
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="conselho_cultural", resultado="0")
+        url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
     )
 
-    assert request.context["arquivo"] == arquivo
+    assert request.context["arquivo"] == conselho.arquivo
 
 
 def test_arquivo_enviado_salvo_no_diretorio_do_componente(
@@ -330,9 +433,16 @@ def test_captura_nome_usuario_logado_na_diligencia(
     """
         Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
     """
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": "4", "texto_diligencia": "Muito legal"},
     )
 
@@ -341,15 +451,22 @@ def test_captura_nome_usuario_logado_na_diligencia(
     assert diligencia.usuario == login_staff
 
 
-def test_muda_situacao_arquivo_componente(url, client, plano_trabalho, login_staff):
+def test_muda_situacao_arquivo_componente(url, client, login_staff):
     """ Testa se ao realizar o post da diligência a situação do arquivo do componente é alterada """
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": 4, "texto_diligencia": "Não vai rolar"},
     )
 
-    assert OrgaoGestor.objects.first().situacao.id == 4
+    assert SistemaCultura.objects.first().orgao_gestor.situacao == 4
 
 
 def test_insere_link_publicacao_dou(client, plano_trabalho, login_staff):
@@ -670,10 +787,13 @@ def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staf
     assert situacao.id == 1
 
 
-def test_retorna_200_para_diligencia_geral(client, url, plano_trabalho, login_staff):
+def test_retorna_200_para_diligencia_geral(client, url, login_staff):
     """ Testa se retonar 200 ao dar um get na diligencia geral """
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
+
     request = client.get(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado=1)
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado=1)
     )
 
     assert request.status_code == 200
@@ -743,20 +863,30 @@ def test_tipo_diligencia_geral(url, client, plano_trabalho, login_staff):
 
 def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     """ Testa tipo da dilgência para diligência específica de um componente"""
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'], orgao_gestor=orgao_gestor)
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor", resultado="0"),
+        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0"),
         data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
     )
 
-    assert Diligencia.objects.first().tipo_diligencia == "componente"
+    diligencias = SistemaCultura.objects.first().orgao_gestor.diligencias
+    assert diligencias.first().tipo_diligencia == "componente"
 
 
 def test_envio_email_diligencia_geral(url, client, plano_trabalho, login_staff):
     """ Testa envio do email para diligência geral """
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
 
     request = client.post(
-        url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="1"),
+        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"),
         data={"texto_diligencia": "Ta errado cara"},
     )
 
@@ -767,14 +897,11 @@ def test_diligencia_geral_sem_componentes(url, client, plano_trabalho, login_sta
     """ Testa se ao fazer a diligência geral de um ente federado
     sem componentes retorne componente inexistente"""
 
-    plano_trabalho.criacao_sistema = None
-    plano_trabalho.orgao_gestor = None
-    plano_trabalho.plano_cultura = None
-    plano_trabalho.fundo_cultura = None
-    plano_trabalho.conselho_cultural = None
-    plano_trabalho.save()
+    sistema_cultura = mommy.make("SistemaCultura", legislacao=None, orgao_gestor=None,
+        plano=None, conselho=None, fundo_cultura=None, _fill_optional=['ente_federado',
+        'cadastrador'])
 
-    request = client.get(url.format(id=plano_trabalho.id, componente="plano_trabalho", resultado="1"))
+    request = client.get(url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"))
 
     for situacao in request.context['situacoes'].values():
         assert situacao == 'Inexistente'

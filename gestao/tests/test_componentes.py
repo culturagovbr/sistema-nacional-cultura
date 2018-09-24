@@ -10,6 +10,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from planotrabalho.models import PlanoTrabalho
 from gestao.forms import DiligenciaForm
 from gestao.models import Diligencia
+from adesao.models import SistemaCultura
 
 from model_mommy import mommy
 
@@ -217,7 +218,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff):
     conselho = mommy.make("Componente", tipo=3, situacao=1)
     plano = mommy.make("Componente", tipo=4, situacao=1)
 
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='uf', legislacao=legislacao, orgao_gestor=orgao_gestor,
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado', legislacao=legislacao, orgao_gestor=orgao_gestor,
         fundo_cultura=fundo, conselho=conselho, plano=plano, estado_processo='6')
 
     orgao_gestor.arquivo = arquivo
@@ -247,28 +248,35 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff):
         assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "1") in request.rendered_content
 
 
-def test_informacoes_diligencia_componente(plano_trabalho, client, login_staff):
+def test_informacoes_diligencia_componente(client, login_staff):
     """
     Testa se a linha de download do arquivo é renderizada, visto que
     só deve ser renderizada quando a diligência é por componente
     """
+    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado','cadastrador'],
+        orgao_gestor=orgao_gestor)
 
-    plano_trabalho = PlanoTrabalho.objects.first()
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    orgao_gestor.arquivo = arquivo
+    orgao_gestor.save()
+
     request = client.get('/gestao/{}/diligencia/{}/{}'.format(
-        plano_trabalho.id, "orgao_gestor", "1"))
+        sistema_cultura.id, "orgao_gestor", "1"))
 
     assert "<h2>Informações sobre o Arquivo Enviado</h2>" in request.rendered_content
     assert "<b>Download do arquivo</b>" in request.rendered_content
 
 
-def test_informacoes_diligencia_geral(plano_trabalho, client, login_staff):
+def test_informacoes_diligencia_geral(client, login_staff):
     """
     Testa se linha de informações sobre o Plano Trabalho é renderizada,
     visto que só deve ser renderizada quando a diligência é geral.
     """
 
-    plano_trabalho = PlanoTrabalho.objects.first()
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado','cadastrador'])
+    sistema_cultura = SistemaCultura.objects.first()
     request = client.get('/gestao/{}/diligencia/{}/{}'.format(
-        plano_trabalho.id, "plano_trabalho", "1"))
+        sistema_cultura.id, "plano_trabalho", "1"))
 
     assert "<h2>Informações sobre o Plano Trabalho</h2>" in request.rendered_content

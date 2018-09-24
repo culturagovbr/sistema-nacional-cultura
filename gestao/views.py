@@ -865,7 +865,7 @@ class DiligenciaView2(CreateView):
         situacoes = self.get_situacao_componentes()
         send_mail('MINISTÉRIO DA CULTURA - SNC - DILIGÊNCIA PLANO DE TRABALHO',
                   'Prezado Cadastrador,\n' +
-                  'Uma diligência referente ao Plano de Trabalho do ente federado ' + self.get_ente_federado_name() +
+                  'Uma diligência referente ao Plano de Trabalho do ente federado ' + self.get_ente_federado().nome +
                   ' acabou de ser realizada.\n' +
                   'O corpo da mensagem é: ' + self.object.texto_diligencia + '\n' +
                   'As situações dos arquivos enviados de cada componente são: \n' +
@@ -888,12 +888,8 @@ class DiligenciaView2(CreateView):
 
     def get_ente_federado(self):
         sistema_cultura = self.get_sistema_cultura()
-        if sistema_cultura.cidade:
-            ente = sistema_cultura.cidade
-        else:
-            ente = sistema_cultura.uf
 
-        return ente
+        return sistema_cultura.ente_federado
 
     def get_form(self):
         form_class = super().get_form_class()
@@ -914,18 +910,6 @@ class DiligenciaView2(CreateView):
                 raise Http404('Componente não existe')
 
         return componente
-
-    def get_ente_federado_name(self):
-        ente_federado = self.get_ente_federado()
-        name = None
-
-        #if ente_federado.cidade:
-        name = ente_federado.nome_municipio
-
-        #else:
-         #   name = ente_federado.sigla
-
-        return name
 
     def get_historico_diligencias(self):
         if(self.kwargs['componente'] != 'plano_trabalho'):
@@ -981,7 +965,7 @@ class DiligenciaView2(CreateView):
             context['arquivo'] = componente.arquivo
 
         context['form'] = form
-        context['ente_federado'] = self.get_ente_federado_name()
+        context['ente_federado'] = self.get_ente_federado().nome
         context['historico_diligencias'] = self.get_historico_diligencias()
         context['usuario_id'] = self.get_sistema_cultura().cadastrador.id
         context['data_envio'] = "--/--/----"

@@ -3,6 +3,7 @@ import datetime
 from django.db.models import ForeignKey
 
 from adesao.models import Municipio
+from adesao.models import SistemaCultura
 from gestao.models import Diligencia
 
 from planotrabalho.models import PlanoTrabalho
@@ -38,7 +39,7 @@ def test_existencia_campos_atributo_models():
 
     diligencia = Diligencia()
     fields = ('id', 'texto_diligencia', 'classificacao_arquivo',
-              'ente_federado', 'componente', 'data_criacao', 'usuario')
+              'sistema_cultura', 'componente', 'data_criacao', 'usuario')
     for field in fields:
         assert diligencia._meta.get_field(field)
 
@@ -124,23 +125,23 @@ def test_relacionamento_com_plano_diligencia_model(diligencia, sistema):
     assert isinstance(diligencia.componente, PlanoCultura)
 
 
-def test_tipo_campo_ente_federado_model_diligencia(diligencia):
-    """ Testa tipo do campo ente_federado na model Diligencia """
+def test_tipo_campo_sistema_cultura_model_diligencia(diligencia):
+    """ Testa tipo do campo sistema_cultura na model Diligencia """
 
     diligencia = Diligencia()
-    ente_field = diligencia._meta.get_field('ente_federado')
+    sistema_field = diligencia._meta.get_field('sistema_cultura')
 
-    assert isinstance(ente_field, ForeignKey)
+    assert isinstance(sistema_field, ForeignKey)
 
 
-def test_informacoes_ente_federado_na_diligencia(diligencia):
+def test_informacoes_sistema_cultura_na_diligencia(diligencia):
     """
-    Testa se as informacoes do ente federado na model de diligência
+    Testa as informacoes do sistema_cultura na model de diligência
     """
 
-    ente_federado = mommy.make('Municipio')
+    sistema_cultura = mommy.make('SistemaCultura')
     diligencia = Diligencia.objects.first()
 
-    ente_federado.diligencia_set.add(diligencia)
+    sistema_cultura.diligencia_set.add(diligencia)
 
-    assert isinstance(diligencia.ente_federado, Municipio)
+    assert isinstance(diligencia.sistema_cultura, SistemaCultura)

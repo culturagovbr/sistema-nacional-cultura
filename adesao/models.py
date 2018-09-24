@@ -325,6 +325,7 @@ class SistemaCultura(models.Model):
     """
 
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True)
+    ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
     cidade = models.ForeignKey("Cidade", on_delete=models.SET_NULL, null=True)
     uf = models.ForeignKey("Uf", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
