@@ -33,3 +33,5 @@ snc.sln
 
 .pytest_cache
 .tox
+
+.coverage
