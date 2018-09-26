@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path, re_path
 from django.contrib.admin.views.decorators import staff_member_required
 
 from . import views
@@ -72,7 +73,7 @@ urlpatterns = [
             login_url='adesao:login'), name='situacao_6'),
 
     # Detalhar usuário
-    url(r'^detalhar/municipio/(?P<pk>[0-9]+)$',
+    re_path(r'^detalhar/municipio/(?P<pk>[0-9]+)$',
         staff_member_required(views.DetalharEnte.as_view()),
         name='detalhar'),
     url(r'^usuarios/',
@@ -141,7 +142,22 @@ urlpatterns = [
 
     # Diligência de Componente
 
-    url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
-        staff_member_required(views.DiligenciaView2.as_view()), name="diligencia_componente")
+    # url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
+    #     staff_member_required(views.DiligenciaComponenteView.as_view()), name="diligencia_componente"),
 
+    path("<int:pk>/diligencia/<str:componente>/<str:resultado>", 
+        staff_member_required(views.DiligenciaComponenteView.as_view()),
+        name="diligencia_componente"),
+
+    path("<int:pk>/diligencia/<str:componente>/<int:pk_componente>/situacao",
+        staff_member_required(views.SituacaoArquivoComponenteUpdateView.as_view()),
+        name="componente_situacao_atualiza"),
+
+    path("<int:pk>/diligencia", 
+        staff_member_required(views.DiligenciaGeralDetailView.as_view()),
+        name="diligencia_geral"),
+
+    path("<int:pk>/diligencia/add", 
+        staff_member_required(views.DiligenciaGeralCreateView.as_view()),
+        name="diligencia_geral_adicionar"),
     ]

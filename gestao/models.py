@@ -36,3 +36,14 @@ class Diligencia(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class DiligenciaSimples(models.Model):
+    texto_diligencia = models.TextField(max_length=200)
+    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO, 
+                                                null=True, blank=True)
+    data_criacao = models.DateField(default=datetime.date.today)
+    usuario = models.ForeignKey('adesao.Usuario', on_delete=models.CASCADE)
+    tipo_diligencia = models.CharField(
+            max_length=10,
+            choices=TIPOS_DILIGENCIA)

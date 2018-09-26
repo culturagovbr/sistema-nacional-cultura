@@ -128,6 +128,7 @@ class Componente(ArquivoComponente2):
     tipo = models.IntegerField(
         choices=LISTA_TIPOS_COMPONENTES,
         default=0)
+    diligencia = models.ForeignKey('gestao.DiligenciaSimples', on_delete=models.CASCADE, related_name="componente", blank=True, null=True)
     diligencias = GenericRelation(
         Diligencia,
         content_type_field="componente_type",
@@ -136,6 +137,10 @@ class Componente(ArquivoComponente2):
 
     def __str__(self):
         return str(self.id)
+
+    def get_absolute_url(self):
+        url = reverse("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
+        return url
 
 
 class CriacaoSistema(ArquivoComponente):

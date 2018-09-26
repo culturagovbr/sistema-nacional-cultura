@@ -21,7 +21,7 @@ from planotrabalho.models import CriacaoSistema, FundoCultura
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
 
-from gestao.models import Diligencia
+from gestao.models import Diligencia, DiligenciaSimples
 
 from .utils import enviar_email_alteracao_situacao
 
@@ -132,23 +132,63 @@ class DiligenciaForm(ModelForm):
 
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
 
-    def __init__(self, resultado, componente, *args, **kwargs):
+    def __init__(self, resultado, *args, **kwargs):
         """ Form da diligência recebe como parâmetro o resultado, que serve
         para diferenciar diligência de aprovação e reprovação """
 
-        super(DiligenciaForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-        if componente != 'plano_trabalho':
-            if resultado == '1':
-                self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
-            else:
-                self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
+
+        if resultado == '1':
+            self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
         else:
-            self.fields.pop('classificacao_arquivo')
+            self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
+        
 
     class Meta:
         model = Diligencia
         fields = ('texto_diligencia', 'classificacao_arquivo')
+
+
+# class DiligenciaComponenteForm(ModelForm):
+#     SITUACOES = (
+#         (0, "Em preenchimento"),
+#         (1, "Avaliando anexo"),
+#         (2, "Concluída"),
+#         (3, "Arquivo aprovado com ressalvas"),
+#         (4, "Arquivo danificado"),
+#         (5, "Arquivo incompleto"),
+#         (6, "Arquivo incorreto")
+#     )
+
+#     texto_diligencia = forms.CharField(widget=CKEditorWidget())
+
+#     def __init__(self, *args, **kwargs):
+#         """ Form da diligência recebe como parâmetro o resultado, que serve
+#         para diferenciar diligência de aprovação e reprovação """
+
+#         super().__init__(*args, **kwargs)
+
+#         import ipdb; ipdb.set_trace()
+
+#         # if resultado == '1':
+#         self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
+#         # else:
+#         # self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
+        
+
+#     class Meta:
+#         model = DiligenciaSimples
+#         fields = ('texto_diligencia', 'classificacao_arquivo')
+
+
+class DiligenciaGeralForm(ModelForm):
+
+    texto_diligencia = forms.CharField(widget=CKEditorWidget())
+
+    class Meta:
+        model = Diligencia
+        fields = ('texto_diligencia', 'classificacao_arquivo', 'usuario')
 
 
 class AlterarCadastradorForm(forms.Form):

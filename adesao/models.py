@@ -347,6 +347,7 @@ class SistemaCultura(models.Model):
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     localizacao = models.CharField(max_length=50, blank=True)
     numero_processo = models.CharField(max_length=50, blank=True)
+    diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
     diligencia_geral = GenericRelation(
         Diligencia,
         content_type_field="componente_type",
@@ -354,6 +355,18 @@ class SistemaCultura(models.Model):
     )
 
     objects = SistemaCulturaManager()
+
+    def get_situacao_componentes(self):
+        """
+        Retornar uma lista contendo a situação de cada componente de um SistemaCultura
+        """
+
+        componentes = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
+        objetos = (getattr(self, componente, None) for componente in componentes)
+
+        situacoes = {componente:objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if objeto is not None}
+        
+        return situacoes
 
     def compara_valores(self, obj_anterior, propriedade):
         """
