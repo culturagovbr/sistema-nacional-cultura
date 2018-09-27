@@ -852,7 +852,7 @@ class Prorrogacao(ListView):
 
 
 class DiligenciaComponenteView(CreateView):
-    template_name = 'gestao/diligencia/diligencia.html'
+    template_name = 'diligencia.html'
     model = DiligenciaSimples
     fields = ["texto_diligencia", "classificacao_arquivo"]
     context_object_name = "diligencia"
@@ -880,22 +880,26 @@ class DiligenciaComponenteView(CreateView):
         return sistema_cultura.ente_federado
     
     def form_valid(self, form):
-
+        componente = self.get_componente()
+        form.instance.tipo_diligencia = 'componente'
         form.instance.usuario = self.request.user.usuario
-        return super().form_valid(form)
+        self.object = form.save()
+        componente.diligencia = self.object
+        componente.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_componente(self):
         """ Retonar o componente baseado no argumento passado pela url"""
         sistema_cultura = self.get_sistema_cultura()
         componente = None
 
-        if(self.kwargs['componente'] != 'plano_trabalho'):
-            try:
-                componente = getattr(sistema_cultura,
-                                           self.kwargs['componente'])
-                assert componente
-            except(AssertionError, AttributeError):
-                raise Http404('Componente não existe')
+        try:
+            componente = getattr(sistema_cultura,
+                                       self.kwargs['componente'])
+            assert componente
+        except(AssertionError, AttributeError):
+            raise Http404('Componente não existe')
 
         return componente
 
@@ -952,12 +956,21 @@ class DiligenciaComponenteView(CreateView):
 
 
 class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
-    template_name = 'gestao/diligencia/diligencia.html'
-    model = SistemaCultura
-    fields = ['diligencia']
+    template_name = 'diligencia.html'
+    model = DiligenciaSimples
+    fields = ["texto_diligencia", "classificacao_arquivo"]
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cultura.gov.br"
+
+    def form_valid(self, form):
+        form.instance.usuario = self.request.user.usuario
+        sistema_cultura = self.get_sistema_cultura()
+        self.object = form.save()
+        sistema_cultura.diligencia_simples = self.object
+        sistema_cultura.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -977,8 +990,8 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
 class DiligenciaGeralDetailView(DetailView):
     model = SistemaCultura
-    fields = ['diligencia']
-    template_name = 'gestao/diligencia/diligencia.html'
+    fields = ['diligencia_simples']
+    template_name = 'diligencia.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

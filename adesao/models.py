@@ -347,7 +347,7 @@ class SistemaCultura(models.Model):
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     localizacao = models.CharField(max_length=50, blank=True)
     numero_processo = models.CharField(max_length=50, blank=True)
-    diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
+    diligencia_simples = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
     diligencia_geral = GenericRelation(
         Diligencia,
         content_type_field="componente_type",

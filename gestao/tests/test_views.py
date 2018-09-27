@@ -134,7 +134,7 @@ def test_renderiza_template_diligencia(url, client, login_staff):
     request = client.get(
         url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
     )
-    assert "gestao/diligencia/diligencia.html" == request.templates[0].name
+    assert "diligencia.html" == request.templates[0].name
 
 
 def test_existencia_do_contexto_view(url, client, login_staff):
@@ -833,11 +833,12 @@ def test_salvar_informacoes_no_banco_diligencia_geral(
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'cadastrador'])
 
-    response = client.post(
-        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"),
-        data={"texto_diligencia": "bla"},
-    )
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+
+    response = client.post(url, data={"texto_diligencia": "bla"})
+
     diligencia = DiligenciaSimples.objects.first()
+
     assert DiligenciaSimples.objects.count() == 1
     assert diligencia.texto_diligencia == "bla"
 
@@ -849,15 +850,13 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'cadastrador'])
 
-    request = client.post(
-        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"),
-        data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
-    )
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+    request = client.post(url, data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"})
     url_redirect = request.url.split("http://testserver/")
 
-    assert url_redirect[0] == "/gestao/detalhar/municipio/{}".format(
-        sistema_cultura.id
-    )
+    diligencia = DiligenciaSimples.objects.first()
+
+    assert url_redirect[0] == reverse("gestao:diligencia_geral", kwargs={"pk": diligencia.id})
     assert request.status_code == 302
 
 
@@ -899,7 +898,8 @@ def test_tipo_diligencia_geral(url, client, login_staff):
     )
 
     sistema_cultura.refresh_from_db()
-    assert sistema_cultura.diligencia.tipo_diligencia == "geral"
+
+    assert sistema_cultura.diligencia_simples.tipo_diligencia == "geral"
 
 
 def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
@@ -917,8 +917,10 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
         data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
     )
 
+    sistema_cultura.orgao_gestor.refresh_from_db()
+
     assert DiligenciaSimples.objects.count() == 1
-    assert DiligenciaSimples.objects.first().tipo_diligencia == "componente"
+    assert sistema_cultura.orgao_gestor.diligencia.tipo_diligencia == "componente"
 
 
 def test_envio_email_diligencia_geral(client, login_staff):
@@ -947,7 +949,9 @@ def test_diligencia_geral_sem_componentes(url, client, plano_trabalho, login_sta
         plano=None, conselho=None, fundo_cultura=None, _fill_optional=['ente_federado',
         'cadastrador'])
 
-    request = client.get(url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="1"))
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+
+    request = client.get(url)
 
     for situacao in request.context['situacoes'].values():
         assert situacao == 'Inexistente'

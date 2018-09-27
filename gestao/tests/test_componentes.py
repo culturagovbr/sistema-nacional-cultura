@@ -46,7 +46,7 @@ def template(engine):
     """ Injeta o template 'gestao/diligencia/diligencia.html' como um objeto Template
         pronto para ser usado."""
 
-    template = engine.get_template(template_name='gestao/diligencia/diligencia.html')
+    template = engine.get_template(template_name='diligencia.html')
 
     return template
 
@@ -55,7 +55,7 @@ def test_existencia_template_diligencia(engine, client):
     """ Testando existência do template para criação da diligência"""
 
     try:
-        template = engine.get_template(template_name='gestao/diligencia/diligencia.html')
+        template = engine.get_template(template_name='diligencia.html')
     except TemplateDoesNotExist:
         template = ''
 
@@ -66,9 +66,12 @@ def test_retorno_do_botao_cancelar_de_diligencia(client, template, context, usua
     """ Testa se o botão cancelar presente na página de diligência
     retorna para a página de detalhe do município correspondente"""
 
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
+        'cadastrador'])
+
     rendered_template = template.render(context)
 
-    url_detalhar = reverse('gestao:detalhar', args=[usuario.id])
+    url_detalhar = reverse('gestao:detalhar', args=[sistema_cultura.id])
     html_cancelar = "<a href=\"{url_detalhar}\" class=\"btn btn-danger\">Cancelar</a>".format(url_detalhar=url_detalhar)
 
     assert html_cancelar in rendered_template
@@ -276,7 +279,7 @@ def test_informacoes_diligencia_geral(client, login_staff):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado','cadastrador'])
     sistema_cultura = SistemaCultura.objects.first()
-    request = client.get('/gestao/{}/diligencia/{}/{}'.format(
-        sistema_cultura.id, "plano_trabalho", "1"))
+    request = client.get('/gestao/{}/diligencia/add'.format(
+        sistema_cultura.id))
 
     assert "<h2>Informações sobre o Plano Trabalho</h2>" in request.rendered_content
