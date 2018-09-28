@@ -227,7 +227,7 @@ def test_retorna_400_POST_classificacao_inexistente(
 
     assert request.status_code == 400
 
-@pytest.mark.skip
+
 def test_form_diligencia_utlizado_na_diligencia_view(
     url, client, login_staff
 ):
@@ -240,7 +240,7 @@ def test_form_diligencia_utlizado_na_diligencia_view(
     )
     assert request.context["form"]
 
-@pytest.mark.skip
+
 def test_tipo_do_form_utilizado_na_diligencia_view(
     url, client, login_staff
 ):
@@ -345,6 +345,7 @@ def test_salvar_informacoes_no_banco(url, client, login_staff):
         data={"classificacao_arquivo": "4", "texto_diligencia": "bla"},
     )
     diligencia = DiligenciaSimples.objects.first()
+
     assert DiligenciaSimples.objects.count() == 1
     assert diligencia.texto_diligencia == "bla"
     assert diligencia.classificacao_arquivo == 4
@@ -840,7 +841,7 @@ def test_salvar_informacoes_no_banco_diligencia_geral(
     diligencia = DiligenciaSimples.objects.first()
 
     assert DiligenciaSimples.objects.count() == 1
-    assert diligencia.texto_diligencia == "bla"
+    assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia_simples
 
 
 def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
@@ -886,24 +887,8 @@ def test_situacoes_componentes_diligencia(url, client, plano_trabalho, login_sta
     assert situacoes["plano"] == sistema_cultura.plano.get_situacao_display()
 
 
-def test_tipo_diligencia_geral(url, client, login_staff):
-    """ Testa tipo da dilgência para diligência geral """
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'])
-
-    url = reverse("gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id})
-
-    request = client.post(url,
-        data={"texto_diligencia": "Ta errado cara"},
-    )
-
-    sistema_cultura.refresh_from_db()
-
-    assert sistema_cultura.diligencia_simples.tipo_diligencia == "geral"
-
-
 def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
-    """ Testa tipo da dilgência para diligência específica de um componente"""
+    """ Testa criação da diligência específica de um componente"""
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'cadastrador'], orgao_gestor=orgao_gestor)
@@ -920,7 +905,7 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     sistema_cultura.orgao_gestor.refresh_from_db()
 
     assert DiligenciaSimples.objects.count() == 1
-    assert sistema_cultura.orgao_gestor.diligencia.tipo_diligencia == "componente"
+    assert DiligenciaSimples.objects.first() == sistema_cultura.orgao_gestor.diligencia
 
 
 def test_envio_email_diligencia_geral(client, login_staff):

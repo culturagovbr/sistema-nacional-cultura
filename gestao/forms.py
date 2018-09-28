@@ -131,23 +131,46 @@ class DiligenciaForm(ModelForm):
     )
 
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
-
-    def __init__(self, resultado, *args, **kwargs):
-        """ Form da diligência recebe como parâmetro o resultado, que serve
-        para diferenciar diligência de aprovação e reprovação """
-
-        super().__init__(*args, **kwargs)
-
-
-        if resultado == '1':
-            self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
-        else:
-            self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
-        
-
+    classificacao_arquivo = forms.TypedChoiceField(choices=SITUACOES)  
+      
     class Meta:
-        model = Diligencia
+        model = DiligenciaSimples
         fields = ('texto_diligencia', 'classificacao_arquivo')
+
+
+class DiligenciaComponenteForm(DiligenciaForm):
+
+    def __init__(self, *args, **kwargs):
+        self.tipo_componente = kwargs.pop("componente")
+        self.sistema_cultura = kwargs.pop("sistema_cultura")
+        super(DiligenciaComponenteForm, self).__init__(*args, **kwargs)
+        self.instance.usuario = self.sistema_cultura.cadastrador
+
+    def save(self, commit=True):
+        diligencia = super(DiligenciaForm, self).save()
+
+        if commit:
+            componente = getattr(self.sistema_cultura, self.tipo_componente)
+            componente.diligencia = diligencia
+            componente.save()
+    
+class DiligenciaGeralForm(DiligenciaForm):
+
+    def __init__(self, *args, **kwargs):
+        self.sistema_cultura = kwargs.pop("sistema_cultura")
+        super(DiligenciaGeralForm, self).__init__(*args, **kwargs)
+        self.instance.usuario = self.sistema_cultura.cadastrador
+
+    def save(self, commit=True):
+        diligencia = super(DiligenciaForm, self).save()
+
+        if commit:
+            self.sistema_cultura.diligencia_simples = diligencia
+            self.sistema_cultura.save()
+    
+
+
+
 
 
 # class DiligenciaComponenteForm(ModelForm):

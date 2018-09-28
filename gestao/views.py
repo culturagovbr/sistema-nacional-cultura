@@ -52,7 +52,7 @@ from adesao.models import Uf
 
 from .models import DiligenciaSimples
 
-from .forms import DiligenciaForm, DiligenciaGeralForm, AlterarDocumentosEnteFederadoForm
+from .forms import DiligenciaComponenteForm, DiligenciaGeralForm, AlterarDocumentosEnteFederadoForm, DiligenciaForm
 from .forms import AlterarDadosAdesao
 
 from .forms import AlterarCadastradorForm
@@ -854,18 +854,14 @@ class Prorrogacao(ListView):
 class DiligenciaComponenteView(CreateView):
     template_name = 'diligencia.html'
     model = DiligenciaSimples
-    fields = ["texto_diligencia", "classificacao_arquivo"]
+    form_class = DiligenciaComponenteForm
     context_object_name = "diligencia"
-    # success_url = reverse_lazy('gestao:diligencia_componente')
 
-    componentes = {
-        'fundo_cultura': 'fundocultura',
-        'orgao_gestor': 'orgaogestor',
-        'conselho_cultural': 'conselhocultural',
-        'plano_cultura': 'planocultura',
-        'criacao_sistema': 'criacaosistema',
-        'plano_trabalho': 'planotrabalho',
-    }
+    def get_form_kwargs(self):
+        kwargs = super(DiligenciaComponenteView, self).get_form_kwargs()
+        kwargs['componente'] = self.kwargs['componente']
+        kwargs['sistema_cultura'] = self.get_sistema_cultura()
+        return kwargs
 
     def get_success_url(self):
         sistema_cultura = self.get_sistema_cultura()
@@ -873,21 +869,6 @@ class DiligenciaComponenteView(CreateView):
 
     def get_sistema_cultura(self):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['pk']))
-
-    def get_ente_federado(self):
-        sistema_cultura = self.get_sistema_cultura()
-
-        return sistema_cultura.ente_federado
-    
-    def form_valid(self, form):
-        componente = self.get_componente()
-        form.instance.tipo_diligencia = 'componente'
-        form.instance.usuario = self.request.user.usuario
-        self.object = form.save()
-        componente.diligencia = self.object
-        componente.save()
-
-        return HttpResponseRedirect(self.get_success_url())
 
     def get_componente(self):
         """ Retonar o componente baseado no argumento passado pela url"""
@@ -904,12 +885,7 @@ class DiligenciaComponenteView(CreateView):
         return componente
 
     def get_historico_diligencias(self):
-        if(self.kwargs['componente'] != 'plano_trabalho'):
-            componente = self.get_componente()
-
-            historico_diligencias = componente.diligencias.all().order_by('-data_criacao').order_by('-id')
-        else:
-            historico_diligencias = self.get_sistema_cultura().diligencia_geral.all().order_by('-data_criacao').order_by('-id')
+        historico_diligencias = self.get_sistema_cultura().diligencia_simples.all().order_by('-data_criacao').order_by('-id')
 
         return historico_diligencias[:3]
 
@@ -936,20 +912,18 @@ class DiligenciaComponenteView(CreateView):
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         componente = self.get_componente()
-        ente_federado = self.get_ente_federado()
+        ente_federado = self.get_sistema_cultura().ente_federado.nome
 
         context['arquivo'] = componente.arquivo
 
-        context['form'] = form
-        context['ente_federado'] = self.get_ente_federado().nome
+        context['form'] = self.get_form()
+        context['ente_federado'] = self.get_sistema_cultura().ente_federado.nome
         context['historico_diligencias'] = self.get_historico_diligencias()
-        context['usuario_id'] = self.get_sistema_cultura().cadastrador.id
         context['sistema_cultura'] = self.get_sistema_cultura().id
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
 
         return context
-
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form), status=400)
@@ -958,19 +932,15 @@ class DiligenciaComponenteView(CreateView):
 class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     template_name = 'diligencia.html'
     model = DiligenciaSimples
-    fields = ["texto_diligencia", "classificacao_arquivo"]
+    form_class = DiligenciaGeralForm
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cultura.gov.br"
 
-    def form_valid(self, form):
-        form.instance.usuario = self.request.user.usuario
-        sistema_cultura = self.get_sistema_cultura()
-        self.object = form.save()
-        sistema_cultura.diligencia_simples = self.object
-        sistema_cultura.save()
-
-        return HttpResponseRedirect(self.get_success_url())
+    def get_form_kwargs(self):
+        kwargs = super(DiligenciaGeralCreateView, self).get_form_kwargs()
+        kwargs['sistema_cultura'] = self.get_sistema_cultura()
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

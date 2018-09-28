@@ -44,6 +44,3 @@ class DiligenciaSimples(models.Model):
                                                 null=True, blank=True)
     data_criacao = models.DateField(default=datetime.date.today)
     usuario = models.ForeignKey('adesao.Usuario', on_delete=models.CASCADE)
-    tipo_diligencia = models.CharField(
-            max_length=10,
-            choices=TIPOS_DILIGENCIA)
