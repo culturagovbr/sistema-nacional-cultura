@@ -887,7 +887,7 @@ class DiligenciaComponenteView(CreateView):
         return componente
 
     def get_historico_diligencias(self):
-        historico_diligencias = self.get_sistema_cultura().diligencia_simples.all().order_by('-data_criacao').order_by('-id')
+        historico_diligencias = DiligenciaSimples.objects.all()
 
         return historico_diligencias[:3]
 
@@ -897,8 +897,6 @@ class DiligenciaComponenteView(CreateView):
         ente_federado = self.get_sistema_cultura().ente_federado.nome
 
         context['arquivo'] = componente.arquivo
-
-        context['form'] = self.get_form()
         context['ente_federado'] = self.get_sistema_cultura().ente_federado.nome
         context['historico_diligencias'] = self.get_historico_diligencias()
         context['sistema_cultura'] = self.get_sistema_cultura().id
@@ -928,7 +926,6 @@ class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
 
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context['sistema_cultura'] = self.get_sistema_cultura().id
         context['situacoes'] = self.get_sistema_cultura().get_situacao_componentes()
 

@@ -68,6 +68,7 @@ def test_retorno_do_botao_cancelar_de_diligencia(client, template, context, usua
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'cadastrador'])
+    context['sistema_cultura'] = sistema_cultura.id
 
     rendered_template = template.render(context)
 
@@ -81,6 +82,7 @@ def test_botao_acao_enviar_diligencia_template(template, client, context):
     """Testa existencia dos botão de enviar
     no template de diligência"""
 
+    context['sistema_cultura'] = mommy.make("SistemaCultura").id
     rendered_template = template.render(context)
 
     assert "<input class=\"btn btn-primary\" type=\"submit\"></input>" in rendered_template
@@ -89,6 +91,9 @@ def test_botao_acao_enviar_diligencia_template(template, client, context):
 def test_gestao_template(template, client, context):
     """Testa se o template da gestão está sendo carregado"""
 
+    sistema_cultura = mommy.make("SistemaCultura")
+
+    context['sistema_cultura'] = sistema_cultura.id
     rendered_template = template.render(context)
 
     assert "<!DOCTYPE html>" in rendered_template
@@ -97,7 +102,10 @@ def test_gestao_template(template, client, context):
 def test_informacoes_arquivo_enviado(template, client, context):
     """Testa se o template exibe as informações do arquivo enviado"""
 
+    sistema_cultura = mommy.make("SistemaCultura")
+
     context['ente_federado'] = 'Pará'
+    context['sistema_cultura'] = sistema_cultura.id
 
     rendered_template = template.render(context)
 
@@ -147,6 +155,8 @@ def test_opcoes_em_um_dropdown(template, client, plano_trabalho, context):
 def test_informacoes_do_historico_de_diligecias_do_componente(template, client, context):
     """ Testa informações referente ao histórico de diligências do componente. """
 
+    sistema_cultura = mommy.make("SistemaCultura")
+
     diligencias = [
         {"usuario": {"nome_usuario": "Jaozin Silva" }, "classificacao_arquivo": {"descricao": "Arquivo Danificado"},
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo danificado, corrompido"},
@@ -159,6 +169,7 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client, 
     ]
 
     context['historico_diligencias'] = diligencias
+    context['sistema_cultura'] = sistema_cultura.id
     rendered_template = template.render(context)
 
     for diligencia in diligencias:
@@ -171,6 +182,8 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client, 
 def test_formatacao_individual_das_diligencias_no_historico(template, client, context):
     """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
 
+    sistema_cultura = mommy.make("SistemaCultura")
+
     diligencias = [
         {"usuario": {"nome_usuario": "Jaozin Silva" }, "classificacao_arquivo": {"descricao": "Arquivo Danificado"},
             "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo danificado, corrompido"},
@@ -183,6 +196,7 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client, co
     ]
 
     context['historico_diligencias'] = diligencias
+    context['sistema_cultura'] = sistema_cultura.id
     rendered_template = template.render(context)
     for diligencia in diligencias:
 
@@ -194,9 +208,12 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client, co
 
 def test_renderizacao_js_form_diligencia(template, client, context):
     """Testa se o javascript do form está sendo renderizado corretamente"""
-    form = DiligenciaForm(resultado='0', componente='1')
+    sistema_cultura = mommy.make("SistemaCultura")
+    usuario = mommy.make("Usuario")
+    form = DiligenciaForm(sistema_cultura=sistema_cultura, usuario=usuario)
 
-    context['form'] = form
+    context['sistema_cultura'] = sistema_cultura.id
+
     rendered_template = template.render(context)
 
     assert "<script type=\"text/javascript\" src=\"/static/ckeditor/ckeditor/ckeditor.js\">" in rendered_template

@@ -12,6 +12,7 @@ from model_mommy import mommy
 # from gestao.forms import DiligenciaComponenteForm
 
 from gestao.models import DiligenciaSimples
+from gestao.forms import DiligenciaForm
 from adesao.models import Uf
 from adesao.models import Usuario
 from adesao.models import SistemaCultura
@@ -178,7 +179,8 @@ def test_valor_context_retornado_na_view(url, client, login_staff):
         "arquivo",
         "data_envio",
         "historico_diligencias",
-        "usuario_id",
+        "sistema_cultura",
+        "componente"
     ]
     for context in contexts:
         assert request.context[context] != ""
