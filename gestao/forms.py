@@ -120,6 +120,21 @@ class AlterarDadosAdesao(ModelForm):
 
 
 class DiligenciaForm(ModelForm):
+
+    texto_diligencia = forms.CharField(widget=CKEditorWidget())
+    
+    def __init__(self, *args, **kwargs):
+        self.sistema_cultura = kwargs.pop("sistema_cultura")
+        usuario = kwargs.pop("usuario")
+        super(DiligenciaForm, self).__init__(*args, **kwargs)
+        self.instance.usuario = usuario
+
+    class Meta:
+        model = DiligenciaSimples
+        fields = ('texto_diligencia',)
+
+
+class DiligenciaComponenteForm(DiligenciaForm):
     SITUACOES = (
         (0, "Em preenchimento"),
         (1, "Avaliando anexo"),
@@ -130,21 +145,11 @@ class DiligenciaForm(ModelForm):
         (6, "Arquivo incorreto")
     )
 
-    texto_diligencia = forms.CharField(widget=CKEditorWidget())
-    classificacao_arquivo = forms.TypedChoiceField(choices=SITUACOES)  
-      
-    class Meta:
-        model = DiligenciaSimples
-        fields = ('texto_diligencia', 'classificacao_arquivo')
-
-
-class DiligenciaComponenteForm(DiligenciaForm):
+    classificacao_arquivo = forms.TypedChoiceField(choices=SITUACOES, required=False)
 
     def __init__(self, *args, **kwargs):
         self.tipo_componente = kwargs.pop("componente")
-        self.sistema_cultura = kwargs.pop("sistema_cultura")
         super(DiligenciaComponenteForm, self).__init__(*args, **kwargs)
-        self.instance.usuario = self.sistema_cultura.cadastrador
 
     def save(self, commit=True):
         diligencia = super(DiligenciaForm, self).save()
@@ -153,13 +158,18 @@ class DiligenciaComponenteForm(DiligenciaForm):
             componente = getattr(self.sistema_cultura, self.tipo_componente)
             componente.diligencia = diligencia
             componente.save()
-    
+
+    class Meta:
+        model = DiligenciaSimples
+        fields = ('texto_diligencia', 'classificacao_arquivo')
+
+
 class DiligenciaGeralForm(DiligenciaForm):
 
+    texto_diligencia = forms.CharField(widget=CKEditorWidget())
+
     def __init__(self, *args, **kwargs):
-        self.sistema_cultura = kwargs.pop("sistema_cultura")
         super(DiligenciaGeralForm, self).__init__(*args, **kwargs)
-        self.instance.usuario = self.sistema_cultura.cadastrador
 
     def save(self, commit=True):
         diligencia = super(DiligenciaForm, self).save()
@@ -167,11 +177,6 @@ class DiligenciaGeralForm(DiligenciaForm):
         if commit:
             self.sistema_cultura.diligencia_simples = diligencia
             self.sistema_cultura.save()
-    
-
-
-
-
 
 # class DiligenciaComponenteForm(ModelForm):
 #     SITUACOES = (
@@ -203,15 +208,6 @@ class DiligenciaGeralForm(DiligenciaForm):
 #     class Meta:
 #         model = DiligenciaSimples
 #         fields = ('texto_diligencia', 'classificacao_arquivo')
-
-
-class DiligenciaGeralForm(ModelForm):
-
-    texto_diligencia = forms.CharField(widget=CKEditorWidget())
-
-    class Meta:
-        model = Diligencia
-        fields = ('texto_diligencia', 'classificacao_arquivo', 'usuario')
 
 
 class AlterarCadastradorForm(forms.Form):

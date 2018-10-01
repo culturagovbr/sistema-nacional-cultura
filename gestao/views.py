@@ -52,7 +52,7 @@ from adesao.models import Uf
 
 from .models import DiligenciaSimples
 
-from .forms import DiligenciaComponenteForm, DiligenciaGeralForm, AlterarDocumentosEnteFederadoForm, DiligenciaForm
+from .forms import DiligenciaComponenteForm, DiligenciaGeralForm, AlterarDocumentosEnteFederadoForm
 from .forms import AlterarDadosAdesao
 
 from .forms import AlterarCadastradorForm
@@ -861,6 +861,8 @@ class DiligenciaComponenteView(CreateView):
         kwargs = super(DiligenciaComponenteView, self).get_form_kwargs()
         kwargs['componente'] = self.kwargs['componente']
         kwargs['sistema_cultura'] = self.get_sistema_cultura()
+        kwargs['usuario'] = self.request.user.usuario
+
         return kwargs
 
     def get_success_url(self):
@@ -889,26 +891,6 @@ class DiligenciaComponenteView(CreateView):
 
         return historico_diligencias[:3]
 
-    def get_componente_descricao(self, componente):
-        try:
-            descricao = componente.get_situacao_display()
-        except AttributeError:
-            descricao = 'Inexistente'
-
-        return descricao
-
-    def get_situacao_componentes(self):
-        situacoes = {}
-        sistema_cultura = self.get_sistema_cultura()
-
-        componentes = ["legislacao", "orgao_gestor", "fundo_cultura", "conselho", "plano"]
-
-        for componente in componentes:
-            plano_comp = getattr(sistema_cultura, componente)
-            situacoes[componente] = self.get_componente_descricao(plano_comp)
-
-        return situacoes
-
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         componente = self.get_componente()
@@ -929,7 +911,7 @@ class DiligenciaComponenteView(CreateView):
         return self.render_to_response(self.get_context_data(form=form), status=400)
 
 
-class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
+class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
     template_name = 'diligencia.html'
     model = DiligenciaSimples
     form_class = DiligenciaGeralForm
@@ -940,12 +922,16 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super(DiligenciaGeralCreateView, self).get_form_kwargs()
         kwargs['sistema_cultura'] = self.get_sistema_cultura()
+        kwargs['usuario'] = self.request.user.usuario
+
         return kwargs
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['sistema_cultura'] = self.get_sistema_cultura().id
+        context['situacoes'] = self.get_sistema_cultura().get_situacao_componentes()
+
         return context
 
     def get_sistema_cultura(self):
@@ -955,7 +941,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         return self.get_sistema_cultura().cadastrador.user.email
 
     def get_success_url(self):
-        return reverse_lazy("gestao:diligencia_geral", kwargs={"pk": self.object.id})
+        return reverse_lazy("gestao:detalhar", kwargs={"pk": self.get_sistema_cultura().id})
 
 
 class DiligenciaGeralDetailView(DetailView):

@@ -228,19 +228,6 @@ def test_retorna_400_POST_classificacao_inexistente(
     assert request.status_code == 400
 
 
-def test_form_diligencia_utlizado_na_diligencia_view(
-    url, client, login_staff
-):
-    """Testa que existe um form no context da diligência view """
-
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'])
-    request = client.get(
-        url.format(id=sistema_cultura.id, componente="plano_trabalho", resultado="0")
-    )
-    assert request.context["form"]
-
-
 def test_tipo_do_form_utilizado_na_diligencia_view(
     url, client, login_staff
 ):
@@ -839,6 +826,9 @@ def test_salvar_informacoes_no_banco_diligencia_geral(
     response = client.post(url, data={"texto_diligencia": "bla"})
 
     diligencia = DiligenciaSimples.objects.first()
+    sistema_cultura.refresh_from_db()
+
+    #import ipdb; ipdb.set_trace()
 
     assert DiligenciaSimples.objects.count() == 1
     assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia_simples
@@ -852,12 +842,12 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
         'cadastrador'])
 
     url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
-    request = client.post(url, data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"})
+    request = client.post(url, data={"texto_diligencia": "Ta errado cara"})
     url_redirect = request.url.split("http://testserver/")
 
     diligencia = DiligenciaSimples.objects.first()
 
-    assert url_redirect[0] == reverse("gestao:diligencia_geral", kwargs={"pk": diligencia.id})
+    assert url_redirect[0] == reverse("gestao:detalhar", kwargs={"pk": sistema_cultura.id})
     assert request.status_code == 302
 
 
