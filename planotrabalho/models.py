@@ -139,7 +139,7 @@ class Componente(ArquivoComponente2):
         return str(self.id)
 
     def get_absolute_url(self):
-        url = reverse("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
+        url = reverse_lazy("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
         return url
 
 

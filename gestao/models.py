@@ -24,8 +24,8 @@ class Diligencia(models.Model):
     classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO, 
                                                 null=True, blank=True)
     data_criacao = models.DateField(default=datetime.date.today)
-    sistema_cultura = models.ForeignKey('adesao.SistemaCultura', on_delete=models.CASCADE, 
-                                        null=True, blank=True)
+    # sistema_cultura = models.ForeignKey('adesao.SistemaCultura', on_delete=models.CASCADE, 
+                                        # null=True, blank=True)
     componente_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     componente_id = models.PositiveIntegerField()
     componente = GenericForeignKey('componente_type', 'componente_id')
