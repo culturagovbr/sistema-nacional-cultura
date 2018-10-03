@@ -355,7 +355,7 @@ class SistemaCultura(models.Model):
         content_type_field="componente_type",
         object_id_field="componente_id",
     )
-    alterado_em = models.DateTimeField("Alterado em", auto_now_add=True)
+    alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
 
     objects = SistemaCulturaManager()
     sistema = SistemaManager()
