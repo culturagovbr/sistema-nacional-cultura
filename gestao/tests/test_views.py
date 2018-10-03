@@ -808,7 +808,7 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
     """ Testa se retonar 200 ao dar um get na diligencia geral """
     diligencia = mommy.make("DiligenciaSimples")
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], diligencia=diligencia)
+        'cadastrador'], diligencia_simples=diligencia)
 
     url = f"/gestao/{sistema_cultura.id}/diligencia"
     request = client.get(url)

@@ -39,7 +39,7 @@ def test_existencia_campos_atributo_models():
 
     diligencia = Diligencia()
     fields = ('id', 'texto_diligencia', 'classificacao_arquivo',
-              'sistema_cultura', 'componente', 'data_criacao', 'usuario')
+              'componente', 'data_criacao', 'usuario')
     for field in fields:
         assert diligencia._meta.get_field(field)
 
@@ -125,6 +125,7 @@ def test_relacionamento_com_plano_diligencia_model(diligencia, sistema):
     assert isinstance(diligencia.componente, PlanoCultura)
 
 
+@pytest.mark.skip()
 def test_tipo_campo_sistema_cultura_model_diligencia(diligencia):
     """ Testa tipo do campo sistema_cultura na model Diligencia """
 
@@ -134,6 +135,7 @@ def test_tipo_campo_sistema_cultura_model_diligencia(diligencia):
     assert isinstance(sistema_field, ForeignKey)
 
 
+@pytest.mark.skip()
 def test_informacoes_sistema_cultura_na_diligencia(diligencia):
     """
     Testa as informacoes do sistema_cultura na model de diligência
