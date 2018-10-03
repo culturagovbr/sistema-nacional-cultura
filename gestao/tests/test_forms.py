@@ -2,8 +2,8 @@ import pytest
 from django.forms import ModelForm
 from django.shortcuts import reverse
 
-from gestao.forms import DiligenciaForm
-from gestao.models import Diligencia
+from gestao.forms import DiligenciaComponenteForm, DiligenciaGeralForm
+from gestao.models import DiligenciaSimples
 
 from ckeditor.widgets import CKEditorWidget
 from dal.autocomplete import ModelSelect2
@@ -14,70 +14,140 @@ from gestao.forms import AlterarCadastradorForm
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.skip()
-def test_existencia_form_diligencia(client):
+@pytest.fixture
+def usuario():
 
-    """ Testa existência da classe form para a diligência """
-    form = DiligenciaForm(resultado='0', componente='1')
+    return mommy.make("Usuario")
+
+
+@pytest.fixture
+def sistema_cultura():
+
+    return mommy.make("SistemaCultura")
+
+
+def test_existencia_form_diligencia_componente(client, usuario, sistema_cultura):
+    """ Testa existência da classe form para a diligência de componentes"""
+
+    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
+        usuario=usuario)
+
     assert form
 
 
-@pytest.mark.skip()
-def test_campo_texto_diligencia_form(client):
+def test_existencia_form_diligencia_geral(client, usuario, sistema_cultura):
+    """ Testa existência da classe form para a diligência geral"""
+
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+
+    assert form
+
+
+def test_campo_texto_diligencia_form_componente(client, usuario, sistema_cultura):
     """
-    Testa existência do campo texto_diligência no form referente a diligência
+    Testa existência do campo texto_diligência no form referente a diligência de componente
     """
-    form = DiligenciaForm(resultado='0', componente='1')
+
+    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
+        usuario=usuario)
+
     assert "<textarea cols=\"40\" id=\"id_texto_diligencia\" name=\"texto_diligencia\" " in form.as_p()
 
 
-@pytest.mark.skip()
-def test_campo_classificao_arquivo_no_form_diligencia(client):
+def test_campo_texto_diligencia_form_geral(client, usuario, sistema_cultura):
+    """
+    Testa existência do campo texto_diligência no form referente a diligência geral
+    """
+
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+    
+    assert "<textarea cols=\"40\" id=\"id_texto_diligencia\" name=\"texto_diligencia\" " in form.as_p()
+
+
+def test_campo_classificao_arquivo_no_form_diligencia_componente(client, usuario, sistema_cultura):
     """ Testa a existência do campo referente a seleção para a classificação do arquivo """
 
-    form = DiligenciaForm(resultado='0', componente='1')
+    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
+        usuario=usuario)
+
     assert "<select name=\"classificacao_arquivo\" id=\"id_classificacao_arquivo\"" in form.as_p()
 
 
-@pytest.mark.skip()
-def test_uso_ck_widget_no_texto_diligencia(client):
+def test_ausencia_campo_classificao_arquivo_no_form_diligencia_geral(client, usuario, sistema_cultura):
+    """ Testa se o campo referente a seleção para a classificação do arquivo
+    não é disonível na diligência geral """
+
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+
+    assert "<select name=\"classificacao_arquivo\" id=\"id_classificacao_arquivo\"" not in form.as_p()
+
+
+def test_uso_ck_widget_no_texto_diligencia_geral(client, usuario, sistema_cultura):
     """ Testa uso do widget ckeditor para input de texto rich no texto_diligência """
 
-    form = DiligenciaForm(resultado='0', componente='1')
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+
     assert isinstance(form.fields['texto_diligencia'].widget, CKEditorWidget)
 
 
-@pytest.mark.skip()
-def test_validacao_de_dados_invalidos(client):
-    """ Testa se a função is_valid retorna falso para dados inválidos na criação do form """
+def test_validacao_de_dados_invalidos(client, usuario, sistema_cultura):
+    """ Testa se a função is_valid retorna falso para dados inválidos na criação do form 
+    da diligencia de componente"""
 
     data = {'texto_diligencia': 'ta certo, parceiro', 'classificacao_arquivo': 'bla'}
 
-    form = DiligenciaForm(data=data, resultado='0', componente='1')
+    form = DiligenciaComponenteForm(data=data, componente='orgao_gestor', 
+        sistema_cultura=sistema_cultura, usuario=usuario)
 
     assert not form.is_valid()
 
 
-def test_tipo_do_form_da_diligencia(client):
-    """ Testa se o form da Diligência é do tipo ModelForm """
+def test_tipo_do_form_da_diligencia_geral(client):
+    """ Testa se o form da diligência geral é do tipo ModelForm """
 
-    assert issubclass(DiligenciaForm, ModelForm)
+    assert issubclass(DiligenciaGeralForm, ModelForm)
 
 
-@pytest.mark.skip()
-def test_diligencia_form_usa_model_correta(client):
+def test_tipo_do_form_da_diligencia_componente(client):
+    """ Testa se o form da diligência de componente é do tipo ModelForm """
+
+    assert issubclass(DiligenciaComponenteForm, ModelForm)
+
+
+def test_diligencia_form_componente_usa_model_correta(client, usuario, sistema_cultura):
     """ Testa de a classe DiligenciaForm utiliza a model referente a Diligencia """
 
-    form = DiligenciaForm(resultado='0', componente='1')
+    form = DiligenciaComponenteForm(componente='orgao_gestor', 
+        sistema_cultura=sistema_cultura, usuario=usuario)
 
-    assert isinstance(form.instance, Diligencia)
+    assert isinstance(form.instance, DiligenciaSimples)
 
-@pytest.mark.skip()
-def test_fields_form_diligencia(client):
-    """Testa as fields dentro do form Diligencia"""
 
-    form = DiligenciaForm(resultado='0', componente='1')
+def test_diligencia_form_geral_usa_model_correta(client, usuario, sistema_cultura):
+    """ Testa de a classe DiligenciaForm utiliza a model referente a Diligencia """
+
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+
+    assert isinstance(form.instance, DiligenciaSimples)
+
+
+def test_fields_form_diligencia_componente(client, usuario, sistema_cultura):
+    """Testa as fields dentro do form de diligencia de componente"""
+
+    form = DiligenciaComponenteForm(componente='orgao_gestor', 
+        sistema_cultura=sistema_cultura, usuario=usuario)
+
     fields = ('texto_diligencia', 'classificacao_arquivo')
+
+    assert set(form.Meta.fields).issuperset(set(fields))
+
+
+def test_fields_form_diligencia_geral(client, usuario, sistema_cultura):
+    """Testa as fields dentro do form de diligencia geral"""
+
+    form = DiligenciaGeralForm(sistema_cultura=sistema_cultura, usuario=usuario)
+    
+    fields = ('texto_diligencia',)
 
     assert set(form.Meta.fields).issuperset(set(fields))
 

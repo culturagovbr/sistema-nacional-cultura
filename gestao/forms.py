@@ -157,6 +157,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
         if commit:
             componente = getattr(self.sistema_cultura, self.tipo_componente)
             componente.diligencia = diligencia
+            componente.situacao = self.cleaned_data['classificacao_arquivo']
             componente.save()
 
     class Meta:
@@ -165,8 +166,6 @@ class DiligenciaComponenteForm(DiligenciaForm):
 
 
 class DiligenciaGeralForm(DiligenciaForm):
-
-    texto_diligencia = forms.CharField(widget=CKEditorWidget())
 
     def __init__(self, *args, **kwargs):
         super(DiligenciaGeralForm, self).__init__(*args, **kwargs)
@@ -177,37 +176,6 @@ class DiligenciaGeralForm(DiligenciaForm):
         if commit:
             self.sistema_cultura.diligencia_simples = diligencia
             self.sistema_cultura.save()
-
-# class DiligenciaComponenteForm(ModelForm):
-#     SITUACOES = (
-#         (0, "Em preenchimento"),
-#         (1, "Avaliando anexo"),
-#         (2, "Concluída"),
-#         (3, "Arquivo aprovado com ressalvas"),
-#         (4, "Arquivo danificado"),
-#         (5, "Arquivo incompleto"),
-#         (6, "Arquivo incorreto")
-#     )
-
-#     texto_diligencia = forms.CharField(widget=CKEditorWidget())
-
-#     def __init__(self, *args, **kwargs):
-#         """ Form da diligência recebe como parâmetro o resultado, que serve
-#         para diferenciar diligência de aprovação e reprovação """
-
-#         super().__init__(*args, **kwargs)
-
-#         import ipdb; ipdb.set_trace()
-
-#         # if resultado == '1':
-#         self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[2:3])
-#         # else:
-#         # self.fields['classificacao_arquivo'] = forms.TypedChoiceField(choices=self.SITUACOES[4:7])
-        
-
-#     class Meta:
-#         model = DiligenciaSimples
-#         fields = ('texto_diligencia', 'classificacao_arquivo')
 
 
 class AlterarCadastradorForm(forms.Form):

@@ -334,10 +334,12 @@ def test_salvar_informacoes_no_banco(url, client, login_staff):
         data={"classificacao_arquivo": "4", "texto_diligencia": "bla"},
     )
     diligencia = DiligenciaSimples.objects.first()
+    orgao_gestor.refresh_from_db()
 
     assert DiligenciaSimples.objects.count() == 1
     assert diligencia.texto_diligencia == "bla"
     assert diligencia.classificacao_arquivo == 4
+    assert orgao_gestor.situacao == diligencia.classificacao_arquivo
 
 
 def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
@@ -446,29 +448,6 @@ def test_captura_nome_usuario_logado_na_diligencia(
     diligencia = DiligenciaSimples.objects.last()
 
     assert diligencia.usuario == login_staff
-
-@pytest.mark.skip("Necessita implementar a tela de atualização da situação")
-def test_muda_situacao_arquivo_componente(url, client, login_staff):
-    """ Testa se ao realizar o post da diligência a situação do arquivo do componente é alterada """
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], orgao_gestor=orgao_gestor)
-
-    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
-    orgao_gestor.arquivo = arquivo
-    orgao_gestor.save()
-
-    url = f"/gestor/{sistema_cultura.id}/diligencia/orgao_gestor/{orgao_gestor.id}/situacao"
-
-    request = client.post(url,
-        data={"situacao": 4},
-    )
-
-    import ipdb; ipdb.set_trace()
-    assert SistemaCultura.objects.last().orgao_gestor.situacao == 4
-
-    orgao_gestor.delete()
-    sistema_cultura.delete()
 
 
 def test_insere_link_publicacao_dou(client, plano_trabalho, login_staff):
@@ -828,9 +807,8 @@ def test_salvar_informacoes_no_banco_diligencia_geral(
     response = client.post(url, data={"texto_diligencia": "bla"})
 
     diligencia = DiligenciaSimples.objects.first()
-    sistema_cultura.refresh_from_db()
-
-    #import ipdb; ipdb.set_trace()
+    sistema_cultura = SistemaCultura.sistema.filter(
+        ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge)[0]
 
     assert DiligenciaSimples.objects.count() == 1
     assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia_simples
