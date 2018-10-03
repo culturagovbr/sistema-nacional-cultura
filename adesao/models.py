@@ -8,6 +8,8 @@ from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
 from gestao.models import Diligencia
 
+from adesao.managers import SistemaManager
+
 
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
@@ -353,8 +355,14 @@ class SistemaCultura(models.Model):
         content_type_field="componente_type",
         object_id_field="componente_id",
     )
+    alterado_em = models.DateTimeField("Alterado em", auto_now_add=True)
 
     objects = SistemaCulturaManager()
+    sistema = SistemaManager()
+
+    class Meta:
+        ordering = ['ente_federado', '-alterado_em']
+
 
     def get_situacao_componentes(self):
         """

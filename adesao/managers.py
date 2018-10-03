@@ -1,18 +1,11 @@
 from django.db import models
 
 
-class BaseQuerySet(models.QuerySet):
-    """ Faz com que as consultas sempre utilizem select_related() """
-
-    def get_queryset(self):
-        return self.select_related()
-    
-
 class SistemaManager(models.Manager):
     """ Manager utilizado para interações com os Sistemas de Cultura """
 
     def get_queryset(self):
-        return BaseQuerySet.order_by('-data').distinct('ente_federado__cod_ibge')
+        return super().get_queryset().distinct('ente_federado').select_related()
 
 
 class SistemaCulturaManager(models.Manager):
