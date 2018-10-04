@@ -5,14 +5,13 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from adesao.models import SistemaCultura
-from adesao.models import Usuario
 from adesao.models import Municipio
 from adesao.models import Secretario
 from adesao.models import Responsavel
 from adesao.models import Funcionario
 from adesao.models import Sede
 from adesao.models import Gestor
-from adesao.models import SistemaCulturaManager
+
 from planotrabalho.models import PlanoTrabalho
 
 
@@ -90,8 +89,8 @@ def test_alterar_cadastrador_SistemaCultura(plano_trabalho):
     sistema.save()
 
     assert SistemaCultura.objects.count() == 2
-    assert SistemaCultura.objects.first().cadastrador == cadastrador_atual
-    assert SistemaCultura.objects.last().cadastrador == user
+    assert SistemaCultura.historico.last().cadastrador == cadastrador_atual
+    assert SistemaCultura.historico.first().cadastrador == user
     assert Municipio.objects.first().usuario == user
     assert PlanoTrabalho.objects.first().usuario == user
     assert Secretario.objects.first().usuario == user
@@ -130,12 +129,6 @@ def test_limpa_cadastrador_alterado_SistemaCultura():
     cadastrador.municipio.delete()
 
 
-def test_manager_usado_SistemaCultura():
-    """ Testa se a model SistemaCultura utiliza o manager correto """
-
-    assert isinstance(SistemaCultura.objects.db_manager(), SistemaCulturaManager)
-
-
 def test_retorna_ativo_SistemaCultura_filtrado_por_uf():
     """ Retorna o último Sistema cultura criado sendo ele o ativo de
     uma UF específica """
@@ -145,7 +138,7 @@ def test_retorna_ativo_SistemaCultura_filtrado_por_uf():
                _fill_optional=['uf'])
     sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf'])
 
-    assert SistemaCultura.objects.ativo(uf=sistema_ativo.uf) == sistema_ativo
+    assert SistemaCultura.sistema.get(uf=sistema_ativo.uf) == sistema_ativo
 
     SistemaCultura.objects.all().delete()
 
@@ -159,59 +152,8 @@ def test_retorna_ativo_SistemaCultura_filtrado_por_uf_e_cidade():
                _fill_optional=['uf', 'cidade'])
     sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf', 'cidade'])
 
-    assert SistemaCultura.objects.ativo(
+    assert SistemaCultura.sistema.get(
             uf=sistema_ativo.uf, cidade=sistema_ativo.cidade) == sistema_ativo
-
-
-
-def test_ativo_ou_cria_SistemaCultura_ativo():
-    """ Testa método ativo_ou_cria do manager SistemaCulturaManager
-    retorna SistemaCultura ativo """
-
-    mommy.make('SistemaCultura',
-               data_criacao=datetime(2018, 2, 3, 0, tzinfo=timezone.utc),
-               _fill_optional=['uf', 'cidade'])
-    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf', 'cidade'])
-
-    assert SistemaCultura.objects.ativo_ou_cria(
-            uf=sistema_ativo.uf, cidade=sistema_ativo.cidade) == sistema_ativo
-
-
-def test_ativo_ou_cria_SistemaCultura_cria():
-    """ Testa método ativo_ou_cria do manager SistemaCulturaManager
-    retorna um novo sistema cultura """
-    cidade = mommy.make('Cidade')
-    uf = cidade.uf
-
-    sistema = SistemaCultura.objects.ativo_ou_cria(cidade=cidade, uf=uf)
-
-    assert isinstance(sistema, SistemaCultura)
-    assert sistema.pk
-    assert sistema.uf == uf
-    assert sistema.cidade == cidade
-
-
-def test_por_municipio_SistemaCultura_cidade():
-    """ Testa se o método por município retorna os sistemas cultura de uma cidade """
-    cidade = mommy.make('Cidade')
-    uf = cidade.uf
-    sistema = mommy.make("SistemaCultura", cidade=cidade, uf=uf)
-
-    sistemas_cidade = SistemaCultura.objects.por_municipio(cidade=cidade, uf=uf)
-
-    assert sistemas_cidade.count() == 1
-    assert sistemas_cidade.first() == sistema
-
-
-def test_por_municipio_SistemaCultura_uf():
-    """ Testa se o método por município retorna os sistemas cultura de uma uf """
-    uf = mommy.make('Uf')
-    sistema = mommy.make("SistemaCultura", uf=uf)
-
-    sistemas_cidade = SistemaCultura.objects.por_municipio(uf=uf)
-
-    assert sistemas_cidade.count() == 1
-    assert sistemas_cidade.first() == sistema
 
 
 def test_alterar_cadastrador_sistema_cultura_sem_cadastrador():
@@ -254,8 +196,8 @@ def test_ativo_ou_cria_SistemaCultura_ativo():
                _fill_optional=['uf', 'cidade'])
     sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf', 'cidade'])
 
-    assert SistemaCultura.objects.ativo_ou_cria(
-            uf=sistema_ativo.uf, cidade=sistema_ativo.cidade) == sistema_ativo
+    sistema, criado = SistemaCultura.sistema.get_or_create(cidade=sistema_ativo.cidade)
+    assert sistema == sistema_ativo
 
 
 def test_ativo_ou_cria_SistemaCultura_cria():
@@ -264,7 +206,7 @@ def test_ativo_ou_cria_SistemaCultura_cria():
     cidade = mommy.make('Cidade')
     uf = cidade.uf
 
-    sistema = SistemaCultura.objects.ativo_ou_cria(cidade=cidade, uf=uf)
+    sistema, criado = SistemaCultura.sistema.get_or_create(cidade=cidade, uf=uf)
 
     assert isinstance(sistema, SistemaCultura)
     assert sistema.pk
@@ -272,6 +214,7 @@ def test_ativo_ou_cria_SistemaCultura_cria():
     assert sistema.cidade == cidade
 
 
+@pytest.mark.skip("Depende de uma melhoria em EnteFederado")
 def test_por_municipio_SistemaCultura_cidade():
     """ Testa se o método por município retorna os sistemas cultura de uma cidade """
     cidade = mommy.make('Cidade')
@@ -284,6 +227,7 @@ def test_por_municipio_SistemaCultura_cidade():
     assert sistemas_cidade.first() == sistema
 
 
+@pytest.mark.skip("Depende de uma melhoria em EnteFederado")
 def test_por_municipio_SistemaCultura_uf():
     """ Testa se o método por município retorna os sistemas cultura de uma uf """
     uf = mommy.make('Uf')
