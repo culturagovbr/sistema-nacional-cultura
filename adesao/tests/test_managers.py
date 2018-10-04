@@ -17,3 +17,23 @@ def test_filtrar_um_determinado_estado_usando_o_manager_sistema(client, sistemac
     sistemas = SistemaCultura.sistema.filter(ente_federado__cod_ibge=11)
 
     assert sistemas.count() == 1
+
+
+def test_get_or_create_usando_o_manager_sistema(client, sistemacultura_10):
+
+    acre, acre_created = SistemaCultura.sistema.get_or_create(ente_federado__cod_ibge=11)
+    sp, sp_created = SistemaCultura.sistema.get_or_create(ente_federado__cod_ibge=10)
+
+    assert acre
+    assert not acre_created
+
+    assert sp
+    assert sp_created
+
+
+
+def test_retornar_todo_o_historico_de_um_ente_federado(client, sistemacultura_10):
+
+    ente = SistemaCultura.historico.ente(cod_ibge=11)
+
+    assert ente.count() == 2

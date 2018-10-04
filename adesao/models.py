@@ -9,6 +9,7 @@ from planotrabalho.models import Componente
 from gestao.models import Diligencia
 
 from adesao.managers import SistemaManager
+from adesao.managers import HistoricoManager
 
 
 LISTA_ESTADOS_PROCESSO = (
@@ -260,27 +261,6 @@ class Sede(models.Model):
         return self.cnpj
 
 
-class SistemaCulturaManager(models.Manager):
-    def ativo(self, uf, cidade=None):
-        """ Retorna último SistemaCultura ativo relativo a um ente federado """
-        return self.filter(uf=uf, cidade=cidade).latest('data_criacao')
-
-    def ativo_ou_cria(self, uf, cidade=None):
-        """ Retorna último SistemaCultura ativo relativo a um ente federado
-        caso ele não exista cria um novo SistemaCultura """
-        try:
-            sistema = self.ativo(uf=uf, cidade=cidade)
-        except SistemaCultura.DoesNotExist:
-            sistema = SistemaCultura.objects.create(uf=uf, cidade=cidade)
-        return sistema
-
-    def por_municipio(self, uf, cidade=None):
-        """ Retorna todos os SistemaCultura de uma cidade ou estado """
-        sistemas = self.filter(uf=uf, cidade=cidade).select_related('cadastrador', 'cidade', 'uf')
-
-        return sistemas
-
-
 class Funcionario(models.Model):
     cpf = models.CharField(
         max_length=14,
@@ -357,12 +337,12 @@ class SistemaCultura(models.Model):
     )
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
 
-    objects = SistemaCulturaManager()
+    objects = models.Manager()
     sistema = SistemaManager()
+    historico = HistoricoManager()
 
     class Meta:
         ordering = ['ente_federado', '-alterado_em']
-
 
     def get_situacao_componentes(self):
         """
@@ -372,7 +352,7 @@ class SistemaCultura(models.Model):
         componentes = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
         objetos = (getattr(self, componente, None) for componente in componentes)
 
-        situacoes = {componente:objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if objeto is not None}
+        situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if objeto is not None}
         
         return situacoes
 
@@ -390,7 +370,7 @@ class SistemaCultura(models.Model):
         """
 
         if self.pk:
-            fields = self._meta.fields[1:]
+            fields = self._meta.fields[1:-1]
             anterior = SistemaCultura.objects.get(pk=self.pk)
 
             comparacao = (self.compara_valores(anterior, field.attname) for field in
@@ -398,6 +378,7 @@ class SistemaCultura(models.Model):
 
             if False in comparacao:
                 self.pk = None
+                self.alterado_em = timezone.now()
 
             if not self.compara_valores(anterior, "cadastrador"):
                 self.alterar_cadastrador(anterior.cadastrador)

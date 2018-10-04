@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import EmptyResultSet
 
 
 class SistemaManager(models.Manager):
@@ -8,22 +9,14 @@ class SistemaManager(models.Manager):
         return super().get_queryset().distinct('ente_federado').select_related()
 
 
-class SistemaCulturaManager(models.Manager):
-    def ativo(self, uf, cidade=None):
-        """ Retorna último SistemaCultura ativo relativo a um ente federado """
-        return self.filter(uf=uf, cidade=cidade).latest('data_criacao')
+class HistoricoManager(models.Manager):
+    """
+    Manager responsavel pelo gerenciamento de histórico de um determinado ente federado.
+    """
 
-    def ativo_ou_cria(self, uf, cidade=None):
-        """ Retorna último SistemaCultura ativo relativo a um ente federado
-        caso ele não exista cria um novo SistemaCultura """
-        try:
-            sistema = self.ativo(uf=uf, cidade=cidade)
-        except SistemaCultura.DoesNotExist:
-            sistema = SistemaCultura.objects.create(uf=uf, cidade=cidade)
-        return sistema
+    def ente(self, cod_ibge=None):
+        """ Retorna o histórico de um ente federado """
+        if not cod_ibge:
+            raise EmptyResultSet
 
-    def por_municipio(self, uf, cidade=None):
-        """ Retorna todos os SistemaCultura de uma cidade ou estado """
-        sistemas = self.filter(uf=uf, cidade=cidade).select_related('cadastrador', 'cidade', 'uf')
-
-        return sistemas
+        return self.filter(ente_federado__cod_ibge=cod_ibge)
