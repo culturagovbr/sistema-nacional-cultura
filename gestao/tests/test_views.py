@@ -141,49 +141,16 @@ def test_renderiza_template_diligencia(url, client, login_staff):
 def test_existencia_do_contexto_view(url, client, login_staff):
     """Testa se o contexto existe no retorno da view """
 
-    contexts = ["ente_federado", "arquivo", "data_envio", "historico_diligencias"]
+    contexts = ["sistema_cultura", "situacoes", "historico_diligencias"]
 
-    conselho = mommy.make("Componente", tipo=3, situacao=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], conselho=conselho)
+        'cadastrador'])
 
-    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
-    conselho.arquivo = arquivo
-    conselho.save()
-
-    request = client.get(
-        url.format(id=sistema_cultura.id, componente="conselho", resultado="0")
-    )
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+    request = client.get(url)
 
     for context in contexts:
         assert context in request.context
-
-
-def test_valor_context_retornado_na_view(url, client, login_staff):
-    """Testa se há informações retornadas na view"""
-
-    fundo = mommy.make("Componente", tipo=2, situacao=1)
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], fundo_cultura=fundo)
-
-    arquivo = SimpleUploadedFile("conselho.txt", b"file_content", content_type="text/plain")
-    fundo.arquivo = arquivo
-    fundo.save()
-
-    request = client.get(
-        url.format(id=sistema_cultura.id, componente="fundo_cultura", resultado="0")
-    )
-
-    contexts = [
-        "ente_federado",
-        "arquivo",
-        "data_envio",
-        "historico_diligencias",
-        "sistema_cultura",
-        "componente"
-    ]
-    for context in contexts:
-        assert request.context[context] != ""
 
 
 def test_retorno_400_post_criacao_diligencia(url, client, login_staff):
@@ -400,26 +367,16 @@ def test_arquivo_enviado_salvo_no_diretorio_do_componente(
 
 def test_exibicao_historico_diligencia(url, client, plano_trabalho, login_staff):
     """Testa se o histórico de diligências é retornado pelo contexto"""
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], orgao_gestor=orgao_gestor)
+        'cadastrador'])
 
-    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
-    orgao_gestor.arquivo = arquivo
-    orgao_gestor.save()
+    diligencia = mommy.make("DiligenciaSimples", _quantity=4)
+    diligencias = SistemaCultura.historico.ente(
+            cod_ibge=sistema_cultura.ente_federado.cod_ibge)
 
-    diligencia = mommy.make(
-        "Diligencia", _quantity=4, componente=sistema_cultura.orgao_gestor
-    )
-    diligencias = (
-        sistema_cultura.orgao_gestor.diligencias.all()
-        .order_by("-data_criacao")
-        .order_by("-id")[:3]
-    )
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+    request = client.get(url)
 
-    request = client.get(
-        url.format(id=sistema_cultura.id, componente="orgao_gestor", resultado="0")
-    )
     diferenca_listas = set(diligencias).symmetric_difference(
         set(request.context["historico_diligencias"])
     )
