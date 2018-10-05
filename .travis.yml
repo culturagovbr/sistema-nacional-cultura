@@ -8,6 +8,7 @@ python:
 
 install:
     - pip install --upgrade pipenv
+    - pipenv run pip install pip==18.0
     - pipenv install --three --dev
 
 before_script:
