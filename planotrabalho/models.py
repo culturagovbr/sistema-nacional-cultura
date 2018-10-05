@@ -129,11 +129,6 @@ class Componente(ArquivoComponente2):
         choices=LISTA_TIPOS_COMPONENTES,
         default=0)
     diligencia = models.ForeignKey('gestao.DiligenciaSimples', on_delete=models.CASCADE, related_name="componente", blank=True, null=True)
-    diligencias = GenericRelation(
-        Diligencia,
-        content_type_field="componente_type",
-        object_id_field="componente_id",
-    )
 
     def __str__(self):
         return str(self.id)

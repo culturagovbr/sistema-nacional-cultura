@@ -7,14 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gestao', '0005_diligenciasimples'),
+        ('gestao', '0005_auto_20180927_0955'),
         ('adesao', '0010_sistemacultura_ente_federado'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='sistemacultura',
-            name='diligencia_simples',
+            name='diligencia',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sistema_cultura', to='gestao.DiligenciaSimples'),
         ),
     ]

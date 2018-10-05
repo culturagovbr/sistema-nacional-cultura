@@ -248,7 +248,7 @@ class Sede(models.Model):
     cnpj = models.CharField(
         max_length=18,
         verbose_name='CNPJ')
-    endereco = models.CharField(max_length=255)
+    endereco = models.TextField()
     complemento = models.CharField(max_length=255)
     cep = models.CharField(max_length=10)
     bairro = models.CharField(max_length=50)
@@ -269,8 +269,8 @@ class Funcionario(models.Model):
     orgao_expeditor_rg = models.CharField(max_length=50)
     estado_expeditor = models.ForeignKey('Uf', on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
-    cargo = models.CharField(max_length=100)
-    instituicao = models.CharField(max_length=100)
+    cargo = models.CharField(max_length=100, null=True, blank=True)
+    instituicao = models.CharField(max_length=100, null=True, blank=True)
     telefone_um = models.CharField(max_length=25)
     telefone_dois = models.CharField(max_length=25, blank=True)
     telefone_tres = models.CharField(max_length=25, blank=True)
@@ -308,8 +308,6 @@ class SistemaCultura(models.Model):
 
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True)
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
-    cidade = models.ForeignKey("Cidade", on_delete=models.SET_NULL, null=True)
-    uf = models.ForeignKey("Uf", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")
     orgao_gestor = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
@@ -327,14 +325,8 @@ class SistemaCultura(models.Model):
     data_publicacao_acordo = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=100, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
-    localizacao = models.CharField(max_length=50, blank=True)
     numero_processo = models.CharField(max_length=50, blank=True)
-    diligencia_simples = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
-    diligencia_geral = GenericRelation(
-        Diligencia,
-        content_type_field="componente_type",
-        object_id_field="componente_id",
-    )
+    diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
 
     objects = models.Manager()
