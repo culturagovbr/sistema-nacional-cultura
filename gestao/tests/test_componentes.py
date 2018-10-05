@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from planotrabalho.models import PlanoTrabalho
-from gestao.forms import DiligenciaForm
+from gestao.forms import DiligenciaForm, DiligenciaComponenteForm
 from gestao.models import Diligencia
 from adesao.models import SistemaCultura
 
@@ -18,11 +18,16 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def usuario(plano_trabalho):
-    """ Retorna um usuario associado a um
-    plano de trabalho e um ente_federado """
+def usuario():
 
-    return plano_trabalho.usuario
+    return mommy.make("Usuario")
+
+
+@pytest.fixture
+def sistema_cultura():
+
+    return mommy.make("SistemaCultura")
+
 
 @pytest.fixture
 def context(usuario):
@@ -62,7 +67,7 @@ def test_existencia_template_diligencia(engine, client):
     assert isinstance(template, Template)
 
 
-def test_retorno_do_botao_cancelar_de_diligencia(client, template, context, usuario):
+def test_retorno_do_botao_cancelar_de_diligencia(client, template, context):
     """ Testa se o botão cancelar presente na página de diligência
     retorna para a página de detalhe do município correspondente"""
 
@@ -112,7 +117,7 @@ def test_informacoes_arquivo_enviado(template, client, context):
     assert context['ente_federado'] in rendered_template
 
 
-def test_opcoes_de_classificacao_da_diligencia(template, client, plano_trabalho, context):
+def test_opcoes_de_classificacao_da_diligencia(template, client, usuario, sistema_cultura, context):
     """Testa se a Classificação(Motivo) apresenta as opções conforme a especificação."""
 
     opcoes = ("Arquivo danificado",
@@ -120,10 +125,11 @@ def test_opcoes_de_classificacao_da_diligencia(template, client, plano_trabalho,
               "Arquivo incorreto"
               )
 
-    plano_trabalho = PlanoTrabalho.objects.first()
-    form = DiligenciaForm(resultado='0', componente='orgao_gestor')
+    form = DiligenciaComponenteForm(componente='orgao_gestor', usuario=usuario,
+        sistema_cultura=sistema_cultura)
     context['form'] = form
-    context['plano_trabalho'] = plano_trabalho
+    context['sistema_cultura'] = sistema_cultura.id
+    context['componente'] = mommy.make("Componente")
     rendered_template = template.render(context)
 
     assert opcoes[0] in rendered_template
@@ -131,21 +137,21 @@ def test_opcoes_de_classificacao_da_diligencia(template, client, plano_trabalho,
     assert opcoes[2] in rendered_template
 
 
-def test_opcoes_em_um_dropdown(template, client, plano_trabalho, context):
+def test_opcoes_em_um_dropdown(template, client, usuario, sistema_cultura, context):
     """Testa se as Classificações(Motivo) estão presentes dentro de um dropdown."""
     opcoes = [
-            {"description": "Arquivo Danificado", "value": "4"},
-            {"description": "Arquivo Incompleto", "value": "5"},
-            {"description": "Arquivo Incorreto", "value": "6"}
+            {"description": "Arquivo danificado", "value": "4"},
+            {"description": "Arquivo incompleto", "value": "5"},
+            {"description": "Arquivo incorreto", "value": "6"}
     ]
 
-    plano_trabalho = PlanoTrabalho.objects.first()
-    form = DiligenciaForm(resultado='0', componente='orgao_gestor')
+    form = DiligenciaComponenteForm(componente='orgao_gestor', usuario=usuario,
+        sistema_cultura=sistema_cultura)
     context['form'] = form
-    context['plano_trabalho'] = plano_trabalho
+    context['sistema_cultura'] = sistema_cultura.id
+    context['componente'] = mommy.make("Componente")
     rendered_template = template.render(context)
 
-    # __import__('ipdb').set_trace()
     assert "<select name=\"classificacao_arquivo\" id=\"id_classificacao_arquivo\">" in rendered_template
     for opcao in opcoes:
         assert "<option value=\"{value}\">{description}</option>".format(value=opcao['value'], description=opcao['description'])
@@ -212,6 +218,7 @@ def test_renderizacao_js_form_diligencia(template, client, context):
     usuario = mommy.make("Usuario")
     form = DiligenciaForm(sistema_cultura=sistema_cultura, usuario=usuario)
 
+    context['form'] = form
     context['sistema_cultura'] = sistema_cultura.id
 
     rendered_template = template.render(context)
