@@ -744,7 +744,7 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
     """ Testa se retonar 200 ao dar um get na diligencia geral """
     diligencia = mommy.make("DiligenciaSimples")
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'cadastrador'], diligencia_simples=diligencia)
+        'cadastrador'], diligencia=diligencia)
 
     url = f"/gestao/{sistema_cultura.id}/diligencia"
     request = client.get(url)
@@ -768,7 +768,7 @@ def test_salvar_informacoes_no_banco_diligencia_geral(
         ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge)[0]
 
     assert DiligenciaSimples.objects.count() == 1
-    assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia_simples
+    assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia
 
 
 def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(

@@ -780,7 +780,7 @@ class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
 
 class DiligenciaGeralDetailView(DetailView):
     model = SistemaCultura
-    fields = ['diligencia_simples']
+    fields = ['diligencia']
     template_name = 'diligencia.html'
 
     def get_context_data(self, **kwargs):

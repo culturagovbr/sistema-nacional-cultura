@@ -170,7 +170,7 @@ class DiligenciaGeralForm(DiligenciaForm):
         diligencia = super(DiligenciaForm, self).save()
 
         if commit:
-            self.sistema_cultura.diligencia_simples = diligencia
+            self.sistema_cultura.diligencia = diligencia
             self.sistema_cultura.save()
 
 
