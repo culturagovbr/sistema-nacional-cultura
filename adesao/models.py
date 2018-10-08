@@ -1,3 +1,5 @@
+import math
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -53,6 +55,57 @@ class EnteFederado(models.Model):
     receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"), null=True, blank=True)
     despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"), null=True, blank=True)
     pib = models.DecimalField(_("PIB per capita - R$"), max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        ufs = {
+                11: "RO",
+                12: "AC",
+                13: "AM",
+                14: "RR",
+                15: "PA",
+                16: "AP",
+                17: "TO",
+                21: "MA",
+                22: "PI",
+                23: "CE",
+                24: "RN",
+                25: "PB",
+                26: "PE",
+                27: "AL",
+                28: "SE",
+                29: "BA",
+                31: "MG",
+                32: "ES",
+                33: "RJ",
+                35: "SP",
+                41: "PR",
+                42: "SC",
+                43: "RS",
+                50: "MS",
+                51: "MT",
+                52: "GO",
+                53: "DF"
+            }
+
+        uf = ufs.get(self.cod_ibge, ufs.get(int(str(self.cod_ibge)[:2])))
+
+        digits = int(math.log10(self.cod_ibge))+1
+
+        if digits > 2:
+            return f"{self.nome}/{uf}"
+
+        return f"{self.nome} ({uf})"
+
+    @property
+    def is_municipio(self):
+        digits = int(math.log10(self.cod_ibge))+1
+
+        if digits > 2:
+            return True
+        return False
+
+    class Meta:
+        indexes = [models.Index(fields=['cod_ibge']), ]
 
 
 class Cidade(models.Model):
@@ -346,7 +399,7 @@ class SistemaCultura(models.Model):
         objetos = (getattr(self, componente, None) for componente in componentes)
 
         situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if objeto is not None}
-        
+
         return situacoes
 
     def compara_valores(self, obj_anterior, propriedade):
