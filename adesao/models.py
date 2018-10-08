@@ -265,15 +265,15 @@ class Funcionario(models.Model):
     cpf = models.CharField(
         max_length=14,
         verbose_name='CPF')
-    rg = models.CharField(max_length=25, verbose_name='RG')
+    rg = models.CharField(max_length=50, verbose_name='RG')
     orgao_expeditor_rg = models.CharField(max_length=50)
     estado_expeditor = models.ForeignKey('Uf', on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, null=True, blank=True)
     instituicao = models.CharField(max_length=100, null=True, blank=True)
-    telefone_um = models.CharField(max_length=25)
-    telefone_dois = models.CharField(max_length=25, blank=True)
-    telefone_tres = models.CharField(max_length=25, blank=True)
+    telefone_um = models.CharField(max_length=50)
+    telefone_dois = models.CharField(max_length=50, blank=True)
+    telefone_tres = models.CharField(max_length=50, blank=True)
     email_institucional = models.EmailField()
     tipo_funcionario = models.IntegerField(
         choices=LISTA_TIPOS_FUNCIONARIOS,
@@ -372,17 +372,17 @@ class SistemaCultura(models.Model):
                 self.pk = None
                 self.alterado_em = timezone.now()
 
-            if not self.compara_valores(anterior, "cadastrador"):
-                self.alterar_cadastrador(anterior.cadastrador)
+            #if not self.compara_valores(anterior, "cadastrador"):
+                #self.alterar_cadastrador(anterior.cadastrador)
 
         super().save(*args, **kwargs)
 
-    def alterar_cadastrador(self, cadastrador_atual):
-        """
+    """def alterar_cadastrador(self, cadastrador_atual):
+        
         Altera cadastrador de um ente federado fazendo as alterações
         necessárias nas models associadas ao cadastrador, gerando uma nova
         versão do sistema cultura
-        """
+        
         cadastrador = self.cadastrador
         if cadastrador_atual:
             cadastrador.recebe_permissoes_sistema_cultura(cadastrador_atual)
@@ -398,3 +398,4 @@ class SistemaCultura(models.Model):
                     cadastrador.save()
             except Municipio.DoesNotExist:
                 return
+    """
