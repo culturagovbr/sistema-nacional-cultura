@@ -26,7 +26,7 @@ class MunicipioList(generics.ListAPIView):
     metadata_class = MunicipioMetadata
 
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter,)
-    filter_class = MunicipioFilter
+    filterset_class = MunicipioFilter
     ordering_fields = ('cidade__nome_municipio', 'estado__nome_uf')
 
     def get_extra_counts(self): 
@@ -60,7 +60,7 @@ class PlanoTrabalhoList(generics.ListAPIView):
     metadata_class = PlanoTrabalhoMetadata
 
     filter_backends = (DjangoFilterBackend,)
-    filter_class = PlanoTrabalhoFilter
+    filterset_class = PlanoTrabalhoFilter
 
 
 class PlanoTrabalhoDetail(generics.RetrieveAPIView):
