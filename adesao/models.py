@@ -44,6 +44,7 @@ class Uf(models.Model):
 class EnteFederado(models.Model):
     cod_ibge = models.IntegerField(_('Código IBGE'))
     nome = models.CharField(_("Nome do EnteFederado"), max_length=300)
+    gentilico = models.CharField(_("Gentilico"), max_length=300, null=True, blank=True)
     mandatario = models.CharField(_("Nome do Mandataio"), max_length=300, null=True, blank=True)
     territorio = models.DecimalField(_("Área territorial - km²"), max_digits=10, decimal_places=3)
     populacao = models.IntegerField(_("População Estimada - pessoas"))
