@@ -29,4 +29,8 @@ class Migration(migrations.Migration):
                 ('pib', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='PIB per capita - R$')),
             ],
         ),
+        migrations.AddIndex(
+            model_name='entefederado',
+            index=models.Index(fields=['cod_ibge'], name='adesao_ente_cod_ibg_61ed24_idx'),
+        ),
     ]
