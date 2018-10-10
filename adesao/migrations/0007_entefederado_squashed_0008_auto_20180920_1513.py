@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cod_ibge', models.IntegerField(verbose_name='Código IBGE')),
                 ('nome', models.CharField(max_length=300, verbose_name='Nome do EnteFederado')),
+                ('gentilico', models.CharField(max_length=300, verbose_name='Gentilico', null=True)),
                 ('mandatario', models.CharField(blank=True, max_length=300, null=True, verbose_name='Nome do Mandataio')),
                 ('territorio', models.DecimalField(decimal_places=3, max_digits=10, verbose_name='Área territorial - km²')),
                 ('populacao', models.IntegerField(verbose_name='População Estimada - pessoas')),
@@ -27,5 +28,9 @@ class Migration(migrations.Migration):
                 ('despesas', models.IntegerField(blank=True, null=True, verbose_name='Despesas empenhadas - R$ (×1000)')),
                 ('pib', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='PIB per capita - R$')),
             ],
+        ),
+        migrations.AddIndex(
+            model_name='entefederado',
+            index=models.Index(fields=['cod_ibge'], name='adesao_ente_cod_ibg_61ed24_idx'),
         ),
     ]
