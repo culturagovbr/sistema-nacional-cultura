@@ -10,42 +10,62 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def cria_sistema_cultura(apps, schema_editor):
 
+    erros = []
+
     for municipio in Municipio.objects.all():
-        sistema_cultura = SistemaCultura.objects.create()
-        sistema_cultura.gestor = Gestor.objects.create(cpf=municipio.cpf_prefeito, rg=municipio.rg_prefeito,
-                orgao_expeditor_rg=municipio.orgao_expeditor_rg, estado_expeditor=municipio.estado_expeditor,
-                nome=municipio.nome_prefeito, telefone_um=municipio.telefone_um,
-                telefone_dois=municipio.telefone_dois, telefone_tres=municipio.telefone_tres,
-                email_institucional=municipio.email_institucional_prefeito, tipo_funcionario=3,
-                termo_posse=municipio.termo_posse_prefeito, rg_copia=municipio.rg_copia_prefeito,
-                cpf_copia=municipio.cpf_copia_prefeito)
+        sistema_cultura = SistemaCultura()
+        sistema_cultura.gestor = Gestor.objects.create(
+                cpf=municipio.cpf_prefeito,
+                rg=municipio.rg_prefeito,
+                orgao_expeditor_rg=municipio.orgao_expeditor_rg,
+                estado_expeditor=municipio.estado_expeditor,
+                nome=municipio.nome_prefeito,
+                telefone_um=municipio.telefone_um,
+                telefone_dois=municipio.telefone_dois,
+                telefone_tres=municipio.telefone_tres,
+                email_institucional=municipio.email_institucional_prefeito,
+                tipo_funcionario=3,
+                termo_posse=municipio.termo_posse_prefeito,
+                rg_copia=municipio.rg_copia_prefeito,
+                cpf_copia=municipio.cpf_copia_prefeito
+                )
 
-        sistema_cultura.sede = Sede.objects.create(localizacao=municipio.localizacao,
-                cnpj=municipio.cnpj_prefeitura, endereco=municipio.endereco,
-                complemento=municipio.complemento, cep=municipio.cep,
-                bairro=municipio.bairro, telefone_um=municipio.telefone_um,
-                telefone_dois=municipio.telefone_dois, telefone_tres=municipio.telefone_tres,
-                endereco_eletronico=municipio.endereco_eletronico)
+        sistema_cultura.sede = Sede.objects.create(
+                localizacao=municipio.localizacao,
+                cnpj=municipio.cnpj_prefeitura,
+                endereco=municipio.endereco,
+                complemento=municipio.complemento,
+                cep=municipio.cep,
+                bairro=municipio.bairro,
+                telefone_um=municipio.telefone_um,
+                telefone_dois=municipio.telefone_dois,
+                telefone_tres=municipio.telefone_tres,
+                endereco_eletronico=municipio.endereco_eletronico
+                )
 
-        erros = []
-
-        if municipio.cidade == None:
+        if municipio.cidade is None:
             try:
                 sistema_cultura.ente_federado = EnteFederado.objects.get(cod_ibge=municipio.estado.codigo_ibge)
             except EnteFederado.DoesNotExist:
-                #print(municipio.estado.nome_uf, " - ", municipio.estado.codigo_ibge, "\n")
-                        erros.append(municipio.estado.codigo_ibge)
+                ente = EnteFederado.objects.filter(nome__icontains=municipio.estado.nome_uf)
+                if not ente:
+                    print(f"Erro ao procurar UF {municipio.estado.nome_uf} - {municipio.estado.codigo_ibge}\n")
+                    erros.append(municipio.estado.codigo_ibge)
+                    pass
+                sistema_cultura.ente_federado = ente[0]
         else:
             try:
                 sistema_cultura.ente_federado = EnteFederado.objects.get(cod_ibge=municipio.cidade.codigo_ibge)
-            except:
-                #print(municipio.cidade.nome_municipio, " - ", municipio.cidade.codigo_ibge, "\n")
-                        erros.append(municipio.estado.codigo_ibge)
+            except EnteFederado.DoesNotExist:
+                ente = EnteFederado.objects.filter(cod_ibge__contains=municipio.cidade.codigo_ibge)
+                if not ente:
+                    print(f"Erro ao procurar Municipio {municipio.cidade.nome_municipio} - {municipio.cidade.codigo_ibge}\n")
+                    erros.append(municipio.estado.codigo_ibge)
+                    pass
+                sistema_cultura.ente_federado = ente[0]
 
-        componentes_antigos = ['criacao_sistema', 'orgao_gestor', 'fundo_cultura', 'conselho_cultural',
-                'plano_cultura']
-        componentes_novos = ['legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho',
-                'plano']
+        componentes_antigos = ('criacao_sistema', 'orgao_gestor', 'fundo_cultura', 'conselho_cultural', 'plano_cultura')
+        componentes_novos = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
 
         sistema_cultura.numero_processo = municipio.numero_processo
 
@@ -56,10 +76,10 @@ def cria_sistema_cultura(apps, schema_editor):
             sistema_cultura.link_publicacao_acordo = municipio.usuario.link_publicacao_acordo
             sistema_cultura.processo_sei = municipio.usuario.processo_sei
 
-            if municipio.usuario.plano_trabalho != None:
+            if municipio.usuario.plano_trabalho:
                 diligencia = municipio.usuario.plano_trabalho.diligencias.last()
 
-                if diligencia != None:
+                if diligencia:
                     sistema_cultura.diligencia = DiligenciaSimples.objects.create(
                             texto_diligencia=diligencia.texto_diligencia,
                             classificacao_arquivo=diligencia.classificacao_arquivo,
@@ -74,7 +94,7 @@ def cria_sistema_cultura(apps, schema_editor):
                         componente_novo = getattr(sistema_cultura, nome_componente_novo)
                         componente_novo.tipo = componentes_novos.index(nome_componente_novo)
                         componente_novo.arquivo = componente_antigo.arquivo
-                        componente_novo.situacao = componente_antigo.situacao
+                        componente_novo.situacao = componente_antigo.situacao.id
                         componente_novo.data_envio = componente_antigo.data_envio
 
                         diligencia = componente_antigo.diligencias.last()
@@ -112,13 +132,14 @@ def cria_sistema_cultura(apps, schema_editor):
 
         sistema_cultura.save()
 
-        print(erros)
+    print(erros)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
             ('planotrabalho', '0007_componente_diligencia'),
+            ('gestao', '0006_remove_diligenciasimples_tipo_diligencia'),
             ('adesao', '0020_auto_20181008_1610'),
             ]
 
