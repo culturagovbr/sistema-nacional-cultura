@@ -289,7 +289,8 @@ def test_ente_federado_retornado_na_diligencia(url, client, login_staff):
     conselho = mommy.make("Componente", tipo=3, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         conselho=conselho,
     )
 
@@ -339,7 +340,8 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         orgao_gestor=orgao_gestor,
     )
 
@@ -353,17 +355,20 @@ def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
     )
     url_redirect = request.url.split("http://testserver/")
 
-    assert url_redirect[0] == "/gestao/detalhar/municipio/{}".format(sistema_cultura.id)
+    assert url_redirect[0] == reverse(
+        "gestao:detalhar", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge}
+    )
     assert request.status_code == 302
 
 
-def test_arquivo_enviado_pelo_componente(url, client, plano_trabalho, login_staff):
+def test_arquivo_enviado_pelo_componente(url, client, login_staff):
     """ Testa se o arquivo enviado pelo componente está correto """
 
     conselho = mommy.make("Componente", tipo=3, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         conselho=conselho,
     )
 
@@ -395,10 +400,10 @@ def test_arquivo_enviado_salvo_no_diretorio_do_componente(
     )
 
 
-def test_exibicao_historico_diligencia(url, client, plano_trabalho, login_staff):
+def test_exibicao_historico_diligencia(url, client, login_staff):
     """Testa se o histórico de diligências é retornado pelo contexto"""
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional=["ente_federado", "cadastrador"]
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador"]
     )
 
     diligencia = mommy.make("DiligenciaSimples", _quantity=4)
@@ -418,7 +423,7 @@ def test_exibicao_historico_diligencia(url, client, plano_trabalho, login_staff)
 
 
 def test_captura_nome_usuario_logado_na_diligencia(
-    url, client, plano_trabalho, login_staff
+    url, client, login_staff
 ):
     """
         Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
@@ -426,7 +431,8 @@ def test_captura_nome_usuario_logado_na_diligencia(
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         orgao_gestor=orgao_gestor,
     )
 
@@ -478,11 +484,11 @@ def test_insere_sei(client, plano_trabalho, login_staff):
     assert user.processo_sei == "123456"
 
 
-def test_retorno_200_para_detalhar_municipio(client, plano_trabalho, login_staff):
-    """ Testa se página de detalhamento do município retorna 200 """
+def test_retorno_200_para_detalhar_ente(client, sistema_cultura, login_staff):
+    """ Testa se página de detalhamento do ente retorna 200 """
 
-    sistema_cultura = mommy.make("SistemaCultura")
-    request = client.get("/gestao/detalhar/municipio/{}".format(sistema_cultura.id))
+    url = reverse("gestao:detalhar", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
+    request = client.get(url)
     assert request.status_code == 200
 
 
@@ -786,11 +792,14 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
     diligencia = mommy.make("DiligenciaSimples")
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         diligencia=diligencia,
     )
 
-    url = f"/gestao/{sistema_cultura.id}/diligencia"
+    url = reverse(
+        "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
+    )
     request = client.get(url)
 
     assert request.status_code == 200
@@ -799,7 +808,7 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
 def test_salvar_informacoes_no_banco_diligencia_geral(url, client, login_staff):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional=["ente_federado", "cadastrador"]
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador"]
     )
 
     url = reverse(
@@ -809,9 +818,9 @@ def test_salvar_informacoes_no_banco_diligencia_geral(url, client, login_staff):
     response = client.post(url, data={"texto_diligencia": "bla"})
 
     diligencia = DiligenciaSimples.objects.first()
-    sistema_cultura = SistemaCultura.sistema.filter(
+    sistema_cultura = SistemaCultura.sistema.get(
         ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge
-    )[0]
+    )
 
     assert DiligenciaSimples.objects.count() == 1
     assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia
@@ -822,7 +831,7 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
 ):
     """ Testa se há o redirecionamento de página após o POST da diligência """
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional=["ente_federado", "cadastrador"]
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador"]
     )
 
     url = reverse(
@@ -834,12 +843,12 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
     diligencia = DiligenciaSimples.objects.first()
 
     assert url_redirect[0] == reverse(
-        "gestao:detalhar", kwargs={"pk": sistema_cultura.id}
+        "gestao:detalhar", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge}
     )
     assert request.status_code == 302
 
 
-def test_situacoes_componentes_diligencia(url, client, plano_trabalho, login_staff):
+def test_situacoes_componentes_diligencia(url, client, login_staff):
     """ Testa as informações referentes aos componentes do
     plano de trabalho na diligência geral """
     legislacao = mommy.make("Componente", tipo=0, situacao=1, _create_files=True)
@@ -850,7 +859,8 @@ def test_situacoes_componentes_diligencia(url, client, plano_trabalho, login_sta
 
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
         legislacao=legislacao,
         orgao_gestor=orgao,
         fundo_cultura=fundo,
@@ -858,7 +868,9 @@ def test_situacoes_componentes_diligencia(url, client, plano_trabalho, login_sta
         plano=plano,
     )
 
-    url = f"/gestao/{sistema_cultura.id}/diligencia"
+    url = reverse(
+        "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
+    )
     response = client.get(url)
 
     situacoes = response.context["situacoes"]
@@ -929,7 +941,8 @@ def test_diligencia_geral_sem_componentes(url, client, plano_trabalho, login_sta
         plano=None,
         conselho=None,
         fundo_cultura=None,
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
     )
 
     url = reverse(
