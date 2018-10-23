@@ -21,26 +21,25 @@ def test_existe_um_model_SistemaCultura():
     with pytest.raises(ImportError):
         from adesao.models import SistemaCultura
 
+def test_existencia_campos_atributo_models():
+    """Testa se os atributos da model Diligencia existem"""
+
+    sistema = SistemaCultura()
+    fields = ('id', 'cadastrador', 'ente_federado', 'data_criacao', 
+        'legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 
+        'plano', 'secretario', 'responsavel', 'gestor', 'sede', 
+        'estado_processo', 'data_publicacao_acordo', 'link_publicacao_acordo', 
+        'processo_sei', 'numero_processo', 'localizacao', 'justificativa',
+        'diligencia', 'alterado_em')
+    for field in fields:
+        assert sistema._meta.get_field(field)
+
 
 def test_atributo_cadastrador_de_um_SistemaCultura():
 
     sistema = SistemaCultura()
 
     assert sistema._meta.get_field("cadastrador")
-
-
-def test_atributo_cidade_de_um_SistemaCultura():
-
-    sistema = SistemaCultura()
-
-    assert sistema._meta.get_field("cidade")
-
-
-def test_atributo_uf_de_um_SistemaCultura():
-
-    sistema = SistemaCultura()
-
-    assert sistema._meta.get_field("uf")
 
 
 def test_atributo_data_criacao_de_um_SistemaCultura():
@@ -77,32 +76,20 @@ def test_SistemaCultura_save_cria_nova_instancia():
     [sistema.delete() for sistema in SistemaCultura.objects.all()]
 
 
-def test_alterar_cadastrador_SistemaCultura(plano_trabalho):
-    """ Testa método alterar_cadastrador da model SistemaCultura"""
+def test_alterar_cadastrador_SistemaCultura():
+    """ Testa se ao alterar cadastrador um novo sistema cultura é 
+    criado corretamente"""
 
-    cadastrador_atual = plano_trabalho.usuario
-    uf = cadastrador_atual.municipio.estado
-    user = mommy.make("Usuario")
-    sistema = mommy.make("SistemaCultura", cadastrador=cadastrador_atual, uf=uf)
+    user_antigo = mommy.make("Usuario")
+    sistema = mommy.make("SistemaCultura", cadastrador=user_antigo)
 
-    sistema.cadastrador = user
+    user_novo = mommy.make("Usuario")
+    sistema.cadastrador = user_novo
     sistema.save()
 
     assert SistemaCultura.objects.count() == 2
-    assert SistemaCultura.historico.last().cadastrador == cadastrador_atual
-    assert SistemaCultura.historico.first().cadastrador == user
-    assert Municipio.objects.first().usuario == user
-    assert PlanoTrabalho.objects.first().usuario == user
-    assert Secretario.objects.first().usuario == user
-    assert Responsavel.objects.first().usuario == user
-    assert (
-        sistema.cadastrador.data_publicacao_acordo
-        == cadastrador_atual.data_publicacao_acordo
-    )
-    assert sistema.cadastrador.estado_processo == cadastrador_atual.estado_processo
-
-    sistema.delete()
-    user.delete()
+    assert SistemaCultura.historico.last().cadastrador == user_antigo
+    assert SistemaCultura.historico.first().cadastrador == user_novo
 
 
 @pytest.mark.skip
@@ -251,28 +238,6 @@ def test_alterar_cadastrador_sistema_cultura_sem_cadastrador():
 
     assert sistema.cadastrador == cadastrador
 
-
-def test_alterar_cadastrador_municipio_sem_cadastrador_previo():
-    """
-    Tenta alterar o cadastrador de um Municipio que ainda não possui
-    cadastrador
-    """
-
-    cadastrador = mommy.make('Usuario')
-    municipio = mommy.make('Municipio')
-    sistema = mommy.make('SistemaCultura', cidade=municipio.cidade, uf=municipio.estado)
-
-    sistema.cadastrador = cadastrador
-    sistema.save()
-
-    assert sistema.cadastrador == cadastrador
-
-    municipio.refresh_from_db()
-    assert municipio.usuario == cadastrador
-
-    cadastrador.delete()
-    SistemaCultura.objects.all().delete()
-    municipio.delete()
 
 @pytest.mark.parametrize('tipo', range(5))
 def test_criar_componente_lei_sistema(tipo):

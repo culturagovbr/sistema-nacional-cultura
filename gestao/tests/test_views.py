@@ -40,7 +40,8 @@ def test_url_diligencia_retorna_200(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -82,7 +83,8 @@ def test_url_componente_retorna_200(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -126,7 +128,8 @@ def test_renderiza_template_diligencia(url, client, login_staff):
     conselho = mommy.make("Componente", tipo=3, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         conselho=conselho,
     )
 
@@ -148,7 +151,7 @@ def test_existencia_do_contexto_view(url, client, login_staff):
     contexts = ["sistema_cultura", "situacoes", "historico_diligencias"]
 
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional=["ente_federado", "cadastrador"]
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional='cadastrador'
     )
 
     url = reverse(
@@ -166,7 +169,8 @@ def test_retorno_400_post_criacao_diligencia(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -190,7 +194,8 @@ def test_retorna_400_POST_classificacao_inexistente(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -214,7 +219,8 @@ def test_tipo_do_form_utilizado_na_diligencia_view(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -235,7 +241,8 @@ def test_invalido_form_para_post_diligencia(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -257,7 +264,8 @@ def test_obj_ente_federado(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -313,7 +321,8 @@ def test_salvar_informacoes_no_banco(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -450,12 +459,10 @@ def test_captura_nome_usuario_logado_na_diligencia(
     assert diligencia.usuario == login_staff
 
 
-def test_insere_link_publicacao_dou(client, plano_trabalho, login_staff):
+def test_insere_link_publicacao_dou(client, sistema_cultura, login_staff):
     """ Testa se ao inserir o link da publicacao no dou o objeto usuario é alterado """
 
-    user = plano_trabalho.usuario
-
-    url = reverse("gestao:alterar_dados_adesao", kwargs={"pk": user.id})
+    url = reverse("gestao:alterar_dados_adesao", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
 
     client.post(
         url,
@@ -466,22 +473,21 @@ def test_insere_link_publicacao_dou(client, plano_trabalho, login_staff):
         },
     )
 
-    user.refresh_from_db()
-    assert user.link_publicacao_acordo == "https://www.google.com/"
+    sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=sistema_cultura
+        .ente_federado.cod_ibge)
+    assert sistema_atualizado.link_publicacao_acordo == "https://www.google.com/"
 
 
-def test_insere_sei(client, plano_trabalho, login_staff):
-    """ Testa se ao inserir sei o objeto usuario é alterado """
+def test_insere_sei(client, sistema_cultura, login_staff):
+    """ Testa se ao inserir sei o sistema_cultura é alterado """
 
-    user = plano_trabalho.usuario
+    url = reverse("gestao:alterar_dados_adesao", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
 
-    url = reverse("gestao:alterar_dados_adesao", kwargs={"pk": user.id})
+    client.post(url, data={"estado_processo": "6", "processo_sei": "123456"})
 
-    client.post(url, data={"processo_sei": "123456"})
-
-    user.refresh_from_db()
-
-    assert user.processo_sei == "123456"
+    sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=sistema_cultura
+        .ente_federado.cod_ibge)
+    assert sistema_atualizado.processo_sei == "123456"
 
 
 def test_retorno_200_para_detalhar_ente(client, sistema_cultura, login_staff):
@@ -509,7 +515,8 @@ def test_retorno_do_form_da_diligencia(url, client, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -875,7 +882,6 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
 
     situacoes = response.context["situacoes"]
 
-    # import ipdb; ipdb.set_trace()
     assert situacoes["legislacao"] == sistema_cultura.legislacao.get_situacao_display()
     assert (
         situacoes["orgao_gestor"] == sistema_cultura.orgao_gestor.get_situacao_display()
@@ -893,7 +899,8 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        _fill_optional=["ente_federado", "cadastrador"],
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
         orgao_gestor=orgao_gestor,
     )
 
@@ -1023,22 +1030,30 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes"""
 
-    sistema_sem_analise_recente = mommy.make('SistemaCultura', _fill_optional='legislacao')
+    sistema_sem_analise_recente = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123450,
+        _fill_optional='legislacao')
     sistema_sem_analise_recente.legislacao.situacao = 1
     sistema_sem_analise_recente.legislacao.data_envio = datetime.date(2018, 1, 1)
     sistema_sem_analise_recente.legislacao.save()
 
-    sistema_sem_analise_antigo = mommy.make('SistemaCultura', _fill_optional=['orgao_gestor'])
+    sistema_sem_analise_antigo = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123457,
+        _fill_optional='orgao_gestor')
     sistema_sem_analise_antigo.orgao_gestor.situacao = 1
     sistema_sem_analise_antigo.orgao_gestor.data_envio = datetime.date(2017, 1, 1)
     sistema_sem_analise_antigo.orgao_gestor.save()
 
-    sistema_com_diligencia_antigo = mommy.make('SistemaCultura', _fill_optional=['fundo_cultura'])
+    sistema_com_diligencia_antigo = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123458,
+        _fill_optional='fundo_cultura')
     sistema_com_diligencia_antigo.fundo_cultura.situacao = 4
     sistema_com_diligencia_antigo.fundo_cultura.data_envio = datetime.date(2016, 1, 1)
     sistema_com_diligencia_antigo.fundo_cultura.save()
 
-    sistema_com_analise_antigo = mommy.make('SistemaCultura', _fill_optional=['fundo_cultura'])
+    sistema_com_analise_antigo = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123459,
+        _fill_optional='fundo_cultura')
     sistema_com_analise_antigo.fundo_cultura.situacao = 2
     sistema_com_analise_antigo.fundo_cultura.data_envio = datetime.date(2016, 1, 1)
     sistema_com_analise_antigo.fundo_cultura.save()
@@ -1056,7 +1071,9 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     """ Testa se na página de acompanhamento de adesões, quando há sistemas com múltiplos 
     componentes, o correto é considerado para ordenação pela data """
 
-    sistema_1 = mommy.make('SistemaCultura', _fill_optional=['legislacao', 'orgao_gestor'])
+    sistema_1 = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123456,
+        _fill_optional=['legislacao', 'orgao_gestor'])
 
     sistema_1.legislacao.situacao = 5
     sistema_1.legislacao.data_envio = datetime.date(2016, 1, 1)
@@ -1066,7 +1083,9 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     sistema_1.orgao_gestor.data_envio = datetime.date(2017, 1, 1)
     sistema_1.orgao_gestor.save()
 
-    sistema_2 = mommy.make('SistemaCultura', _fill_optional=['fundo_cultura', 'plano'])
+    sistema_2 = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123457,
+        _fill_optional=['fundo_cultura', 'plano'])
 
     sistema_2.fundo_cultura.situacao = 4
     sistema_2.fundo_cultura.data_envio = datetime.date(2017, 1, 1)
@@ -1076,7 +1095,9 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     sistema_2.plano.data_envio = datetime.date(2018, 1, 1)
     sistema_2.plano.save()
 
-    sistema_3 = mommy.make('SistemaCultura', _fill_optional=['conselho'])
+    sistema_3 = mommy.make('SistemaCultura',
+        ente_federado__cod_ibge=123458,
+        _fill_optional='conselho')
 
     sistema_3.conselho.situacao = 1
     sistema_3.conselho.data_envio = datetime.date(2018, 1, 1)
@@ -1091,19 +1112,22 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     assert response.context_data['object_list'][2] == sistema_2
 
 
-def test_acompanhar_adesao_ordenar_estado_processo(client, plano_trabalho, login_staff):
+def test_acompanhar_adesao_ordenar_estado_processo(client, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes e
     estado do processo da adesão """
 
     sistema_nao_publicado = mommy.make('SistemaCultura', estado_processo=1,
-                      _fill_optional=['legislacao', 'cadastrador'])
+                    ente_federado__cod_ibge=123456,
+                    _fill_optional=['legislacao', 'cadastrador'])
 
     sistema_publicado = mommy.make('SistemaCultura', estado_processo=6,
-                      _fill_optional=['legislacao', 'cadastrador'])
+                    ente_federado__cod_ibge=123457,
+                    _fill_optional=['legislacao', 'cadastrador'])
 
     sistema_sem_cadastrador = mommy.make('SistemaCultura', cadastrador=None,
-                      _fill_optional=['legislacao'])
+                    ente_federado__cod_ibge=123458,
+                    _fill_optional='legislacao')
 
     url = reverse("gestao:acompanhar_adesao")
     response = client.get(url)
@@ -1173,7 +1197,7 @@ def test_alterar_cadastrador_sem_data_publicacao(client, login_staff):
     url = reverse('gestao:alterar_cadastrador', kwargs={'cod_ibge': sistema.ente_federado.cod_ibge})
 
     data = {
-        'cpf_usuario': new_user.user.username,
+        'cpf_cadastrador': new_user.user.username,
     }
 
     client.post(url, data=data)
@@ -1192,13 +1216,11 @@ def test_alterar_cadastrador_com_data_publicacao(client, login_staff):
     url = reverse('gestao:alterar_cadastrador', kwargs={'cod_ibge': sistema.ente_federado.cod_ibge})
 
     data = {
-        'cpf_usuario': new_user.user.username,
+        'cpf_cadastrador': new_user.user.username,
         'data_publicacao_acordo': "2016-02-02"
     }
 
     client.post(url, data=data)
-
-    sistema.refresh_from_db()
 
     sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=sistema.ente_federado.cod_ibge)
     assert sistema_atualizado.cadastrador == new_user

@@ -215,7 +215,6 @@ class AlterarCadastradorForm(forms.Form):
         self.cod_ibge = cod_ibge
 
     def clean_cpf_usuario(self):
-        #import ipdb; ipdb.set_trace()
         if not validar_cpf(self.cleaned_data['cpf_usuario']):
             raise forms.validationerror('por favor, digite um cpf válido!')
 

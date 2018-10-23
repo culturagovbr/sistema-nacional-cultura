@@ -181,7 +181,7 @@ def plano_trabalho(login):
 @pytest.fixture(scope='function')
 def sistema_cultura():
 
-    ente_federado = EnteFederado.objects.first()
+    ente_federado = mommy.make("EnteFederado", cod_ibge=1234)
 
     sistema_cultura = mommy.make(
             "SistemaCultura",

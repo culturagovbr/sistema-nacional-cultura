@@ -272,7 +272,7 @@ def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura)
     orgao_gestor.save()
 
     request = client.get('/gestao/{}/diligencia/{}/{}'.format(
-        sistema_cultura.ente_federado.cod_ibge, "orgao_gestor", "1"))
+        sistema_cultura.id, "orgao_gestor", "1"))
 
     assert "<h2>Informações sobre o Arquivo Enviado</h2>" in request.rendered_content
     assert "<b>Download do arquivo</b>" in request.rendered_content
@@ -284,7 +284,8 @@ def test_informacoes_diligencia_geral(client, login_staff, sistema_cultura):
     visto que só deve ser renderizada quando a diligência é geral.
     """
 
-    cod_ibge = sistema_cultura.ente_federado.cod_ibge
-    request = client.get('/gestao/{cod_ibge}/diligencia/add')
+    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
+    request = client.get(url)
+
 
     assert "<h2>Informações sobre o Plano Trabalho</h2>" in request.rendered_content

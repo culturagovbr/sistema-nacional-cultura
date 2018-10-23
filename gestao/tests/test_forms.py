@@ -2,7 +2,7 @@ import pytest
 from django.forms import ModelForm
 from django.shortcuts import reverse
 
-from gestao.forms import DiligenciaComponenteForm, DiligenciaGeralForm
+from gestao.forms import DiligenciaComponenteForm, DiligenciaGeralForm, CadastradorEnte
 from gestao.models import DiligenciaSimples
 from adesao.models import SistemaCultura
 
@@ -166,16 +166,19 @@ def test_campos_form_altera_cadastrador(client):
 
 def test_save_alterar_cadastrador_form_com_sistemacultura(sistema_cultura):
     """
-    Método save do form AlterarCadastradorForm altera as informações necessárias,
-    quando um ente fedarado já possui um SistemaCultura associado
+    Método save do form CadastradorEnte altera o cadastrador de um sistema
+    cultura
     """
 
     usuario = mommy.make("Usuario", user__username='11416309071')
-    data = {'cpf_usuario': usuario.user.username}
+    data = {'cpf_cadastrador': usuario.user.username}
 
-    form = AlterarCadastradorForm(data=data, cod_ibge=sistema_cultura.ente_federado.cod_ibge)
+    form = CadastradorEnte(data=data)
+    form.instance = sistema_cultura
     form.is_valid()
     form.save()
 
-    sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge)
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge)
+
     assert sistema_atualizado.cadastrador == usuario
