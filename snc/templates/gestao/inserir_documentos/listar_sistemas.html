@@ -25,33 +25,25 @@
               <tr>
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
-                <th>Data</th>
                 <th>Anexo Atual</th>
                 <th align="center" >Upload</th>
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td>{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</td>
-                {% else %}
-                  <td>{{ usuario.municipio.estado.nome_uf }}</td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
+                  <td>{{ sistema.ente_federado }}</td>
+                  <td>{{ sistema.sede.cnpj }}</td>
                   <td>
-                    {{ usuario.plano_trabalho.criacao_sistema.data_final_sancao_lei }}
-                  </td>
-                  <td>
-                    {% if usuario.plano_trabalho.criacao_sistema.arquivo %}
-                      <a href="{{ usuario.plano_trabalho.criacao_sistema.arquivo.url }}">Download</a>
+                    {% if sistema.legislacao.arquivo %}
+                      <a href="{{ sistema.legislacao.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">
-                    {% if usuario.plano_trabalho.criacao_sistema %}
-                      <a href="{% url 'gestao:alterar_sistema' usuario.plano_trabalho.criacao_sistema.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                    {% if sistema.legislacao.arquivo %}
+                      <a href="{% url 'gestao:alterar_sistema' sistema.legislacao.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
                     {% else %}
-                      <a href="{% url 'gestao:inserir_sistema' pk=usuario.plano_trabalho %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                      <a href="{% url 'gestao:inserir_sistema' pk=sistema.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
                     {% endif %}
                   </td>
                 </tr>

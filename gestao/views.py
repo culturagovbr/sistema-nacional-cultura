@@ -665,13 +665,13 @@ class ListarDocumentosComponentes(ListView):
     def get_queryset(self):
         q = self.request.GET.get('q', None)
 
-        usuarios = Usuario.objects.filter(estado_processo='6')
+        sistemas = SistemaCultura.sistema.filter(estado_processo='6')
 
         if q:
-            usuarios = usuarios.filter(
-                municipio__cidade__nome_municipio__unaccent__icontains=q)
+            sistemas = sistemas.filter(
+                ente_federado__nome__unaccent__icontains=q)
 
-        return usuarios
+        return sistemas
 
 
 class InserirSistema(CreateView):
@@ -681,7 +681,7 @@ class InserirSistema(CreateView):
     def get_form_kwargs(self):
         kwargs = super(InserirSistema, self).get_form_kwargs()
         pk = self.kwargs['pk']
-        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
+        kwargs['sistema'] = SistemaCultura.sistema.get(pk=pk)
         return kwargs
 
     def get_success_url(self):

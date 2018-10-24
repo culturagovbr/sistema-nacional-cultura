@@ -17,7 +17,7 @@ from adesao.models import LISTA_ESTADOS_PROCESSO
 from adesao.models import SistemaCultura
 
 
-from planotrabalho.models import CriacaoSistema, FundoCultura
+from planotrabalho.models import CriacaoSistema, FundoCultura, Componente
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
 
@@ -300,24 +300,25 @@ class CriarSistemaForm(ModelForm):
     data_publicacao = forms.DateField(required=True)
 
     def __init__(self, *args, **kwargs):
-        self.plano_trabalho = kwargs.pop('plano')
+        self.sistema = kwargs.pop('sistema')
         super(CriarSistemaForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True, *args, **kwargs):
-        sistema = super(CriarSistemaForm, self).save(commit=False)
+        componente = super(CriarSistemaForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
-            sistema.situacao_id = 1
+            componente.situacao_id = 1
 
         if commit:
-            sistema.planotrabalho = self.plano_trabalho
-            sistema.save()
-            self.plano_trabalho.criacao_sistema = sistema
-            self.plano_trabalho.save()
+            componente.save()
+            componente.legislacao = self.sistema
+            componente.save()
+            self.sistema.legislacao = componente
+            self.sistema.save()
 
-        return sistema
+        return componente
 
     class Meta:
-        model = CriacaoSistema
+        model = Componente
         fields = ('arquivo', 'data_publicacao')
 
 

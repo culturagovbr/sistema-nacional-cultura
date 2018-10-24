@@ -111,7 +111,7 @@ urlpatterns = [
     url(r'^listar-documentos/(?P<template>\w+)$', staff_member_required(
         views.ListarDocumentosComponentes.as_view(),
         login_url='adesao:login'), name='listar_documentos'),
-    url(r'^inserir-documentos/sistema/(?P<pk>[0-9]+)$', staff_member_required(
+    path("inserir-documentos/sistema/<int:pk>", staff_member_required(
         views.InserirSistema.as_view(),
         login_url='adesao:login'), name='inserir_sistema'),
     # Inserção de documentos da criação do órgão gestor
