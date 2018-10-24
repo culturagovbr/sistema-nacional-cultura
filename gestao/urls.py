@@ -152,7 +152,11 @@ urlpatterns = [
     # url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
     #     staff_member_required(views.DiligenciaComponenteView.as_view()), name="diligencia_componente"),
 
-    path("<int:pk>/diligencia/<str:componente>/<str:resultado>", 
+    path("<int:pk>/diligencia/add", 
+        staff_member_required(views.DiligenciaGeralCreateView.as_view()),
+        name="diligencia_geral_adicionar"),
+
+    path("<int:pk>/diligencia/<str:componente>", 
         staff_member_required(views.DiligenciaComponenteView.as_view()),
         name="diligencia_componente"),
 
@@ -163,10 +167,6 @@ urlpatterns = [
     path("<int:pk>/diligencia", 
         staff_member_required(views.DiligenciaGeralDetailView.as_view()),
         name="diligencia_geral"),
-
-    path("<int:pk>/diligencia/add", 
-        staff_member_required(views.DiligenciaGeralCreateView.as_view()),
-        name="diligencia_geral_adicionar"),
 
     path("ajax/consultar_cpf",
             staff_member_required(views.ajax_consulta_cpf),

@@ -143,16 +143,12 @@
             </div>
             {% if ente.legislacao.situacao == 1 %}
 
-              <div class="list-group-item col-xs-1 text-center ">
-                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-            </div>
-
-            <div class="list-group-item col-xs-1 text-center">
-                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
-            </div>
+              <div class="list-group-item col-xs-2 text-center ">
+                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' %}">Criar Diligência</a>
+              </div>
             {% else %}
             <div class="list-group-item col-xs-2 text-center">
-                <b>{{ ente.legislacao.situacao.descricao }}</b>
+                <b>{{ ente.legislacao.get_situacao_display }}</b>
             </div>
         {% endif %}
 
@@ -172,16 +168,12 @@
           </div>
           {% if ente.orgao_gestor.situacao == 1 %}
 
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-          </div>
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+          <div class="list-group-item col-xs-2 text-center">
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' %}">Criar Diligência</a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ ente.orgao_gestor.situacao.descricao }}</b>
+              <b>{{ ente.orgao_gestor.get_situacao_display }}</b>
           </div>
           {% endif %}
 
@@ -200,14 +192,9 @@
             <a href="{{ ente.conselho.arquivo.url }}">Download</a>
           </div>
           {% if ente.conselho.situacao == 1 %}
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-          </div>
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
-          </div>
+            <div class="list-group-item col-xs-2 text-center">
+                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' %}">Criar Diligência</a>
+            </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
               <b>{{ ente.conselho.get_situacao_display }}</b>
@@ -229,17 +216,12 @@
             <a href="{{ ente.fundo_cultura.arquivo.url }}">Download</a>
           </div>
           {% if ente.fundo_cultura.situacao == 1 %}
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-          </div>
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
-          </div>
+            <div class="list-group-item col-xs-2 text-center">
+                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' %}">Criar Diligência</a>
+            </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ ente.fundo_cultura.situacao.descricao }}</b>
+              <b>{{ ente.fundo_cultura.get_situacao_display }}</b>
           </div>
           {% endif %}
 
@@ -261,16 +243,12 @@
           </div>
           {% if ente.plano.situacao == 1 %}
 
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-          </div>
-
-          <div class="list-group-item col-xs-1 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>            
+          <div class="list-group-item col-xs-2 text-center">
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' %}">Criar Diligência</a>
           </div>
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
-              <b>{{ ente.plano.situacao.descricao }}</b>
+              <b>{{ ente.plano.get_situacao_display }}</b>
           </div>
           {% endif %}
 
@@ -407,9 +385,6 @@
     {% include "cadastrador.html" %}
 
 </div>
-{% for evento in historico %}
-<p>{{ evento }}</p>
-{% endfor %}
 
 {% endblock content %}
 

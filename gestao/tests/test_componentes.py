@@ -253,8 +253,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, s
     request = client.get(f"/gestao/ente/{sistema_cultura.ente_federado.cod_ibge}")
 
     for componente in componentes:
-        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "0") in request.rendered_content
-        assert '<a href=\"/gestao/{}/diligencia/{}/{}\">'.format(sistema_cultura.id, componente, "1") in request.rendered_content
+        assert '<a href=\"/gestao/{}/diligencia/{}">'.format(sistema_cultura.id, componente) in request.rendered_content
 
 
 def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura):
@@ -271,8 +270,8 @@ def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura)
     orgao_gestor.arquivo = arquivo
     orgao_gestor.save()
 
-    request = client.get('/gestao/{}/diligencia/{}/{}'.format(
-        sistema_cultura.id, "orgao_gestor", "1"))
+    request = client.get('/gestao/{}/diligencia/{}'.format(
+        sistema_cultura.id, "orgao_gestor"))
 
     assert "<h2>Informações sobre o Arquivo Enviado</h2>" in request.rendered_content
     assert "<b>Download do arquivo</b>" in request.rendered_content

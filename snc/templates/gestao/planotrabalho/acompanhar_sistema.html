@@ -26,7 +26,6 @@
                 <th>CNPJ</th>
                 <th>Anexo</th>
                 <th></th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -47,11 +46,7 @@
                   </td>
 
                   <td>
-                <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='criacao_sistema' resultado='0' %}"><i class="fa fa-thumbs-down"></i></a>
-                    
-                  </td>
-                  <td>
-                <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='criacao_sistema' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>
+                <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='criacao_sistema' %}">Criar Diligência</a>
                   </td>
                 </tr>
               {% endfor %}

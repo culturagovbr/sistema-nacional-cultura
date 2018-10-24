@@ -152,7 +152,7 @@ class AlterarDadosAdesao(ModelForm):
 
 
 class DiligenciaForm(ModelForm):
-
+    
     texto_diligencia = forms.CharField(widget=CKEditorWidget())
     
     def __init__(self, *args, **kwargs):
@@ -168,6 +168,10 @@ class DiligenciaForm(ModelForm):
 
 class DiligenciaComponenteForm(DiligenciaForm):
     SITUACOES = (
+        (0, "Em preenchimento"),
+        (1, "Avaliando anexo"),
+        (2, "Concluída"),
+        (3, "Arquivo aprovado com ressalvas"),
         (4, "Arquivo danificado"),
         (5, "Arquivo incompleto"),
         (6, "Arquivo incorreto")

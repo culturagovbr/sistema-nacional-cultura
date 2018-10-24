@@ -26,7 +26,6 @@
                 <th>CNPJ</th>
                 <th>Anexo</th>
                 <th></th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -50,12 +49,9 @@
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='plano_cultura' resultado='0' %}">
-                      <i class="fa fa-thumbs-down"></i>
+                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='plano_cultura' %}">
+                      Criar Diligência
                     </a>                    
-                  </td>
-                  <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='plano_cultura' resultado='1' %}"><i class="fa fa-thumbs-up"></i></a>                      
                   </td>
                 </tr>
               {% endfor %}
