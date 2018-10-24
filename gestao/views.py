@@ -67,6 +67,8 @@ from .forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
 
+from itertools import chain
+
 
 # Acompanhamento das adesões
 class AlterarCadastrador(UpdateView):
@@ -272,21 +274,21 @@ class AcompanharSistemaCultura(ListView):
         else:
             sistemas = SistemaCultura.objects.all()
 
+        sistemas.distinct('ente_federado').select_related()
+
         sistemas_concluidos = self.annotate_componente_mais_antigo_por_situacao(sistemas, 2, 3).annotate(
-            tem_cadastrador=Count('cadastrador')).order_by(
+            tem_cadastrador=Count('cadastrador')).exclude(mais_antigo=None).order_by(
             '-tem_cadastrador', '-estado_processo', 'mais_antigo')
 
         sistemas_diligencia = self.annotate_componente_mais_antigo_por_situacao(sistemas, 4, 5, 6).annotate(
-            tem_cadastrador=Count('cadastrador')).order_by(
+            tem_cadastrador=Count('cadastrador')).exclude(mais_antigo=None).order_by(
             '-tem_cadastrador', '-estado_processo', 'mais_antigo')
 
         sistemas_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(sistemas, 1).annotate(
-            tem_cadastrador=Count('cadastrador')).order_by(
+            tem_cadastrador=Count('cadastrador')).exclude(mais_antigo=None).order_by(
             '-tem_cadastrador', '-estado_processo', 'mais_antigo')
 
-        sistemas = sistemas_nao_analisados | sistemas_diligencia | sistemas_concluidos
-
-        sistemas.distinct('ente_federado').select_related()
+        sistemas = list(chain(sistemas_nao_analisados, sistemas_diligencia, sistemas_concluidos))
 
         return sistemas
 
