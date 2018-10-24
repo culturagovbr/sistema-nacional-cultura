@@ -103,7 +103,7 @@ def cria_sistema_cultura(apps, schema_editor):
                                     texto_diligencia=diligencia.texto_diligencia,
                                     classificacao_arquivo=diligencia.classificacao_arquivo,
                                     usuario=diligencia.usuario)
-                            componente_novo.save()
+                        componente_novo.save()
 
             secretario = municipio.usuario.secretario
             if secretario:
