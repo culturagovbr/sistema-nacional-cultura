@@ -53,17 +53,8 @@ from .forms import AlterarDadosAdesao
 
 from .forms import AlterarCadastradorForm
 from .forms import AlterarUsuarioForm
-from .forms import AlterarOrgaoForm
-
-from .forms import AlterarFundoForm
-from .forms import AlterarPlanoForm
-from .forms import AlterarConselhoForm
-from .forms import AlterarSistemaForm
-from .forms import CriarSistemaForm
-from .forms import CriarOrgaoForm
-from .forms import CriarConselhoForm
-from .forms import CriarFundoForm
-from .forms import CriarPlanoForm
+from .forms import AlterarComponenteForm
+from .forms import CriarComponenteForm
 
 from .forms import CadastradorEnte
 
@@ -286,7 +277,7 @@ class AcompanharSistemaCultura(ListView):
 
         sistemas = sistemas_nao_analisados | sistemas_diligencia | sistemas_concluidos
 
-        sistemas.distinct('ente_federado').select_related()
+        sistemas.distinct('ente_federado__cod_ibge').select_related()
 
         return sistemas
 
@@ -674,129 +665,34 @@ class ListarDocumentosComponentes(ListView):
         return sistemas
 
 
-class InserirSistema(CreateView):
-    template_name = 'gestao/inserir_documentos/inserir_sistema.html'
-    form_class = CriarSistemaForm
+class InserirComponente(CreateView):
+    form_class = CriarComponenteForm
+
+    def get_template_names(self):
+        return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
 
     def get_form_kwargs(self):
-        kwargs = super(InserirSistema, self).get_form_kwargs()
+        kwargs = super(InserirComponente, self).get_form_kwargs()
         pk = self.kwargs['pk']
+        kwargs['nome_componente'] = self.kwargs['componente']
         kwargs['sistema'] = SistemaCultura.sistema.get(pk=pk)
         return kwargs
 
     def get_success_url(self):
         messages.success(self.request, 'Sistema da Cultura inserido com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_sistemas'})
+        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_%s' % self.kwargs['componente']})
 
 
-class AlterarSistema(UpdateView):
-    template_name = 'gestao/inserir_documentos/inserir_sistema.html'
-    form_class = AlterarSistemaForm
-    model = CriacaoSistema
+class AlterarComponente(UpdateView):
+    form_class = AlterarComponenteForm
+    model = Componente
+
+    def get_template_names(self):
+        return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
 
     def get_success_url(self):
         messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_sistemas'})
-
-
-class InserirOrgao(CreateView):
-    template_name = 'gestao/inserir_documentos/inserir_orgao.html'
-    form_class = CriarOrgaoForm
-
-    def get_form_kwargs(self):
-        kwargs = super(InserirOrgao, self).get_form_kwargs()
-        pk = self.kwargs['pk']
-        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
-        return kwargs
-
-    def get_success_url(self):
-        messages.success(self.request, 'Orgão Gestor enviado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_orgaos'})
-
-
-class AlterarOrgao(UpdateView):
-    template_name = 'gestao/inserir_documentos/inserir_orgao.html'
-    form_class = AlterarOrgaoForm
-    model = OrgaoGestor
-
-    def get_success_url(self):
-        messages.success(self.request, 'Orgão Gestor alterado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_orgaos'})
-
-
-class InserirConselho(CreateView):
-    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
-    form_class = CriarConselhoForm
-
-    def get_form_kwargs(self):
-        kwargs = super(InserirConselho, self).get_form_kwargs()
-        pk = self.kwargs['pk']
-        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
-        return kwargs
-
-    def get_success_url(self):
-        messages.success(self.request, 'Conselho Cultural enviado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_conselhos'})
-
-
-class AlterarConselho(UpdateView):
-    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
-    form_class = AlterarConselhoForm
-    model = ConselhoCultural
-
-    def get_success_url(self):
-        messages.success(self.request, 'Conselho Cultural alterado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_conselhos'})
-
-
-class InserirFundo(CreateView):
-    template_name = 'gestao/inserir_documentos/inserir_fundo.html'
-    form_class = CriarFundoForm
-
-    def get_form_kwargs(self):
-        kwargs = super(InserirFundo, self).get_form_kwargs()
-        pk = self.kwargs['pk']
-        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
-        return kwargs
-
-    def get_success_url(self):
-        messages.success(self.request, 'Fundo de Cultura enviado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_fundos'})
-
-
-class AlterarFundo(UpdateView):
-    template_name = 'gestao/inserir_documentos/inserir_fundo.html'
-    form_class = AlterarFundoForm
-    model = FundoCultura
-
-    def get_success_url(self):
-        messages.success(self.request, 'Fundo de Cultura alterado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_fundos'})
-
-
-class InserirPlano(CreateView):
-    template_name = 'gestao/inserir_documentos/inserir_plano.html'
-    form_class = CriarPlanoForm
-
-    def get_form_kwargs(self):
-        kwargs = super(InserirPlano, self).get_form_kwargs()
-        pk = self.kwargs['pk']
-        kwargs['plano'] = PlanoTrabalho.objects.get(pk=pk)
-        return kwargs
-
-    def get_success_url(self):
-        messages.success(self.request, 'Plano de Cultura enviado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_planos'})
-
-
-class AlterarPlano(UpdateView):
-    template_name = 'gestao/inserir_documentos/inserir_plano.html'
-    form_class = AlterarPlanoForm
-    model = PlanoCultura
-
-    def get_success_url(self):
-        messages.success(self.request, 'Plano de Cultura alterado com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_planos'})
+        return reverse_lazy('gestao:listar_documentos',kwargs={'template': 'listar_%s' % self.kwargs['componente']})
 
 
 class Prorrogacao(ListView):

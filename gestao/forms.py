@@ -272,16 +272,16 @@ class AlterarDocumentosEnteFederadoForm(ModelForm):
         fields = ('termo_posse_prefeito', 'rg_copia_prefeito', 'cpf_copia_prefeito')
 
 
-class AlterarSistemaForm(ModelForm):
+class AlterarComponenteForm(ModelForm):
     arquivo = RestrictedFileField(
         content_types=content_types,
         max_upload_size=max_upload_size)
     data_publicacao = forms.DateField(required=True)
 
     def save(self, commit=True, *args, **kwargs):
-        sistema = super(AlterarSistemaForm, self).save(commit=False)
+        sistema = super(AlterarComponenteForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
-            sistema.situacao_id = 1
+            sistema.situacao = 1
 
         if commit:
             sistema.save()
@@ -289,11 +289,19 @@ class AlterarSistemaForm(ModelForm):
         return sistema
 
     class Meta:
-        model = CriacaoSistema
+        model = Componente
         fields = ('arquivo', 'data_publicacao')
 
 
-class CriarSistemaForm(ModelForm):
+class CriarComponenteForm(ModelForm):
+    componentes = {
+            "legislacao": 0,
+            "orgao_gestor": 1,
+            "fundo_cultura": 2,
+            "conselho": 3,
+            "plano": 4,
+    }
+
     arquivo = RestrictedFileField(
         content_types=content_types,
         max_upload_size=max_upload_size)
@@ -301,20 +309,23 @@ class CriarSistemaForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        super(CriarSistemaForm, self).__init__(*args, **kwargs)
+        self.nome_componente = kwargs.pop('nome_componente')
+        super(CriarComponenteForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True, *args, **kwargs):
-        componente = super(CriarSistemaForm, self).save(commit=False)
+        componente = super(CriarComponenteForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
 
         if commit:
+            componente.tipo = self.componentes.get(self.nome_componente)
             componente.arquivo = None
             componente.save()
-            componente.legislacao.add(self.sistema)
+            sistema_cultura = getattr(componente, self.nome_componente)
+            sistema_cultura.add(self.sistema)
             componente.arquivo = self.cleaned_data['arquivo']
             componente.save()
-            self.sistema.legislacao = componente
+            setattr(self.sistema, self.nome_componente, componente)
             self.sistema.save()
 
         return componente
@@ -322,159 +333,4 @@ class CriarSistemaForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
-
-
-class CriarFundoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        self.plano_trabalho = kwargs.pop('plano')
-        super(CriarFundoForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True, *args, **kwargs):
-        fundo = super(CriarFundoForm, self).save(commit=False)
-        if 'arquivo' in self.changed_data:
-            fundo.situacao_id = 1
-
-        if commit:
-            fundo.planotrabalho = self.plano_trabalho
-            fundo.save()
-            self.plano_trabalho.fundo_cultura = fundo
-            self.plano_trabalho.save()
-
-        return fundo
-
-    class Meta:
-        model = FundoCultura
-        fields = ('arquivo', 'data_publicacao')
-
-
-class AlterarFundoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    class Meta:
-        model = FundoCultura
-        fields = ('arquivo', 'data_publicacao')
-
-
-class CriarOrgaoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        self.plano_trabalho = kwargs.pop('plano')
-        super(CriarOrgaoForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True, *args, **kwargs):
-        orgao = super(CriarOrgaoForm, self).save(commit=False)
-        if 'arquivo' in self.changed_data:
-            orgao.situacao_id = 1
-
-        if commit:
-            orgao.planotrabalho = self.plano_trabalho
-            orgao.save()
-            self.plano_trabalho.orgao_gestor = orgao
-            self.plano_trabalho.save()
-
-        return orgao
-
-    class Meta:
-        model = OrgaoGestor
-        fields = ('arquivo', 'data_publicacao')
-
-
-class AlterarPlanoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    class Meta:
-        model = PlanoCultura
-        fields = ('arquivo', 'data_publicacao')
-
-
-class CriarPlanoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        self.plano_trabalho = kwargs.pop('plano')
-        super(CriarPlanoForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True, *args, **kwargs):
-        plano = super(CriarPlanoForm, self).save(commit=False)
-        if 'arquivo' in self.changed_data:
-            plano.situacao_id = 1
-
-        if commit:
-            plano.planotrabalho = self.plano_trabalho
-            plano.save()
-            self.plano_trabalho.plano_cultura = plano
-            self.plano_trabalho.save()
-
-        return plano
-
-    class Meta:
-        model = PlanoCultura
-        fields = ('arquivo', 'data_publicacao')
-
-
-class AlterarOrgaoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    class Meta:
-        model = OrgaoGestor
-        fields = ('arquivo', 'data_publicacao')
-
-
-class CriarConselhoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    def __init__(self, *args, **kwargs):
-        self.plano_trabalho = kwargs.pop('plano')
-        super(CriarConselhoForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True, *args, **kwargs):
-        conselho = super(CriarConselhoForm, self).save(commit=False)
-        if 'arquivo' in self.changed_data:
-            conselho.situacao_id = 1
-
-        if commit:
-            conselho.planotrabalho = self.plano_trabalho
-            conselho.save()
-            self.plano_trabalho.conselho_cultural = conselho
-            self.plano_trabalho.save()
-
-        return conselho
-
-    class Meta:
-        model = ConselhoCultural
-        fields = ('arquivo', 'data_publicacao')
-
-
-class AlterarConselhoForm(ModelForm):
-    arquivo = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=max_upload_size)
-    data_publicacao = forms.DateField(required=True)
-
-    class Meta:
-        model = ConselhoCultural
-        fields = ('arquivo', 'data_publicacao')
+        

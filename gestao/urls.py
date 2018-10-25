@@ -107,41 +107,18 @@ urlpatterns = [
     url(r'^inserir-documentos/ente-federado/alterar/(?P<pk>[0-9]+)$',
         staff_member_required(views.AlterarDocumentosEnteFederado.as_view()), name='alterar_entefederado'),
 
+    path("inserir-documentos/<str:componente>/<int:pk>", staff_member_required(
+        views.InserirComponente.as_view(),
+        login_url='adesao:login'), name='inserir_componente'), 
     # Inserção de documentos da criação do sistema de cultura
     url(r'^listar-documentos/(?P<template>\w+)$', staff_member_required(
         views.ListarDocumentosComponentes.as_view(),
         login_url='adesao:login'), name='listar_documentos'),
-    path("inserir-documentos/sistema/<int:pk>", staff_member_required(
-        views.InserirSistema.as_view(),
-        login_url='adesao:login'), name='inserir_sistema'),
-    # Inserção de documentos da criação do órgão gestor
-    url(r'^inserir-documentos/orgao/(?P<pk>[0-9]+)$', staff_member_required(
-        views.InserirOrgao.as_view(),
-        login_url='adesao:login'), name='inserir_orgao'),
-    # Inserção de documentos da criação do conselho cultural
-    url(r'^inserir-documentos/conselho/(?P<pk>[0-9]+)$', staff_member_required(
-        views.InserirConselho.as_view(),
-        login_url='adesao:login'), name='inserir_conselho'),
-    # Inserção de documentos da criação do fundo de cultura
-    url(r'^inserir-documentos/fundo/(?P<pk>[0-9]+)$', staff_member_required(
-        views.InserirFundo.as_view(),
-        login_url='adesao:login'), name='inserir_fundo'),
-    # Inserção de documentos da elaboração do plano de cultura
-    url(r'^inserir-documentos/plano/(?P<pk>[0-9]+)$', staff_member_required(
-        views.InserirPlano.as_view(),
-        login_url='adesao:login'), name='inserir_plano'),
 
     # Tela de alteração de upload do plano de trabalho
-    url(r'^inserir-documentos/sistema/alterar/(?P<pk>[0-9]+)$',
-        staff_member_required(views.AlterarSistema.as_view()), name='alterar_sistema'),
-    url(r'^inserir-documentos/fundo/alterar/(?P<pk>[0-9]+)$',
-        staff_member_required(views.AlterarFundo.as_view()), name='alterar_fundo'),
-    url(r'^inserir-documentos/plano/alterar/(?P<pk>[0-9]+)$',
-        staff_member_required(views.AlterarPlano.as_view()), name='alterar_plano'),
-    url(r'^inserir-documentos/orgao/alterar/(?P<pk>[0-9]+)$',
-        staff_member_required(views.AlterarOrgao.as_view()), name='alterar_orgao'),
-    url(r'^inserir-documentos/conselho/alterar/(?P<pk>[0-9]+)$',
-        staff_member_required(views.AlterarConselho.as_view()), name='alterar_conselho'),
+    path("inserir-documentos/<str:componente>/alterar/<int:pk>", staff_member_required(
+        views.AlterarComponente.as_view(),
+        login_url='adesao:login'), name='alterar_componente'), 
 
     # ajax mudança de cadastrador
     url(r'^ajax_cadastrador_cpf$', staff_member_required(views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),

@@ -5,7 +5,7 @@
   <div class="col-lg-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Anexo da etapa do Fundo de Cultura do Plano de Trabalho
+        Anexo da etapa de Órgão Gestor do Plano de Trabalho
       </div>
       <!-- /.panel-heading -->
       <div class="panel-body">
@@ -25,37 +25,25 @@
               <tr>
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
-                <th>CNPJ do Fundo</th>
-                <th>Data</th>
                 <th>Anexo Atual</th>
-                <th align="center" >Upload</th>
+                <th>Upload</th>
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td>{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</td>
-                {% else %}
-                  <td>{{ usuario.municipio.estado.nome_uf }}</td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
-                  {%if usuario.plano_trabalho.fundo_cultura.cnpj_fundo_cultura %}
-                  <td>{{ usuario.plano_trabalho.fundo_cultura.cnpj_fundo_cultura }}</td>
-                  {% else %}
-                  <td></td>
-                  {% endif %}
-                  <td>{{ usuario.plano_trabalho.fundo_cultura.data_final_instituicao_fundo_cultura }}</td>
+                  <td>{{ sistema.ente_federado }}</td>
+                  <td>{{ sistema.sede.cnpj }}</td>
                   <td>
-                    {% if usuario.plano_trabalho.fundo_cultura.arquivo %}
-                    <a href="{{ usuario.plano_trabalho.fundo_cultura.arquivo.url }}">Download</a>
+                    {% if sistema.orgao_gestor.arquivo %}
+                      <a href="{{ sistema.orgao_gestor.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td align="center">
-                    {% if usuario.plano_trabalho.fundo_cultura.arquivo %}
-                      <a href="{% url 'gestao:alterar_fundo' usuario.plano_trabalho.fundo_cultura.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                    {% if sistema.orgao_gestor %}
+                      <a href="{% url 'gestao:alterar_componente' pk=sistema.orgao_gestor.id componente='orgao_gestor' %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
                     {% else %}
-                      <a href="{% url 'gestao:inserir_fundo' usuario.plano_trabalho.id %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
+                      <a href="{% url 'gestao:inserir_componente' pk=sistema.id componente='orgao_gestor' %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
                     {% endif %}
                   </td>
                 </tr>

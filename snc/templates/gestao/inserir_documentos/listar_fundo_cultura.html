@@ -5,7 +5,7 @@
   <div class="col-lg-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        Anexo da etapa de Órgão Gestor do Plano de Trabalho
+        Anexo da etapa do Fundo de Cultura do Plano de Trabalho
       </div>
       <!-- /.panel-heading -->
       <div class="panel-body">
@@ -25,33 +25,28 @@
               <tr>
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
-                <th>Data</th>
                 <th>Anexo Atual</th>
-                <th>Upload</th>
+                <th align="center" >Upload</th>
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td>{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</td>
-                {% else %}
-                  <td>{{ usuario.municipio.estado.nome_uf }}</td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
-                  <td>{{ usuario.plano_trabalho.orgao_gestor.data_final_estruturacao_secretaria }}</td>
-                  <td>
-                    {% if usuario.plano_trabalho.orgao_gestor.arquivo %}
-                      <a href="{{ usuario.plano_trabalho.orgao_gestor.arquivo.url }}">Download</a>
-                    {% endif %}
-                  </td>
-                  <td align="center">
-                    {% if usuario.plano_trabalho.orgao_gestor %}
-                      <a href="{% url 'gestao:alterar_orgao' usuario.plano_trabalho.orgao_gestor.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
-                    {% else %}
-                      <a href="{% url 'gestao:inserir_orgao' usuario.plano_trabalho.id %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
-                    {% endif %}
-                  </td>
+                  <td>{{ sistema.ente_federado }}</td>
+                  <td>{{ sistema.sede.cnpj }}</td>
+                  {% if sistema.fundo_cultura.arquivo %}
+                    <td>
+                      <a href="{{ sistema.fundo_cultura.arquivo.url }}">Download</a>
+                    </td>
+                    <td align="center">
+                      <a href="{% url 'gestao:alterar_componente' pk=sistema.fundo_cultura.id componente='fundo_cultura' %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                    </td>
+                  {% else %}
+                    <td></td>
+                    <td align="center">
+                      <a href="{% url 'gestao:inserir_componente' pk=sistema.id componente='fundo_cultura' %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
+                    </td>
+                  {% endif %}
                 </tr>
               {% endfor %}
             </tbody>

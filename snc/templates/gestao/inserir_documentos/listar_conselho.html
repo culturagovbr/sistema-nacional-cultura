@@ -25,33 +25,28 @@
               <tr>
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
-                <th>Data</th>
                 <th>Anexo Atual</th>
                 <th>Upload</th>
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td>{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</td>
-                {% else %}
-                  <td>{{ usuario.municipio.estado.nome_uf }}</td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
-                  <td>{{ usuario.plano_trabalho.conselho_cultural.data_final_instalacao_conselho }}</td>
-                  <td>
-                    {% if usuario.plano_trabalho.conselho_cultural.arquivo %}
-                    <a href="{{ usuario.plano_trabalho.conselho_cultural.arquivo.url }}">Download</a>
-                    {% endif %}
-                  </td>
-                  <td align="center">
-                    {% if usuario.plano_trabalho.conselho_cultural.arquivo %}
-                      <a href="{% url 'gestao:alterar_conselho' usuario.plano_trabalho.conselho_cultural.id %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                  <td>{{ sistema.ente_federado }}</td>
+                  <td>{{ sistema.sede.cnpj }}</td>
+                  {% if sistema.conselho.arquivo %}
+                    <td>
+                      <a href="{{ sistema.conselho.arquivo.url }}">Download</a>
+                    </td>
+                    <td align="center">
+                      <a href="{% url 'gestao:alterar_componente' pk=sistema.conselho.id componente='conselho' %}" class="btn btn-primary" title="Alterar Documento"><i class="fa fa-upload"></i></a>
+                    </td>
                     {% else %}
-                      <a href="{% url 'gestao:inserir_conselho' usuario.plano_trabalho.id %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
+                      <td></td>
+                      <td align="center">
+                        <a href="{% url 'gestao:inserir_componente' pk=sistema.id componente='conselho' %}" class="btn btn-primary" title="Inserir Documento"><i class="fa fa-upload"></i></a>
+                      </td>
                     {% endif %}
-                  </td>
                 </tr>
               {% endfor %}
             </tbody>

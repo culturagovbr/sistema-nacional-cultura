@@ -20,6 +20,7 @@ from planotrabalho.models import FundoCultura
 from planotrabalho.models import PlanoCultura
 from planotrabalho.models import ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
+from planotrabalho.models import Componente
 
 
 pytestmark = pytest.mark.django_db
@@ -576,10 +577,11 @@ def test_listar_documentos(client, plano_trabalho, login_staff):
     na tela de gestão """
 
     templates = [
-        "listar_sistemas",
-        "listar_orgaos",
-        "listar_fundos",
-        "listar_conselhos",
+        "listar_legislacao",
+        "listar_orgao",
+        "listar_fundo",
+        "listar_conselho"
+        "lisgar_plano",
     ]
 
     for template in templates:
@@ -587,31 +589,35 @@ def test_listar_documentos(client, plano_trabalho, login_staff):
         url = reverse("gestao:listar_documentos", kwargs={"template": template})
         response = client.get(url)
 
-        for usuario in response.context_data["object_list"]:
-            assert usuario.estado_processo == 6
-            assert usuario.plano_trabalho != None
+        for sisstema in response.context_data["object_list"]:
+            assert sistema.estado_processo == 6
 
 
-def test_alterar_documentos_orgao_gestor(client, plano_trabalho, login_staff):
+def test_alterar_documentos_orgao_gestor(client, login_staff):
     """ Testa se funcionalidade de alterar documento para orgão gestor na
     tela de gestão salva no field arquivo """
+
+    orgao_gestor = mommy.make("Componente", tipo=1)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        orgao_gestor=orgao_gestor)
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    url = reverse("gestao:alterar_orgao", kwargs={"pk": plano_trabalho.orgao_gestor.id})
+    url = reverse("gestao:alterar_componente", kwargs={"pk": sistema_cultura.orgao_gestor.id,
+        "componente": "orgao_gestor"})
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = OrgaoGestor.objects.first().arquivo.name.split("orgaogestor/")[1]
-    situacao = OrgaoGestor.objects.first().situacao
+    name = Componente.objects.first().arquivo.name.split("orgao_gestor/")[1]
+    situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
+def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para orgão gestor na
     tela de gestão salva no field arquivo """
 
@@ -619,39 +625,45 @@ def test_inserir_documentos_orgao_gestor(client, plano_trabalho, login_staff):
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    url = reverse("gestao:inserir_orgao", kwargs={"pk": plano_trabalho.id})
+    url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
+        "componente": "orgao_gestor"})
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = OrgaoGestor.objects.last().arquivo.name.split("orgaogestor/")[1]
-    situacao = OrgaoGestor.objects.last().situacao
+    name = Componente.objects.last().arquivo.name.split("orgao_gestor/")[1]
+    situacao = Componente.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_alterar_documentos_criacao_sistema(client, plano_trabalho, login_staff):
+def test_alterar_documentos_legislacao(client, login_staff):
     """ Testa se funcionalidade de alterar documento para sistema de cultura na
     tela de gestão salva no field arquivo """
+
+    legislacao = mommy.make("Componente", tipo=0)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        legislacao=legislacao)
 
     arquivo = SimpleUploadedFile(
         "sistema_cultura.txt", b"file_content", content_type="text/plain"
     )
 
     url = reverse(
-        "gestao:alterar_sistema", kwargs={"pk": plano_trabalho.criacao_sistema.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.legislacao.id,
+        "componente": "legislacao"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = CriacaoSistema.objects.first().arquivo.name.split("criacaosistema/")[1]
-    situacao = CriacaoSistema.objects.first().situacao
+    name = Componente.objects.first().arquivo.name.split("legislacao/")[1]
+    situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
     assert situacao.id == 1
 
 
-def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff):
+def test_inserir_documentos_legislacao(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para sistema de cultura na
     tela de gestão salva no field arquivo """
 
@@ -659,18 +671,19 @@ def test_inserir_documentos_criacao_sistema(client, plano_trabalho, login_staff)
         "sistema_cultura.txt", b"file_content", content_type="text/plain"
     )
 
-    url = reverse("gestao:inserir_sistema", kwargs={"pk": plano_trabalho.id})
+    url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
+        "componente": "legislacao"})
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = CriacaoSistema.objects.last().arquivo.name.split("criacaosistema/")[1]
-    situacao = CriacaoSistema.objects.last().situacao
+    name = Componente.objects.last().arquivo.name.split("legislacao/")[1]
+    situacao = Componente.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
+def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
 
@@ -679,40 +692,46 @@ def test_inserir_documentos_fundo_cultura(client, plano_trabalho, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_fundo", kwargs={"pk": plano_trabalho.fundo_cultura.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.fundo_cultura.id,
+        "componente": "fundo_cultura"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = FundoCultura.objects.last().arquivo.name.split("fundocultura/")[1]
-    situacao = FundoCultura.objects.last().situacao
+    name = Componente.objects.last().arquivo.name.split("fundo_cultura/")[1]
+    situacao = Componente.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_alterar_documentos_fundo_cultura(client, plano_trabalho, login_staff):
+def test_alterar_documentos_fundo_cultura(client, login_staff):
     """ Testa se funcionalidade de alterar documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
+
+    fundo = mommy.make("Componente", tipo=2)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        fundo_cultura=fundo)
 
     arquivo = SimpleUploadedFile(
         "fundo_cultura.txt", b"file_content", content_type="text/plain"
     )
 
     url = reverse(
-        "gestao:alterar_fundo", kwargs={"pk": plano_trabalho.fundo_cultura.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.fundo_cultura.id, 
+        "componente": "fundo_cultura"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = FundoCultura.objects.first().arquivo.name.split("fundocultura/")[1]
-    situacao = FundoCultura.objects.first().situacao
+    name = Componente.objects.first().arquivo.name.split("fundo_cultura/")[1]
+    situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_inserir_documentos_plano_cultura(client, plano_trabalho, login_staff):
+def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para plano de cultura na
     tela de gestão salva no field arquivo """
 
@@ -721,61 +740,69 @@ def test_inserir_documentos_plano_cultura(client, plano_trabalho, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_plano", kwargs={"pk": plano_trabalho.plano_cultura.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.plano.id, "componente": "plano"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = PlanoCultura.objects.last().arquivo.name.split("planocultura/")[1]
-    situacao = PlanoCultura.objects.last().situacao
+    name = Componente.objects.last().arquivo.name.split("plano/")[1]
+    situacao = Componente.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_alterar_documentos_plano_cultura(client, plano_trabalho, login_staff):
+def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de alterar documento para plano de cultura na
     tela de gestão salva no field arquivo """
+
+    plano = mommy.make("Componente", tipo=4)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        plano=plano)
 
     arquivo = SimpleUploadedFile(
         "plano_cultura.txt", b"file_content", content_type="text/plain"
     )
 
     url = reverse(
-        "gestao:alterar_plano", kwargs={"pk": plano_trabalho.plano_cultura.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.plano.id, "componente": "plano"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = PlanoCultura.objects.first().arquivo.name.split("planocultura/")[1]
-    situacao = PlanoCultura.objects.first().situacao
+    name = Componente.objects.first().arquivo.name.split("plano/")[1]
+    situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_alterar_documentos_conselho_cultural(client, plano_trabalho, login_staff):
+def test_alterar_documentos_conselho_cultural(client, login_staff):
     """ Testa se funcionalidade de alterar documento para conselho cultural na
     tela de gestão salva no field arquivo """
+
+    conselho = mommy.make("Componente", tipo=3)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        conselho=conselho)
 
     arquivo = SimpleUploadedFile(
         "conselho_cultural.txt", b"file_content", content_type="text/plain"
     )
 
     url = reverse(
-        "gestao:alterar_conselho", kwargs={"pk": plano_trabalho.conselho_cultural.id}
+        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.conselho.id, "componente": "conselho"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = ConselhoCultural.objects.first().arquivo.name.split("conselhocultural/")[1]
-    situacao = ConselhoCultural.objects.first().situacao
+    name = Componente.objects.first().arquivo.name.split("conselho/")[1]
+    situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
-def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staff):
+def test_inserir_documentos_conselho_cultural(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserção documentos para conselho cultural na
     tela de gestão salva no field arquivo """
 
@@ -783,15 +810,16 @@ def test_inserir_documentos_conselho_cultural(client, plano_trabalho, login_staf
         "conselho_cultural.txt", b"file_content", content_type="text/plain"
     )
 
-    url = reverse("gestao:inserir_conselho", kwargs={"pk": plano_trabalho.id})
+    url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id, 
+        "componente": "conselho"})
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = ConselhoCultural.objects.last().arquivo.name.split("conselhocultural/")[1]
-    situacao = ConselhoCultural.objects.last().situacao
+    name = Componente.objects.last().arquivo.name.split("conselho/")[1]
+    situacao = Componente.objects.last().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
 def test_retorna_200_para_diligencia_geral(client, url, login_staff):
@@ -1461,25 +1489,17 @@ def test_pesquisa_por_ente_federado_inserir_documentos_listar_sistemas(
     de listar documentos de sistemas de Cultura
     """
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
-    )
-
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
+    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6, 
+        ente_federado=ente)
 
     url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_sistemas"})
+        reverse("gestao:listar_documentos", kwargs={"template": "listar_legislacao"})
         + "?q=Abaete"
     )
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
-    assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
-    )
+    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
 
 
 def test_pesquisa_por_ente_federado_inserir_documentos_listar_orgaos(
@@ -1489,25 +1509,17 @@ def test_pesquisa_por_ente_federado_inserir_documentos_listar_orgaos(
     de listar documentos de Ogãos
     """
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
-    )
-
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
+    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6, 
+        ente_federado=ente)
 
     url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_orgaos"})
+        reverse("gestao:listar_documentos", kwargs={"template": "listar_orgao_gestor"})
         + "?q=Abaete"
     )
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
-    assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
-    )
+    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
 
 
 def test_pesquisa_por_ente_federado_inserir_documentos_listar_conselhos(
@@ -1516,25 +1528,17 @@ def test_pesquisa_por_ente_federado_inserir_documentos_listar_conselhos(
     """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de Conselhos
     """
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
-    )
-
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
+    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6, 
+        ente_federado=ente)
 
     url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_conselhos"})
+        reverse("gestao:listar_documentos", kwargs={"template": "listar_conselho"})
         + "?q=Abaete"
     )
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
-    assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
-    )
+    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
 
 
 def test_pesquisa_por_ente_federado_inserir_documentos_listar_fundos(
@@ -1543,52 +1547,35 @@ def test_pesquisa_por_ente_federado_inserir_documentos_listar_fundos(
     """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de fundos
     """
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
-    )
-
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
+    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6, 
+        ente_federado=ente)
 
     url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_fundos"})
+        reverse("gestao:listar_documentos", kwargs={"template": "listar_fundo_cultura"})
         + "?q=Abaete"
     )
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
-    assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
-    )
+    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
 
 
 def test_pesquisa_por_ente_federado_inserir_documentos_listar_planos(
-    client, login_staff
-):
+    client, login_staff):
     """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de planos de Cultura
     """
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
-    )
-
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
+    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6, 
+        ente_federado=ente)
 
     url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_planos"})
+        reverse("gestao:listar_documentos", kwargs={"template": "listar_plano"})
         + "?q=Abaete"
     )
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
-    assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
-    )
+    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
 
 
 def test_adicionar_prazo_permanecendo_na_mesma_pagina_apos_redirect(
