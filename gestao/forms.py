@@ -306,11 +306,13 @@ class CriarSistemaForm(ModelForm):
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarSistemaForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
-            componente.situacao_id = 1
+            componente.situacao = 1
 
         if commit:
+            componente.arquivo = None
             componente.save()
-            componente.legislacao = self.sistema
+            componente.legislacao.add(self.sistema)
+            componente.arquivo = self.cleaned_data['arquivo']
             componente.save()
             self.sistema.legislacao = componente
             self.sistema.save()
