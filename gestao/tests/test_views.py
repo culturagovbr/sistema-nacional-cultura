@@ -578,10 +578,10 @@ def test_listar_documentos(client, plano_trabalho, login_staff):
 
     templates = [
         "listar_legislacao",
-        "listar_orgao",
-        "listar_fundo",
-        "listar_conselho"
-        "lisgar_plano",
+        "listar_orgao_gestor",
+        "listar_fundo_cultura",
+        "listar_conselho",
+        "listar_plano",
     ]
 
     for template in templates:
@@ -660,7 +660,7 @@ def test_alterar_documentos_legislacao(client, login_staff):
     situacao = Componente.objects.first().situacao
 
     assert name == arquivo.name
-    assert situacao.id == 1
+    assert situacao == 1
 
 
 def test_inserir_documentos_legislacao(client, sistema_cultura, login_staff):
@@ -692,7 +692,7 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.fundo_cultura.id,
+        "gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
         "componente": "fundo_cultura"}
     )
 
@@ -740,7 +740,7 @@ def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.plano.id, "componente": "plano"}
+        "gestao:inserir_componente", kwargs={"pk": sistema_cultura.id, "componente": "plano"}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})

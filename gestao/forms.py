@@ -333,4 +333,3 @@ class CriarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
-        
