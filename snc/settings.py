@@ -343,8 +343,8 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-if env("SENTRY_DSN", None):
+if env("SENTRY_DSN"):
     sentry_sdk.init(
-            dsn=env("SENTRY_DSN_URL"),
+            dsn=env("SENTRY_DSN"),
             integrations=[DjangoIntegration()]
             )
