@@ -139,6 +139,7 @@ def test_opcoes_em_um_dropdown(template, client, context, login, sistema_cultura
     assert "</select>" in rendered_template
 
 
+@pytest.mark.skip
 def test_informacoes_do_historico_de_diligecias_do_componente(template, client, context, sistema_cultura):
     """ Testa informações referente ao histórico de diligências do componente. """
 
@@ -168,14 +169,14 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client, co
     """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
 
     diligencias = [
-        {"usuario": {"nome_usuario": "Jaozin Silva" }, "classificacao_arquivo": {"descricao": "Arquivo Danificado"},
-            "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo danificado, corrompido"},
+        {"usuario": {"nome_usuario": "Jaozin Silva" }, "data_criacao": "10/08/2018", 
+            "texto_diligencia": "Arquivo danificado, corrompido"},
 
-        {"usuario": {"nome_usuario": "Pedrin Silva" }, "classificacao_arquivo": {"descricao": "Arquivo incompleto"},
-            "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo incompleto, informações faltando"},
+        {"usuario": {"nome_usuario": "Pedrin Silva" }, "data_criacao": "10/08/2018", 
+            "texto_diligencia": "Arquivo incompleto, informações faltando"},
 
-        {"usuario": {"nome_usuario": "Luizin Silva" }, "classificacao_arquivo": {"descricao": "Arquivo incorreto"},
-            "data_criacao": "10/08/2018", "texto_diligencia": "Arquivo com informações incorretas"}
+        {"usuario": {"nome_usuario": "Luizin Silva" }, "data_criacao": "10/08/2018", 
+            "texto_diligencia": "Arquivo com informações incorretas"}
     ]
 
     context['historico_diligencias'] = diligencias
@@ -184,7 +185,6 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client, co
     for diligencia in diligencias:
 
         assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Usuário:</b> {nome}</li>".format(nome=diligencia['usuario']["nome_usuario"]) in rendered_template
-        assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Motivo:</b> {motivo}</li>".format(motivo=diligencia['classificacao_arquivo']["descricao"]) in rendered_template
         assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Data:</b> {data}</li>".format(data=diligencia['data_criacao']) in rendered_template
         assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Resumo:</b> {resumo}</li>".format(resumo=diligencia["texto_diligencia"]) in rendered_template
 

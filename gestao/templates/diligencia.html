@@ -100,12 +100,11 @@
 		<div id="lista-diligencia" class="col-md-12">
 			<ul class="list-group"></ul>
 				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
-                {% if diligencia.tipo_diligencia != 'geral'%}
-                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.classificacao_arquivo.descricao }}</li>
+                {% if componente != plano_trabalho %}
+                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
                 {% endif %}
 				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
 				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
-				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Tipo da Diligência:</b> {{diligencia.get_tipo_diligencia_display }}</li>
 			</ul>
 		</div>
 		{% endfor %}
