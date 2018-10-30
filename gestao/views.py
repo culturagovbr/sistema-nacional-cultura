@@ -57,6 +57,7 @@ from .forms import AlterarComponenteForm
 from .forms import CriarComponenteForm
 
 from .forms import CadastradorEnte
+from itertools import chain
 
 
 # Acompanhamento das adesões
@@ -216,6 +217,17 @@ class AcompanharSistemaCultura(ListView):
     template_name = 'gestao/adesao/acompanhar.html'
     paginate_by = 10
 
+    def remove_repeticoes(self, lista):
+        import ipdb; ipdb.set_trace()
+        ja_adicionados = set()
+        lista_sem_repeticoes = []
+        for sistema in lista:
+            if sistema.ente_federado.cod_ibge not in ja_adicionados:
+                lista_sem_repeticoes.append(sistema)
+                ja_adicionados.add(sistema.ente_federado.cod_ibge)
+
+        return lista_sem_repeticoes
+
     def annotate_componente_mais_antigo_por_situacao(self, componentes, *args):
         componentes = componentes.annotate(
             data_legislacao_sem_analise=Case(
@@ -263,21 +275,21 @@ class AcompanharSistemaCultura(ListView):
         else:
             sistemas = SistemaCultura.objects.all()
 
-        sistemas_concluidos = self.annotate_componente_mais_antigo_por_situacao(sistemas, 2, 3).annotate(
+        sistemas_concluidos = self.annotate_componente_mais_antigo_por_situacao(sistemas, 2, 3).filter(
+            estado_processo='6').exclude(mais_antigo=None).order_by('mais_antigo')
+
+        sistemas_diligencia = self.annotate_componente_mais_antigo_por_situacao(sistemas, 4, 5, 6).filter(
+            estado_processo='6').exclude(mais_antigo=None).order_by('mais_antigo')
+
+        sistemas_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(sistemas, 1).filter(
+            estado_processo='6').exclude(mais_antigo=None).order_by('mais_antigo')
+
+        sistemas = sistemas.exclude(estado_processo='6').annotate(
             tem_cadastrador=Count('cadastrador')).order_by(
-            '-tem_cadastrador', '-estado_processo', 'mais_antigo')
-
-        sistemas_diligencia = self.annotate_componente_mais_antigo_por_situacao(sistemas, 4, 5, 6).annotate(
-            tem_cadastrador=Count('cadastrador')).order_by(
-            '-tem_cadastrador', '-estado_processo', 'mais_antigo')
-
-        sistemas_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(sistemas, 1).annotate(
-            tem_cadastrador=Count('cadastrador')).order_by(
-            '-tem_cadastrador', '-estado_processo', 'mais_antigo')
-
-        sistemas = sistemas_nao_analisados | sistemas_diligencia | sistemas_concluidos
-
-        sistemas.distinct('ente_federado__cod_ibge').select_related()
+            '-tem_cadastrador', '-estado_processo')
+ 
+        sistemas = list(chain(sistemas_nao_analisados, sistemas_diligencia, sistemas_concluidos, sistemas))
+        sistemas = self.remove_repeticoes(sistemas)
 
         return sistemas
 

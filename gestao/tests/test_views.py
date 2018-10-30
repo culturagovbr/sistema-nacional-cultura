@@ -1059,6 +1059,7 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     por data de envio mais antiga entre os componentes"""
 
     sistema_sem_analise_recente = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123450,
         _fill_optional='legislacao')
     sistema_sem_analise_recente.legislacao.situacao = 1
@@ -1066,6 +1067,7 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     sistema_sem_analise_recente.legislacao.save()
 
     sistema_sem_analise_antigo = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123457,
         _fill_optional='orgao_gestor')
     sistema_sem_analise_antigo.orgao_gestor.situacao = 1
@@ -1073,6 +1075,7 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     sistema_sem_analise_antigo.orgao_gestor.save()
 
     sistema_com_diligencia_antigo = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123458,
         _fill_optional='fundo_cultura')
     sistema_com_diligencia_antigo.fundo_cultura.situacao = 4
@@ -1080,6 +1083,7 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     sistema_com_diligencia_antigo.fundo_cultura.save()
 
     sistema_com_analise_antigo = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123459,
         _fill_optional='fundo_cultura')
     sistema_com_analise_antigo.fundo_cultura.situacao = 2
@@ -1095,11 +1099,54 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     assert response.context_data['object_list'][3] == sistema_com_analise_antigo
 
 
+def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
+    """ Testa ordenação da página de acompanhamento das adesões
+    por data de envio mais antiga entre os componentes"""
+
+    sistema_sem_analise_recente_1 = mommy.make('SistemaCultura',
+        estado_processo = '6',
+        ente_federado__cod_ibge=123450,
+        _fill_optional='legislacao')
+    sistema_sem_analise_recente_1.legislacao.situacao = 1
+    sistema_sem_analise_recente_1.legislacao.data_envio = datetime.date(2017, 1, 1)
+    sistema_sem_analise_recente_1.legislacao.save()
+
+    sistema_sem_analise_recente_2 = mommy.make('SistemaCultura',
+        estado_processo = '6',
+        ente_federado__cod_ibge=123450,
+        _fill_optional='legislacao')
+    sistema_sem_analise_recente_2.legislacao.situacao = 1
+    sistema_sem_analise_recente_2.legislacao.data_envio = datetime.date(2018, 1, 1)
+    sistema_sem_analise_recente_2.legislacao.save()
+
+    sistema_sem_analise_antigo_1 = mommy.make('SistemaCultura',
+        estado_processo = '6',
+        ente_federado__cod_ibge=123457,
+        _fill_optional='orgao_gestor')
+    sistema_sem_analise_antigo_1.orgao_gestor.situacao = 1
+    sistema_sem_analise_antigo_1.orgao_gestor.data_envio = datetime.date(1990, 1, 1)
+    sistema_sem_analise_antigo_1.orgao_gestor.save()
+
+    sistema_sem_analise_antigo_2 = mommy.make('SistemaCultura',
+        estado_processo = '6',
+        ente_federado__cod_ibge=123457,
+        _fill_optional='orgao_gestor')
+    sistema_sem_analise_antigo_2.orgao_gestor.situacao = 1
+    sistema_sem_analise_antigo_2.orgao_gestor.data_envio = datetime.date(1980, 1, 1)
+    sistema_sem_analise_antigo_2.orgao_gestor.save()
+
+    url = reverse("gestao:acompanhar_adesao")
+    response = client.get(url)
+
+    assert response.context_data['object_list'][0] == sistema_sem_analise_antigo_2
+    assert response.context_data['object_list'][1] == sistema_sem_analise_recente_2
+
 def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(client, login_staff):
     """ Testa se na página de acompanhamento de adesões, quando há sistemas com múltiplos 
     componentes, o correto é considerado para ordenação pela data """
 
     sistema_1 = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123456,
         _fill_optional=['legislacao', 'orgao_gestor'])
 
@@ -1112,6 +1159,7 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     sistema_1.orgao_gestor.save()
 
     sistema_2 = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123457,
         _fill_optional=['fundo_cultura', 'plano'])
 
@@ -1124,6 +1172,7 @@ def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(cl
     sistema_2.plano.save()
 
     sistema_3 = mommy.make('SistemaCultura',
+        estado_processo = '6',
         ente_federado__cod_ibge=123458,
         _fill_optional='conselho')
 
@@ -1152,6 +1201,8 @@ def test_acompanhar_adesao_ordenar_estado_processo(client, login_staff):
     sistema_publicado = mommy.make('SistemaCultura', estado_processo=6,
                     ente_federado__cod_ibge=123457,
                     _fill_optional=['legislacao', 'cadastrador'])
+    sistema_publicado.legislacao.situacao = 1
+    sistema_publicado.legislacao.save()
 
     sistema_sem_cadastrador = mommy.make('SistemaCultura', cadastrador=None,
                     ente_federado__cod_ibge=123458,
