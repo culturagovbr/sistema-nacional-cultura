@@ -57,7 +57,9 @@ from .forms import AlterarComponenteForm
 from .forms import CriarComponenteForm
 
 from .forms import CadastradorEnte
-from itertools import chain
+
+from functools import cmp_to_key
+import datetime
 
 
 # Acompanhamento das adesões
@@ -217,8 +219,45 @@ class AcompanharSistemaCultura(ListView):
     template_name = 'gestao/adesao/acompanhar.html'
     paginate_by = 10
 
+    def compara_sistemas(self, a, b):
+        grupos_situacoes = [[1], [4,5,6], [0], [2,3]]
+        mais_antigos_a = []
+        mais_antigos_b = []
+
+        for grupo in grupos_situacoes:
+            componente_a = a.get_componente_mais_antigo_por_situacao(grupo)
+            componente_b = b.get_componente_mais_antigo_por_situacao(grupo)
+
+            if componente_a == None and componente_b == None:
+                mais_antigos_a.append(None)
+                mais_antigos_b.append(None)
+            elif componente_a == None and componente_b != None:
+                mais_antigos_a.append(None)
+                mais_antigos_b.append(b.data_componente_mais_antigo)
+            elif componente_a != None and componente_b == None:
+                mais_antigos_a.append(a.data_componente_mais_antigo)
+                mais_antigos_b.append(None)
+            elif a.data_componente_mais_antigo < b.data_componente_mais_antigo:
+                mais_antigos_a.append(a.data_componente_mais_antigo)
+                mais_antigos_b.append(None)
+            elif a.data_componente_mais_antigo > b.data_componente_mais_antigo:
+                mais_antigos_a.append(None)
+                mais_antigos_b.append(b.data_componente_mais_antigo)
+
+        for item_a, item_b in zip(mais_antigos_a, mais_antigos_b):
+            if item_a != None and item_b != None:
+                if item_a == None and item_b != None:
+                    return -1
+                elif item_a != None and item_b == None:
+                    return 1
+                elif item_a > item_b:
+                    return -1
+                elif item_b > item_a:
+                    return 1
+
+        return 0
+
     def remove_repeticoes(self, lista):
-        import ipdb; ipdb.set_trace()
         ja_adicionados = set()
         lista_sem_repeticoes = []
         for sistema in lista:
@@ -270,10 +309,18 @@ class AcompanharSistemaCultura(ListView):
             sistemas = SistemaCultura.objects.filter(estado_processo=situacao)
 
         if ente_federado:
-            sistemas = SistemaCultura.objects.filter(
+            sistemas = SistemaCultura.sistema.filter(
                 ente_federado__nome__icontains=ente_federado)
         else:
-            sistemas = SistemaCultura.objects.all()
+            sistemas = SistemaCultura.sistema.all()
+
+        import ipdb; ipdb.set_trace()
+
+        sistemas = list(sistemas)
+
+        sistemas = sorted(sistemas, key=cmp_to_key(self.compara_sistemas))
+
+        """sistemas = self.remove_repeticoes(sistemas)
 
         sistemas_concluidos = self.annotate_componente_mais_antigo_por_situacao(sistemas, 2, 3).filter(
             estado_processo='6').exclude(mais_antigo=None).order_by('mais_antigo')
@@ -289,7 +336,9 @@ class AcompanharSistemaCultura(ListView):
             '-tem_cadastrador', '-estado_processo')
  
         sistemas = list(chain(sistemas_nao_analisados, sistemas_diligencia, sistemas_concluidos, sistemas))
-        sistemas = self.remove_repeticoes(sistemas)
+        sistemas = self.remove_repeticoes(sistemas)"""
+
+        
 
         return sistemas
 
