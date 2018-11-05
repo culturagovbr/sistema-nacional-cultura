@@ -136,14 +136,12 @@ def test_tipo_campo_sistema_cultura_model_diligencia(diligencia):
 
 
 @pytest.mark.skip()
-def test_informacoes_sistema_cultura_na_diligencia(diligencia):
+def test_informacoes_sistema_cultura_na_diligencia():
     """
     Testa as informacoes do sistema_cultura na model de diligência
     """
 
-    sistema_cultura = mommy.make('SistemaCultura')
-    diligencia = Diligencia.objects.first()
+    diligencia = mommy.make('DiligenciaSimples')
+    sistema_cultura = mommy.make('SistemaCultura', diligencia=diligencia)
 
-    sistema_cultura.diligencia_set.add(diligencia)
-
-    assert isinstance(diligencia.sistema_cultura, SistemaCultura)
+    assert isinstance(diligencia.sistema_cultura, ManyRelatedManager)

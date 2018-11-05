@@ -15,9 +15,8 @@ def test_criacao_novo_componente(client):
         "componente.txt", b"file_content", content_type="text/plain"
     )
 
-    uf = mommy.make("Uf")
     componente = mommy.make("Componente", tipo=0)
-    sistema = mommy.make("SistemaCultura", uf=uf, legislacao=componente)
+    sistema = mommy.make("SistemaCultura", _fill_optional='ente_federado', legislacao=componente)
 
     componente.arquivo = arquivo
     componente.save()

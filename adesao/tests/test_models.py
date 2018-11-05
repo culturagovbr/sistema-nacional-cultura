@@ -116,31 +116,18 @@ def test_limpa_cadastrador_alterado_SistemaCultura():
     cadastrador.municipio.delete()
 
 
-def test_retorna_ativo_SistemaCultura_filtrado_por_uf():
+def test_retorna_ativo_SistemaCultura_filtrado_por_ente():
     """ Retorna o último Sistema cultura criado sendo ele o ativo de
-    uma UF específica """
+    um ente específico """
 
     mommy.make('SistemaCultura',
                data_criacao=datetime(2018, 2, 3, 0, tzinfo=timezone.utc),
-               _fill_optional=['uf'])
-    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf'])
+               _fill_optional=['ente_federado'])
+    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['ente_federado'])
 
-    assert SistemaCultura.sistema.get(uf=sistema_ativo.uf) == sistema_ativo
+    assert SistemaCultura.sistema.get(ente_federado=sistema_ativo.ente_federado) == sistema_ativo
 
     SistemaCultura.objects.all().delete()
-
-
-def test_retorna_ativo_SistemaCultura_filtrado_por_uf_e_cidade():
-    """ Retorna o último Sistema cultura criado sendo ele o ativo de uma
-    UF e cidade específicas """
-
-    mommy.make('SistemaCultura',
-               data_criacao=datetime(2018, 2, 3, 0, tzinfo=timezone.utc),
-               _fill_optional=['uf', 'cidade'])
-    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf', 'cidade'])
-
-    assert SistemaCultura.sistema.get(
-            uf=sistema_ativo.uf, cidade=sistema_ativo.cidade) == sistema_ativo
 
 
 def test_alterar_cadastrador_sistema_cultura_sem_cadastrador():
@@ -175,30 +162,25 @@ def test_criar_plano_trabalho_para_Usuario_estado_processo():
 
 
 def test_ativo_ou_cria_SistemaCultura_ativo():
-    """ Testa método ativo_ou_cria do manager SistemaCulturaManager
-    retorna SistemaCultura ativo """
+    """ Testa método get_or_create SistemaCultura ativo """
 
     mommy.make('SistemaCultura',
                data_criacao=datetime(2018, 2, 3, 0, tzinfo=timezone.utc),
-               _fill_optional=['uf', 'cidade'])
-    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['uf', 'cidade'])
+               _fill_optional=['ente_federado'])
+    sistema_ativo = mommy.make('SistemaCultura', _fill_optional=['ente_federado'])
 
-    sistema, criado = SistemaCultura.sistema.get_or_create(cidade=sistema_ativo.cidade)
+    sistema, criado = SistemaCultura.sistema.get_or_create(ente_federado=sistema_ativo.ente_federado)
     assert sistema == sistema_ativo
 
 
 def test_ativo_ou_cria_SistemaCultura_cria():
-    """ Testa método ativo_ou_cria do manager SistemaCulturaManager
-    retorna um novo sistema cultura """
-    cidade = mommy.make('Cidade')
-    uf = cidade.uf
-
-    sistema, criado = SistemaCultura.sistema.get_or_create(cidade=cidade, uf=uf)
+    """ Testa método get_or_create retorna um novo sistema cultura """
+    ente = mommy.make('EnteFederado')
+    sistema, criado = SistemaCultura.sistema.get_or_create(ente_federado=ente)
 
     assert isinstance(sistema, SistemaCultura)
     assert sistema.pk
-    assert sistema.uf == uf
-    assert sistema.cidade == cidade
+    assert sistema.ente_federado == ente
 
 
 @pytest.mark.skip("Depende de uma melhoria em EnteFederado")
