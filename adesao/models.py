@@ -395,29 +395,6 @@ class SistemaCultura(models.Model):
     class Meta:
         ordering = ['ente_federado', '-alterado_em']
 
-    def get_componente_mais_antigo_por_situacao(self, lista_situacoes):
-        componentes = ['legislacao', 'orgao_gestor', 'conselho', 'plano', 'fundo_cultura']
-        componente_mais_antigo = None
-        data_max = date.max
-
-        for componente in componentes:
-            componente_item = getattr(self, componente)
-            if componente_item:
-                if componente_item.situacao in lista_situacoes:
-                    if componente_item.data_envio < data_max:
-                        data_max = componente_item.data_envio
-                        componente_mais_antigo = componente_item
-
-        if componente_mais_antigo == None:
-            SistemaCultura.data_componente_mais_antigo = property(
-                lambda self: None)
-        else:
-            SistemaCultura.data_componente_mais_antigo = property(
-                lambda self: componente_mais_antigo.data_envio)
-
-        return componente_mais_antigo
-
-
     def get_absolute_url(self):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url

@@ -1103,9 +1103,10 @@ def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes"""
 
+    ente_federado_1 = mommy.make('EnteFederado', cod_ibge=123450)
     sistema_sem_analise_recente_1 = mommy.make('SistemaCultura',
         estado_processo = '6',
-        ente_federado__cod_ibge=123450,
+        ente_federado=ente_federado_1,
         _fill_optional='legislacao')
     sistema_sem_analise_recente_1.legislacao.situacao = 1
     sistema_sem_analise_recente_1.legislacao.data_envio = datetime.date(2017, 1, 1)
@@ -1113,15 +1114,16 @@ def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
 
     sistema_sem_analise_recente_2 = mommy.make('SistemaCultura',
         estado_processo = '6',
-        ente_federado__cod_ibge=123450,
+        ente_federado=ente_federado_1,
         _fill_optional='legislacao')
     sistema_sem_analise_recente_2.legislacao.situacao = 1
     sistema_sem_analise_recente_2.legislacao.data_envio = datetime.date(2018, 1, 1)
     sistema_sem_analise_recente_2.legislacao.save()
 
+    ente_federado_2 = mommy.make('EnteFederado', cod_ibge=123457)
     sistema_sem_analise_antigo_1 = mommy.make('SistemaCultura',
         estado_processo = '6',
-        ente_federado__cod_ibge=123457,
+        ente_federado=ente_federado_2,
         _fill_optional='orgao_gestor')
     sistema_sem_analise_antigo_1.orgao_gestor.situacao = 1
     sistema_sem_analise_antigo_1.orgao_gestor.data_envio = datetime.date(1990, 1, 1)
@@ -1129,7 +1131,7 @@ def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
 
     sistema_sem_analise_antigo_2 = mommy.make('SistemaCultura',
         estado_processo = '6',
-        ente_federado__cod_ibge=123457,
+        ente_federado=ente_federado_2,
         _fill_optional='orgao_gestor')
     sistema_sem_analise_antigo_2.orgao_gestor.situacao = 1
     sistema_sem_analise_antigo_2.orgao_gestor.data_envio = datetime.date(1980, 1, 1)
