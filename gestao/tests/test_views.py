@@ -945,17 +945,14 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
 def test_envio_email_diligencia_geral(client, login_staff):
     """ Testa envio do email para diligência geral """
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional=["ente_federado", "cadastrador"]
+        "SistemaCultura", _fill_optional="cadastrador", ente_federado__cod_ibge=123456
     )
-
-    url = "/gestao/{id}/diligencia/"
 
     sistema_cultura.cadastrador.user.email = "teste@teste.com"
     sistema_cultura.cadastrador.user.save()
 
-    request = client.post(
-        url.format(id=sistema_cultura.id), data={"texto_diligencia": "Ta errado cara"}
-    )
+    url = reverse("gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id})
+    request = client.post(url, data={"texto_diligencia": "Ta errado cara"})
 
     assert len(mail.outbox) == 1
 

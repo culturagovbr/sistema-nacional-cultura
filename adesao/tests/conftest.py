@@ -11,6 +11,8 @@ def sistemacultura_10(django_db_setup, django_db_blocker):
     """
     Cria 10 diferentes entes de SistemaCultura
     """
+    EnteFederado.objects.all().delete()
+    SistemaCultura.objects.all().delete()
 
     ufs_entes_federados = {
             11: "Acre",

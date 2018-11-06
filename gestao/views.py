@@ -768,7 +768,7 @@ class DiligenciaComponenteView(CreateView):
         return self.render_to_response(self.get_context_data(form=form), status=400)
 
 
-class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
+class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     template_name = 'diligencia.html'
     model = DiligenciaSimples
     form_class = DiligenciaGeralForm
@@ -801,7 +801,8 @@ class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['pk']))
 
     def templated_email_get_recipients(self, form):
-        return self.get_sistema_cultura().cadastrador.user.email
+        recipiente_list = list(self.get_sistema_cultura().cadastrador.user.email)
+        return recipiente_list
 
     def get_success_url(self):
         return reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.get_sistema_cultura().ente_federado.cod_ibge})

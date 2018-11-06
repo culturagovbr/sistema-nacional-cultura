@@ -24,8 +24,8 @@
 			<br>
 			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
 
-            <p><b>Criação Sistema: </b> {{ situacoes.criacao_sistema }}
-                {% if situacoes.criacao_sistema != 'Concluída' %}
+            <p><b>Criação Sistema: </b> {{ situacoes.legislacao }}
+                {% if situacoes.legislacao != 'Concluída' %}
                     <i class="glyphicon glyphicon-remove"></i>
                 {% else %}
                     <i class="glyphicon glyphicon-ok"></i>
@@ -38,8 +38,8 @@
                 <i class="glyphicon glyphicon-ok"></i>
                 {% endif %}
             </p>
-            <p><b>Conselho Cultural: </b> {{ situacoes.conselho_cultural }}
-                {% if situacoes.conselho_cultural != 'Concluída' %}
+            <p><b>Conselho Cultural: </b> {{ situacoes.conselho}}
+                {% if situacoes.conselho != 'Concluída' %}
                     <i class="glyphicon glyphicon-remove"></i>
                 {% else %}
                     <i class="glyphicon glyphicon-ok"></i>
@@ -52,8 +52,8 @@
                     <i class="glyphicon glyphicon-ok"></i>
                 {% endif %}
             </p>
-            <p><b>Plano Cultura: </b> {{ situacoes.plano_cultura }}
-                {% if situacoes.plano_cultura != 'Concluída' %}
+            <p><b>Plano Cultura: </b> {{ situacoes.plano }}
+                {% if situacoes.plano != 'Concluída' %}
                     <i class="glyphicon glyphicon-remove"></i>
                 {% else %}
                     <i class="glyphicon glyphicon-ok"></i>
