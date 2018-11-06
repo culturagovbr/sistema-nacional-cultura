@@ -29,19 +29,15 @@
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</a></td>
-                {% else %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.estado.nome_uf }}</a></td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
+                  <td><a href="{% url 'gestao:detalhar' sistema.id %}">{{ sistema.ente_federado }}</a></td>
+                  <td>{{ sistema.sede.cnpj }}</td>
                   <td>
-                    <a href="{{ usuario.plano_trabalho.conselho_cultural.arquivo.url }}">Download</a>
+                    <a href="{{ sistema.conselho.arquivo.url }}">Download</a>
                   </td>
                   <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='conselho_cultural' %}">Criar Diligência</a>
+                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='conselho' %}">Criar Diligência</a>
                   </td>
                 </tr>
               {% endfor %}

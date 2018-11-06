@@ -111,34 +111,34 @@
                            <div class="collapse" id="plano_trabalho" style="height: 0px;">
                            <ul class="nav nav-second-level">
                              <li>
-                               <a href="{% url 'gestao:acompanhar_sistema' %}?anexo=arquivo" >  
+                               <a href="{% url 'gestao:acompanhar_componente' componente='legislacao' %}?anexo=arquivo" >  
                                 Lei - Sistema de Cultura
                                </a>
                             
                              </li>
 
                                <li>
-                                 <a href="{% url 'gestao:acompanhar_orgao' %}?anexo=arquivo">
+                                 <a href="{% url 'gestao:acompanhar_componente' componente='orgao_gestor' %}?anexo=arquivo">
                                   Ato Normativo - Órgão Gestor
                                  </a>
                                 
                                </li>
 
                                <li>
-                                 <a href="{% url 'gestao:acompanhar_conselho' %}?anexo=arquivo">
+                                 <a href="{% url 'gestao:acompanhar_componente' componente='conselho' %}?anexo=arquivo">
                                   Ata - Conselho Cultural
                                  </a>
                                  
                                </li>
 
                                <li>
-                                 <a href="{% url 'gestao:acompanhar_fundo' %}?anexo=arquivo">
+                                 <a href="{% url 'gestao:acompanhar_componente' componente='fundo_cultura' %}?anexo=arquivo">
                                   Lei - Fundo de Cultura
                                  </a>
                              </li>
 
                              <li>
-                               <a href="{% url 'gestao:acompanhar_plano' %}?anexo=arquivo">
+                               <a href="{% url 'gestao:acompanhar_componente' componente='plano' %}?anexo=arquivo">
                                 Lei - Plano de Cultura
                                </a> 
                                

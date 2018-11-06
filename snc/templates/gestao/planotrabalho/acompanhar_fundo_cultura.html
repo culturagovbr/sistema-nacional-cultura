@@ -24,26 +24,20 @@
               <tr>
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
-                <th>CNPJ do Fundo</th>
                 <th>Anexo</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</a></td>
-                {% else %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.estado.nome_uf }}</a></td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
-                  <td>{{ usuario.plano_trabalho.fundo_cultura.cnpj_fundo_cultura }}</td>
+                  <td><a href="{% url 'gestao:detalhar' sistema.id %}">{{ sistema.ente_federado }}</a></td>
+                  <td>{{ sistema.sede.cnpj }}</td>
                   <td>
-                    <a href="{{ usuario.plano_trabalho.fundo_cultura.arquivo.url }}">Download</a>
+                    <a href="{{ sistema.fundo_cultura.arquivo.url }}">Download</a>
                   </td>
                   <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='fundo_cultura' %}">Criar Diligência</a>                  
+                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='fundo_cultura' %}">Criar Diligência</a>                  
                   </td>
                 </tr>
               {% endfor %}

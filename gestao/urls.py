@@ -25,26 +25,12 @@ urlpatterns = [
         staff_member_required(views.AcompanharPrazo.as_view()), name='acompanhar_prazo'),
      url(r'^aditivar/prazo/(?P<id>[\w]+)/(?P<page>[\w]+)$',
         staff_member_required(views.aditivar_prazo, login_url='adesao:login'), name='aditivar_prazo'),
-    # Acompanhar criação do sistema de cultura
-    url(r'^acompanhar/sistema$', staff_member_required(
-        views.AcompanharSistema.as_view(),
-        login_url='adesao:login'), name='acompanhar_sistema'),
-    # Acompanhar criação do órgão gestor
-    url(r'^acompanhar/orgao$', staff_member_required(
-        views.AcompanharOrgao.as_view(),
-        login_url='adesao:login'), name='acompanhar_orgao'),
-    # Acompanhar criação do conselho cultural
-    url(r'^acompanhar/conselho$', staff_member_required(
-        views.AcompanharConselho.as_view(),
-        login_url='adesao:login'), name='acompanhar_conselho'),
-    # Acompanhar criação do fundo de cultura
-    url(r'^acompanhar/fundo$', staff_member_required(
-        views.AcompanharFundo.as_view(),
-        login_url='adesao:login'), name='acompanhar_fundo'),
-    # Acompanhar elaboração do plano de cultura
-    url(r'^acompanhar/plano$', staff_member_required(
-        views.AcompanharPlano.as_view(),
-        login_url='adesao:login'), name='acompanhar_plano'),
+    
+    # Acompanhar componentes
+    path('acompanhar/<str:componente>',
+            staff_member_required(views.AcompanharComponente.as_view()),
+            name='acompanhar_componente'),
+
     # Diligência no anexo
     url(r'^diligencia/(?P<etapa>[\w]+)/(?P<st>[\w]+)/(?P<id>[\w]+)$',
         staff_member_required(

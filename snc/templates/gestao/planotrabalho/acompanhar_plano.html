@@ -29,14 +29,10 @@
               </tr>
             </thead>
             <tbody>
-              {% for usuario in object_list %}
+              {% for sistema in object_list %}
                 <tr class="odd gradeX">
-                {% if usuario.municipio.cidade %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.cidade }}/{{ usuario.municipio.estado }}</a></td>
-                {% else %}
-                  <td><a href="{% url 'gestao:detalhar' usuario.id %}">{{ usuario.municipio.estado.nome_uf }}</a></td>
-                {% endif %}
-                  <td>{{ usuario.municipio.cnpj_prefeitura }}</td>
+                  <td><a href="{% url 'gestao:detalhar' sistema.id %}">{{ sistema.ente_federado }}</a></td>
+                  <td>{{ sistema.sede.cnpj }}</td>
                   <td>
                     {% if request.GET.anexo == 'relatorio_diretrizes_aprovadas' %}
                     <a href="{{ usuario.plano_trabalho.plano_cultura.relatorio_diretrizes_aprovadas.url }}">Download</a>
@@ -46,10 +42,12 @@
                     <a href="{{ usuario.plano_trabalho.plano_cultura.ata_reuniao_aprovacao_plano.url }}">Download</a>
                     {% elif request.GET.anexo == 'lei_plano_cultura' %}
                     <a href="{{ usuario.plano_trabalho.plano_cultura.lei_plano_cultura.url }}">Download</a>
+                    {% elif request.GET.anexo == 'arquivo' %}
+                    <a href="{{ sistema.legislacao.arquivo.url }}">Download</a>
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=usuario.plano_trabalho.id componente='plano_cultura' %}">
+                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='plano' %}">
                       Criar Diligência
                     </a>                    
                   </td>
