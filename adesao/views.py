@@ -22,6 +22,7 @@ from django.conf import settings
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 from adesao.models import (
+    SistemaCultura,
     Municipio,
     Responsavel,
     Secretario,
@@ -590,34 +591,25 @@ class OficioAlteracao(WeasyTemplateView):
         return context
 
 
-class ConsultarMunicipios(ListView):
+class ConsultarEnte(ListView):
     template_name = "consultar/consultar.html"
     paginate_by = "25"
 
     def get_queryset(self):
+        tipo = self.kwargs['tipo']
         ente_federado = self.request.GET.get("ente_federado", None)
 
-        sistemas = SistemaCultura.sistema.all()
+        sistemas = SistemaCultura.sistema.filter(estado_processo='6')
 
-        if ente_federado:
-            return sistemas.filter(ente_federado__nome__icontains=ente_federado)
-
-        return sistemas.filter(estado_processo="6").order_by("ente_federado__nome")
-
-
-class ConsultarEstados(ListView):
-    template_name = "consultar/consultar_estados.html"
-    paginate_by = "27"
-
-    def get_queryset(self):
-        ente_federado = self.request.GET.get("ente_federado", None)
-
-        sistemas = SistemaCultura.sistema.all()
+        if tipo == 'municipio':
+            sistemas = sistemas.filter(ente_federado__cod_ibge__gt=100)
+        elif tipo == 'estado':
+            sistemas = sistemas.filter(ente_federado__cod_ibge__lte=100)
 
         if ente_federado:
             sistemas = sistemas.filter(ente_federado__nome__icontains=ente_federado)
 
-        return sistemas.filter(estado_processo="6").order_by("ente_federado__nome")
+        return sistemas
 
 
 class RelatorioAderidos(ListView):
@@ -657,24 +649,8 @@ class RelatorioAderidos(ListView):
 
 
 class Detalhar(DetailView):
-    model = Municipio
+    model = SistemaCultura
     template_name = "consultar/detalhar.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(Detalhar, self).get_context_data(**kwargs)
-        try:
-            planotrabalho = Usuario.objects.get(municipio_id=self.kwargs["pk"])
-            if planotrabalho.plano_trabalho_id:
-                conselhocultural = PlanoTrabalho.objects.get(
-                    id=planotrabalho.plano_trabalho_id
-                )
-                context["conselheiros"] = Conselheiro.objects.filter(
-                    conselho_id=conselhocultural.conselho_cultural_id, situacao="1"
-                )  # Situação ativo
-            return context
-        except:
-            context["conselheiros"] = None
-            return context
 
 
 class ConsultarPlanoTrabalhoMunicipio(ListView):

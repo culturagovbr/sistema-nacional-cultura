@@ -10,12 +10,12 @@
     <dd class="portletItem lastItem">
       <ul class="navTree navTreeLevel0">
         <li class="navTreeItem visualNoMarker navTreeFolderish section-sobre-a">
-          <a href="{% url 'adesao:consultar' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+          <a href="{% url 'adesao:consultar' tipo='municipio' %}" title="" class="state-published navTreeFolderish contenttype-folder">
             <span>Municípios</span>
           </a>
         </li>
         <li class="navTreeItem visualNoMarker navTreeFolderish section-sobre-a">
-          <a href="{% url 'adesao:consultar_estados' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+          <a href="{% url 'adesao:consultar' tipo='estado' %}" title="" class="state-published navTreeFolderish contenttype-folder">
             <span>Estados</span>
           </a>
         </li>
@@ -61,20 +61,29 @@
   <div>
       <button type="submit" class="btn btn-info" style="float:right;">Buscar</button>
       <div style="overflow: hidden;">
-          <input name="ente_federado" type="search" class="form-control" placeholder="Município" />
+          <input name="ente_federado" type="search" class="form-control" 
+            placeholder="{% if view.kwargs.tipo == 'municipio' %} Município {% elif view.kwargs.tipo == 'estado' %} Estado {% endif %}" />
       </div>
   </div>
 </form>
 
-<h1>Municípios</h1>
+{% if view.kwargs.tipo == 'municipio' %}
+  <h1>Municípios</h1>
+{% elif view.kwargs.tipo == 'estado' %}
+  <h1>Estados</h1>
+{% endif %}
 <ul>
-  {% for municipio in object_list %}
+  {% for sistema in object_list %}
   <li>
-    <a href="{% url 'adesao:detalhar' municipio.id %}">{{ municipio.cidade.nome_municipio }} - {{ municipio.estado.nome_uf }}</a>
+    <a href="{% url 'adesao:detalhar' sistema.id %}">{{ sistema.ente_federado }}</a>
   </li>
   {% empty %}
   <li>
-    Nenhum município encontrado.
+    {% if view.kwargs.tipo == 'municipio' %}
+      Nenhum município encontrado.
+    {% elif view.kwargs.tipo == 'estado' %}
+      Nenhum estado encontrado.
+    {% endif %}
   </li>
   {% endfor %}
 </ul>

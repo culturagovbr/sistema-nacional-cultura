@@ -111,7 +111,7 @@
                 </li>
 
                 <li id="link-central">
-                    <a href="{% url 'adesao:consultar' %}">Consultar Informações | </a>
+                    <a href="{% url 'adesao:consultar' tipo='municipio' %}">Consultar Informações | </a>
                 </li>
 
                 <li id="link-central">
@@ -147,10 +147,10 @@
                     <span id="breadcrumbs-1" dir="ltr">
 
                         <span id="breadcrumbs-current">
-                            {% if object.cidade %}
-                            <a href="{% url 'adesao:consultar' %}">Consultar Informações</a>
+                            {% if object.is_municipio %}
+                            <a href="{% url 'adesao:consultar' tipo='municipio' %}">Consultar Informações</a>
                             {% else %}
-                            <a href="{% url 'adesao:consultar_estados' %}">Consultar Informações</a>
+                            <a href="{% url 'adesao:consultar' tipo='estado' %}">Consultar Informações</a>
                             {% endif %}
                         </span>
 
@@ -173,33 +173,32 @@
 
                         <div id="viewlet-above-content-title"></div>
                         <!-- DADOS DA PREFEITURA -->
-                        {% if object.cidade %}
-                        <h1 id="parent-fieldname-title" class="documentFirstHeading">Dados: {{ object.cidade.nome_municipio }} - {{ object.estado.sigla }}</h1>
+                        <h1 id="parent-fieldname-title" class="documentFirstHeading">Dados: {{ object.ente_federado }}</h1>
+                        {% if object.is_municipio %}                            
                         <h3 class="portlet-topper ">Prefeitura</h3>
                         {% else %}
-                        <h1 id="parent-fieldname-title" class="documentFirstHeading">Dados: {{ object.estado.nome_uf }}</h1>
                         <h3 class="portlet-topper ">Governo</h3>
                         {% endif %}
 
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">CNPJ: <p style="color: #6f7681">{{ object.cnpj_prefeitura }}</p></div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Endereço: <p style="color: #6f7681">{{ object.endereco }}</p></div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Bairro: <p style="color: #6f7681">{{ object.bairro }}</p></div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">CEP: <p style="color: #6f7681">{{ object.cep }}</p></div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone: <p style="color: #6f7681" id="telefone-formatter">{{ object.telefone_um }}</p></div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">CNPJ: <p style="color: #6f7681">{{ object.sede.cnpj }}</p></div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Endereço: <p style="color: #6f7681">{{ object.sede.endereco }}</p></div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Bairro: <p style="color: #6f7681">{{ object.sede.bairro }}</p></div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">CEP: <p style="color: #6f7681">{{ object.sede.cep }}</p></div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone: <p style="color: #6f7681" id="telefone-formatter">{{ object.sede.telefone_um }}</p></div>
                         <p></p>
                         <!-- FIM DADOS DA PREFEITURA -->
 
 
                         <!-- DADOS DO PREFEITO-->
-                        {% if object.cidade %}
+                        {% if object.is_municipio %}
                         <h3 class="portlet-topper "> Prefeito</h3>
                         {% else %}
                         <h3 class="portlet-topper "> Governo</h3>
                         {% endif %}
 
                         <!--<div><img src="img/foto.png" align="left"> </div>-->
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.nome_prefeito }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.email_institucional_prefeito }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.gestor.nome }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.gestor.email_institucional }}</div>
                         <p></p>
                         <!-- FIM DO DADOS DO PREFEITO-->
 
@@ -208,10 +207,10 @@
                         <h3 class="portlet-topper "> Responsável / Dirigente Cultural</h3>
 
                         <!--<div><img src="img/foto.png" align="left"> </div>-->
-                        <div id="parent-fieldname-description" class="documentDescription texto_cor" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.usuario.responsavel.nome_responsavel }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Cargo:<p style="color: #6f7681">{{ object.usuario.responsavel.cargo_responsavel }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.usuario.responsavel.email_institucional_responsavel }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.usuario.responsavel.telefone_um }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription texto_cor" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.responsavel.nome }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Cargo:<p style="color: #6f7681">{{ object.responsavel.cargo }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.responsavel.email_institucional }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.responsavel.telefone_um }}</div>
                         <p></p>
                         <!-- FIM DO DADOS DO RESPONSAVEL-->
 
@@ -219,9 +218,9 @@
                         <!-- DADOS DO INTERLOCUTOR-->
                         <h3 class="portlet-topper "> Interlocutor / Cadastrador</h3>
 
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.usuario.secretario.nome_secretario }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.usuario.secretario.email_institucional_secretario }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.usuario.secretario.telefone_um }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.secretario.nome }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.secretario.email_institucional }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.secretario.telefone_um }}</div>
                         <p></p>
                         <!-- FIM DO DADOS DO INTERLOCUTOR-->
 
@@ -300,11 +299,11 @@
                 <p><!--<img src="{% static 'img/banner_situacao.png' %}"/>-->
                     <div class="fundo_situacao">
                         <div class="painel_situacao">
-                            {% if object.cidade %}
-                            <h5 class="texto_situacao_data">{{ object.usuario.data_publicacao_acordo|default:"Município sem cadastrador" }}</h5>
-                            <h3 class="texto_situacao">{{ object.usuario.get_estado_processo_display|default:"Publicado no DOU" }}</h3>
+                            {% if object.is_municipio %}
+                            <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Município sem cadastrador" }}</h5>
+                            <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Publicado no DOU" }}</h3>
                             {% else %}
-                            <h5 class="texto_situacao_data">{{ object.usuario.data_publicacao_acordo|default:"Estado sem cadastrador" }}</h5>
+                            <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Estado sem cadastrador" }}</h5>
                             <h3 class="texto_situacao">Publicado no DOU</h3>
                             {% endif %}
                         </div>
@@ -312,7 +311,7 @@
                 </p>
 
                 <p>
-                    <a href="{{ municipio.endereco_eletronico}}" target="_blank">
+                    <a href="{{ object.sede.endereco_eletronico}}" target="_blank">
                         <div class="fundo_painel_agenda">
                             <div class="painel_agenda">
                                 <h3 class="texto_agenda_data">Eventos</h3>
@@ -334,9 +333,9 @@
                     <div class="fundo_painel">
                         <div class="painel">
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.usuario.plano_trabalho.criacao_sistema.lei_sistema_cultura %}
+                                    {% if object.legislacao.arquivo %}
                                     <i class="fa fa-check"></i>
-                                    <a href="{{ object.usuario.plano_trabalho.criacao_sistema.lei_sistema_cultura.url }}" style="color:#ffffff">
+                                    <a href="{{ object.legislacao.arquivo.url }}" style="color:#ffffff">
                                         Lei do Sistema de Cultura
                                     </a>
                                     {% else %}
@@ -344,9 +343,9 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.usuario.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria %}
+                                    {% if object.orgao_gestor.arquivo %}
                                     <i class="fa fa-check"></i>
-                                    <a href="{{ object.usuario.plano_trabalho.orgao_gestor.relatorio_atividade_secretaria.url }}" style="color:#ffffff">
+                                    <a href="{{ oobject.orgao_gestor.arquivo.url }}" style="color:#ffffff">
                                         Relatório de Atividades do Órgão Gestor
                                     </a>
                                     {% else %}
@@ -354,9 +353,9 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.usuario.plano_trabalho.conselho_cultural.ata_regimento_aprovado %}
+                                    {% if object.conselho.arquivo %}
                                     <i class="fa fa-check"></i>
-                                    <a href="{{ object.usuario.plano_trabalho.conselho_cultural.ata_regimento_aprovado.url }}" style="color:#ffffff">
+                                    <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff">
                                         Ata de Reunião de Criação do Conselho de Políticas Culturais
                                     </a>
                                     {% else %}
@@ -364,9 +363,9 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.usuario.plano_trabalho.fundo_cultura.lei_fundo_cultura %}
+                                    {% if object.fundo_cultura.arquivo %}
                                     <i class="fa fa-check"></i>
-                                    <a href="{{ object.usuario.plano_trabalho.fundo_cultura.lei_fundo_cultura.url }}" style="color:#ffffff">
+                                    <a href="{{ object.fundo_cultura.arquivo.url }}" style="color:#ffffff">
                                         Lei do Fundo de Cultura
                                     </a>
                                     {% else %}
@@ -374,9 +373,9 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.usuario.plano_trabalho.plano_cultura.lei_plano_cultura %}
+                                    {% if object.plano.arquivo %}
                                     <i class="fa fa-check"></i>
-                                    <a href="{{ object.usuario.plano_trabalho.plano_cultura.lei_plano_cultura.url }}" style="color:#ffffff">
+                                    <a href="{{ object.plano.arquivo.url }}" style="color:#ffffff">
                                         Lei do Plano de Cultura
                                     </a>
                                     {% else %}
@@ -445,7 +444,7 @@ $(document).ready(function(){
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(mymap);
-    {% if object.cidade %}
+    {% if object.is_municipio %}
     $.get("http://mapas.cultura.gov.br/api/agent/find", {'@select': "id,name,location,singleUrl", '_geoLocation': 'GEONEAR('+lng+','+lat+',50000'+')'}).done(function(data){
         var clusters = new L.markerClusterGroup();
         data.forEach(function(agente){

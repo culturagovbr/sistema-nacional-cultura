@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
@@ -81,7 +82,6 @@ urlpatterns = [
         name='alteracao'),
 
     # Consulta
-    url(r'^consultar/$', views.ConsultarMunicipios.as_view(), name='consultar'),
-    url(r'^consultar/estados/$', views.ConsultarEstados.as_view(), name='consultar_estados'),
+    path('consultar/<str:tipo>', views.ConsultarEnte.as_view(), name='consultar'),
     url(r'^detalhar/(?P<pk>[0-9]+)$', views.Detalhar.as_view(), name='detalhar'),
     ]
