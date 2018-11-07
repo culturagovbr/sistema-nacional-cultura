@@ -595,50 +595,14 @@ class ConsultarMunicipios(ListView):
     paginate_by = "25"
 
     def get_queryset(self):
-        ente_federado = self.request.GET.get("municipio", None)
-        sistema = self.request.GET.get("sistema", None)
-        orgao = self.request.GET.get("orgao", None)
-        conselho = self.request.GET.get("conselho", None)
-        fundo = self.request.GET.get("fundo", None)
-        plano = self.request.GET.get("plano", None)
+        ente_federado = self.request.GET.get("ente_federado", None)
 
-        usuarios = Municipio.objects.all()
-
-        if sistema:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__criacao_sistema__lei_sistema_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__criacao_sistema__lei_sistema_cultura="")
-
-        if orgao:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__orgao_gestor__relatorio_atividade_secretaria__isnull=False
-            ).exclude(
-                usuario__plano_trabalho__orgao_gestor__relatorio_atividade_secretaria=""
-            )
-
-        if conselho:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__conselho_cultural__ata_regimento_aprovado__isnull=False
-            ).exclude(
-                usuario__plano_trabalho__conselho_cultural__ata_regimento_aprovado=""
-            )
-
-        if fundo:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__fundo_cultura__lei_fundo_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__fundo_cultura__lei_fundo_cultura="")
-
-        if plano:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__plano_cultura__lei_plano_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__plano_cultura__lei_plano_cultura="")
+        sistemas = SistemaCultura.sistema.all()
 
         if ente_federado:
-            return usuarios.filter(cidade__nome_municipio__icontains=ente_federado)
+            return sistemas.filter(ente_federado__nome__icontains=ente_federado)
 
-        return usuarios.filter(usuario__estado_processo="6").order_by(
-            "cidade__nome_municipio"
-        )
+        return sistemas.filter(estado_processo="6").order_by("ente_federado__nome")
 
 
 class ConsultarEstados(ListView):
@@ -646,54 +610,14 @@ class ConsultarEstados(ListView):
     paginate_by = "27"
 
     def get_queryset(self):
-        ente_federado = self.request.GET.get("estado", None)
-        sistema = self.request.GET.get("sistema", None)
-        orgao = self.request.GET.get("orgao", None)
-        conselho = self.request.GET.get("conselho", None)
-        fundo = self.request.GET.get("fundo", None)
-        plano = self.request.GET.get("plano", None)
+        ente_federado = self.request.GET.get("ente_federado", None)
 
-        usuarios = Municipio.objects.all()
-
-        if sistema:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__criacao_sistema__lei_sistema_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__criacao_sistema__lei_sistema_cultura="")
-
-        if orgao:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__orgao_gestor__relatorio_atividade_secretaria__isnull=False
-            ).exclude(
-                usuario__plano_trabalho__orgao_gestor__relatorio_atividade_secretaria=""
-            )
-
-        if conselho:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__conselho_cultural__ata_regimento_aprovado__isnull=False
-            ).exclude(
-                usuario__plano_trabalho__conselho_cultural__ata_regimento_aprovado=""
-            )
-
-        if fundo:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__fundo_cultura__lei_fundo_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__fundo_cultura__lei_fundo_cultura="")
-
-        if plano:
-            usuarios = usuarios.filter(
-                usuario__plano_trabalho__plano_cultura__lei_plano_cultura__isnull=False
-            ).exclude(usuario__plano_trabalho__plano_cultura__lei_plano_cultura="")
+        sistemas = SistemaCultura.sistema.all()
 
         if ente_federado:
-            usuarios = usuarios.filter(
-                Q(cidade__isnull=True),
-                Q(estado__nome_uf__icontains=ente_federado)
-                | Q(estado__sigla__iexact=ente_federado),
-            )
+            sistemas = sistemas.filter(ente_federado__nome__icontains=ente_federado)
 
-        return usuarios.filter(estado__isnull=False, cidade__isnull=True).order_by(
-            "estado"
-        )
+        return sistemas.filter(estado_processo="6").order_by("ente_federado__nome")
 
 
 class RelatorioAderidos(ListView):
