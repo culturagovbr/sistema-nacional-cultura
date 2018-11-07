@@ -43,11 +43,9 @@ urlpatterns = [
         name='alterar_municipio'),
 
     # Cadastro e alteração de responsável
-    url(r'^responsavel/$', login_required(views.CadastrarResponsavel.as_view()),
-        name='responsavel'),
-    url(r'^sucesso-cadastro-responsavel/$',
-        views.sucesso_responsavel,
-        name='sucesso_responsavel'),
+    url(r'^sucesso-cadastro-funcionario/$',
+        views.sucesso_funcionario,
+        name='sucesso_funcionario'),
     url(r'^responsavel/(?P<pk>[0-9]+)/$',
         login_required(views.AlterarResponsavel.as_view()),
         name='alterar_responsavel'),
@@ -55,9 +53,12 @@ urlpatterns = [
         views.importar_secretario,
         name='importar_secretario'),
 
+    path('funcionario/<str:tipo>',
+            login_required(views.CadastrarFuncionario.as_view()),
+            name='funcionario'),
+
     # Cadastro e alteração de secretário
-    url(r'^secretario/$', login_required(views.CadastrarSecretario.as_view()),
-        name='secretario'),
+   
     url(r'^sucesso-cadastro-secretario/$',
         views.sucesso_secretario,
         name='sucesso_secretario'),

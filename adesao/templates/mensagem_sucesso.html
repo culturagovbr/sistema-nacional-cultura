@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Cadastro/Alteração Realizado com Sucesso!</h3>
+<p>O {{ tipo_funcionario }} foi cadastrado/alterado com sucesso.</p>
+<a class="btn btn-success" href="{% url 'adesao:index' %}">OK</a>
+{% endblock content %}

@@ -7,7 +7,7 @@ from django.template.defaultfilters import filesizeformat
 
 from dal import autocomplete
 
-from .models import Usuario, Municipio, Responsavel, Secretario
+from .models import Usuario, Municipio, Responsavel, Secretario, Funcionario
 from .utils import validar_cpf, validar_cnpj, limpar_mascara
 import re
 
@@ -156,6 +156,18 @@ class CadastrarMunicipioForm(ModelForm):
         fields = '__all__'
         widgets = {'cidade': autocomplete.ModelSelect2(url='gestao:cidade_chain', forward=['estado']),
                    'estado': autocomplete.ModelSelect2(url='gestao:uf_chain')}
+
+
+class CadastrarFuncionarioForm(ModelForm):
+    def clean_cpf_secretario(self):
+        if not validar_cpf(self.cleaned_data['cpf']):
+            raise forms.ValidationError('Por favor, digite um CPF válido!')
+
+        return self.cleaned_data['cpf']
+
+    class Meta:
+        model = Funcionario
+        fields = '__all__'
 
 
 class CadastrarSecretarioForm(ModelForm):

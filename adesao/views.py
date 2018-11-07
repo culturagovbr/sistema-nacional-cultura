@@ -34,7 +34,7 @@ from adesao.models import (
 )
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm
-from adesao.forms import CadastrarResponsavelForm, CadastrarSecretarioForm
+from adesao.forms import CadastrarResponsavelForm, CadastrarSecretarioForm, CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 
 from django_weasyprint import WeasyTemplateView
@@ -94,8 +94,9 @@ def sucesso_usuario(request):
     return render(request, "usuario/mensagem_sucesso.html")
 
 
-def sucesso_responsavel(request):
-    return render(request, "responsavel/mensagem_sucesso.html")
+def sucesso_funcionario(request, **kwargs):
+    tipo_funcionario = kwargs['tipo']
+    return render(request, "mensagem_sucesso.html")
 
 
 def exportar_csv(request):
@@ -298,22 +299,25 @@ class AlterarMunicipio(UpdateView):
         return kwargs
 
 
-class CadastrarResponsavel(CreateView):
-    form_class = CadastrarResponsavelForm
-    template_name = "responsavel/cadastrar_responsavel.html"
-    success_url = reverse_lazy("adesao:sucesso_responsavel")
+class CadastrarFuncionario(CreateView):
+    form_class = CadastrarFuncionarioForm
+    template_name = "cadastrar_funcionario.html"
 
     def form_valid(self, form):
-        self.request.user.usuario.responsavel = form.save()
-        self.request.user.usuario.save()
-        return super(CadastrarResponsavel, self).form_valid(form)
+        tipo_funcionario = self.kwargs['tipo']
+        setattr(self.request.sistema_cultura, tipo_funcionario, form.save())
+        self.request.sistema_cultura.save()
+        return super(CadastrarFuncionario, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        responsavel = self.request.user.usuario.responsavel
-        if responsavel:
-            return redirect("adesao:alterar_responsavel", pk=responsavel.id)
+        funcionario = getattr(self.request.sistema_cultura, self.kwargs['tipo'])
+        if funcionario:
+            return redirect("adesao:alterar_funcionario", pk=funcionario.id)
 
-        return super(CadastrarResponsavel, self).dispatch(*args, **kwargs)
+    def get_success_url(self):
+        return reverse_lazy("adesao:sucesso_funcionario", kwargs={"tipo": self.kwargs['tipo']})
+
+        return super(CadastrarFuncionario, self).dispatch(*args, **kwargs)
 
 
 @login_required
@@ -354,24 +358,6 @@ class AlterarResponsavel(UpdateView):
 
 def sucesso_secretario(request):
     return render(request, "secretario/mensagem_sucesso_secretario.html")
-
-
-class CadastrarSecretario(CreateView):
-    form_class = CadastrarSecretarioForm
-    template_name = "secretario/cadastrar_secretario.html"
-    success_url = reverse_lazy("adesao:sucesso_secretario")
-
-    def form_valid(self, form):
-        self.request.user.usuario.secretario = form.save()
-        self.request.user.usuario.save()
-        return super(CadastrarSecretario, self).form_valid(form)
-
-    def dispatch(self, *args, **kwargs):
-        secretario = self.request.user.usuario.secretario
-        if secretario:
-            return redirect("adesao:alterar_secretario", pk=secretario.id)
-
-        return super(CadastrarSecretario, self).dispatch(*args, **kwargs)
 
 
 class AlterarSecretario(UpdateView):
