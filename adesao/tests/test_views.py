@@ -179,3 +179,31 @@ def test_cadastro_de_um_ente_tipo_estado(login, client):
 
     client.get(response.url)
     assert len(mail.outbox) == 1
+
+
+def test_consultar_informações_municipios(client):
+
+    municipio = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Brasília", 
+        estado_processo='6'
+    )
+
+    url = reverse("adesao:consultar", kwargs={"tipo":"municipio"}) + "?ente_federado=Brasília"
+    response = client.get(url)
+
+    assert len(response.context_data["object_list"]) == 1
+    assert response.context_data["object_list"][0] == municipio
+
+
+def test_consultar_informações_estados(client):
+
+    estado = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=12, ente_federado__nome="Acre", 
+        estado_processo='6'
+    )
+
+    url = reverse("adesao:consultar", kwargs={"tipo":"estado"}) + "?ente_federado=Acre"
+    response = client.get(url)
+
+    assert len(response.context_data["object_list"]) == 1
+    assert response.context_data["object_list"][0] == estado
