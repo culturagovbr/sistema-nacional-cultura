@@ -107,8 +107,7 @@ def exportar_csv(request):
     writer = csv.writer(response)
     writer.writerow(
         [
-            "UF",
-            "Município",
+            "Nome",
             "Cod.IBGE",
             "Situação",
             "Endereço",
@@ -119,29 +118,28 @@ def exportar_csv(request):
         ]
     )
 
-    for municipio in Municipio.objects.all():
-        uf = municipio.estado.sigla
-        if municipio.cidade:
-            cidade = municipio.cidade.nome_municipio
-            cod_ibge = municipio.cidade.codigo_ibge
+    for sistema in SistemaCultura.sistema.all():
+        if sistema.ente_federado:
+            nome = sistema.ente_federado.nome
+            cod_ibge = sistema.ente_federado.cod_ibge
         else:
-            cidade = municipio.estado.nome_uf
-            cod_ibge = ""
+            nome = "Nome não cadastrado"
+            cod_ibge = "Código não cadastrado"
+        
         try:
-            estado_processo = municipio.usuario.get_estado_processo_display()
+            estado_processo = sistema.get_estado_processo_display()
             if estado_processo != "Publicado no DOU":
                 continue
         except ObjectDoesNotExist:
             estado_processo = "Publicado no DOU"
-        endereco = municipio.endereco
-        bairro = municipio.bairro
-        cep = municipio.cep
-        telefone = municipio.telefone_um
-        email = municipio.email_institucional_prefeito
+        endereco = sistema.sede.endereco
+        bairro = sistema.sede.bairro
+        cep = sistema.sede.cep
+        telefone = sistema.sede.telefone_um
+        email = sistema.gestor.email_institucional
         writer.writerow(
             [
-                uf,
-                cidade,
+                nome,
                 cod_ibge,
                 estado_processo,
                 endereco,
