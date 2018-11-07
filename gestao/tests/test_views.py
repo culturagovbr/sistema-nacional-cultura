@@ -1367,29 +1367,23 @@ def test_pesquisa_por_ente_federado_com_arquivo_lei_sistema(client, login_staff)
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
+    sistema = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté", 
+        estado_processo='6', _fill_optional='legislacao'
     )
 
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
-    user.plano_trabalho.criacao_sistema = mommy.make("CriacaoSistema")
-    user.plano_trabalho.save()
-    user.plano_trabalho.criacao_sistema.situacao = SituacoesArquivoPlano.objects.get(
-        pk=1
-    )
-    user.plano_trabalho.criacao_sistema.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.criacao_sistema.arquivo = arquivo
-    user.plano_trabalho.criacao_sistema.save()
+    sistema.legislacao.situacao = 1
+    sistema.legislacao.tipo = 0
+    sistema.legislacao.data_envio = datetime.date(2018, 1, 1)
+    sistema.legislacao.arquivo = arquivo
+    sistema.legislacao.save()
 
-    url = reverse("gestao:acompanhar_sistema") + "?q=Abaete&anexo=arquivo"
+    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"legislacao"}) + "?q=Abaete&anexo=arquivo"
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
+    assert response.context_data["object_list"][0] == sistema
     assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
+        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
     )
 
 
@@ -1402,27 +1396,23 @@ def test_pesquisa_por_ente_federado_com_arquivo_plano_cultura(client, login_staf
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
+    sistema = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté", 
+        estado_processo='6', _fill_optional='plano'
     )
 
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
-    user.plano_trabalho.plano_cultura = mommy.make("PlanoCultura")
-    user.plano_trabalho.save()
-    user.plano_trabalho.plano_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=1)
-    user.plano_trabalho.plano_cultura.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.plano_cultura.arquivo = arquivo
-    user.plano_trabalho.plano_cultura.save()
+    sistema.plano.situacao = 1
+    sistema.plano.tipo = 4
+    sistema.plano.data_envio = datetime.date(2018, 1, 1)
+    sistema.plano.arquivo = arquivo
+    sistema.plano.save()
 
-    url = reverse("gestao:acompanhar_plano") + "?q=Abaete&anexo=arquivo"
+    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"plano"}) + "?q=Abaete&anexo=arquivo"
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
+    assert response.context_data["object_list"][0] == sistema
     assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
+        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
     )
 
 
@@ -1435,27 +1425,23 @@ def test_pesquisa_por_ente_federado_com_arquivo_fundo_cultura(client, login_staf
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
+    sistema = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=12346, ente_federado__nome="Abaeté", 
+        estado_processo='6', _fill_optional='fundo_cultura'
     )
 
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
-    user.plano_trabalho.fundo_cultura = mommy.make("FundoCultura")
-    user.plano_trabalho.save()
-    user.plano_trabalho.fundo_cultura.situacao = SituacoesArquivoPlano.objects.get(pk=1)
-    user.plano_trabalho.fundo_cultura.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.fundo_cultura.arquivo = arquivo
-    user.plano_trabalho.fundo_cultura.save()
+    sistema.fundo_cultura.situacao = 1
+    sistema.fundo_cultura.tipo = 2
+    sistema.fundo_cultura.data_envio = datetime.date(2018, 1, 1)
+    sistema.fundo_cultura.arquivo = arquivo
+    sistema.fundo_cultura.save()
 
-    url = reverse("gestao:acompanhar_fundo") + "?q=Abaete&anexo=arquivo"
+    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"fundo_cultura"}) + "?q=Abaete&anexo=arquivo"
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
+    assert response.context_data["object_list"][0] == sistema
     assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
+        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
     )
 
 
@@ -1468,27 +1454,23 @@ def test_pesquisa_por_ente_federado_com_arquivo_orgao_gestor(client, login_staff
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
+    sistema = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté", 
+        estado_processo='6', _fill_optional='orgao_gestor'
     )
 
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
-    user.plano_trabalho.orgao_gestor = mommy.make("OrgaoGestor")
-    user.plano_trabalho.save()
-    user.plano_trabalho.orgao_gestor.situacao = SituacoesArquivoPlano.objects.get(pk=1)
-    user.plano_trabalho.orgao_gestor.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.orgao_gestor.arquivo = arquivo
-    user.plano_trabalho.orgao_gestor.save()
+    sistema.orgao_gestor.situacao = 1
+    sistema.orgao_gestor.tipo = 1
+    sistema.orgao_gestor.data_envio = datetime.date(2018, 1, 1)
+    sistema.orgao_gestor.arquivo = arquivo
+    sistema.orgao_gestor.save()
 
-    url = reverse("gestao:acompanhar_orgao") + "?q=Abaete&anexo=arquivo"
+    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"orgao_gestor"}) + "?q=Abaete&anexo=arquivo"
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
+    assert response.context_data["object_list"][0] == sistema
     assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
+        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
     )
 
 
@@ -1501,29 +1483,23 @@ def test_pesquisa_por_ente_federado_com_arquivo_conselho_cultural(client, login_
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
-    municipio = mommy.make(
-        "Municipio", cidade=mommy.make("Cidade", nome_municipio="Abaeté")
+    sistema = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté", 
+        estado_processo='6', _fill_optional='conselho'
     )
 
-    user = mommy.make("Usuario", _fill_optional=["plano_trabalho"], municipio=municipio)
-    user.estado_processo = "6"
-    user.save()
-    user.plano_trabalho.conselho_cultural = mommy.make("ConselhoCultural")
-    user.plano_trabalho.save()
-    user.plano_trabalho.conselho_cultural.situacao = SituacoesArquivoPlano.objects.get(
-        pk=1
-    )
-    user.plano_trabalho.conselho_cultural.data_envio = datetime.date(2018, 1, 1)
-    user.plano_trabalho.conselho_cultural.arquivo = arquivo
-    user.plano_trabalho.conselho_cultural.save()
+    sistema.conselho.situacao = 1
+    sistema.conselho.tipo = 3
+    sistema.conselho.data_envio = datetime.date(2018, 1, 1)
+    sistema.conselho.arquivo = arquivo
+    sistema.conselho.save()
 
-    url = reverse("gestao:acompanhar_conselho") + "?q=Abaete&anexo=arquivo"
+    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"conselho"}) + "?q=Abaete&anexo=arquivo"
     response = client.get(url)
 
-    assert response.context_data["object_list"][0].municipio == user.municipio
+    assert response.context_data["object_list"][0] == sistema
     assert (
-        response.context_data["object_list"][0].municipio.cidade.nome_municipio
-        == "Abaeté"
+        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
     )
 
 
