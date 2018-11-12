@@ -4,10 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils.crypto import get_random_string
 from django.forms import ModelForm
 from django.template.defaultfilters import filesizeformat
+from django.forms import formset_factory
 
 from dal import autocomplete
 
-from .models import Usuario, Municipio, Responsavel, Secretario, Funcionario
+from .models import Usuario, Municipio, Responsavel, Secretario, Funcionario, SistemaCultura, Sede
 from .utils import validar_cpf, validar_cnpj, limpar_mascara
 import re
 
@@ -108,6 +109,29 @@ class CadastrarUsuarioForm(UserCreationForm):
             usuario.save()
 
         return user
+
+
+class CadastrarSede(ModelForm):
+
+    def clean_cnpj(self):
+        if not validar_cnpj(self.cleaned_data['cnpj']):
+            raise forms.ValidationError('Por favor, digite um CNPJ válido!')
+
+        return self.cleaned_data['cnpj']
+
+    class Meta:
+        model = Sede
+        fields = '__all__'
+
+
+class CadastrarSistemaCulturaForm(ModelForm):
+
+    class Meta:
+        model = SistemaCultura
+        fields = '__all__'
+        widgets = {'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
+
+SedeFormSet = formset_factory(CadastrarSistemaCulturaForm, CadastrarSede, extra=2)
 
 
 class CadastrarMunicipioForm(ModelForm):

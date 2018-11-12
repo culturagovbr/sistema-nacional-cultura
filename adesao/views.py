@@ -33,7 +33,7 @@ from adesao.models import (
     SistemaCultura
 )
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm
+from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm, SedeFormSet
 from adesao.forms import CadastrarResponsavelForm, CadastrarSecretarioForm, CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 
@@ -239,6 +239,49 @@ def selecionar_tipo_ente(request):
 
 def sucesso_municipio(request):
     return render(request, "prefeitura/mensagem_sucesso_prefeitura.html")
+
+
+class CadastrarSistemaCultura(CreateView):
+    form_class = CadastrarSistemaCulturaForm
+    model = SistemaCultura
+    template_name = "cadastrar_sistema.html"
+    templated_email_template_name = "adesao"
+    templated_email_from_email = "naoresponda@cultura.gov.br"
+    success_url = reverse_lazy("adesao:sucesso_municipio")
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        inlines = context['inlines']
+        if inlines.is_valid() and form.is_valid():
+            self.object = form.save()
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(CadastrarSistemaCultura, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST)
+            context['form_sede'] = SedeFormSet(self.request.POST)
+        else:
+            context['form_sistema'] = CadastrarSistemaCulturaForm()
+            context['form_sede'] = SedeFormSet()
+        return context
+
+    def templated_email_get_recipients(self, form):
+        return [settings.RECEIVER_EMAIL]
+
+    def templated_email_get_context_data(self, **kwargs):
+        context = super().templated_email_get_context_data(**kwargs)
+        context["object"] = self.object
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(CadastrarSistemaCultura, self).get_form_kwargs()
+        return kwargs
 
 
 class CadastrarMunicipio(TemplatedEmailFormViewMixin, CreateView):

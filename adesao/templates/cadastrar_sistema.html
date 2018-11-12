@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+{{form.media}}
+<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div class="form-group {% if form_sistema.ente_federado.errors %} has-error {% endif %}">
+    <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município)</label>
+
+    <div class="col-sm-2">
+      {% render_field form.ente_federado class="form-control" %} 
+      {% if form_sistema.ente_federado.errors %} 
+        <span class="help-block">{{ form_sistema.ente_federado.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!--
+
+  <div class="form-group {% if form.cpf_prefeito.errors %} has-error {% endif %}">
+    <label for="{{ form.cpf_prefeito.id_for_label }}" class="col-sm-4 control-label">CPF do Governador</label>
+
+    <div class="col-sm-4">
+      {% render_field form.cpf_prefeito class="form-control cpf" %}
+      {% if form.cpf_prefeito.errors %} 
+        <span class="help-block">{{ form.cpf_prefeito.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.rg_prefeito.errors %} has-error {% endif %}">
+    <label for="{{ form.rg_prefeito.id_for_label }}" class="col-sm-4 control-label">RG do Governador</label>
+
+    <div class="col-sm-3">
+      {% render_field form.rg_prefeito class="form-control" %}
+      {% if form.rg_prefeito.errors %} 
+        <span class="help-block">{{ form.rg_prefeito.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.orgao_expeditor_rg.errors %} has-error {% endif %}">
+    <label for="{{ form.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão Expeditor</label>
+
+    <div class="col-sm-3">
+      {% render_field form.orgao_expeditor_rg class="form-control" %}
+      {% if form.orgao_expeditor_rg.errors %} 
+        <span class="help-block">{{ form.orgao_expeditor_rg.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group {% if form.estado_expeditor.errors %} has-error {% endif %}">
+    <label for="{{ form.estado_expeditor.id_for_label }}" class="col-sm-1 control-label">UF</label>
+
+    <div class="col-sm-2">
+      {% render_field form.estado_expeditor class="form-control" %}
+      {% if form.estado_expeditor.errors %} 
+        <span class="help-block">{{ form.estado_expeditor.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+      <span class="btn btn-default btn-file">
+        <strong>Termo de Posse</strong>
+        <p>{% render_field form.termo_posse_prefeito %}</p>
+      </span>
+      <p>{{ form.termo_posse_prefeito.errors }}</p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+      <span class="btn btn-default btn-file">
+        <strong>Cópia do CPF</strong>
+        <p>{% render_field form.cpf_copia_prefeito %}</p>
+      </span>
+      {{ form.cpf_copia_prefeito.errors }}
+    </div>
+
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+      <span class="btn btn-default btn-file">
+        <strong>Cópia do RG</strong>
+        <p>{% render_field form.rg_copia_prefeito %}</p>
+      </span>
+      {{ form.rg_copia_prefeito.errors }}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.nome_prefeito.errors %} has-error {% endif %}">
+    <label for="{{ form.nome_prefeito.id_for_label }}" class="col-sm-4 control-label">Nome do Governador</label>
+
+    <div class="col-sm-8">
+      {% render_field form.nome_prefeito class="form-control" %}
+      {% if form.nome_prefeito.errors %} 
+        <span class="help-block">{{ form.nome_prefeito.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.email_institucional_prefeito.errors %} has-error {% endif %}">
+    <label for="{{ form.email_institucional_prefeito.id_for_label }}" class="col-sm-4 control-label">E-mail Institucional</label>
+
+    <div class="col-sm-8">
+      {% render_field form.email_institucional_prefeito class="form-control" %}
+      {% if form.email_institucional_prefeito.errors %} 
+        <span class="help-block">{{ form.email_institucional_prefeito.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+-->
+
+  <div class="form-group {% if form_sede.cnpj.errors %} has-error {% endif %}">
+    <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado</label>
+    <div class="col-sm-4">
+      {% render_field form_sede.cnpj class="form-control cnpj" %}
+      {% if form_sede.cnpj.errors %} 
+        <span class="help-block">{{ form_sede.cnpj.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group {% if form.endereco.errors %} has-error {% endif %}">
+    <label for="{{ form.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional</label>
+    <div class="col-sm-8">
+      {% render_field form.endereco class="form-control" %}
+      {% if form.endereco.errors %} 
+        <span class="help-block">{{ form.endereco.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group {% if form.complemento.errors %} has-error {% endif %}">
+    <label for="{{ form.complemento.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Complemento</label>
+
+    <div class="col-sm-3">
+      {% render_field form.complemento class="form-control" %}
+      {% if form.complemento.errors %} 
+        <span class="help-block">{{ form.complemento.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group {% if form.bairro.errors %} has-error {% endif %}">
+    <label for="{{ form.bairro.id_for_label }}" class="col-sm-1 control-label">Bairro</label>
+
+    <div class="col-sm-4">
+      {% render_field form.bairro class="form-control" %}
+      {% if form.bairro.errors %} 
+        <span class="help-block">{{ form.bairro.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.cep.errors %} has-error {% endif %}">
+    <label for="{{ form.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP</label>
+
+    <div class="col-sm-4">
+      {% render_field form.cep class="form-control cep" %}
+      {% if form.cep.errors %} 
+        <span class="help-block">{{ form.cep.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.endereco_eletronico.errors %} has-error {% endif %}">
+    <label for="{{ form.endereço_eletronico.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Endereço Eletrônico (Agenda Digital)</label>
+
+    <div class="col-sm-4">
+      {% render_field form.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
+      {% if form.endereco_eletronico.errors %} 
+        <span class="help-block">{{ form.endereco_eletronico.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.telefone_um.errors %} has-error {% endif %}">
+
+    <label for="{{ form.telefone_um.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Telefone Institucional</label>
+
+    <div class="col-sm-4">
+      <div class="input-group input-group-sm">
+        {% render_field form.telefone_um class="form-control telefone" %}
+        <span class="input-group-btn">
+          <button id="add" type="button" class="btn btn-default add">
+            <i class="fa fa-plus"></i>
+          </button>
+        </span>
+      </div>
+      {% if form.telefone_um.errors %} 
+        <span class="help-block">{{ form.telefone_um.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div style="display:none;" class="form-group telefone2 {% if form.telefone_dois.errors %} has-error {% endif %}">
+    <div class="col-sm-offset-4 col-sm-4">
+      <div class="input-group input-group-sm">
+        {% render_field form.telefone_dois class="form-control telefone" %}
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default add2">
+            <i class="fa fa-plus"></i>
+          </button>
+        </span>
+      </div>
+      {% if form.telefone_dois.errors %} 
+        <span class="help-block">{{ form.telefone_dois.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="display:none;" class="form-group telefone3 {% if form.telefone_tres.errors %} has-error {% endif %}">
+    <div class="col-sm-offset-4 col-sm-4">
+      {% render_field form.telefone_tres class="form-control telefone" %}
+      {% if form.telefone_tres.errors %} 
+        <span class="help-block">{{ form.telefone_tres.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-10">
+      <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
+      <input type="submit" class="btn btn-success" value="Salvar" />
+    </div>
+  </div>
+</form>
+{% endblock content %}
