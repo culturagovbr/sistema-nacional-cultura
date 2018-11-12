@@ -303,14 +303,17 @@ class CadastrarFuncionario(CreateView):
     form_class = CadastrarFuncionarioForm
     template_name = "cadastrar_funcionario.html"
 
+    def get_sistema_cultura(self):
+        return get_object_or_404(SistemaCultura, pk=int(self.kwargs['sistema']))
+
     def form_valid(self, form):
         tipo_funcionario = self.kwargs['tipo']
-        setattr(self.request.sistema_cultura, tipo_funcionario, form.save())
-        self.request.sistema_cultura.save()
+        setattr(self.get_sistema_cultura(), tipo_funcionario, form.save())
+        self.get_sistema_cultura().save()
         return super(CadastrarFuncionario, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        funcionario = getattr(self.request.sistema_cultura, self.kwargs['tipo'])
+        funcionario = getattr(self.get_sistema_cultura(), self.kwargs['tipo'])
         if funcionario:
             return redirect("adesao:alterar_funcionario", pk=funcionario.id)
 

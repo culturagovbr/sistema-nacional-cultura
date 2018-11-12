@@ -8,7 +8,7 @@ from django.shortcuts import reverse
 
 from model_mommy import mommy
 
-from adesao.models import Municipio
+from adesao.models import Municipio, Funcionario
 
 pytestmark = pytest.mark.django_db
 
@@ -207,3 +207,30 @@ def test_consultar_informações_estados(client):
 
     assert len(response.context_data["object_list"]) == 1
     assert response.context_data["object_list"][0] == estado
+
+
+def test_cadastrar_responsavel_tipo_responsavel(login, client, sistema_cultura):
+    url = reverse("adesao:cadastrar_funcionario", 
+        kwargs={"tipo": "responsavel", "sistema": sistema_cultura.id})
+
+    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
+        orgao_expeditor_rg="SSP", estado_expeditor=sistema_cultura.ente_federado.cod_ibge,
+        nome="Joao silva", email_institucional="joao@email.com",
+        endereco_eletronico="teste.com.br")
+
+    response = client.post(
+        url,
+        {
+            "cpf": funcionario.cpf,
+            "rg": funcionario.rg,
+            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
+            "estado_expeditor": funcionario.estado_expeditor,
+            "nome": funcionario.nome,
+            "email_institucional": funcionario.email_institucional,
+            "endereco_eletronico": funcionario.endereco_eletronico,
+        },
+    )
+
+    funcionario_salvo = Funcionario.objects.last()
+    assert funcionario == funcionario_salvo
+

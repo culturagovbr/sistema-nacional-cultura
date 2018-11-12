@@ -53,9 +53,9 @@ urlpatterns = [
         views.importar_secretario,
         name='importar_secretario'),
 
-    path('funcionario/<str:tipo>',
+    path('funcionario/<int:sistema>/<str:tipo>',
             login_required(views.CadastrarFuncionario.as_view()),
-            name='funcionario'),
+            name='cadastrar_funcionario'),
 
     # Cadastro e alteração de secretário
    
