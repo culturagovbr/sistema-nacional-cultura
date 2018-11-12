@@ -32,6 +32,7 @@ from adesao.models import Cidade
 from adesao.models import Municipio
 from adesao.models import Historico
 from adesao.models import SistemaCultura
+from adesao.models import EnteFederado
 
 from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import CriacaoSistema
@@ -101,13 +102,20 @@ class CidadeChain(autocomplete.Select2QuerySetView):
                 .values_list('pk', 'nome_municipio', named=True)
         return choices
 
+
+class EnteChain(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        """ Filtra todas as cidade de uma determinada UF """
+        choices = EnteFederado.objects.filter(Q(nome__unaccent__icontains=self.q))\
+            .values_list('pk', 'nome', named=True)
+
         return choices
 
     def get_result_label(self, item):
-        return item.nome_municipio
+        return item.nome
 
     def get_selected_result_label(self, item):
-        return item.nome_municipio
+        return item.nome
 
 
 class UfChain(autocomplete.Select2QuerySetView):
@@ -115,8 +123,7 @@ class UfChain(autocomplete.Select2QuerySetView):
         """ Filtra todas as uf passando nome ou sigla """
 
         choices = Uf.objects.filter(
-                    Q(sigla__iexact=self.q) |
-                    Q(nome_uf__unaccent__icontains=self.q)
+                    Q(sigla__iexact=self.q) | Q(nome_uf__icontains=self.q)
                 ).values_list('pk', 'sigla', named=True)
         return choices
 

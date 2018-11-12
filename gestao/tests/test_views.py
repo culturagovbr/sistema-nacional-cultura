@@ -13,6 +13,7 @@ from gestao.models import DiligenciaSimples
 from gestao.forms import DiligenciaForm
 from adesao.models import Uf
 from adesao.models import SistemaCultura
+from adesao.models import EnteFederado
 
 from planotrabalho.models import OrgaoGestor
 from planotrabalho.models import CriacaoSistema
@@ -1074,6 +1075,20 @@ def test_filtra_ufs_por_nome(client):
 
     assert len(request.json()["results"]) == 1
     assert request.json()["results"][0]["text"] == mg.sigla
+
+
+def test_filtra_entes_por_nome(client):
+    """ Testa se EnteChain retorna o ente correto ao passar o nome"""
+
+    EnteFederado.objects.all().delete()
+    mg = mommy.make("EnteFederado", nome="Minas Gerais")
+    mommy.make("EnteFederado", _quantity=10)
+
+    url = "{url}?q={param}".format(url=reverse("gestao:ente_chain") , param="Minas")
+    request = client.get(url)
+
+    assert len(request.json()["results"]) == 1
+    assert request.json()["results"][0]["text"] == mg.nome
 
 
 def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_staff):

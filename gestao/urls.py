@@ -79,6 +79,10 @@ urlpatterns = [
             login_url='adesao:login'), name='alterar_usuario'),
 
     # UF e Município aninhados
+    path("chain/ente",
+        views.EnteChain.as_view(),
+        name='ente_chain'),
+
     url(r'^chain/cidade$',
         views.CidadeChain.as_view(),
         name='cidade_chain'),
