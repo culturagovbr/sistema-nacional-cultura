@@ -33,7 +33,8 @@ from adesao.models import (
     SistemaCultura
 )
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm, SedeFormSet
+from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm
+from adesao.forms import SedeFormSet, GestorFormSet
 from adesao.forms import CadastrarResponsavelForm, CadastrarSecretarioForm, CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 
@@ -251,9 +252,18 @@ class CadastrarSistemaCultura(CreateView):
 
     def form_valid(self, form):
         context = self.get_context_data()
-        inlines = context['inlines']
-        if inlines.is_valid() and form.is_valid():
-            self.object = form.save()
+
+        form_sistema = context['form_sistema']
+        form_sede = context['form_sede']
+        form_gestor = context['form_gestor']
+
+        if form_sistema.is_valid() and form_gestor.is_valid() and form_sede.is_valid():
+            sede = form_sede.save()
+            gestor = form_gestor.save()
+            sistema = form_sistema.save()
+            sistema.sede = self.sede
+            sistema.gestor = self.gestor
+            sistema.save()
             return redirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -266,9 +276,11 @@ class CadastrarSistemaCultura(CreateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST)
             context['form_sede'] = SedeFormSet(self.request.POST)
+            context['form_gestor'] = GestorFormSet(self.request.POST)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
             context['form_sede'] = SedeFormSet()
+            context['form_gestor'] = GestorFormSet()
         return context
 
     def templated_email_get_recipients(self, form):

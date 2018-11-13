@@ -8,7 +8,7 @@ from django.shortcuts import reverse
 
 from model_mommy import mommy
 
-from adesao.models import Municipio, Funcionario
+from adesao.models import Municipio, Funcionario, EnteFederado, Gestor, Sede, SistemaCultura
 
 pytestmark = pytest.mark.django_db
 
@@ -233,4 +233,44 @@ def test_cadastrar_responsavel_tipo_responsavel(login, client, sistema_cultura):
 
     funcionario_salvo = Funcionario.objects.last()
     assert funcionario == funcionario_salvo
+    
 
+def test_cadastrar_sistema_cultura(login, client, sistema_cultura):
+    url = reverse("adesao:cadastrar_sistema")
+
+    ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
+    gestor = Gestor(cpf="590.328.900-26", orgao_expeditor_rg="ssp", estado_expeditor=ente_federado,
+        telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
+    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+        cep="72430101", bairro="bairro", telefone_um="123456")
+
+    client.get(reverse("gestao:ente_chain"))
+
+    response = client.post(
+        url,
+        {
+            "ente_federado": ente_federado.cod_ibge,
+            "cpf": gestor.cpf,
+            "rg": gestor.rg,
+            "orgao_expeditor_rg": gestor.orgao_expeditor_rg,
+            "estado_expeditor": ente_federado,
+            "telefone_um": gestor.telefone_um,
+            "email_institucional": gestor.email_institucional,
+            "tipo_funcionario": gestor.tipo_funcionario,
+            "cnpj": sede.cnpj,
+            "endereco": sede.endereco,
+            "complemento": sede.complemento,
+            "cep": sede.cep,
+            "bairro": sede.bairro,
+            "telefone_um": sede.telefone_um
+        },
+    )
+
+    gestor_salvo = Gestor.objects.last()
+    sede_salva = Sede.objects.last()
+    sistema_salvo = SistemaCultura.objects.last()
+
+    assert gestor_salvo == gestor
+    assert sede_salva == sede
+    assert sistema_salvo.gestor == gestor_salvo
+    assert sistema_salvo.sede == sede_salva

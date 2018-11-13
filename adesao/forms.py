@@ -8,7 +8,8 @@ from django.forms import formset_factory
 
 from dal import autocomplete
 
-from .models import Usuario, Municipio, Responsavel, Secretario, Funcionario, SistemaCultura, Sede
+from .models import Usuario, Municipio, Responsavel
+from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor
 from .utils import validar_cpf, validar_cnpj, limpar_mascara
 import re
 
@@ -110,14 +111,26 @@ class CadastrarUsuarioForm(UserCreationForm):
 
         return user
 
-
-class CadastrarSede(ModelForm):
+class CadastrarGestor(ModelForm):
 
     def clean_cnpj(self):
         if not validar_cnpj(self.cleaned_data['cnpj']):
             raise forms.ValidationError('Por favor, digite um CNPJ válido!')
 
         return self.cleaned_data['cnpj']
+
+    class Meta:
+        model = Gestor
+        fields = '__all__'
+        widgets = {'estado_expedidor': autocomplete.ModelSelect2(url='gestao:uf_chain')}
+
+class CadastrarSede(ModelForm):
+
+    def clean_cpf(self):
+        if not validar_cpf(self.cleaned_data['cpf']):
+            raise forms.ValidationError('Por favor, digite um CPF válido!')
+
+        return self.cleaned_data['cpf']
 
     class Meta:
         model = Sede
@@ -128,10 +141,12 @@ class CadastrarSistemaCulturaForm(ModelForm):
 
     class Meta:
         model = SistemaCultura
-        fields = '__all__'
+        fields = ('ente_federado',)
         widgets = {'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
 
+
 SedeFormSet = formset_factory(CadastrarSistemaCulturaForm, CadastrarSede, extra=2)
+GestorFormSet = formset_factory(CadastrarSistemaCulturaForm, CadastrarGestor, extra=2)
 
 
 class CadastrarMunicipioForm(ModelForm):
