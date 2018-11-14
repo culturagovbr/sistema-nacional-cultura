@@ -233,7 +233,7 @@ def test_cadastrar_responsavel_tipo_responsavel(login, client, sistema_cultura):
     assert funcionario == funcionario_salvo
     
 
-def test_cadastrar_sistema_cultura(login, client, sistema_cultura):
+def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):
     url = reverse("adesao:cadastrar_sistema")
 
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
@@ -245,7 +245,7 @@ def test_cadastrar_sistema_cultura(login, client, sistema_cultura):
     response = client.post(
         url,
         {
-            "ente_federado": ente_federado.cod_ibge,
+            "ente_federado": ente_federado.pk,
             "cpf": gestor.cpf,
             "rg": gestor.rg,
             "nome": gestor.nome,
@@ -263,10 +263,11 @@ def test_cadastrar_sistema_cultura(login, client, sistema_cultura):
         },
     )
 
-    gestor_salvo = Gestor.objects.first()
-    sede_salva = Sede.objects.first()
-    sistema_salvo = SistemaCultura.sistema.first()
+    gestor_salvo = Gestor.objects.last()
+    sede_salva = Sede.objects.last()
+    sistema_salvo = SistemaCultura.objects.last()
 
+    assert sistema_salvo.ente_federado.cod_ibge == ente_federado.cod_ibge
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador.user == login.user

@@ -263,11 +263,11 @@ class CadastrarSistemaCultura(CreateView):
             form_gestor.instance.tipo_funcionario = 2
             gestor = form_gestor.save()
 
+            form_sistema.instance.sede = sede
+            form_sistema.instance.gestor = gestor
+            form_sistema.instance.cadastrador = self.request.user.usuario
             sistema = form_sistema.save()
-            sistema.cadastrador = self.request.user.usuario
-            sistema.sede = sede
-            sistema.gestor = gestor
-            sistema.save()
+
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))

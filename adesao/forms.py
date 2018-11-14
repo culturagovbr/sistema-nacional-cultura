@@ -113,11 +113,11 @@ class CadastrarUsuarioForm(UserCreationForm):
 
 class CadastrarGestor(ModelForm):
 
-    def clean_cnpj(self):
-        if not validar_cnpj(self.cleaned_data['cnpj']):
-            raise forms.ValidationError('Por favor, digite um CNPJ válido!')
+    def clean_cpf(self):
+        if not validar_cpf(self.cleaned_data['cpf']):
+            raise forms.ValidationError('Por favor, digite um CPF válido!')
 
-        return self.cleaned_data['cnpj']
+        return self.cleaned_data['cpf']
 
     class Meta:
         model = Gestor
@@ -125,11 +125,11 @@ class CadastrarGestor(ModelForm):
 
 class CadastrarSede(ModelForm):
 
-    def clean_cpf(self):
-        if not validar_cpf(self.cleaned_data['cpf']):
-            raise forms.ValidationError('Por favor, digite um CPF válido!')
+    def clean_cnpj(self):
+        if not validar_cnpj(self.cleaned_data['cnpj']):
+            raise forms.ValidationError('Por favor, digite um CNPJ válido!')
 
-        return self.cleaned_data['cpf']
+        return self.cleaned_data['cnpj']
 
     class Meta:
         model = Sede
@@ -138,6 +138,13 @@ class CadastrarSede(ModelForm):
 
 class CadastrarSistemaCulturaForm(ModelForm):
 
+    def clean(self):
+        super(CadastrarSistemaCulturaForm, self).clean()
+        sistema_cultura = SistemaCultura.sistema.filter(
+            ente_federado=self.cleaned_data['ente_federado'])
+        if sistema_cultura:
+            self.add_error('ente_federado', 'Este ente federado já foi cadastrado!')
+
     class Meta:
         model = SistemaCultura
         fields = ('ente_federado',)
@@ -145,6 +152,7 @@ class CadastrarSistemaCulturaForm(ModelForm):
 
 
 SedeFormSet = formset_factory(CadastrarSistemaCulturaForm, CadastrarSede, extra=2)
+
 GestorFormSet = formset_factory(CadastrarSistemaCulturaForm, CadastrarGestor, extra=2)
 
 
