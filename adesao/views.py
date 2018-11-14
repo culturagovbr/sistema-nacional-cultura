@@ -6,7 +6,7 @@ from io import BytesIO
 from datetime import timedelta
 from threading import Thread
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView
@@ -259,12 +259,16 @@ class CadastrarSistemaCultura(CreateView):
 
         if form_sistema.is_valid() and form_gestor.is_valid() and form_sede.is_valid():
             sede = form_sede.save()
+
+            form_gestor.instance.tipo_funcionario = 2
             gestor = form_gestor.save()
+
             sistema = form_sistema.save()
-            sistema.sede = self.sede
-            sistema.gestor = self.gestor
+            sistema.cadastrador = self.request.user.usuario
+            sistema.sede = sede
+            sistema.gestor = gestor
             sistema.save()
-            return redirect(self.get_success_url())
+            return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
@@ -290,10 +294,6 @@ class CadastrarSistemaCultura(CreateView):
         context = super().templated_email_get_context_data(**kwargs)
         context["object"] = self.object
         return context
-
-    def get_form_kwargs(self):
-        kwargs = super(CadastrarSistemaCultura, self).get_form_kwargs()
-        return kwargs
 
 
 class CadastrarMunicipio(TemplatedEmailFormViewMixin, CreateView):

@@ -121,8 +121,7 @@ class CadastrarGestor(ModelForm):
 
     class Meta:
         model = Gestor
-        fields = '__all__'
-        widgets = {'estado_expedidor': autocomplete.ModelSelect2(url='gestao:uf_chain')}
+        exclude = ('tipo_funcionario',)
 
 class CadastrarSede(ModelForm):
 

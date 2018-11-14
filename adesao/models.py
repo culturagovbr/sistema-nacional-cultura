@@ -32,6 +32,36 @@ LISTA_TIPOS_FUNCIONARIOS = (
     (1, 'Responsável'),
     (2, 'Gestor'),)
 
+UFS = {
+    11: "RO",
+    12: "AC",
+    13: "AM",
+    14: "RR",
+    15: "PA",
+    16: "AP",
+    17: "TO",
+    21: "MA",
+    22: "PI",
+    23: "CE",
+    24: "RN",
+    25: "PB",
+    26: "PE",
+    27: "AL",
+    28: "SE",
+    29: "BA",
+    31: "MG",
+    32: "ES",
+    33: "RJ",
+    35: "SP",
+    41: "PR",
+    42: "SC",
+    43: "RS",
+    50: "MS",
+    51: "MT",
+    52: "GO",
+    53: "DF"
+}
+
 
 # Create your models here.
 class Uf(models.Model):
@@ -60,37 +90,8 @@ class EnteFederado(models.Model):
     pib = models.DecimalField(_("PIB per capita - R$"), max_digits=10, decimal_places=2)
 
     def __str__(self):
-        ufs = {
-                11: "RO",
-                12: "AC",
-                13: "AM",
-                14: "RR",
-                15: "PA",
-                16: "AP",
-                17: "TO",
-                21: "MA",
-                22: "PI",
-                23: "CE",
-                24: "RN",
-                25: "PB",
-                26: "PE",
-                27: "AL",
-                28: "SE",
-                29: "BA",
-                31: "MG",
-                32: "ES",
-                33: "RJ",
-                35: "SP",
-                41: "PR",
-                42: "SC",
-                43: "RS",
-                50: "MS",
-                51: "MT",
-                52: "GO",
-                53: "DF"
-            }
 
-        uf = ufs.get(self.cod_ibge, ufs.get(int(str(self.cod_ibge)[:2])))
+        uf = UFS.get(self.cod_ibge, UFS.get(int(str(self.cod_ibge)[:2])))
 
         digits = int(math.log10(self.cod_ibge))+1
 
@@ -324,7 +325,7 @@ class Funcionario(models.Model):
         verbose_name='CPF')
     rg = models.CharField(max_length=50, verbose_name='RG')
     orgao_expeditor_rg = models.CharField(max_length=50)
-    estado_expeditor = models.ForeignKey('Uf', on_delete=models.CASCADE)
+    estado_expeditor = models.IntegerField(choices=UFS.items())
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, null=True, blank=True)
     instituicao = models.CharField(max_length=100, null=True, blank=True)
