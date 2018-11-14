@@ -362,20 +362,28 @@ class CadastrarFuncionario(CreateView):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['sistema']))
 
     def form_valid(self, form):
+        LISTA_TIPOS_FUNCIONARIOS = {
+            'secretario': 0,
+            'responsavel': 1
+        }
         tipo_funcionario = self.kwargs['tipo']
+        form.instance.tipo_funcionario = LISTA_TIPOS_FUNCIONARIOS[tipo_funcionario]
         setattr(self.get_sistema_cultura(), tipo_funcionario, form.save())
         self.get_sistema_cultura().save()
         return super(CadastrarFuncionario, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 
     def dispatch(self, *args, **kwargs):
         funcionario = getattr(self.get_sistema_cultura(), self.kwargs['tipo'])
         if funcionario:
             return redirect("adesao:alterar_funcionario", pk=funcionario.id)
 
-    def get_success_url(self):
-        return reverse_lazy("adesao:sucesso_funcionario", kwargs={"tipo": self.kwargs['tipo']})
-
         return super(CadastrarFuncionario, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy("adesao:sucesso_funcionario")
 
 
 @login_required

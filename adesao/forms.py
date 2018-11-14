@@ -213,7 +213,7 @@ class CadastrarFuncionarioForm(ModelForm):
 
     class Meta:
         model = Funcionario
-        fields = '__all__'
+        exclude = ('tipo_funcionario',)
 
 
 class CadastrarSecretarioForm(ModelForm):
