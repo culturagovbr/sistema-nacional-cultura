@@ -311,3 +311,12 @@ def test_campos_entidade_EnteFederado():
             "idh", "receita", "despesas", "pib")
 
     assert campos in set(EnteFederado._meta.fields)
+
+
+def test_get_diligencias_componentes():
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='legislacao')
+    sistema_cultura.legislacao.diligencia = mommy.make("DiligenciaSimples")
+    sistema_cultura.legislacao.save()
+    sistema_diligencias  = sistema_cultura.get_componentes_diligencias()
+    assert len(sistema_diligencias) == 1
+    assert sistema_diligencias[0] == sistema_cultura.legislacao
