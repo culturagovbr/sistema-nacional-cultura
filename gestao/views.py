@@ -290,12 +290,20 @@ class AcompanharSistemaCultura(ListView):
         sistemas_nao_analisados = self.annotate_componente_mais_antigo_por_situacao(sistemas, 1).filter(
             estado_processo='6').exclude(mais_antigo=None).order_by('mais_antigo').filter(id__in=sistemas_entes_distintos)
 
+        sistemas_publicados_sem_componentes = sistemas.filter(Q(estado_processo='6') &
+            Q(legislacao=None) &
+            Q(orgao_gestor=None) &
+            Q(conselho=None) &
+            Q(plano=None) &
+            Q(fundo_cultura=None)).filter(
+            id__in=sistemas_entes_distintos)
+
         sistemas = sistemas.exclude(estado_processo='6').annotate(
             tem_cadastrador=Count('cadastrador')).order_by('-tem_cadastrador', '-estado_processo').filter(
             id__in=sistemas_entes_distintos)
  
         sistemas = list(chain(sistemas_nao_analisados, sistemas_diligencia, 
-            sistemas_nao_enviados, sistemas_concluidos, sistemas))
+            sistemas_nao_enviados, sistemas_concluidos, sistemas_publicados_sem_componentes, sistemas))
         sistemas = self.remove_repeticoes(sistemas)
 
         return sistemas
