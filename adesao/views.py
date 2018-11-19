@@ -96,7 +96,6 @@ def sucesso_usuario(request):
 
 
 def sucesso_funcionario(request, **kwargs):
-    tipo_funcionario = kwargs['tipo']
     return render(request, "mensagem_sucesso.html")
 
 
@@ -383,7 +382,7 @@ class CadastrarFuncionario(CreateView):
         return super(CadastrarFuncionario, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse_lazy("adesao:sucesso_funcionario")
+        return reverse_lazy('adesao:sucesso_funcionario')
 
 
 @login_required

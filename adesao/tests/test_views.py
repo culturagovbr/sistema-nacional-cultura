@@ -209,7 +209,7 @@ def test_consultar_informações_estados(client):
     assert response.context_data["object_list"][0] == estado
 
 
-def test_cadastrar_responsavel_tipo_responsavel(login, client, sistema_cultura):
+def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
 
     url = reverse("adesao:cadastrar_funcionario", 
         kwargs={"tipo": "responsavel", "sistema": sistema_cultura.id})
@@ -239,6 +239,38 @@ def test_cadastrar_responsavel_tipo_responsavel(login, client, sistema_cultura):
     assert funcionario_salvo.nome == funcionario.nome
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 1
+
+
+def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
+
+    url = reverse("adesao:cadastrar_funcionario", 
+        kwargs={"tipo": "secretario", "sistema": sistema_cultura.id})
+
+    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
+        orgao_expeditor_rg="SSP", estado_expeditor=29,
+        nome="Joao silva", email_institucional="joao@email.com")
+
+    response = client.post(
+        url,
+        {
+            "cpf": funcionario.cpf,
+            "rg": funcionario.rg,
+            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
+            "estado_expeditor": 29,
+            "nome": funcionario.nome,
+            "email_institucional": funcionario.email_institucional,
+            "telefone_um": "999999999"
+        },
+    )
+
+    funcionario_salvo = Funcionario.objects.last()
+    assert funcionario_salvo.cpf == funcionario.cpf
+    assert funcionario_salvo.rg == funcionario.rg
+    assert funcionario_salvo.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
+    assert funcionario_salvo.estado_expeditor == funcionario.estado_expeditor
+    assert funcionario_salvo.nome == funcionario.nome
+    assert funcionario_salvo.email_institucional == funcionario.email_institucional
+    assert funcionario_salvo.tipo_funcionario == 0
     
 
 def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):

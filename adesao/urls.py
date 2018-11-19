@@ -43,7 +43,7 @@ urlpatterns = [
         name='alterar_municipio'),
 
     # Cadastro e alteração de responsável
-    url(r'^sucesso-cadastro-funcionario/$',
+    path('sucesso-cadastro-funcionario/',
         views.sucesso_funcionario,
         name='sucesso_funcionario'),
     url(r'^responsavel/(?P<pk>[0-9]+)/$',
