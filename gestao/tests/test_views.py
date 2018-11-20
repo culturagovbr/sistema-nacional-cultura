@@ -1198,16 +1198,21 @@ def test_acompanhar_adesao_ordenar_estado_processo(client, login_staff):
     sistema_publicado.legislacao.situacao = 1
     sistema_publicado.legislacao.save()
 
-    sistema_sem_cadastrador = mommy.make('SistemaCultura', cadastrador=None,
+    sistema_publicado_sem_componentes = mommy.make('SistemaCultura', estado_processo=6,
                     ente_federado__cod_ibge=123458,
+                    _fill_optional=['cadastrador'])
+
+    sistema_sem_cadastrador = mommy.make('SistemaCultura', cadastrador=None,
+                    ente_federado__cod_ibge=123459,
                     _fill_optional='legislacao')
 
     url = reverse("gestao:acompanhar_adesao")
     response = client.get(url)
 
     assert response.context_data['object_list'][0] == sistema_publicado
-    assert response.context_data['object_list'][1] == sistema_nao_publicado
-    assert response.context_data['object_list'][2] == sistema_sem_cadastrador
+    assert response.context_data['object_list'][1] == sistema_publicado_sem_componentes
+    assert response.context_data['object_list'][2] == sistema_nao_publicado
+    assert response.context_data['object_list'][3] == sistema_sem_cadastrador
 
 
 def test_alterar_dados_adesao_detalhe_municipio(client, login_staff, sistema_cultura):
