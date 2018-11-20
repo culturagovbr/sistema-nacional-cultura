@@ -171,25 +171,27 @@
                         </a>
                       </li>
                       {% if request.user.usuario.estado_processo in "01367" %}
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                        {% if request.user.usuario.municipio %}
-                        <a href="{% url 'adesao:municipio' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                        {% else %}
-                        <a href="{% url 'adesao:selecionar_tipo_ente' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                          {% if request.user.usuario.municipio %}
+                          <a href="{% url 'adesao:municipio' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                          {% else %}
+                          <a href="{% url 'adesao:selecionar_tipo_ente' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                          {% endif %}
+                            <span>Ente Federado</span>
+                          </a>
+                        </li>
+                        {% if sistema_cultura != None %}
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=sistema_cultura.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Interlocutor</span>
+                            </a>
+                          </li>
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=sistema_cultura.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Responsável</span>
+                            </a>
+                          </li>
                         {% endif %}
-                          <span>Ente Federado</span>
-                        </a>
-                      </li>
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                        <a href="{% url 'adesao:cadastrar_funcionario' sistema=1 tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                          <span>Interlocutor</span>
-                        </a>
-                      </li>
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                        <a href="{% url 'adesao:cadastrar_funcionario' sistema=1 tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                          <span>Responsável</span>
-                        </a>
-                      </li>
                       {% endif %}
                       {% if request.user.usuario.estado_processo in "13" %}
                       <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">

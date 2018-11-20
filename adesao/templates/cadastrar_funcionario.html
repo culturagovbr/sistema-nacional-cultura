@@ -1,9 +1,14 @@
 {% extends "base.html" %} {% load widget_tweaks %} {% block content %}
 <div align="center">
-  <h3>Cadastro do Responsável/Dirigente Cultural</h3>
-  <p>Preencha o formulário abaixo com os dados do responsável pela elaboração do Plano de Trabalho.</p>
-  {% if not request.user.usuario.responsavel %}
-  <p><a href="{% url 'adesao:importar_secretario' %}">Clique aqui caso o responsável e o interlocutor sejam a mesma pessoa</a></p>
+  {% if view.kwargs.tipo == 'responsavel' %}
+    <h3>Cadastro do Responsável/Dirigente Cultural</h3>
+    <p>Preencha o formulário abaixo com os dados do responsável pela elaboração do Plano de Trabalho.</p>
+    {% if sistema_cultura.secretario != None and sistema_cultura.responsavel == None %}
+      <p><a href="{% url 'adesao:importar_secretario' %}">Clique aqui caso o responsável e o interlocutor sejam a mesma pessoa</a></p>
+    {% endif %}
+  {% elif view.kwargs.tipo == 'secretario' %}
+    <h3>Cadastro do Interlocutor/Cadastrador</h3>
+    <p>Preencha o formulário abaixo com os dados do dirigente responsável pela área de cultura do município/estado.</p>
   {% endif %}
 </div>
 <form class="form-horizontal" method="post">{% csrf_token %}

@@ -364,7 +364,7 @@ class SistemaCultura(models.Model):
     Entidade que representa um Sistema de Cultura
     """
 
-    cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True)
+    cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")

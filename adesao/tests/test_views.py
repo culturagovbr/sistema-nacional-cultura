@@ -232,6 +232,10 @@ def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
     )
 
     funcionario_salvo = Funcionario.objects.last()
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(
+        ente_federado=sistema_cultura.ente_federado) 
+
+    assert sistema_cultura_atualizado.responsavel == funcionario_salvo
     assert funcionario_salvo.cpf == funcionario.cpf
     assert funcionario_salvo.rg == funcionario.rg
     assert funcionario_salvo.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
@@ -264,6 +268,10 @@ def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
     )
 
     funcionario_salvo = Funcionario.objects.last()
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(
+        ente_federado=sistema_cultura.ente_federado) 
+
+    assert sistema_cultura_atualizado.secretario == funcionario_salvo
     assert funcionario_salvo.cpf == funcionario.cpf
     assert funcionario_salvo.rg == funcionario.rg
     assert funcionario_salvo.orgao_expeditor_rg == funcionario.orgao_expeditor_rg

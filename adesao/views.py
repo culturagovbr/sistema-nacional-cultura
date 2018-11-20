@@ -30,7 +30,7 @@ from adesao.models import (
     Historico,
     Uf,
     Cidade,
-    SistemaCultura
+    Funcionario
 )
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm
@@ -60,6 +60,14 @@ def home(request):
     situacao = request.user.usuario.estado_processo
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
+    sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado')
+    sistema_cultura_atual = None
+
+    if sistemas_cultura.count() > 1:
+        return redirect("gestao:acompanhar_adesao")
+        #abrir tela pro usuário selecionar o ente
+    elif sistemas_cultura.count() == 1:
+        sistema_cultura_atual = sistemas_cultura[0]
 
     if request.user.is_staff:
         return redirect("gestao:acompanhar_adesao")
@@ -72,7 +80,7 @@ def home(request):
             "conclusao_cadastro.email", {"request": request}
         )
         enviar_email_conclusao(request.user, message_txt, message_html)
-    return render(request, "home.html", {"historico": historico})
+    return render(request, "home.html", {"historico": historico, "sistema_cultura": sistema_cultura_atual})
 
 
 def ativar_usuario(request, codigo):
@@ -367,8 +375,9 @@ class CadastrarFuncionario(CreateView):
         }
         tipo_funcionario = self.kwargs['tipo']
         form.instance.tipo_funcionario = LISTA_TIPOS_FUNCIONARIOS[tipo_funcionario]
-        setattr(self.get_sistema_cultura(), tipo_funcionario, form.save())
-        self.get_sistema_cultura().save()
+        sistema = self.get_sistema_cultura()
+        setattr(sistema, tipo_funcionario, form.save())
+        sistema.save()
         return super(CadastrarFuncionario, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -377,7 +386,7 @@ class CadastrarFuncionario(CreateView):
     def dispatch(self, *args, **kwargs):
         funcionario = getattr(self.get_sistema_cultura(), self.kwargs['tipo'])
         if funcionario:
-            return redirect("adesao:alterar_funcionario", pk=funcionario.id)
+            return redirect("adesao:alterar_funcionario", tipo=self.kwargs['tipo'], pk=funcionario.id)
 
         return super(CadastrarFuncionario, self).dispatch(*args, **kwargs)
 
@@ -412,6 +421,13 @@ def importar_secretario(request):
         request.user.usuario.responsavel = responsavel
         request.user.usuario.save()
     return redirect("adesao:responsavel")
+
+
+class AlterarFuncionario(UpdateView):
+    form_class = CadastrarFuncionarioForm
+    model = Funcionario
+    template_name = "cadastrar_funcionario.html"
+    success_url = reverse_lazy("adesao:sucesso_funcionario")
 
 
 class AlterarResponsavel(UpdateView):
