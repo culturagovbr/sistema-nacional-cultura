@@ -113,6 +113,16 @@ class CadastrarUsuarioForm(UserCreationForm):
 
 class CadastrarGestor(ModelForm):
 
+    termo_posse = RestrictedFileField(
+        content_types=content_types,
+        max_upload_size=5242880)
+    rg_copia = RestrictedFileField(
+        content_types=content_types,
+        max_upload_size=5242880)
+    cpf_copia = RestrictedFileField(
+        content_types=content_types,
+        max_upload_size=5242880)
+
     def clean_cpf(self):
         if not validar_cpf(self.cleaned_data['cpf']):
             raise forms.ValidationError('Por favor, digite um CPF válido!')

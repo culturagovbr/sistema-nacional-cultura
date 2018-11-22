@@ -61,14 +61,15 @@ def home(request):
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
     sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado')
+    sistemas = None
 
     if sistemas_cultura.count() > 1:
-        return redirect("gestao:acompanhar_adesao")
-        #abrir tela pro usuário selecionar o ente
+        sistemas = sistemas_cultura
     elif sistemas_cultura.count() == 0:
         request.sistema_cultura = None
     elif sistemas_cultura.count() == 1:
-        request.sistema_cultura = sistemas_cultura[0]
+        request.session['sistema_cultura'] = {'id': sistemas_cultura[0].id,
+            'estado_processo': sistemas_cultura[0].estado_processo}
 
     if request.user.is_staff:
         return redirect("gestao:acompanhar_adesao")
@@ -81,7 +82,7 @@ def home(request):
             "conclusao_cadastro.email", {"request": request}
         )
         enviar_email_conclusao(request.user, message_txt, message_html)
-    return render(request, "home.html", {"historico": historico})
+    return render(request, "home.html", {"historico": historico, "sistemas": sistemas})
 
 
 def ativar_usuario(request, codigo):
@@ -287,9 +288,9 @@ class CadastrarSistemaCultura(CreateView):
     def get_context_data(self, **kwargs):
         context = super(CadastrarSistemaCultura, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST)
-            context['form_sede'] = SedeFormSet(self.request.POST)
-            context['form_gestor'] = GestorFormSet(self.request.POST)
+            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
+            context['form_sede'] = SedeFormSet(self.request.POST, self.request.FILES)
+            context['form_gestor'] = GestorFormSet(self.request.POST, self.request.FILES)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
             context['form_sede'] = SedeFormSet()
