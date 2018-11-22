@@ -62,6 +62,9 @@ urlpatterns = [
     path('sistema/cadastrar/',
             login_required(views.CadastrarSistemaCultura.as_view()),
             name='cadastrar_sistema'),
+    path('sistema/alterar/<int:pk>',
+            login_required(views.AlterarSistemaCultura.as_view()),
+            name='alterar_sistema'),
 
     # Cadastro e alteração de secretário
    

@@ -140,10 +140,13 @@ class CadastrarSistemaCulturaForm(ModelForm):
 
     def clean(self):
         super(CadastrarSistemaCulturaForm, self).clean()
-        sistema_cultura = SistemaCultura.sistema.filter(
-            ente_federado=self.cleaned_data['ente_federado'])
-        if sistema_cultura:
-            self.add_error('ente_federado', 'Este ente federado já foi cadastrado!')
+
+        if 'ente_federado' in self.changed_data:
+            sistema_cultura = SistemaCultura.sistema.filter(
+                ente_federado=self.cleaned_data['ente_federado'])
+
+            if sistema_cultura:
+                self.add_error('ente_federado', 'Este ente federado já foi cadastrado!')
 
     class Meta:
         model = SistemaCultura

@@ -170,30 +170,32 @@
                           <span>Início</span>
                         </a>
                       </li>
-                      {% if request.user.usuario.estado_processo in "01367" %}
-                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                          {% if request.user.usuario.municipio %}
-                          <a href="{% url 'adesao:municipio' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                          {% else %}
-                          <a href="{% url 'adesao:selecionar_tipo_ente' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                          {% endif %}
-                            <span>Ente Federado</span>
-                          </a>
-                        </li>
-                        {% if sistema_cultura != None %}
+                        {% if request.sistema_cultura == None %}
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                            <a href="{% url 'adesao:cadastrar_sistema' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Ente Federado</span>
+                            </a>
+                          </li>
+                        {% else %}
+                          {% if request.sistema_cultura.estado_processo in "01367" %}
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                            <a href="{% url 'adesao:alterar_sistema' pk=request.sistema_cultura.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Ente Federado</span>
+                            </a>
+                          </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=sistema_cultura.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.sistema_cultura.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                               <span>Interlocutor</span>
                             </a>
                           </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=sistema_cultura.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.sistema_cultura.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                               <span>Responsável</span>
                             </a>
                           </li>
                         {% endif %}
                       {% endif %}
-                      {% if request.user.usuario.estado_processo in "13" %}
+                      {% if request.sistema_cultura.estado_processo in "13" %}
                       <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                         <a href="{% url 'adesao:minuta' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
                           <span>Acordo de Cooperação</span>
@@ -205,7 +207,7 @@
                         </a>
                       </li>
                       {% endif %}
-                      {% if request.user.usuario.estado_processo == '6' %}
+                      {% if request.sistema_cultura.estado_processo == '6' %}
                       <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                         <a href="{% url 'planotrabalho:planotrabalho' request.user.usuario.plano_trabalho.id %}" title="" class="state-published navTreeFolderish contenttype-folder but-warning">
                           <span>Plano de Trabalho</span>
@@ -270,7 +272,7 @@
           {% block content2 %}{% endblock content2 %}
 
             <!-- Column 2 -->
-            {% if request.user.usuario.estado_processo == '1' %}
+            {% if request.sistema_cultura.estado_processo == '1' %}
             <div id="portal-column-two" class="cell width-1:4 position-3:4">
 
                 <div id="" class="portletWrapper kssattr-portlethash">

@@ -61,13 +61,14 @@ def home(request):
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
     sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado')
-    sistema_cultura_atual = None
 
     if sistemas_cultura.count() > 1:
         return redirect("gestao:acompanhar_adesao")
         #abrir tela pro usuário selecionar o ente
+    elif sistemas_cultura.count() == 0:
+        request.sistema_cultura = None
     elif sistemas_cultura.count() == 1:
-        sistema_cultura_atual = sistemas_cultura[0]
+        request.sistema_cultura = sistemas_cultura[0]
 
     if request.user.is_staff:
         return redirect("gestao:acompanhar_adesao")
@@ -80,7 +81,7 @@ def home(request):
             "conclusao_cadastro.email", {"request": request}
         )
         enviar_email_conclusao(request.user, message_txt, message_html)
-    return render(request, "home.html", {"historico": historico, "sistema_cultura": sistema_cultura_atual})
+    return render(request, "home.html", {"historico": historico})
 
 
 def ativar_usuario(request, codigo):
@@ -273,6 +274,7 @@ class CadastrarSistemaCultura(CreateView):
             form_sistema.instance.sede = sede
             form_sistema.instance.gestor = gestor
             form_sistema.instance.cadastrador = self.request.user.usuario
+
             sistema = form_sistema.save()
 
             return redirect(self.success_url)
@@ -300,6 +302,48 @@ class CadastrarSistemaCultura(CreateView):
     def templated_email_get_context_data(self, **kwargs):
         context = super().templated_email_get_context_data(**kwargs)
         context["object"] = self.object
+        return context
+
+
+class AlterarSistemaCultura(UpdateView):
+    form_class = CadastrarSistemaCulturaForm
+    model = SistemaCultura
+    template_name = "cadastrar_sistema.html"
+    success_url = reverse_lazy("adesao:sucesso_municipio")
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+
+        form_sistema = context['form_sistema']
+        form_sede = context['form_sede']
+        form_gestor = context['form_gestor']
+
+        if form_sistema.is_valid() and form_gestor.is_valid() and form_sede.is_valid():
+            sede = form_sede.save()
+            gestor = form_gestor.save()
+
+            form_sistema.instance.sede = sede
+            form_sistema.instance.gestor = gestor
+            form_sistema.instance.cadastrador = self.request.user.usuario
+            sistema = form_sistema.save()
+
+            return redirect(self.success_url)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(AlterarSistemaCultura, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, instance=self.object)
+            context['form_sede'] = SedeFormSet(self.request.POST, instance=self.object.sede)
+            context['form_gestor'] = GestorFormSet(self.request.POST, instance=self.object.gestor)
+        else:
+            context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
+            context['form_sede'] = SedeFormSet(instance=self.object.sede)
+            context['form_gestor'] = GestorFormSet(instance=self.object.gestor)
         return context
 
 
@@ -422,6 +466,28 @@ def importar_secretario(request):
         request.user.usuario.save()
     return redirect("adesao:responsavel")
 
+
+"""@login_required
+def importar_secretario(request):
+    secretario = request.sistema_cultura.secretario
+
+    if secretario:
+        responsavel = secretario
+        responsavel.tipo_funcionario = 1
+
+        try:
+            responsavel.full_clean()
+            responsavel.save()
+        except ValidationError:
+            return redirect("adesao:cadastrar_funcionario", 
+                sistema=request.sistema, tipo='responsavel')
+
+        request.sistema_cultura.responsavel = responsavel
+        request.sistema_cultura.save()
+
+    return redirect("adesao:cadastrar_funcionario", sistema=request.sistema, 
+        tipo='responsavel')
+"""
 
 class AlterarFuncionario(UpdateView):
     form_class = CadastrarFuncionarioForm
