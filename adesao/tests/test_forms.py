@@ -3,6 +3,7 @@ import pytest
 from model_mommy import mommy
 
 from django.shortcuts import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from dal.autocomplete import ModelSelect2
 
 from adesao.forms import CadastrarMunicipioForm, CadastrarSistemaCulturaForm, CadastrarGestor, CadastrarSede
@@ -90,16 +91,28 @@ def test_save_cadastrar_gestor_dados_validos(client, login, sistema_cultura):
     """ Testa se a função is_valid retorna verdadeiro para a criação de gestor com 
     dados validos"""
 
-    data = {'cpf': '05447081130',
+    data = {
+            'cpf': '05447081130',
             'rg': '3643424',
             'nome': 'nome',
             'orgao_expeditor_rg': 'ssp',
             'estado_expeditor': 29,
             'telefone_um': '999999999',
             'email_institucional': 'email@email.com',
-            'tipo_funcionario': 2, }
+            'tipo_funcionario': 2, 
+    }
 
-    form = CadastrarGestor(data=data)
+    form = CadastrarGestor(data=data, files={"termo_posse": SimpleUploadedFile(
+                "test_file.pdf", bytes("test text", "utf-8")
+            ),
+            "cpf_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+            "rg_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            )
+        }
+    )
 
     assert form.is_valid()
 
@@ -115,9 +128,20 @@ def test_save_cadastrar_gestor_cpf_invalido(client, login, sistema_cultura):
             'estado_expeditor': 29,
             'telefone_um': '999999999',
             'email_institucional': 'email@email.com',
-            'tipo_funcionario': 2, }
+            'tipo_funcionario': 2, 
+    }
 
-    form = CadastrarGestor(data=data)
+    form = CadastrarGestor(data=data, files={"termo_posse": SimpleUploadedFile(
+                "test_file.pdf", bytes("test text", "utf-8")
+            ),
+            "cpf_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+            "rg_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            )
+        }
+    )
 
     assert not form.is_valid()
 
