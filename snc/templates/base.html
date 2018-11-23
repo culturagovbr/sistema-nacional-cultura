@@ -175,61 +175,68 @@
                           <span>Criar Novo Ente Federado</span>
                         </a>
                       </li>
-                      {% if request.session.sistema_cultura.estado_processo in "01367" %}
+                      {% if request.session.sistemas %}
                         <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                          <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                            <span>Alterar Ente Federado</span>
-                          </a>
+                          <a class="state-published navTreeFolderish contenttype-folder"><span>Ente Federado</span></a>
+                          {% for sistema in request.session.sistemas %}
+                            <div class="list-group">
+                              <a href="{% url 'adesao:define_sistema_sessao' sistema=sistema.id %}" title="" class="list-group-item state-published navTreeFolderish contenttype-folder">
+                                <span>{{ sistema.ente_federado__nome }}</span>
+                              </a>
+                            </div>
+                          {% endfor %}
                         </li>
-                        {% for sistema in sistemas %}
+                      {% endif %}
+                      {% if request.session.sistema_cultura_selecionado %}
+                        {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                            <a href="{% url 'adesao:alterar_sistema' pk=sistema.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                              <span>{{ sistema.ente_federado }}</span>
+                            <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Alterar Ente Federado</span>
                             </a>
                           </li>
-                        {% endfor %}
-                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                          <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                            <span>Interlocutor</span>
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Interlocutor</span>
+                            </a>
+                          </li>
+                          <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <span>Responsável</span>
+                            </a>
+                          </li>
+                        {% endif %}
+                        {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
+                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                          <a href="{% url 'adesao:minuta' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+                            <span>Acordo de Cooperação</span>
                           </a>
                         </li>
                         <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                          <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                            <span>Responsável</span>
+                          <a href="{% url 'adesao:solicitacao' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
+                            <span>Termo de Solicitação</span>
                           </a>
                         </li>
-                      {% endif %}
-                      {% if request.session.sistema_cultura.estado_processo in "13" %}
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                        <a href="{% url 'adesao:minuta' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
-                          <span>Acordo de Cooperação</span>
-                        </a>
-                      </li>
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                        <a href="{% url 'adesao:solicitacao' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
-                          <span>Termo de Solicitação</span>
-                        </a>
-                      </li>
-                      {% endif %}
-                      {% if request.session.sistema_cultura.estado_processo == '6' %}
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                        <a href="{% url 'planotrabalho:planotrabalho' request.user.usuario.plano_trabalho.id %}" title="" class="state-published navTreeFolderish contenttype-folder but-warning">
-                          <span>Plano de Trabalho</span>
-                        </a>
-                      </li>
+                        {% endif %}
+                        {% if request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                          <a href="{% url 'planotrabalho:planotrabalho' request.user.usuario.plano_trabalho.id %}" title="" class="state-published navTreeFolderish contenttype-folder but-warning">
+                            <span>Plano de Trabalho</span>
+                          </a>
+                        </li>
 
-                      <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                        <a  href="{% url 'planotrabalho:listar_conselheiros' %}" title="" class="state-published navTreeFolderish contenttype-folder ">
-                          <span>Conselheiros</span>
-                        </a>
-                      </li>
-                      {% endif %}
-                    </ul>
-                    <span class="portletBottomLeft"></span>
-                    <span class="portletBottomRight"></span>
-                  </dd>
-                </dl>
-              </div>
+                        <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                          <a  href="{% url 'planotrabalho:listar_conselheiros' %}" title="" class="state-published navTreeFolderish contenttype-folder ">
+                            <span>Conselheiros</span>
+                          </a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                      <span class="portletBottomLeft"></span>
+                      <span class="portletBottomRight"></span>
+                    </dd>
+                  </dl>
+                </div>
+                {% endif %}
               {% endif %}
               {% block menu %}
               {% endblock menu %}

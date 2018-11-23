@@ -66,6 +66,10 @@ urlpatterns = [
             login_required(views.AlterarSistemaCultura.as_view()),
             name='alterar_sistema'),
 
+    path('sistema/<int:sistema>',
+            login_required(views.define_sistema_sessao),
+            name='define_sistema_sessao'),
+
     # Cadastro e alteração de secretário
    
     url(r'^sucesso-cadastro-secretario/$',

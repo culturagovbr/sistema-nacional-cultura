@@ -61,14 +61,12 @@ def home(request):
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
     sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado')
-    sistemas = None
 
     if sistemas_cultura.count() > 1:
-        sistemas = sistemas_cultura
-    elif sistemas_cultura.count() == 0:
-        request.sistema_cultura = None
+        request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
     elif sistemas_cultura.count() == 1:
-        request.session['sistema_cultura'] = {'id': sistemas_cultura[0].id,
+        request.session['sistema_cultura_selecionado'] = {'id': sistemas_cultura[0].id,
+            'ente_federado__nome': sistemas_cultura[0].ente_federado.nome,
             'estado_processo': sistemas_cultura[0].estado_processo}
 
     if request.user.is_staff:
@@ -82,7 +80,16 @@ def home(request):
             "conclusao_cadastro.email", {"request": request}
         )
         enviar_email_conclusao(request.user, message_txt, message_html)
-    return render(request, "home.html", {"historico": historico, "sistemas": sistemas})
+    return render(request, "home.html", {"historico": historico})
+
+
+def define_sistema_sessao(request, sistema):
+    sistema_cultura = SistemaCultura.objects.get(id=sistema)
+
+    request.session['sistema_cultura_selecionado'] = {'id': sistema_cultura.id,
+        'estado_processo': sistema_cultura.estado_processo}
+
+    return redirect("adesao:alterar_sistema", pk=sistema)
 
 
 def ativar_usuario(request, codigo):

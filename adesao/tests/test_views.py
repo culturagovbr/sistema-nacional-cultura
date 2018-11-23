@@ -373,10 +373,48 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
 
     gestor_salvo = Gestor.objects.last()
     sede_salva = Sede.objects.last()
-    sistema_salvo = SistemaCultura.objects.last()
+    sistema_salvo = SistemaCultura.objects.get(ente_federado=ente_federado)
 
     assert sistema_salvo.ente_federado.cod_ibge == ente_federado.cod_ibge
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
-    assert cadastrador.sistema_cultura.count() == 2
+    assert login.sistema_cultura.count() == 2
+
+
+def test_session_user_sem_sistema_cultura(login, client):
+
+    url = reverse("adesao:home")
+    response = client.get(url)
+
+    assert 'sistemas' not in client.session
+    assert 'sistema_cultura_selecionado' not in client.session
+
+
+def test_session_user_com_um_sistema_cultura(login, client):
+
+    sistema = mommy.make("SistemaCultura", _fill_optional='ente_federado', cadastrador=login)
+
+    url = reverse("adesao:home")
+    response = client.get(url)
+
+    assert 'sistemas' not in client.session
+    assert client.session['sistema_cultura_selecionado']['id'] == sistema.id
+    assert client.session['sistema_cultura_selecionado']['ente_federado__nome'] == sistema.ente_federado.nome
+    assert client.session['sistema_cultura_selecionado']['estado_processo'] == sistema.estado_processo
+
+
+def test_session_user_com_um_sistema_cultura(login, client):
+
+    sistema_1 = mommy.make("SistemaCultura", _fill_optional='ente_federado', cadastrador=login)
+    sistema_2 = mommy.make("SistemaCultura", _fill_optional='ente_federado', cadastrador=login)
+
+    url = reverse("adesao:home")
+    response = client.get(url)
+
+    assert 'sistema_cultura_selecionado' not in client.session
+    assert client.session['sistemas'][0]['id'] == sistema_1.id
+    assert client.session['sistemas'][0]['ente_federado__nome'] == sistema_1.ente_federado.nome
+    assert client.session['sistemas'][1]['id'] == sistema_2.id
+    assert client.session['sistemas'][1]['ente_federado__nome'] == sistema_2.ente_federado.nome
+    assert len(client.session['sistemas']) == 2
