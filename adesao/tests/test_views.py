@@ -211,7 +211,7 @@ def test_consultar_informações_estados(client):
 
 def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
 
-    url = reverse("adesao:cadastrar_funcionario", 
+    url = reverse("adesao:cadastrar_funcionario",
         kwargs={"tipo": "responsavel", "sistema": sistema_cultura.id})
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
@@ -233,7 +233,7 @@ def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
 
     funcionario_salvo = Funcionario.objects.last()
     sistema_cultura_atualizado = SistemaCultura.sistema.get(
-        ente_federado=sistema_cultura.ente_federado) 
+        ente_federado=sistema_cultura.ente_federado)
 
     assert sistema_cultura_atualizado.responsavel == funcionario_salvo
     assert funcionario_salvo.cpf == funcionario.cpf
@@ -247,7 +247,7 @@ def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
 
 def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
 
-    url = reverse("adesao:cadastrar_funcionario", 
+    url = reverse("adesao:cadastrar_funcionario",
         kwargs={"tipo": "secretario", "sistema": sistema_cultura.id})
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
@@ -269,7 +269,7 @@ def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
 
     funcionario_salvo = Funcionario.objects.last()
     sistema_cultura_atualizado = SistemaCultura.sistema.get(
-        ente_federado=sistema_cultura.ente_federado) 
+        ente_federado=sistema_cultura.ente_federado)
 
     assert sistema_cultura_atualizado.secretario == funcionario_salvo
     assert funcionario_salvo.cpf == funcionario.cpf
@@ -279,6 +279,105 @@ def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
     assert funcionario_salvo.nome == funcionario.nome
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 0
+
+
+def test_alterar_funcionario_tipo_secretario(login, client):
+
+    secretario = mommy.make("Funcionario", tipo_funcionario=0)
+    sistema_cultura = mommy.make("SistemaCultura", secretario=secretario)
+
+    url = reverse("adesao:alterar_funcionario",
+        kwargs={"tipo": "secretario", "pk": sistema_cultura.id})
+
+    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
+        orgao_expeditor_rg="SSP", estado_expeditor=29,
+        nome="Joao silva", email_institucional="joao@email.com")
+
+    response = client.post(
+        url,
+        {
+            "cpf": funcionario.cpf,
+            "rg": funcionario.rg,
+            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
+            "estado_expeditor": 29,
+            "nome": funcionario.nome,
+            "email_institucional": funcionario.email_institucional,
+            "telefone_um": "999999999"
+        },
+    )
+
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(
+        ente_federado=sistema_cultura.ente_federado)
+
+    assert sistema_cultura_atualizado.secretario.cpf == funcionario.cpf
+    assert sistema_cultura_atualizado.secretario.rg == funcionario.rg
+    assert sistema_cultura_atualizado.secretario.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
+    assert sistema_cultura_atualizado.secretario.estado_expeditor == funcionario.estado_expeditor
+    assert sistema_cultura_atualizado.secretario.nome == funcionario.nome
+    assert sistema_cultura_atualizado.secretario.email_institucional == funcionario.email_institucional
+    assert sistema_cultura_atualizado.secretario.tipo_funcionario == 0
+
+
+def test_alterar_funcionario_tipo_responsavel(login, client):
+
+    responsavel = mommy.make("Funcionario",tipo_funcionario=1)
+    sistema_cultura = mommy.make("SistemaCultura", responsavel=responsavel)
+
+    url = reverse("adesao:alterar_funcionario",
+        kwargs={"tipo": "responsavel", "pk": sistema_cultura.id})
+
+    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
+        orgao_expeditor_rg="SSP", estado_expeditor=29,
+        nome="Joao silva", email_institucional="joao@email.com")
+
+    response = client.post(
+        url,
+        {
+            "cpf": funcionario.cpf,
+            "rg": funcionario.rg,
+            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
+            "estado_expeditor": 29,
+            "nome": funcionario.nome,
+            "email_institucional": funcionario.email_institucional,
+            "telefone_um": "999999999"
+        },
+    )
+
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(
+        ente_federado=sistema_cultura.ente_federado)
+
+    assert sistema_cultura_atualizado.responsavel.cpf == funcionario.cpf
+    assert sistema_cultura_atualizado.responsavel.rg == funcionario.rg
+    assert sistema_cultura_atualizado.responsavel.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
+    assert sistema_cultura_atualizado.responsavel.estado_expeditor == funcionario.estado_expeditor
+    assert sistema_cultura_atualizado.responsavel.nome == funcionario.nome
+    assert sistema_cultura_atualizado.responsavel.email_institucional == funcionario.email_institucional
+    assert sistema_cultura_atualizado.responsavel.tipo_funcionario == 1
+
+
+def test_cadastrar_funcionario_dados_invalidos(login, client, sistema_cultura):
+
+    url = reverse("adesao:cadastrar_funcionario",
+        kwargs={"tipo": "secretario", "sistema": sistema_cultura.id})
+
+    funcionario = Funcionario(cpf="123456", rg="48.464.068-9",
+        orgao_expeditor_rg="SSP", estado_expeditor=29,
+        nome="Joao silva", email_institucional="joao@email.com")
+
+    response = client.post(
+        url,
+        {
+            "cpf": funcionario.cpf,
+            "rg": funcionario.rg,
+            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
+            "estado_expeditor": 29,
+            "nome": funcionario.nome,
+            "email_institucional": funcionario.email_institucional,
+            "telefone_um": "999999999"
+        },
+    )
+
+    assert response.status_code == 302
     
 
 def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):

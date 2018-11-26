@@ -195,12 +195,20 @@
                             </a>
                           </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% if request.session.sistema_cultura_selecionado.secretario %}
+                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% else %}
+                              <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% endif %}
                               <span>Interlocutor</span>
                             </a>
                           </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                            <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% if request.session.sistema_cultura_selecionado.responsavel %}
+                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% else %}
+                              <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                            {% endif %}
                               <span>Responsável</span>
                             </a>
                           </li>
