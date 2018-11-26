@@ -209,14 +209,19 @@ def test_consultar_informações_estados(client):
     assert response.context_data["object_list"][0] == estado
 
 
-def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
+def test_cadastrar_funcionario_tipo_responsavel(login, client):
 
-    url = reverse("adesao:cadastrar_funcionario",
-        kwargs={"tipo": "responsavel", "sistema": sistema_cultura.id})
+    sistema_cultura = mommy.make("SistemaCultura", cadastrador=login)
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29,
         nome="Joao silva", email_institucional="joao@email.com")
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("adesao:cadastrar_funcionario",
+        kwargs={"tipo": "responsavel", "sistema": sistema_cultura.id})
 
     response = client.post(
         url,
@@ -243,16 +248,23 @@ def test_cadastrar_funcionario_tipo_responsavel(login, client, sistema_cultura):
     assert funcionario_salvo.nome == funcionario.nome
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 1
+    assert client.session['sistema_cultura_selecionado']['id'] == sistema_cultura_atualizado.id
+    assert client.session['sistema_cultura_selecionado']['responsavel'] == funcionario_salvo.id
 
 
-def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
+def test_cadastrar_funcionario_tipo_secretario(login, client):
 
-    url = reverse("adesao:cadastrar_funcionario",
-        kwargs={"tipo": "secretario", "sistema": sistema_cultura.id})
+    sistema_cultura = mommy.make("SistemaCultura", cadastrador=login)
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29,
         nome="Joao silva", email_institucional="joao@email.com")
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("adesao:cadastrar_funcionario",
+        kwargs={"tipo": "secretario", "sistema": sistema_cultura.id})
 
     response = client.post(
         url,
@@ -279,6 +291,8 @@ def test_cadastrar_funcionario_tipo_secretario(login, client, sistema_cultura):
     assert funcionario_salvo.nome == funcionario.nome
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 0
+    assert client.session['sistema_cultura_selecionado']['id'] == sistema_cultura_atualizado.id
+    assert client.session['sistema_cultura_selecionado']['secretario'] == funcionario_salvo.id
 
 
 def test_alterar_funcionario_tipo_secretario(login, client):
@@ -381,13 +395,16 @@ def test_cadastrar_funcionario_dados_invalidos(login, client, sistema_cultura):
     
 
 def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):
-    url = reverse("adesao:cadastrar_sistema")
-
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
     sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("adesao:cadastrar_sistema")
 
     response = client.post(
         url,
@@ -427,18 +444,24 @@ def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura)
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
+    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id, 
+        "ente_federado__nome": sistema_salvo.ente_federado.nome}
 
 
-def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, client, sistema_cultura):
-    url = reverse("adesao:cadastrar_sistema")
-
+def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, client):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
     sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
-    sistema_cultura = mommy.make("SistemaCultura", cadastrador=login)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado', 
+        cadastrador=login)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("adesao:cadastrar_sistema")
 
     response = client.post(
         url,
@@ -479,6 +502,8 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
     assert login.sistema_cultura.count() == 2
+    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id, 
+        "ente_federado__nome": sistema_salvo.ente_federado.nome}
 
 
 def test_session_user_sem_sistema_cultura(login, client):

@@ -288,6 +288,12 @@ class CadastrarSistemaCultura(CreateView):
 
             sistema = form_sistema.save()
 
+            if not self.request.session.get('sistemas', False):
+                self.request.session['sistemas'] = list()
+
+            self.request.session['sistemas'].append({"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+            self.request.session.modified = True
+
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
