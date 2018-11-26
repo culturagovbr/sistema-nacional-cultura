@@ -2,7 +2,7 @@ import pytest
 from django.forms import ModelForm
 from django.shortcuts import reverse
 
-from gestao.forms import DiligenciaComponenteForm, DiligenciaGeralForm, CadastradorEnte
+from gestao.forms import DiligenciaComponenteForm, DiligenciaGeralForm, CadastradorEnte, DiligenciaForm
 from gestao.models import DiligenciaSimples
 from adesao.models import SistemaCultura
 
@@ -182,3 +182,21 @@ def test_save_alterar_cadastrador_form_com_sistemacultura(sistema_cultura):
         ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge)
 
     assert sistema_atualizado.cadastrador == usuario
+
+
+def test_form_criacao_diligencia_dados_invalidos(sistema_cultura, login):
+
+    data = {'classificacao_arquivo': '3', 'texto_diligencia': ''}
+
+    form = DiligenciaForm(data=data, sistema_cultura=sistema_cultura, usuario=login)
+
+    assert not form.is_valid()
+
+
+def test_form_criacao_diligencia_dados_validos(sistema_cultura, login):
+
+    data = {'classificacao_arquivo': '2'}
+
+    form = DiligenciaForm(data=data, sistema_cultura=sistema_cultura, usuario=login)
+
+    assert form.is_valid()

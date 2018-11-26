@@ -153,13 +153,21 @@ class AlterarDadosAdesao(ModelForm):
 
 class DiligenciaForm(ModelForm):
     
-    texto_diligencia = forms.CharField(widget=CKEditorWidget())
+    texto_diligencia = forms.CharField(widget=CKEditorWidget(), required=False)
     
     def __init__(self, *args, **kwargs):
         self.sistema_cultura = kwargs.pop("sistema_cultura")
         usuario = kwargs.pop("usuario")
         super(DiligenciaForm, self).__init__(*args, **kwargs)
         self.instance.usuario = usuario
+
+    def clean_texto_diligencia(self):
+        CONCLUIDA = '2'
+        if self.data.get('classificacao_arquivo', False) != CONCLUIDA:
+            if not self.data.get('texto_diligencia', False):
+                raise forms.ValidationError('Por favor, adicione o texto da diligência!')
+
+        return self.cleaned_data['texto_diligencia']
 
     class Meta:
         model = DiligenciaSimples
