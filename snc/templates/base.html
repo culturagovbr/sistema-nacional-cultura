@@ -196,7 +196,7 @@
                           </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
                             {% if request.session.sistema_cultura_selecionado.secretario %}
-                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.secretario tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                             {% else %}
                               <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='secretario' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                             {% endif %}
@@ -205,7 +205,7 @@
                           </li>
                           <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                             {% if request.session.sistema_cultura_selecionado.responsavel %}
-                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.responsavel tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                             {% else %}
                               <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id tipo='responsavel' %}" title="" class="state-published navTreeFolderish contenttype-folder">
                             {% endif %}

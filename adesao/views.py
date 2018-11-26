@@ -66,8 +66,9 @@ def home(request):
         request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
     elif sistemas_cultura.count() == 1:
         request.session['sistema_cultura_selecionado'] = {'id': sistemas_cultura[0].id,
-            'ente_federado__nome': sistemas_cultura[0].ente_federado.nome,
-            'estado_processo': sistemas_cultura[0].estado_processo}
+            'estado_processo': sistemas_cultura[0].estado_processo,
+            'secretario': sistemas_cultura[0].secretario.id if sistemas_cultura[0].secretario else None,
+            'responsavel': sistemas_cultura[0].responsavel.id if sistemas_cultura[0].responsavel else None}
 
     if request.user.is_staff:
         return redirect("gestao:acompanhar_adesao")
@@ -87,7 +88,9 @@ def define_sistema_sessao(request, sistema):
     sistema_cultura = SistemaCultura.objects.get(id=sistema)
 
     request.session['sistema_cultura_selecionado'] = {'id': sistema_cultura.id,
-        'estado_processo': sistema_cultura.estado_processo}
+        'estado_processo': sistema_cultura.estado_processo,
+        'secretario': sistema_cultura.secretario.id if sistema_cultura.secretario else None,
+        'responsavel': sistema_cultura.responsavel.id if sistema_cultura.responsavel else None}
 
     return redirect("adesao:alterar_sistema", pk=sistema)
 
@@ -430,6 +433,12 @@ class CadastrarFuncionario(CreateView):
         sistema = self.get_sistema_cultura()
         setattr(sistema, tipo_funcionario, form.save())
         sistema.save()
+
+        funcionario = getattr(sistema, tipo_funcionario)
+        self.request.session['sistema_cultura_selecionado']['id'] = sistema.id
+        self.request.session['sistema_cultura_selecionado'][tipo_funcionario] = funcionario.id
+        self.request.session.modified = True
+
         return super(CadastrarFuncionario, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -448,54 +457,33 @@ class CadastrarFuncionario(CreateView):
 
 @login_required
 def importar_secretario(request):
-    secretario = request.user.usuario.secretario
-    # TODO: Refatorar essa importação depois que a migração for realizada
-    responsavel = Responsavel()
-    if secretario:
-        responsavel.cpf_responsavel = secretario.cpf_secretario
-        responsavel.rg_responsavel = secretario.rg_secretario
-        responsavel.orgao_expeditor_rg = secretario.orgao_expeditor_rg
-        responsavel.estado_expeditor = secretario.estado_expeditor
-        responsavel.nome_responsavel = secretario.nome_secretario
-        responsavel.cargo_responsavel = secretario.cargo_secretario
-        responsavel.instituicao_responsavel = secretario.instituicao_secretario
-        responsavel.telefone_um = secretario.telefone_um
-        responsavel.telefone_dois = secretario.telefone_dois
-        responsavel.telefone_tres = secretario.telefone_tres
-        responsavel.email_institucional_responsavel = (
-            secretario.email_institucional_secretario
-        )
-        try:
-            responsavel.full_clean()
-            responsavel.save()
-        except ValidationError:
-            return redirect("adesao:responsavel")
-        request.user.usuario.responsavel = responsavel
-        request.user.usuario.save()
-    return redirect("adesao:responsavel")
+    secretario_id = request.session['sistema_cultura_selecionado']['secretario']
+    sistema_id = request.session['sistema_cultura_selecionado']['id']
 
+    try:
+        sistema = SistemaCultura.sistema.get(id=sistema_id)
+        secretario = Funcionario.objects.get(id=secretario_id)
 
-"""@login_required
-def importar_secretario(request):
-    secretario = request.sistema_cultura.secretario
-
-    if secretario:
         responsavel = secretario
         responsavel.tipo_funcionario = 1
 
-        try:
-            responsavel.full_clean()
-            responsavel.save()
-        except ValidationError:
-            return redirect("adesao:cadastrar_funcionario", 
-                sistema=request.sistema, tipo='responsavel')
+        responsavel.full_clean()
+        responsavel.save()
 
-        request.sistema_cultura.responsavel = responsavel
-        request.sistema_cultura.save()
+    except (ValidationError, ObjectDoesNotExist) as error:
+        return redirect("adesao:cadastrar_funcionario", 
+            sistema=sistema.id, tipo='responsavel')
 
-    return redirect("adesao:cadastrar_funcionario", sistema=request.sistema, 
-        tipo='responsavel')
-"""
+    sistema.responsavel = responsavel
+    sistema.save()
+
+    request.session['sistema_cultura_selecionado']['responsavel'] = sistema.responsavel.id
+    request.session['sistema_cultura_selecionado']['id'] = sistema.id
+    request.session.modified = True
+
+    return redirect("adesao:cadastrar_funcionario", 
+        sistema=sistema.id, tipo='responsavel')
+
 
 class AlterarFuncionario(UpdateView):
     form_class = CadastrarFuncionarioForm
