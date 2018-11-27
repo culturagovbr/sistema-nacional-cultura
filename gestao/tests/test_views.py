@@ -181,7 +181,7 @@ def test_retorno_400_post_criacao_diligencia(url, client, login_staff):
 
     request = client.post(
         url.format(id=sistema_cultura.id, componente="orgao_gestor"),
-        data={"bla": ""},
+        data={"cla": ""},
     )
 
     assert request.status_code == 400
@@ -845,7 +845,7 @@ def test_salvar_informacoes_no_banco_diligencia_geral(url, client, login_staff):
         "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
     )
 
-    response = client.post(url, data={"texto_diligencia": "bla"})
+    response = client.post(url, data={"classificacao_arquivo": "2", "texto_diligencia": "bla"})
 
     diligencia = DiligenciaSimples.objects.first()
     sistema_cultura = SistemaCultura.sistema.get(
@@ -867,7 +867,7 @@ def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
     url = reverse(
         "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
     )
-    request = client.post(url, data={"texto_diligencia": "Ta errado cara"})
+    request = client.post(url, data={"classificacao_arquivo": "2", "texto_diligencia": "Ta errado cara"})
     url_redirect = request.url.split("http://testserver/")
 
     diligencia = DiligenciaSimples.objects.first()
@@ -952,7 +952,7 @@ def test_envio_email_diligencia_geral(client, login_staff):
     sistema_cultura.cadastrador.user.save()
 
     url = reverse("gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id})
-    request = client.post(url, data={"texto_diligencia": "Ta errado cara"})
+    request = client.post(url, data={"classificacao_arquivo": "3", "texto_diligencia": "Ta errado cara"})
 
     assert len(mail.outbox) == 1
 

@@ -73,9 +73,12 @@
 
 
 <div class="row">
-	<form method="POST">
+	<form method="POST" class='{% if form.texto_diligencia.errors %} has-error {% endif %}'>
 		{% csrf_token %}
 		{{form.texto_diligencia}}
+		{% if form.texto_diligencia.errors %}
+			<span class="help-block">{{ form.texto_diligencia.errors }}</span>
+        {% endif %}
 		<br>
 
 		{% if componente != plano_trabalho %}
