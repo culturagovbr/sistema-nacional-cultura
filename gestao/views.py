@@ -49,13 +49,12 @@ from adesao.models import Uf
 from .models import DiligenciaSimples
 
 from .forms import DiligenciaComponenteForm, DiligenciaGeralForm, AlterarDocumentosEnteFederadoForm
-from .forms import AlterarDadosAdesao
 
 from .forms import AlterarCadastradorForm
 from .forms import AlterarUsuarioForm
 from .forms import AlterarComponenteForm
+from .forms import AlterarDadosEnte
 from .forms import CriarComponenteForm
-
 from .forms import CadastradorEnte
 
 from itertools import chain
@@ -126,16 +125,6 @@ class UfChain(autocomplete.Select2QuerySetView):
 
     def get_selected_result_label(self, item):
         return item.sigla
-
-
-def alterar_dados_adesao(request, pk):
-    if request.method == "POST":
-        form = AlterarDadosAdesao(request.POST,
-                                  instance=Usuario.objects.get(pk=pk))
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Dados da adesão foram alterados com sucesso')
-    return redirect('gestao:detalhar', pk=pk)
 
 
 def ajax_consulta_cpf(request):
@@ -450,8 +439,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
 class AlterarDadosEnte(UpdateView, LookUpAnotherFieldMixin):
     model = SistemaCultura
-    fields = ["processo_sei", "estado_processo", "justificativa",
-              "localizacao", "link_publicacao_acordo", "data_publicacao_acordo"]
+    form_class = AlterarDadosEnte
     context_object_name = "ente"
     template_name = "detalhe_municipio.html"
     pk_url_kwarg = "cod_ibge"

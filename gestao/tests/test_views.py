@@ -484,6 +484,28 @@ def test_insere_link_publicacao_dou(client, sistema_cultura, login_staff):
     assert sistema_atualizado.link_publicacao_acordo == "https://www.google.com/"
 
 
+def test_remocao_data_publicacao_para_nao_publicados(client, sistema_cultura, login_staff):
+    """ Testa se ao alterar o estado de um sistema publicado, com data de publicação, para não
+    publicado, a data de publicação é removida """
+
+    sistema_cultura = mommy.make("SistemaCultura", estado_processo='6', ente_federado__cod_ibge=123456,
+        _fill_optional='data_publicacao_acordo')
+
+    url = reverse("gestao:alterar_dados_adesao", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
+
+    client.post(
+        url,
+        data={
+            "estado_processo": "4"
+        },
+    )
+
+    sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=sistema_cultura
+        .ente_federado.cod_ibge)
+    assert sistema_atualizado.estado_processo == '4'
+    assert sistema_atualizado.data_publicacao_acordo == None
+
+
 def test_insere_sei(client, sistema_cultura, login_staff):
     """ Testa se ao inserir sei o sistema_cultura é alterado """
 

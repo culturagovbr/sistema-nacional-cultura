@@ -114,41 +114,24 @@ class CadastradorEnte(forms.ModelForm):
         fields = ["cpf_cadastrador", "data_publicacao_acordo"]
 
 
-class AlterarDadosAdesao(ModelForm):
+class AlterarDadosEnte(ModelForm):
     processo_sei = forms.CharField(max_length="50", required=False)
     justificativa = forms.CharField(required=False)
     localizacao = forms.CharField(max_length="10", required=False)
-    num_processo = forms.CharField(max_length="50", required=False)
     estado_processo = forms.ChoiceField(choices=LISTA_ESTADOS_PROCESSO, required=False)
 
-    def clean(self):
-        if self.cleaned_data.get('estado_processo', None) == '6':
-            if not self.cleaned_data.get('data_publicacao_acordo', None):
-                raise forms.ValidationError('Insira a data corretamente.')
+    def clean_estado_processo(self):
+        if self.cleaned_data.get('estado_processo', None) != '6':
+            if self.instance.data_publicacao_acordo:
+                self.instance.data_publicacao_acordo = None
 
-    def save(self, commit=True):
-        usuario = super(AlterarDadosAdesao, self).save(commit=False)
-        historico = Historico()
-        historico.usuario = usuario
-        historico.situacao = self.cleaned_data['estado_processo']
 
-        if self.cleaned_data['estado_processo'] == '2':
-            usuario.municipio.localizacao = self.cleaned_data['localizacao']
-        elif self.cleaned_data['estado_processo'] == '3':
-            historico.descricao = self.cleaned_data['justificativa']
-        elif self.cleaned_data['estado_processo'] == '4':
-            usuario.municipio.numero_processo = self.cleaned_data['num_processo']
-
-        if commit:
-            usuario.municipio.save()
-            usuario.save()
-            historico.save()
-            enviar_email_alteracao_situacao(usuario, historico)
+        return self.cleaned_data['estado_processo']
 
     class Meta:
-        model = Usuario
-        fields = ('estado_processo', 'data_publicacao_acordo', 'link_publicacao_acordo',
-                  'processo_sei')
+        model = SistemaCultura
+        fields = ('processo_sei', 'justificativa', 'localizacao', 'estado_processo',
+            'data_publicacao_acordo', 'link_publicacao_acordo')
 
 
 class DiligenciaForm(ModelForm):

@@ -11,6 +11,7 @@ from dal.autocomplete import ModelSelect2
 from model_mommy import mommy
 
 from gestao.forms import AlterarCadastradorForm
+from gestao.forms import AlterarDadosEnte
 
 pytestmark = pytest.mark.django_db
 
