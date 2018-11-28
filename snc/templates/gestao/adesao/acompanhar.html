@@ -35,7 +35,7 @@
             <tbody>
               {% for sistema in object_list %}
               <tr class="odd gradeX">
-                <td><center><a href="{% url 'gestao:detalhar' sistema.ente_federado.cod_ibge %}"><i class="fa fa-file"></i></a></center></td>
+                <td><center><a href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}"><i class="fa fa-file"></i></a></center></td>
                 <td>{{ sistema.ente_federado }}</td>
                 {% if sistema.gestor.termo_posse %}
                 <td><a href="{{ sistema.gestor.termo_posse.url }}">{{ sistema.gestor.nome }}</a></td>

@@ -319,6 +319,8 @@ def test_ente_federado_retornado_na_diligencia(url, client, login_staff):
 def test_salvar_informacoes_no_banco(url, client, login_staff):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
 
+    DiligenciaSimples.objects.all().delete()
+
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
@@ -837,6 +839,9 @@ def test_retorna_200_para_diligencia_geral(client, url, login_staff):
 
 def test_salvar_informacoes_no_banco_diligencia_geral(url, client, login_staff):
     """Testa se as informacoes validadas pelo form estao sendo salvas no banco"""
+
+    DiligenciaSimples.objects.all().delete()
+
     sistema_cultura = mommy.make(
         "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador"]
     )
@@ -919,6 +924,9 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
 
 def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     """ Testa criação da diligência específica de um componente"""
+
+    DiligenciaSimples.objects.all().delete()
+
     orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
@@ -1050,6 +1058,8 @@ def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes"""
 
+    SistemaCultura.objects.all().delete()
+
     sistema_sem_analise_recente = mommy.make('SistemaCultura',
         estado_processo = '6',
         ente_federado__cod_ibge=123450,
@@ -1095,6 +1105,8 @@ def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes"""
 
+    SistemaCultura.objects.all().delete()
+
     ente_federado_1 = mommy.make('EnteFederado', cod_ibge=123450)
     sistema_sem_analise_recente_1 = mommy.make('SistemaCultura',
         estado_processo = '6',
@@ -1138,6 +1150,8 @@ def test_acompanhar_adesao_mais_de_um_sistema_por_ente(client, login_staff):
 def test_acompanhar_adesao_ordenar_data_com_sistema_com_mais_de_um_componente(client, login_staff):
     """ Testa se na página de acompanhamento de adesões, quando há sistemas com múltiplos 
     componentes, o correto é considerado para ordenação pela data """
+
+    SistemaCultura.objects.all().delete()
 
     sistema_1 = mommy.make('SistemaCultura',
         estado_processo = '6',
@@ -1187,6 +1201,8 @@ def test_acompanhar_adesao_ordenar_estado_processo(client, login_staff):
     """ Testa ordenação da página de acompanhamento das adesões
     por data de envio mais antiga entre os componentes e
     estado do processo da adesão """
+    
+    SistemaCultura.objects.all().delete()
 
     sistema_nao_publicado = mommy.make('SistemaCultura', estado_processo=1,
                     ente_federado__cod_ibge=123456,
@@ -1698,3 +1714,20 @@ def test_pesquisa_de_ente_federado_sem_acento_tela_adicionar_prazo(client, login
         response.context_data["object_list"][0].municipio.cidade.nome_municipio
         == "Acrelândia"
     )
+
+
+def test_historico_diligencias_componentes(client, login_staff):
+    sistema_cultura = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador", "legislacao"]
+    )
+    diligencia = mommy.make("DiligenciaSimples")
+    sistema_cultura.legislacao.diligencia = diligencia
+    sistema_cultura.legislacao.save()
+    url = reverse(
+        "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
+    )
+    request = client.get(url)
+    historico = request.context['historico_diligencias_componentes']
+
+    assert len(historico) == 1
+    assert historico[0].diligencia == diligencia

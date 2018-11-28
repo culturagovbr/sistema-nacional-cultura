@@ -399,6 +399,16 @@ class SistemaCultura(models.Model):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url
 
+    def get_componentes_diligencias(self):
+        diligencias_componentes = []
+        componentes = ['legislacao', 'orgao_gestor', 'plano', 'conselho', 'fundo_cultura']
+        for componente in componentes:
+            componente = getattr(self, componente)
+            if componente and componente.diligencia:
+                diligencias_componentes.append(componente)
+        return diligencias_componentes
+
+
     def get_situacao_componentes(self):
         """
         Retornar uma lista contendo a situação de cada componente de um SistemaCultura

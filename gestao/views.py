@@ -671,6 +671,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['situacoes'] = self.get_sistema_cultura().get_situacao_componentes()
         context['historico_diligencias'] = self.get_historico_diligencias()
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias()
 
         return context
 

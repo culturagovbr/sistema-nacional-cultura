@@ -93,26 +93,53 @@
 </div>
 <br>
 
-{% if historico_diligencias %}
-	<div class="row panel panel-info">
-		<div class="panel-heading">
-			Histórico de Diligências
-		</div>
+<div class="row">
+	{% if historico_diligencias %}
+		<div class="col-md-6">
+			<div class="row panel panel-info">
+				<div class="panel-heading">
+					Histórico de Diligências
+				</div>
 
-		{% for diligencia in historico_diligencias %}
-		<div id="lista-diligencia" class="col-md-12">
-			<ul class="list-group"></ul>
-				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
-                {% if componente != plano_trabalho %}
-                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
-                {% endif %}
-				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
-				<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
-			</ul>
-		</div>
-		{% endfor %}
+				{% for diligencia in historico_diligencias %}
+				<div id="lista-diligencia" class="col-md-12">
+					<ul class="list-group"></ul>
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
+		                {% if componente != plano_trabalho %}
+		                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
+		                {% endif %}
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
+					</ul>
+				</div>
+				{% endfor %}
 
-	</div>
-{% endif %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if historico_diligencias_componentes %}
+		<div class="col-md-6">
+			<div class="row panel panel-info">
+				<div class="panel-heading">
+					Histórico de Diligências dos Componentes
+				</div>
+
+				{% for componente in historico_diligencias_componentes %}
+				<div id="lista-diligencia" class="col-md-12">
+					<ul class="list-group"></ul>
+					<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+		                <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | truncatechars:150 | striptags | safe}}</li>
+					</ul>
+				</div>
+				{% endfor %}
+
+			</div>
+		</div>
+	{% endif %}
+</div>
 
 {% endblock %}
