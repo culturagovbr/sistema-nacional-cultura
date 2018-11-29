@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="row">
+  {% if view.kwargs.tipo == 'plano' %}
+    {% include "planotrabalho/cadastrar_plano.html" %}
+  {% elif view.kwargs.tipo == 'conselho' %}
+    {% include "planotrabalho/cadastrar_conselho.html" %}
+  {% elif view.kwargs.tipo == 'legislacao' %}
+    {% include "planotrabalho/cadastrar_sistema.html" %}
+  {% elif view.kwargs.tipo == 'orgao_gestor' %}
+    {% include "planotrabalho/cadastrar_orgao.html" %}
+  {% elif view.kwargs.tipo == 'fundo_cultura' %}
+    {% include "planotrabalho/cadastrar_fundo.html" %}
+  {% endif %}
+</div>
+{% endblock content %}

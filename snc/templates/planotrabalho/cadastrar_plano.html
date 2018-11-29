@@ -1,6 +1,4 @@
-{% extends "base.html" %}
 {% load widget_tweaks %}
-{% block content %}
 <div class="container">
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
@@ -26,7 +24,7 @@
     </label>
     {% if form.arquivo.value %}
     <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.plano_cultura.situacao.id != 2 %}
+    {% if view.kwargs.sistema.plano.situacao != 2 %}
     <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
@@ -68,4 +66,3 @@
   <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
-{% endblock content %}

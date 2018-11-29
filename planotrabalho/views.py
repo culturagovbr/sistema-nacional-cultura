@@ -17,6 +17,7 @@ from .models import Conselheiro
 from .models import ConselhoCultural
 from .models import FundoCultura
 from .models import PlanoCultura
+from .models import Componente
 from adesao.models import SistemaCultura
 
 from .forms import CriarSistemaForm
@@ -31,39 +32,59 @@ from .forms import AlterarConselheiroForm
 
 
 class PlanoTrabalho(DetailView):
-    model = PlanoTrabalho
+    model = SistemaCultura
     template_name = 'planotrabalho/plano_trabalho.html'
 
     def get_context_data(self, **kwargs):
         try:
-            data_final = self.request.user.usuario.data_publicacao_acordo
-            prazo = self.request.user.usuario.prazo
+            #data_final = self.request.user.usuario.data_publicacao_acordo
+            #prazo = self.request.user.usuario.prazo
             context = super(PlanoTrabalho, self).get_context_data(**kwargs)
-            context['data_final'] = data_final.replace(year=data_final.year + prazo, day=data_final.day + 1)
+            context['data_final'] = ''
+            sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+            context['sistema'] = SistemaCultura.objects.get(id=sistema_id)
         except:
             return context
         return context
 
-    def dispatch(self, *args, **kwargs):
-        plano = self.request.user.usuario.plano_trabalho.id
-        if str(plano) != self.kwargs['pk']:
-            raise Http404()
-
-        return super(PlanoTrabalho, self).dispatch(*args, **kwargs)
-
 
 class CadastrarComponente(CreateView):
     form_class = CriarComponenteForm
-    template_name = 'cadastrar_componente.html'
+    template_name = 'planotrabalho/cadastrar_componente.html'
     success_url = reverse_lazy("adesao:home")
+
+    def dispatch(self, *args, **kwargs):
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        componente = getattr(self.sistema, self.kwargs['tipo'])
+        if componente:
+            return redirect('planotrabalho:alterar_componente', 
+                tipo=self.kwargs['tipo'], pk=componente.id)
+
+        return super(CadastrarComponente, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
-        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
-        sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['sistema'] = sistema
+        kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
         return kwargs
+
+
+class AlterarComponente(UpdateView):
+    form_class = CriarComponenteForm
+    model = Componente
+    template_name = 'planotrabalho/cadastrar_componente.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarComponente, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = self.kwargs['tipo']
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
 
 class CadastrarSistema(CreateView):

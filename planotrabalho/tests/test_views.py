@@ -5,6 +5,7 @@ from django.shortcuts import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from adesao.models import SistemaCultura
+from planotrabalho.models import Componente
 
 from model_mommy import mommy
 
@@ -165,3 +166,34 @@ def test_cadastrar_componente_tipo_plano(client, login):
     assert arquivo.name.split(".")[0] in sistema_atualizado.plano.arquivo.name.split("/")[-1]
     assert sistema_atualizado.plano.data_publicacao == datetime.date(2018, 6, 28)
     assert sistema_atualizado.plano.tipo == 4
+
+
+def test_alterar_componente(client, login):
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'legislacao'],
+        cadastrador=login)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("planotrabalho:alterar_componente", kwargs={"tipo": "legislacao", 
+        "pk": sistema_cultura.legislacao.id})
+
+    numero_componentes = Componente.objects.count()
+
+    arquivo = SimpleUploadedFile(
+        "novo.txt", b"file_content", content_type="text/plain"
+    )
+    response = client.post(url, data={"arquivo": arquivo,
+                                      "data_publicacao": "25/06/2018"})
+
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__nome=sistema_cultura.ente_federado.nome)
+
+    numero_componentes_apos_update = Componente.objects.count()
+
+    assert numero_componentes == numero_componentes_apos_update
+    assert response.status_code == 302
+    assert arquivo.name.split(".")[0] in sistema_atualizado.legislacao.arquivo.name.split("/")[-1]
+    assert sistema_atualizado.legislacao.data_publicacao == datetime.date(2018, 6, 25)
+    assert sistema_atualizado.legislacao.tipo == 0

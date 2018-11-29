@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+<div class="row">
+  {% if view.kwargs.tipo == 'plano' %}
+    {% include "cadastrar_plano.html" %}
+  {% elif view.kwargs.tipo == 'conselho' %}
+    {% include "cadastrar_conselho.html" %}
+  {% elif view.kwargs.tipo == 'legislacao' %}
+    {% include "cadastrar_sistema.html" %}
+  {% elif view.kwargs.tipo == 'orgao' %}
+    {% include "cadastrar_orgao.html" %}
+  {% elif view.kwargs.tipo == 'fundo_cultura' %}
+    {% include "cadastrar_fundo.html" %}
+  {% endif %}
+</div>
