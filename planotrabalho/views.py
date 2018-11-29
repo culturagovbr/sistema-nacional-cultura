@@ -17,8 +17,10 @@ from .models import Conselheiro
 from .models import ConselhoCultural
 from .models import FundoCultura
 from .models import PlanoCultura
+from adesao.models import SistemaCultura
 
 from .forms import CriarSistemaForm
+from .forms import CriarComponenteForm
 from .forms import OrgaoGestorForm
 from .forms import ConselhoCulturalForm
 from .forms import DesabilitarConselheiroForm
@@ -48,6 +50,20 @@ class PlanoTrabalho(DetailView):
             raise Http404()
 
         return super(PlanoTrabalho, self).dispatch(*args, **kwargs)
+
+
+class CadastrarComponente(CreateView):
+    form_class = CriarComponenteForm
+    template_name = 'cadastrar_componente.html'
+    success_url = reverse_lazy("adesao:home")
+
+    def get_form_kwargs(self):
+        kwargs = super(CadastrarComponente, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = sistema
+        kwargs['tipo'] = self.kwargs['tipo']
+        return kwargs
 
 
 class CadastrarSistema(CreateView):

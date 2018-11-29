@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 
 from . import views
 
@@ -14,6 +15,9 @@ urlpatterns = [
     url(r'^sistema/$',
         login_required(views.CadastrarSistema.as_view()),
         name='sistema'),
+    path('componente/<str:tipo>',
+        login_required(views.CadastrarComponente.as_view()),
+        name='cadastrar_componente'),
     url(r'^sistema/(?P<pk>[0-9]+)/$',
         login_required(views.AlterarSistema.as_view()),
         name='alterar_sistema'),

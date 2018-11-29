@@ -3,7 +3,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import FileInput
 
-from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural, FundoCultura
+from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural, FundoCultura, Componente
 from .models import FundoCultura, PlanoCultura, Conselheiro, SITUACAO_CONSELHEIRO
 from .utils import validar_cnpj, add_anos
 
@@ -64,6 +64,46 @@ class CriarSistemaForm(ModelForm):
     class Meta:
         model = CriacaoSistema
         fields = ['arquivo', 'data_publicacao']
+
+
+class CriarComponenteForm(ModelForm):
+    componentes = {
+            "legislacao": 0,
+            "orgao_gestor": 1,
+            "fundo_cultura": 2,
+            "conselho": 3,
+            "plano": 4,
+    }
+
+    arquivo = forms.FileField(required=True, widget=FileInput)
+    data_publicacao = forms.DateField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.sistema = kwargs.pop('sistema')
+        self.tipo_componente = kwargs.pop('tipo')
+        super(CriarComponenteForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True, *args, **kwargs):
+        componente = super(CriarComponenteForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            componente.situacao = 1
+
+        if commit:
+            componente.tipo = self.componentes.get(self.tipo_componente)
+            componente.arquivo = None
+            componente.save()
+            sistema_cultura = getattr(componente, self.tipo_componente)
+            sistema_cultura.add(self.sistema)
+            componente.arquivo = self.cleaned_data['arquivo']
+            componente.save()
+            setattr(self.sistema, self.tipo_componente, componente)
+            self.sistema.save()
+
+        return componente
+
+    class Meta:
+        model = Componente
+        fields = ('arquivo', 'data_publicacao')
 
 
 class OrgaoGestorForm(ModelForm):
