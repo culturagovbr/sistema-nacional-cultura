@@ -301,7 +301,7 @@ def test_alterar_funcionario_tipo_secretario(login, client):
     sistema_cultura = mommy.make("SistemaCultura", secretario=secretario)
 
     url = reverse("adesao:alterar_funcionario",
-        kwargs={"tipo": "secretario", "pk": sistema_cultura.id})
+        kwargs={"tipo": "secretario", "pk": sistema_cultura.secretario.id})
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29,
@@ -338,7 +338,7 @@ def test_alterar_funcionario_tipo_responsavel(login, client):
     sistema_cultura = mommy.make("SistemaCultura", responsavel=responsavel)
 
     url = reverse("adesao:alterar_funcionario",
-        kwargs={"tipo": "responsavel", "pk": sistema_cultura.id})
+        kwargs={"tipo": "responsavel", "pk": sistema_cultura.responsavel.id})
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29,
@@ -391,7 +391,7 @@ def test_cadastrar_funcionario_dados_invalidos(login, client, sistema_cultura):
         },
     )
 
-    assert response.status_code == 302
+    assert response.status_code == 200
     
 
 def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):

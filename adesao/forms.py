@@ -218,7 +218,7 @@ class CadastrarMunicipioForm(ModelForm):
 
 
 class CadastrarFuncionarioForm(ModelForm):
-    def clean_cpf_secretario(self):
+    def clean_cpf(self):
         if not validar_cpf(self.cleaned_data['cpf']):
             raise forms.ValidationError('Por favor, digite um CPF válido!')
 
