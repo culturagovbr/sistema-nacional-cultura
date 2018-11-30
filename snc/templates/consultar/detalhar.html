@@ -300,7 +300,13 @@
                     <div class="fundo_situacao">
                         <div class="painel_situacao">
                             <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Sem data de publicação" }}</h5>
-                            <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                            {% if object.link_publicacao_acordo %}
+                                <a href="{{ object.link_publicacao_acordo }}">
+                                    <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                                </a>
+                            {% else %}
+                                <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                            {% endif %}
                         </div>
                     </div>
                 </p>
