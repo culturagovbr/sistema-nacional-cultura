@@ -299,13 +299,8 @@
                 <p><!--<img src="{% static 'img/banner_situacao.png' %}"/>-->
                     <div class="fundo_situacao">
                         <div class="painel_situacao">
-                            {% if object.is_municipio %}
-                            <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Município sem cadastrador" }}</h5>
-                            <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Publicado no DOU" }}</h3>
-                            {% else %}
-                            <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Estado sem cadastrador" }}</h5>
-                            <h3 class="texto_situacao">Publicado no DOU</h3>
-                            {% endif %}
+                            <h5 class="texto_situacao_data">{{ object.data_publicacao_acordo|default:"Sem data de publicação" }}</h5>
+                            <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
                         </div>
                     </div>
                 </p>
@@ -333,7 +328,7 @@
                     <div class="fundo_painel">
                         <div class="painel">
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.legislacao.arquivo %}
+                                    {% if object.legislacao.situacao == 2 or object.legislacao.situacao == 3 %}
                                     <i class="fa fa-check"></i>
                                     <a href="{{ object.legislacao.arquivo.url }}" style="color:#ffffff">
                                         Lei do Sistema de Cultura
@@ -343,7 +338,7 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.orgao_gestor.arquivo %}
+                                    {% if object.orgao_gestor.situacao == 2 or object.orgao_gestor.situacao == 3 %}
                                     <i class="fa fa-check"></i>
                                     <a href="{{ oobject.orgao_gestor.arquivo.url }}" style="color:#ffffff">
                                         Relatório de Atividades do Órgão Gestor
@@ -353,7 +348,7 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.conselho.arquivo %}
+                                    {% if object.conselho.situacao == 2 or object.conselho.situacao == 3 %}
                                     <i class="fa fa-check"></i>
                                     <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff">
                                         Ata de Reunião de Criação do Conselho de Políticas Culturais
@@ -363,7 +358,7 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.fundo_cultura.arquivo %}
+                                    {% if object.fundo_cultura.situacao == 2 or object.fundo_cultura.situacao == 3 %}
                                     <i class="fa fa-check"></i>
                                     <a href="{{ object.fundo_cultura.arquivo.url }}" style="color:#ffffff">
                                         Lei do Fundo de Cultura
@@ -373,7 +368,7 @@
                                     {% endif %}
                                 </div>
                                 <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                                    {% if object.plano.arquivo %}
+                                    {% if object.plano.arquivo == 2 or object.plano.arquivo == 3 %}
                                     <i class="fa fa-check"></i>
                                     <a href="{{ object.plano.arquivo.url }}" style="color:#ffffff">
                                         Lei do Plano de Cultura
