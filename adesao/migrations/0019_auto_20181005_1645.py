@@ -64,8 +64,8 @@ def cria_sistema_cultura(apps, schema_editor):
                     pass
                 sistema_cultura.ente_federado = ente[0]
 
-        componentes_antigos = ('criacao_sistema', 'orgao_gestor', 'fundo_cultura', 'conselho_cultural', 'plano_cultura')
-        componentes_novos = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
+        componentes_antigos = ('criacao_sistema', 'orgao_gestor', 'conselho_cultural', 'plano_cultura')
+        componentes_novos = ('legislacao', 'orgao_gestor', 'conselho', 'plano')
 
         sistema_cultura.numero_processo = municipio.numero_processo
 
