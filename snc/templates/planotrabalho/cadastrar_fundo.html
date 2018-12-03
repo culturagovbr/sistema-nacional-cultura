@@ -10,13 +10,13 @@
     <strong>2.3 Instituição do Fundo de Cultura</strong>
   </h5>
 
-  <div class="form-group {% if form.cnpj_fundo_cultura.errors %} has-error {% endif %}">
-    <label for="{{ form.cnpj_fundo_cultura.id_for_label }}" class="col-sm-12">
+  <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
+    <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
       CNPJ
     </label>
-    {% render_field form.cnpj_fundo_cultura class="form-control cnpj half-width" %}
-    {% if form.cnpj_fundo_cultura.errors %} 
-      <span class="help-block">{{ form.cnpj_fundo_cultura.errors }}</span>
+    {% render_field form.cnpj class="form-control cnpj half-width" %}
+    {% if form.cnpj.errors %} 
+      <span class="help-block">{{ form.cnpj.errors }}</span>
     {% endif %}
   </div>
 

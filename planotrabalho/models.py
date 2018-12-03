@@ -140,6 +140,15 @@ class Componente(ArquivoComponente2):
         return url
 
 
+class FundoDeCultura(Componente):
+    cnpj = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ',
+        blank=True,
+        null=True,
+        default=None)
+
+
 class CriacaoSistema(ArquivoComponente):
     minuta_projeto_lei = models.FileField(
         upload_to='minuta_lei',

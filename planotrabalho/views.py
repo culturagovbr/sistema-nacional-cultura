@@ -16,10 +16,12 @@ from .models import OrgaoGestor
 from .models import Conselheiro
 from .models import ConselhoCultural
 from .models import FundoCultura
+from .models import FundoDeCultura
 from .models import PlanoCultura
 from .models import Componente
 from adesao.models import SistemaCultura
 
+from .forms import CriarFundoForm
 from .forms import CriarSistemaForm
 from .forms import CriarComponenteForm
 from .forms import OrgaoGestorForm
@@ -49,7 +51,6 @@ class PlanoTrabalho(DetailView):
 
 
 class CadastrarComponente(CreateView):
-    form_class = CriarComponenteForm
     template_name = 'planotrabalho/cadastrar_componente.html'
     success_url = reverse_lazy("adesao:home")
 
@@ -58,10 +59,21 @@ class CadastrarComponente(CreateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         componente = getattr(self.sistema, self.kwargs['tipo'])
         if componente:
-            return redirect('planotrabalho:alterar_componente', 
-                tipo=self.kwargs['tipo'], pk=componente.id)
+            if self.kwargs['tipo'] == 'fundo_cultura':
+                return redirect('planotrabalho:alterar_fundo', pk=componente.id)
+            else:
+                return redirect('planotrabalho:alterar_componente', pk=componente.id,
+                    tipo=self.kwargs['tipo'])
 
         return super(CadastrarComponente, self).dispatch(*args, **kwargs)
+
+    def get_form_class(self):
+        if self.kwargs['tipo'] == 'fundo_cultura':
+            form_class = CriarFundoForm
+        else:
+            form_class = CriarComponenteForm
+
+        return form_class
 
     def get_form_kwargs(self):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
@@ -71,8 +83,8 @@ class CadastrarComponente(CreateView):
 
 
 class AlterarComponente(UpdateView):
-    form_class = CriarComponenteForm
     model = Componente
+    form_class = CriarComponenteForm
     template_name = 'planotrabalho/cadastrar_componente.html'
 
     def get_form_kwargs(self):
@@ -81,6 +93,23 @@ class AlterarComponente(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
+
+
+class AlterarFundoCultura(UpdateView):
+    model = FundoDeCultura
+    form_class = CriarFundoForm
+    template_name = 'planotrabalho/alterar_fundo.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'fundo_cultura'
         return kwargs
 
     def get_success_url(self):

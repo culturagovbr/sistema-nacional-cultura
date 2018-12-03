@@ -11,6 +11,7 @@ from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
 from gestao.models import Diligencia
 
+from planotrabalho.models import FundoDeCultura
 from adesao.managers import SistemaManager
 from adesao.managers import HistoricoManager
 
@@ -369,7 +370,7 @@ class SistemaCultura(models.Model):
     data_criacao = models.DateTimeField(default=timezone.now)
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")
     orgao_gestor = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
-    fundo_cultura = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
+    fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
     conselho = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
     secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")

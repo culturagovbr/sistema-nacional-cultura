@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from django.forms.widgets import FileInput
 
 from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural, FundoCultura, Componente
-from .models import FundoCultura, PlanoCultura, Conselheiro, SITUACAO_CONSELHEIRO
+from .models import FundoCultura, FundoDeCultura, PlanoCultura, Conselheiro, SITUACAO_CONSELHEIRO
 from .utils import validar_cnpj, add_anos
 
 SETORIAIS = (
@@ -90,6 +90,7 @@ class CriarComponenteForm(ModelForm):
 
         if commit:
             componente.tipo = self.componentes.get(self.tipo_componente)
+            componente.data_publicacao = self.cleaned_data['data_publicacao']
             componente.arquivo = None
             componente.save()
             sistema_cultura = getattr(componente, self.tipo_componente)
@@ -104,6 +105,13 @@ class CriarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
+
+
+class CriarFundoForm(CriarComponenteForm):
+
+    class Meta:
+        model = FundoDeCultura
+        fields = ('cnpj', 'arquivo', 'data_publicacao')    
 
 
 class OrgaoGestorForm(ModelForm):

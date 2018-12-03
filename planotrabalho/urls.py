@@ -18,6 +18,9 @@ urlpatterns = [
     path('componente/<str:tipo>',
         login_required(views.CadastrarComponente.as_view()),
         name='cadastrar_componente'),
+    path('componente/fundo/<int:pk>',
+        login_required(views.AlterarFundoCultura.as_view()),
+        name='alterar_fundo'),
     path('componente/<str:tipo>/<int:pk>',
         login_required(views.AlterarComponente.as_view()),
         name='alterar_componente'),
@@ -62,9 +65,6 @@ urlpatterns = [
     url(r'^fundo/$',
         login_required(views.CadastrarFundo.as_view()),
         name='fundo'),
-    url(r'^fundo/(?P<pk>[0-9]+)/$',
-        login_required(views.AlterarFundo.as_view()),
-        name='alterar_fundo'),
 
     # Quinta etapa - Elaboração do Plano de Cultura
     url(r'^plano/$',
