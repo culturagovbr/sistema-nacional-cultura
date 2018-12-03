@@ -15,6 +15,18 @@
           <span class="help-block">{{ form.arquivo.errors}}</span>
         </div>
       </div>
+
+      <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label">CNPJ do Fundo de Cultura</label>
+
+        <div class="col-sm-7">
+          <span class="help-block">{% render_field form.cnpj %}</span>
+        </div>
+        <div class="col-sm-offset-3 col-sm-9 has-error">
+            <span class="help-block">{{ form.cnpj.errors}}</span>
+        </div>
+      </div>
+
       <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
         <label class="col-sm-3 control-label">Data de publicação da Lei</label>
 

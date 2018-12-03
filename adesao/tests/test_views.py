@@ -438,7 +438,7 @@ def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura)
 
     gestor_salvo = Gestor.objects.last()
     sede_salva = Sede.objects.last()
-    sistema_salvo = SistemaCultura.objects.last()
+    sistema_salvo = SistemaCultura.sistema.get(ente_federado__nome=ente_federado.nome)
 
     assert sistema_salvo.ente_federado.cod_ibge == ente_federado.cod_ibge
     assert sistema_salvo.gestor == gestor_salvo

@@ -106,6 +106,9 @@ urlpatterns = [
         login_url='adesao:login'), name='listar_documentos'),
 
     # Tela de alteração de upload do plano de trabalho
+    path("inserir-documentos/fundo/alterar/<int:pk>", staff_member_required(
+        views.AlterarFundoCultura.as_view(),
+        login_url='adesao:login'), name='alterar_fundo'),
     path("inserir-documentos/<str:componente>/alterar/<int:pk>", staff_member_required(
         views.AlterarComponente.as_view(),
         login_url='adesao:login'), name='alterar_componente'), 

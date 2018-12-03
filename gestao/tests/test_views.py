@@ -22,6 +22,7 @@ from planotrabalho.models import PlanoCultura
 from planotrabalho.models import ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
 from planotrabalho.models import Componente
+from planotrabalho.models import FundoDeCultura
 
 
 pytestmark = pytest.mark.django_db
@@ -716,20 +717,23 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
         "componente": "fundo_cultura"}
     )
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
+        "cnpj": "27.082.838/0001-28"})
 
-    name = Componente.objects.last().arquivo.name.split("fundo_cultura/")[1]
-    situacao = Componente.objects.last().situacao
+    novo_fundo = FundoDeCultura.objects.last()
+    name = novo_fundo.arquivo.name.split("fundo_cultura/")[1]
 
     assert name == arquivo.name
-    assert situacao == 1
+    assert novo_fundo.situacao == 1
+    assert novo_fundo.cnpj == "27.082.838/0001-28"
+    assert novo_fundo.data_publicacao == datetime.date(2018, 6, 28)
 
 
 def test_alterar_documentos_fundo_cultura(client, login_staff):
     """ Testa se funcionalidade de alterar documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
 
-    fundo = mommy.make("Componente", tipo=2)
+    fundo = mommy.make("FundoDeCultura", tipo=2)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
         fundo_cultura=fundo)
 
@@ -738,17 +742,24 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.fundo_cultura.id, 
-        "componente": "fundo_cultura"}
+        "gestao:alterar_fundo", kwargs={"pk": sistema_cultura.fundo_cultura.id}
     )
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    numero_fundos = FundoDeCultura.objects.count()
 
-    name = Componente.objects.first().arquivo.name.split("fundo_cultura/")[1]
-    situacao = Componente.objects.first().situacao
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018", 
+        "cnpj": "27.082.838/0001-28"})
 
+    numero_fundos_pos_update = FundoDeCultura.objects.count()
+    fundo_atualizado = FundoDeCultura.objects.first()
+    name = fundo_atualizado.arquivo.name.split("fundo_cultura/")[1]
+
+    assert numero_fundos == numero_fundos_pos_update
     assert name == arquivo.name
-    assert situacao == 1
+    assert fundo_atualizado.situacao == 1
+    assert fundo_atualizado.data_publicacao == datetime.date(2018, 6, 28)
+    assert fundo_atualizado.cnpj == "27.082.838/0001-28"
+    assert fundo_atualizado.tipo == 2
 
 
 def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
@@ -911,7 +922,7 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
     plano de trabalho na diligência geral """
     legislacao = mommy.make("Componente", tipo=0, situacao=1, _create_files=True)
     orgao = mommy.make("Componente", tipo=1, situacao=2, _create_files=True)
-    fundo = mommy.make("Componente", tipo=2, situacao=3, _create_files=True)
+    fundo = mommy.make("FundoDeCultura", tipo=2, situacao=3, _create_files=True)
     conselho = mommy.make("Componente", tipo=3, situacao=4, _create_files=True)
     plano = mommy.make("Componente", tipo=4, situacao=5, _create_files=True)
 
