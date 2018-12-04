@@ -35,7 +35,7 @@ from adesao.models import (
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm
 from adesao.forms import SedeFormSet, GestorFormSet
-from adesao.forms import CadastrarResponsavelForm, CadastrarSecretarioForm, CadastrarFuncionarioForm
+from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 
 from django_weasyprint import WeasyTemplateView
@@ -496,24 +496,6 @@ class AlterarFuncionario(UpdateView):
     model = Funcionario
     template_name = "cadastrar_funcionario.html"
     success_url = reverse_lazy("adesao:sucesso_funcionario")
-
-
-class AlterarResponsavel(UpdateView):
-    form_class = CadastrarResponsavelForm
-    model = Responsavel
-    template_name = "responsavel/cadastrar_responsavel.html"
-    success_url = reverse_lazy("adesao:sucesso_responsavel")
-
-
-def sucesso_secretario(request):
-    return render(request, "secretario/mensagem_sucesso_secretario.html")
-
-
-class AlterarSecretario(UpdateView):
-    form_class = CadastrarSecretarioForm
-    model = Secretario
-    template_name = "secretario/cadastrar_secretario.html"
-    success_url = reverse_lazy("adesao:sucesso_secretario")
 
 
 class MinutaAcordo(WeasyTemplateView):

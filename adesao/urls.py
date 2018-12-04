@@ -49,9 +49,6 @@ urlpatterns = [
     path('funcionario/<str:tipo>/<int:pk>',
         login_required(views.AlterarFuncionario.as_view()),
         name='alterar_funcionario'),
-    url(r'^responsavel/(?P<pk>[0-9]+)/$',
-        login_required(views.AlterarResponsavel.as_view()),
-        name='alterar_responsavel'),
     url(r'^importar/secretario/$',
         views.importar_secretario,
         name='importar_secretario'),
@@ -69,15 +66,6 @@ urlpatterns = [
     path('sistema/<int:sistema>',
             login_required(views.define_sistema_sessao),
             name='define_sistema_sessao'),
-
-    # Cadastro e alteração de secretário
-   
-    url(r'^sucesso-cadastro-secretario/$',
-        views.sucesso_secretario,
-        name='sucesso_secretario'),
-    url(r'^secretario/(?P<pk>[0-9]+)/$',
-        login_required(views.AlterarSecretario.as_view()),
-        name='alterar_secretario'),
 
     # Cadastro e alteração de cadastrador
     url(r'^alterar/cadastrador/$',

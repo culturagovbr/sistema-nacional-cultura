@@ -227,27 +227,3 @@ class CadastrarFuncionarioForm(ModelForm):
     class Meta:
         model = Funcionario
         exclude = ('tipo_funcionario',)
-
-
-class CadastrarSecretarioForm(ModelForm):
-    def clean_cpf_secretario(self):
-        if not validar_cpf(self.cleaned_data['cpf_secretario']):
-            raise forms.ValidationError('Por favor, digite um CPF válido!')
-
-        return self.cleaned_data['cpf_secretario']
-
-    class Meta:
-        model = Secretario
-        fields = '__all__'
-
-
-class CadastrarResponsavelForm(ModelForm):
-    def clean_cpf_responsavel(self):
-        if not validar_cpf(self.cleaned_data['cpf_responsavel']):
-            raise forms.ValidationError('Por favor, digite um CPF válido!')
-
-        return self.cleaned_data['cpf_responsavel']
-
-    class Meta:
-        model = Responsavel
-        fields = '__all__'
