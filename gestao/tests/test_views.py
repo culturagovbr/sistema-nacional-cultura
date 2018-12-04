@@ -631,8 +631,9 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.first().arquivo.name.split("orgao_gestor/")[1]
-    situacao = Componente.objects.first().situacao
+    orgao_gestor.refresh_from_db()
+    name = orgao_gestor.arquivo.name.split("orgao_gestor/")[1]
+    situacao = orgao_gestor.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -677,8 +678,9 @@ def test_alterar_documentos_legislacao(client, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.first().arquivo.name.split("legislacao/")[1]
-    situacao = Componente.objects.first().situacao
+    legislacao.refresh_from_db()
+    name = legislacao.arquivo.name.split("legislacao/")[1]
+    situacao = legislacao.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -801,8 +803,9 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.first().arquivo.name.split("plano/")[1]
-    situacao = Componente.objects.first().situacao
+    plano.refresh_from_db()
+    name = plano.arquivo.name.split("plano/")[1]
+    situacao = plano.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -826,8 +829,9 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.first().arquivo.name.split("conselho/")[1]
-    situacao = Componente.objects.first().situacao
+    conselho.refresh_from_db()
+    name =conselho.arquivo.name.split("conselho/")[1]
+    situacao = conselho.situacao
 
     assert name == arquivo.name
     assert situacao == 1
