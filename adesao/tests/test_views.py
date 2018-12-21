@@ -578,3 +578,13 @@ def test_importar_secretario_id_invalido(client, login):
 
     assert response.url == reverse("adesao:cadastrar_funcionario", kwargs={"sistema": sistema_cultura.id,
         "tipo": "responsavel"})
+
+
+def test_detalhar_conselheiros(client):
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['conselho'])
+    conselheiro = mommy.make("Conselheiro", conselho=sistema_cultura.conselho)
+
+    url = reverse("adesao:detalhar", kwargs={'pk': sistema_cultura.id})
+    response = client.get(url)
+
+    assert response.context_data['conselheiros'][0] == conselheiro

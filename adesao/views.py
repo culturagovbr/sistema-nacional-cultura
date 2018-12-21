@@ -592,6 +592,16 @@ class Detalhar(DetailView):
     model = SistemaCultura
     template_name = "consultar/detalhar.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(Detalhar, self).get_context_data(**kwargs)
+        try:
+            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho, 
+                situacao="1")
+        except:
+            context["conselheiros"] = None
+        
+        return context
+
 
 class ConsultarPlanoTrabalhoMunicipio(ListView):
     template_name = "consultar/consultar.html"
