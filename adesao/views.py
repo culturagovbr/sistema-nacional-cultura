@@ -37,7 +37,7 @@ from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm
 from adesao.forms import SedeFormSet, GestorFormSet
 from adesao.forms import CadastrarFuncionarioForm
-from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session
+from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session, preenche_planilha
 
 from django_weasyprint import WeasyTemplateView
 

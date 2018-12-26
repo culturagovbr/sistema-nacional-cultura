@@ -5,6 +5,7 @@ from threading import Thread
 from django.core.mail import send_mail
 from django.forms.models import model_to_dict
 from adesao.models import SistemaCultura
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def validar_cpf(cpf):
@@ -89,15 +90,15 @@ def enviar_email_conclusao(user, message_txt, message_html):
         ).start()
 
 
-def verificar_anexo(sistema, etapa, nome_anexo):
+def verificar_anexo(sistema, componente):
     try:
-        etapa = getattr(sistema, etapa)
-        if getattr(etapa, nome_anexo):
-            return 'Sim'
+        componente = getattr(sistema, componente)
+        if componente:
+            return componente.get_situacao_display()
         else:
-            return 'Não'
-    except AttributeError:
-        return 'Não'
+            return 'Não Possui'
+    except (AttributeError, ObjectDoesNotExist) as exceptions:
+        return 'Não Possui'
 
 
 def preenche_planilha(planilha):
@@ -168,11 +169,11 @@ def preenche_planilha(planilha):
         planilha.write(i, 8, email_cadastrador)
         planilha.write(i, 9, email_responsavel)
         planilha.write(i, 10, local)
-        planilha.write(i, 11, verificar_anexo(sistema, "legislacao", "arquivo"))
-        planilha.write(i, 12, verificar_anexo(sistema, "orgao_gestor", "arquivo"),)
-        planilha.write(i, 13, verificar_anexo(sistema, "conselho", "arquivo"),)
-        planilha.write(i, 14, verificar_anexo(sistema, "fundo_cultura", "arquivo"))
-        planilha.write(i, 15, verificar_anexo(sistema, "plano", "arquivo"))
+        planilha.write(i, 11, verificar_anexo(sistema, "legislacao"))
+        planilha.write(i, 12, verificar_anexo(sistema, "orgao_gestor"),)
+        planilha.write(i, 13, verificar_anexo(sistema, "conselho"),)
+        planilha.write(i, 14, verificar_anexo(sistema, "fundo_cultura"))
+        planilha.write(i, 15, verificar_anexo(sistema, "plano"))
 
         ultima_linha = i
 
