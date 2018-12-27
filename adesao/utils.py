@@ -122,7 +122,10 @@ def preenche_planilha(planilha):
 
     for i, sistema in enumerate(SistemaCultura.sistema.all(), start=1):
         if sistema.ente_federado:
-            nome = sistema.ente_federado.nome
+            if sistema.ente_federado.is_municipio:
+                nome = sistema.ente_federado.__str__()
+            else:
+                nome = "Estado de " + sistema.ente_federado.nome
             cod_ibge = sistema.ente_federado.cod_ibge
         else:
             nome = "Nome não cadastrado"
