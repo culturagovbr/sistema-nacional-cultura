@@ -3,8 +3,9 @@
 		<div class="panel-heading">
 			Administração da Adesão
 		</div>
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cadastradorModal" data-cadastrador-nome="{{ object.cadastrador.nome_usuario }}" data-cadastrador-cpf="{{ object.cadastrador.user.username }}">Alterar Cadastrador deste ente...</button>
-
+		<div class="panel-body">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cadastradorModal" data-cadastrador-nome="{{ object.cadastrador.nome_usuario }}" data-cadastrador-cpf="{{ object.cadastrador.user.username }}">Alterar Cadastrador</button>
+		</div>
 		<div class="modal fade" id="cadastradorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -29,9 +30,9 @@
 								<label for="nome-novo" class="col-form-label">Novo Cadastrador:</label>
 								<input type="text" class="form-control" id="nome-novo">
 							</div>
-							<div class="form-group">
+							<div id="cpf_form" class="form-group">
 								{% csrf_token %}
-								<label for="id_cpf_usuario" class="col-form-label">CPF:</label>
+								<label for="id_cpf_usuario" class="control-label">CPF:</label>
 								<div class="input-group">
 									<input type="text" class="form-control" placeholder="Procurar pelo CPF" id="id_cpf_usuario" name="cpf_cadastrador"/>
 									<div class="input-group-btn">
@@ -40,6 +41,7 @@
 										</button>
 									</div>
 								</div>
+								<span id="error_field" class="help-block"></span>
 							</div>
 							<div class="modal-footer">
 								<button type="submit" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -80,8 +82,15 @@
 			success: function(response){
 				if (response){
 					$('#nome-novo').val(response.data.nome)
+					$('#error_field').hide();
+					$('#cpf_form').removeClass("has-error")
 				}
-			}
+			},
+			error: function(error){
+				$('#cpf_form').addClass("has-error")
+				$('#error_field').text(error.responseJSON.message);
+				$('#error_field').show();
+			},
 		})
 	}
 </script>
