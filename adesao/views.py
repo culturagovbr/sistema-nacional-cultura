@@ -37,7 +37,7 @@ from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarMunicipioForm, CadastrarSistemaCulturaForm
 from adesao.forms import SedeFormSet, GestorFormSet
 from adesao.forms import CadastrarFuncionarioForm
-from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session
+from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session, preenche_planilha
 
 from django_weasyprint import WeasyTemplateView
 
@@ -128,6 +128,11 @@ def exportar_csv(request):
             "Nome",
             "Cod.IBGE",
             "Situação",
+            "Situação da Lei do Sistema de Cultura",
+            "Situação do Órgão Gestor",
+            "Situação do Conselho de Política Cultural",
+            "Situação do Fundo de Cultura",
+            "Situação do Plano de Cultura",
             "Endereço",
             "Bairro",
             "CEP",
@@ -138,7 +143,10 @@ def exportar_csv(request):
 
     for sistema in SistemaCultura.sistema.all():
         if sistema.ente_federado:
-            nome = sistema.ente_federado.nome
+            if sistema.ente_federado.is_municipio:
+                nome = sistema.ente_federado.__str__()
+            else:
+                nome = "Estado de " + sistema.ente_federado.nome
             cod_ibge = sistema.ente_federado.cod_ibge
         else:
             nome = "Nome não cadastrado"
@@ -167,6 +175,11 @@ def exportar_csv(request):
                 nome,
                 cod_ibge,
                 estado_processo,
+                verificar_anexo(sistema, "legislacao"),
+                verificar_anexo(sistema, "orgao_gestor"),
+                verificar_anexo(sistema, "conselho"),
+                verificar_anexo(sistema, "fundo_cultura"),
+                verificar_anexo(sistema, "plano"),
                 endereco,
                 bairro,
                 cep,
@@ -187,7 +200,7 @@ def exportar_ods(request):
     ] = 'attachment; filename="dados-municipios-cadastrados-snc.ods"'
 
     workbook = xlwt.Workbook()
-    planilha = workbook.add_worksheet("SNC")
+    planilha = workbook.add_sheet("SNC")
     preenche_planilha(planilha)
 
     workbook.save(response)
