@@ -110,16 +110,23 @@ class CidadeChain(autocomplete.Select2QuerySetView):
 class EnteChain(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         """ Filtra todas as cidade de uma determinada UF """
-        choices = EnteFederado.objects.filter(Q(nome__unaccent__icontains=self.q))\
-            .values_list('pk', 'nome', named=True)
+        choices = EnteFederado.objects.filter(Q(nome__unaccent__icontains=self.q))
 
         return choices
 
+    def get_ente_name(self, item):
+        if item.cod_ibge > 100:
+            nome = item.__str__()
+        else:
+            nome = "Estado de " + item.nome
+
+        return nome
+
     def get_result_label(self, item):
-        return item.nome
+        return self.get_ente_name(item)
 
     def get_selected_result_label(self, item):
-        return item.nome
+        return self.get_ente_name(item)
 
 
 class UfChain(autocomplete.Select2QuerySetView):

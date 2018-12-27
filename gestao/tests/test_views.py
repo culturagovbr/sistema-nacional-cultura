@@ -1092,18 +1092,32 @@ def test_filtra_ufs_por_nome(client):
     assert request.json()["results"][0]["text"] == mg.sigla
 
 
-def test_filtra_entes_por_nome(client):
+def test_filtra_entes_por_nome_municipio(client):
     """ Testa se EnteChain retorna o ente correto ao passar o nome"""
 
     EnteFederado.objects.all().delete()
-    mg = mommy.make("EnteFederado", nome="Minas Gerais")
+    mg = mommy.make("EnteFederado", nome="Minas Gerais", cod_ibge=123456)
     mommy.make("EnteFederado", _quantity=10)
 
     url = "{url}?q={param}".format(url=reverse("gestao:ente_chain") , param="Minas")
     request = client.get(url)
 
     assert len(request.json()["results"]) == 1
-    assert request.json()["results"][0]["text"] == mg.nome
+    assert request.json()["results"][0]["text"] == mg.__str__()
+
+
+def test_filtra_entes_por_nome_estado(client):
+    """ Testa se EnteChain retorna o ente correto ao passar o nome"""
+
+    EnteFederado.objects.all().delete()
+    mommy.make("EnteFederado", nome="Minas Gerais", cod_ibge=12)
+    mommy.make("EnteFederado", _quantity=10)
+
+    url = "{url}?q={param}".format(url=reverse("gestao:ente_chain") , param="Minas")
+    request = client.get(url)
+
+    assert len(request.json()["results"]) == 1
+    assert request.json()["results"][0]["text"] == "Estado de Minas Gerais"
 
 
 def test_acompanhar_adesao_ordenar_data_um_componente_por_sistema(client, login_staff):
