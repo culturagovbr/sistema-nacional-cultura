@@ -26,12 +26,12 @@
         <p>
           <strong>
             ACORDO DE COOPERAÇÃO FEDERATIVA QUE ENTRE SI FIRMAM A UNIÃO, POR INTERMÉDIO DO MINISTÉRIO DA CULTURA - MINC E O
-            {% if request.user.usuario.municipio.cidade %}
-            MUNICÍPIO DE {{request.user.usuario.municipio.cidade|upper}}/{{request.user.usuario.municipio.estado}},
+            {% if request.session.sistema_ente.cod_ibge > 100 %}
+            MUNICÍPIO DE
             {% else %}
-            GOVERNO DO {{request.user.usuario.municipio.estado.nome_uf|upper}},
+            GOVERNO DO
             {% endif %}
-            VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
+             {{ request.session.sistema_ente.nome|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
           </strong>
         </p>
       </div>
@@ -43,18 +43,19 @@
           <strong>UNIÃO</strong>, por intermédio do
           <strong>MINISTÉRIO DA CULTURA - MinC</strong>, inscrito no CNPJ/MF sob o N.° 01.264.142/0002-00, situado na Esplanada dos Ministérios, Bloco "B", Brasília - Distrito Federal, neste ato representado pela Secretária da Diversidade Cultural,
           <strong>MAGALI GUEDES DE MAGELA MOURA,</strong> residente em Brasília, carteira de identidade nº <strong> 20604912-4 </strong>, CPF/MF nº <strong>225.278.181-53 </strong>, nomeada pela <strong>Portaria nº 794, de 10 de julho de 2018</strong>, e conforme delegação de competência da Portaria Nº 47, de 17 de julho de 2009 e o
-          {% if request.user.usuario.municipio.cidade %}
-          <strong>MUNICÍPIO DE {{request.user.usuario.municipio.cidade|upper}}/{{request.user.usuario.municipio.estado}}</strong>
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+          <strong>MUNICÍPIO DE </strong>
           {% else %}
-          <strong>GOVERNO DO {{ request.user.usuario.municipio.estado.nome_uf|upper }}</strong>
+          <strong>GOVERNO DO </strong>
           {% endif %}
-          , CNPJ/MF sob o nº <strong>{{request.user.usuario.municipio.cnpj_prefeitura}}</strong>, representado por <strong>{{request.user.usuario.municipio.nome_prefeito}}</strong>>,
-          {% if request.user.usuario.municipio.cidade %}
+          <strong>{{ request.session.sistema_ente.nome|upper }}</strong>,
+          CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por <strong>{{ request.session.sistema_gestor.nome }}</strong>,
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
           Prefeito(a) Municipal,
           {% else %}
           Governador(a),
           {% endif %}
-          carteira de identidade nº <strong>{{request.user.usuario.municipio.rg_prefeito}}</strong>, CPF/MF nº <strong>{{request.user.usuario.municipio.cpf_prefeito}}</strong>, firmam o presente Acordo de Cooperação
+          carteira de identidade nº <strong>{{ request.session.sistema_gestor.rg }}</strong>, CPF/MF nº <strong>{{ request.session.sistema_gestor.cpf }}</strong>, firmam o presente Acordo de Cooperação
           Federativa, que irá se reger pelas disposições do Art. 216-A da Constituição; da Lei no 8.666 de 21 de junho de 1993, no que couber; da Lei nº 8.313, de 23 de dezembro de 1991 e demais disposições legais pertinentes, no que couber, tendo
           como justas e acordadas as seguintes cláusulas e condições:
         </p>
@@ -468,11 +469,11 @@
       <div class="col-xs-6">
         <center>
           <br/>_____________________________________
-          <br/>{{request.user.usuario.municipio.nome_prefeito}}
-          {% if request.user.usuario.municipio.cidade %}
-          <br/>Prefeito(a) do Município de {{request.user.usuario.municipio.cidade}}/{{request.user.usuario.municipio.estado}}
+          <br/>{{request.session.sistema_gestor.nome|upper}}
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+          <br/>Prefeito(a) do Município de {{ request.session.sistema_ente.nome }}
           {% else %}
-          <br/>Governador(a) {{request.user.usuario.municipio.estado.nome_uf}}
+          <br/>Governador(a) {{ request.session.sistema_ente.nome }}
           {% endif %}
         </center>
       </div>

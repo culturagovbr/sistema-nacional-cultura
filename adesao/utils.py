@@ -188,7 +188,7 @@ def atualiza_session(sistema_cultura, request):
     request.session['sistema_situacao'] = sistema_cultura.get_estado_processo_display()
     request.session['sistema_sede'] = model_to_dict(sistema_cultura.sede)
     request.session['sistema_gestor'] = model_to_dict(sistema_cultura.gestor, exclude=['termo_posse', 'rg_copia', 'cpf_copia'])
-    request.session['sistema_ente'] = model_to_dict(sistema_cultura.ente_federado, fields=['nome'])
+    request.session['sistema_ente'] = model_to_dict(sistema_cultura.ente_federado, fields=['nome', 'cod_ibge'])
 
     if sistema_cultura.responsavel:
         request.session['sistema_responsavel'] = model_to_dict(sistema_cultura.responsavel)

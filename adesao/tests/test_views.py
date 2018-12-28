@@ -530,7 +530,7 @@ def test_session_user_com_um_sistema_cultura(login, client):
     assert client.session['sistema_situacao'] == sistema.get_estado_processo_display()
     assert client.session['sistema_sede'] == model_to_dict(sistema.sede)
     assert client.session['sistema_gestor'] == model_to_dict(sistema.gestor, exclude=['termo_posse', 'rg_copia', 'cpf_copia'])
-    assert client.session['sistema_ente'] == model_to_dict(sistema.ente_federado, fields=['nome'])
+    assert client.session['sistema_ente'] == model_to_dict(sistema.ente_federado, fields=['nome', 'cod_ibge'])
 
 
 def test_session_user_com_mais_de_um_sistema_cultura(login, client):

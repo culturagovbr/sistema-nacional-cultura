@@ -21,45 +21,39 @@
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      {% if request.user.usuario.municipio.cidade %}
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
         <strong>Prefeitura</strong>
       {% else %}
         <strong>Governo</strong>
       {% endif %}
     </center>
     <hr style="background-color:black;" />
-    {% if request.user.usuario.municipio.cidade %}
+    {% if request.session.sistema_ente.cod_ibge > 100 %}
       <div class="col-xs-6">
-        Município: {{request.user.usuario.municipio.cidade}} - {{request.user.usuario.municipio.estado}}
+        Município: {{ request.session.sistema_ente.nome }}
       </div>
     {% else %}
       <div class="col-xs-6">
-        UF: {{ request.user.usuario.municipio.estado.nome_uf }}
+        Estado: {{ request.session.sistema_ente.nome }}
       </div>
     {% endif %}
     <div class="col-xs-6">
-      CNPJ: {{request.user.usuario.municipio.cnpj_prefeitura}}
+      CNPJ: {{ request.session.sistema_sede.cnpj }}
     </div>
     <div class="col-xs-6">
-      CEP: {{request.user.usuario.municipio.cep}}
+      CEP: {{ request.session.sistema_sede.cep }}
     </div>
     <div class="col-xs-6">
-      Logradouro: {{request.user.usuario.municipio.endereco}}
+      Logradouro: {{ request.session.sistema_sede.endereco }}
     </div>
     <div class="col-xs-6">
-      UF: {{request.user.usuario.municipio.estado}}
+      Complemento: {{ request.session.sistema_sede.complemento }}
     </div>
     <div class="col-xs-6">
-      Complemento: {{request.user.usuario.municipio.complemento}}
-    </div>
-    <div class="col-xs-6">
-      Bairro: {{request.user.usuario.municipio.bairro}}
-    </div>
-    <div class="col-xs-6">
-      Email Institucional: {{request.user.usuario.municipio.email_institucional_prefeito}}
+      Bairro: {{ request.session.sistema_sede.bairro }}
     </div>
     <div class="col-xs-10">
-      Telefone Institucional: {{request.user.usuario.municipio.telefone_um}}; {{request.user.usuario.municipio.telefone_dois}}; {{request.user.usuario.municipio.telefone_tres}}
+      Telefone Institucional: {{ request.session.sistema_sede.telefone_um }}; {{ request.session.sistema_sede.telefone_dois }}; {{ request.session.sistema_sede.telefone_tres }}
     </div>
   </div>
 
@@ -70,19 +64,19 @@
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
-      CPF: {{request.user.usuario.municipio.cpf_prefeito}}
+      CPF: {{request.session.sistema_gestor.cpf}}
     </div>
     <div class="col-xs-6">
-      Nome Completo: {{request.user.usuario.municipio.nome_prefeito}}
+      Nome Completo: {{request.session.sistema_gestor.nome}}
     </div>
     <div class="col-xs-6">
-      RG: {{request.user.usuario.municipio.rg_prefeito}}
+      RG: {{request.session.sistema_gestor.rg}}
     </div>
     <div class="col-xs-6">
-      Órgão Expeditor: {{request.user.usuario.municipio.orgao_expeditor_rg}}
+      Órgão Expeditor: {{request.session.sistema_gestor.orgao_expeditor_rg}}
     </div>
     <div class="col-xs-10">
-      Email Institucional: {{request.user.usuario.municipio.email_institucional_prefeito}}
+      Email Institucional: {{request.session.sistema_gestor.email_institucional}}
     </div>
   </div>
 
@@ -93,31 +87,31 @@
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
-      CPF: {{request.user.usuario.secretario.cpf_secretario}}
+      CPF: {{request.session.sistema_secretario.cpf}}
     </div>
     <div class="col-xs-12">
-      Nome Completo: {{request.user.usuario.secretario.nome_secretario}}
+      Nome Completo: {{request.session.sistema_secretario.nome}}
     </div>
     <div class="col-xs-4">
-      RG: {{request.user.usuario.secretario.rg_secretario}}
+      RG: {{request.session.sistema_secretario.rg}}
     </div>
     <div class="col-xs-4">
-      Órgão Expeditor: {{request.user.usuario.secretario.orgao_expeditor_rg}}
+      Órgão Expeditor: {{request.session.sistema_secretario.orgao_expeditor_rg}}
     </div>
     <div class="col-xs-4">
-      UF: {{request.user.usuario.secretario.estado_expeditor}}
+      UF: {{request.session.sistema_secretario.estado_expeditor}}
     </div>
     <div class="col-xs-12">
-      Cargo: {{request.user.usuario.secretario.cargo_secretario}}
+      Cargo: {{request.session.sistema_secretario.cargo}}
     </div>
     <div class="col-xs-12">
-      Instituição: {{request.user.usuario.secretario.instituicao_secretario}}
+      Instituição: {{request.session.sistema_secretario.instituicao}}
     </div>
     <div class="col-xs-12">
-      Email Institucional: {{request.user.usuario.secretario.email_institucional_secretario}}
+      Email Institucional: {{request.session.sistema_secretario.email_institucional}}
     </div>
     <div class="col-xs-10">
-      Telefone Institucional: {{request.user.usuario.secretario.telefone_um}}; {{request.user.usuario.secretario.telefone_dois}}; {{request.user.usuario.secretario.telefone_tres}}
+      Telefone Institucional: {{request.session.sistema_secretario.telefone_um}}; {{request.session.sistema_secretario.telefone_dois}}; {{request.session.sistema_secretario.telefone_tres}}
     </div>
   </div>
 
@@ -128,31 +122,31 @@
     </center>
     <hr style="background-color:black;" />
       <div class="col-xs-12">
-        CPF: {{request.user.usuario.responsavel.cpf_responsavel}}
+        CPF: {{request.session.sistema_responsavel.cpf}}
       </div>
       <div class="col-xs-12">
-        Nome Completo: {{request.user.usuario.responsavel.nome_responsavel}}
+        Nome Completo: {{request.session.sistema_responsavel.nome}}
       </div>
       <div class="col-xs-4">
-        RG: {{request.user.usuario.responsavel.rg_responsavel}}
+        RG: {{request.session.sistema_responsavel.rg}}
       </div>
       <div class="col-xs-4">
-        Órgão Expeditor: {{request.user.usuario.responsavel.orgao_expeditor_rg}}
+        Órgão Expeditor: {{request.session.sistema_responsavel.orgao_expeditor_rg}}
       </div>
       <div class="col-xs-4">
-        UF: {{request.user.usuario.responsavel.estado_expeditor}}
+        UF: {{request.session.sistema_responsavel.estado_expeditor}}
       </div>
       <div class="col-xs-12">
-        Cargo: {{request.user.usuario.responsavel.cargo_responsavel}}
+        Cargo: {{request.session.sistema_responsavel.cargo}}
       </div>
       <div class="col-xs-12">
-        Instituição: {{request.user.usuario.responsavel.instituicao_responsavel}}
+        Instituição: {{request.session.sistema_responsavel.instituicao}}
       </div>
       <div class="col-xs-12">
-        Email Institucional: {{request.user.usuario.responsavel.email_institucional_responsavel}}
+        Email Institucional: {{request.session.sistema_responsavel.email_institucional}}
       </div>
       <div class="col-xs-10">
-        Telefone Institucional: {{request.user.usuario.responsavel.telefone_um}}; {{request.user.usuario.responsavel.telefone_dois}}; {{request.user.usuario.responsavel.telefone_tres}}
+        Telefone Institucional: {{request.session.sistema_responsavel.telefone_um}}; {{request.session.sistema_responsavel.telefone_dois}}; {{request.session.sistema_responsavel.telefone_tres}}
       </div>
   </div>
   <br /><br />
@@ -209,9 +203,9 @@
         <br>___________________________ , ________ de ____________________ de 20_____
       </p>
       <p>
-        <strong>Nome Completo: {{request.user.usuario.municipio.nome_prefeito}}</strong>
+        <strong>Nome Completo: {{request.session.sistema_gestor.nome}}</strong>
         <br>
-        <strong>Prefeito do Município: {{request.user.usuario.municipio.cidade}}</strong>
+        <strong>Prefeito do Município: {{request.session.sistema_ente.nome}}</strong>
       </p>
     </div>
   </div>
