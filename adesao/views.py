@@ -511,37 +511,19 @@ class AlterarFuncionario(UpdateView):
     success_url = reverse_lazy("adesao:sucesso_funcionario")
 
 
-class MinutaAcordo(WeasyTemplateView):
-    pdf_filename = "minuta_acordo.pdf"
-    template_name = "termos/minuta_acordo.html"
+class GeraPDF(WeasyTemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super(MinutaAcordo, self).get_context_data(**kwargs)
+        context = super(GeraPDF, self).get_context_data(**kwargs)
         context["request"] = self.request
         context["static"] = self.request.get_host()
         return context
 
+    def get_pdf_filename(self):
+        return self.kwargs['nome_arquivo']
 
-class TermoSolicitacao(WeasyTemplateView):
-    pdf_filename = "solicitacao.pdf"
-    template_name = "termos/solicitacao.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(TermoSolicitacao, self).get_context_data(**kwargs)
-        context["request"] = self.request
-        context["static"] = self.request.get_host()
-        return context
-
-
-class OficioAlteracao(WeasyTemplateView):
-    pdf_filename = "alterar_responsavel.pdf"
-    template_name = "termos/alterar_responsavel.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(OficioAlteracao, self).get_context_data(**kwargs)
-        context["request"] = self.request
-        context["static"] = self.request.get_host()
-        return context
+    def get_template_names(self):
+        return ['termos/%s.html' % self.kwargs['template']]
 
 
 class ConsultarEnte(ListView):

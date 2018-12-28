@@ -215,12 +215,12 @@
                           {% endif %}
                           {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
                             <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:minuta' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+                              <a href="{% url 'adesao:gera_pdf' template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
                                 <span>Acordo de Cooperação</span>
                               </a>
                             </li>
                             <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:solicitacao' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
+                              <a href="{% url 'adesao:gera_pdf' template='solicitacao' nome_arquivo='solicitacao.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
                                 <span>Termo de Solicitação</span>
                               </a>
                             </li>

@@ -67,21 +67,10 @@ urlpatterns = [
             login_required(views.define_sistema_sessao),
             name='define_sistema_sessao'),
 
-    # Cadastro e alteração de cadastrador
-    url(r'^alterar/cadastrador/$',
-        login_required(views.OficioAlteracao.as_view()),
-        name='alterar_cadastrador'),
-
     # Minuta de acordo e termo de solicitação
-    url(r'^termo/minuta/$',
-        login_required(views.MinutaAcordo.as_view()),
-        name='minuta'),
-    url(r'^termo/solicitacao/$',
-        login_required(views.TermoSolicitacao.as_view()),
-        name='solicitacao'),
-    url(r'^oficio/alteracao/$',
-        login_required(views.OficioAlteracao.as_view()),
-        name='alteracao'),
+    path('termo/<str:template>/<str:nome_arquivo>',
+        login_required(views.GeraPDF.as_view()),
+        name='gera_pdf'),
 
     # Consulta
     path('consultar/<str:tipo>', views.ConsultarEnte.as_view(), name='consultar'),

@@ -316,63 +316,6 @@ class AcompanharSistemaCultura(ListView):
         return sistemas
 
 
-# Acompanhamento dos planos de trabalho
-def diligencia_documental(request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    #print(getattr(getattr(usuario.plano_trabalho, etapa), st))
-    #modificando o comportamento pois, no caso da "SituacoesArquivoPlano" agora é um objeto, e não só um valor 0 na tabela
-    if isinstance(getattr(getattr(usuario.plano_trabalho, etapa), st), SituacoesArquivoPlano):
-        usuario.plano_trabalho.criacao_sistema.situacao_lei_sistema = SituacoesArquivoPlano.objects.get(pk=0)
-    else:
-        setattr(getattr(usuario.plano_trabalho, etapa), st, 0)
-    form = DiligenciaForm()
-    if request.method == 'POST':
-        form = DiligenciaForm(request.POST, usuario=usuario)
-        if form.is_valid():
-            getattr(usuario.plano_trabalho, etapa).save()
-            form.save()
-        return redirect('gestao:acompanhar_adesao')
-    return render(
-        request,
-        'gestao/planotrabalho/diligencia.html',
-        {'form': form, 'etapa': etapa, 'st': st, 'id': id})
-
-
-def concluir_etapa(request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    if isinstance(getattr(getattr(usuario.plano_trabalho, etapa), st), SituacoesArquivoPlano):
-        usuario.plano_trabalho.criacao_sistema.situacao_lei_sistema = SituacoesArquivoPlano.objects.get(pk=2)
-    else:
-        setattr(getattr(usuario.plano_trabalho, etapa), st, 2)
-    getattr(usuario.plano_trabalho, etapa).save()
-    return redirect('gestao:detalhar', pk=id)
-
-
-def situacao_3 (request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    setattr(getattr(usuario.plano_trabalho, etapa), st, 3)
-    getattr(usuario.plano_trabalho, etapa).save()
-    return redirect('gestao:detalhar', pk=id)
-
-def situacao_4 (request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    setattr(getattr(usuario.plano_trabalho, etapa), st, 4)
-    getattr(usuario.plano_trabalho, etapa).save()
-    return redirect('gestao:detalhar', pk=id)
-
-def situacao_5 (request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    setattr(getattr(usuario.plano_trabalho, etapa), st, 5)
-    getattr(usuario.plano_trabalho, etapa).save()
-    return redirect('gestao:detalhar', pk=id)
-
-def situacao_6 (request, etapa, st, id):
-    usuario = Usuario.objects.get(id=id)
-    setattr(getattr(usuario.plano_trabalho, etapa), st, 6)
-    getattr(usuario.plano_trabalho, etapa).save()
-    return redirect('gestao:detalhar', pk=id)
-
-
 class AcompanharComponente(ListView):
     paginate_by = 10
 

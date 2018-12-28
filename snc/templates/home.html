@@ -25,7 +25,7 @@
   {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
     <div class="alert alert-info" role="alert">
       <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
-      <a href="{% url 'adesao:alterar_cadastrador' %}" target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
+      <a href="{% url 'adesao:gera_pdf' template='alterar_responsavel' nome_arquivo='alterar_responsavel.pdf' %}" target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
       - Preencha com os dados do novo responsável e do prefeito.<br>
       - Encaminhe para assinatura do prefeito. <br>
       - Digitalize e envie para nosso email: snc@cultura.gov.br
