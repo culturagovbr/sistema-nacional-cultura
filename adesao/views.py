@@ -66,11 +66,11 @@ def home(request):
 
     request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
-    if sistemas_cultura.count() == 1:
-        atualiza_session(sistemas_cultura[0], request)
-
     if request.user.is_staff:
         return redirect("gestao:acompanhar_adesao")
+
+    if sistemas_cultura.count() == 1:
+        atualiza_session(sistemas_cultura[0], request)
 
     if ente_federado and secretario and responsavel and sistema and int(sistema['estado_processo']) < 1:
         sistema = SistemaCultura.sistema.get(id=sistema['id'])
