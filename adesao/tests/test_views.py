@@ -205,7 +205,7 @@ def test_cadastrar_funcionario_tipo_responsavel(login, client):
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 1
     assert client.session['sistema_cultura_selecionado'] == model_to_dict(sistema_cultura_atualizado, 
-        exclude=['data_criacao', 'alterado_em'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
 
 
 def test_cadastrar_funcionario_tipo_secretario(login, client):
@@ -249,7 +249,7 @@ def test_cadastrar_funcionario_tipo_secretario(login, client):
     assert funcionario_salvo.email_institucional == funcionario.email_institucional
     assert funcionario_salvo.tipo_funcionario == 0
     assert client.session['sistema_cultura_selecionado'] == model_to_dict(sistema_cultura_atualizado, 
-        exclude=['data_criacao', 'alterado_em'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
 
 
 def test_alterar_funcionario_tipo_secretario(login, client):
@@ -480,7 +480,7 @@ def test_session_user_com_um_sistema_cultura(login, client):
     response = client.get(url)
 
     assert client.session['sistema_cultura_selecionado'] == model_to_dict(sistema, 
-        exclude=['data_criacao', 'alterado_em'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
     assert client.session['sistema_situacao'] == sistema.get_estado_processo_display()
     assert client.session['sistema_sede'] == model_to_dict(sistema.sede)
     assert client.session['sistema_gestor'] == model_to_dict(sistema.gestor, exclude=['termo_posse', 'rg_copia', 'cpf_copia'])
@@ -559,5 +559,5 @@ def test_home_apos_cadastro_de_secretario_e_responsavel(client, login):
 
     assert sistema_cultura_atualizado.estado_processo == '1'
     assert client.session['sistema_cultura_selecionado'] ==  model_to_dict(sistema_cultura_atualizado, 
-        exclude=['data_criacao', 'alterado_em'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
     assert len(mail.outbox) == 1
