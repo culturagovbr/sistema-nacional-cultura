@@ -129,7 +129,7 @@ def cria_sistema_cultura(apps, schema_editor):
                         tipo_funcionario=1)
 
         except ObjectDoesNotExist:
-            pass
+            sistema_cultura.estado_processo = 6
 
         sistema_cultura.save()
 
