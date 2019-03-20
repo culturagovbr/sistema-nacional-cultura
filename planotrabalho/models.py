@@ -5,6 +5,8 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
 
+from simple_history.models import HistoricalRecords
+
 from gestao.models import Diligencia
 
 SITUACAO_CONSELHEIRO = (("1", "Habilitado"), ("0", "Desabilitado"))
@@ -108,6 +110,7 @@ class ArquivoComponente2(models.Model):
     data_envio = models.DateField(default=datetime.date.today)
     data_publicacao = models.DateField(
         _("Data de Publicação do Arquivo do Componente"), null=True, blank=True)
+    history = HistoricalRecords()
 
 
 class Componente(ArquivoComponente2):
