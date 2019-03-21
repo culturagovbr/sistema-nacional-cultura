@@ -615,6 +615,16 @@ class DiligenciaComponenteView(CreateView):
         return self.render_to_response(self.get_context_data(form=form), status=400)
 
 
+class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):
+    template_name = 'diligencia.html'
+    model = DiligenciaSimples
+    form_class = DiligenciaComponenteForm
+    context_object_name = "diligencia"
+
+    def get_sistema_cultura(self):
+        return get_object_or_404(SistemaCultura, pk=int(self.kwargs['ente']))
+
+
 class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     template_name = 'diligencia.html'
     model = DiligenciaSimples
