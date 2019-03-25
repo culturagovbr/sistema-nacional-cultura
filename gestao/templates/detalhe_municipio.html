@@ -547,21 +547,21 @@
                           {{ form.processo_sei.errors }}
                         </span>
                       </div>
-
-                      <div class="form-group {% if form.link_publicacao_reatificacao%} has-error {% endif %}">
-                        <input type="text" id="link_reatificacao_situacao" name="link_publicacao_reatificacao" class="form-control" placeholder="Link da Publicação de Reatificação (opcional)" value="{% if ente.link_publicacao_reatificacao %} {{ente.link_publicacao_reatificacao}} {% endif %}"></input>
-                        <span class="help-block">
-                          {{ form.link_publicacao_reatificacao.errors }}
-                        </span>
-                      </div>
                       
-                      <div class="form-group {% if form.data_publicacao_reatificacao.errors %} has -error {%endif %}">
+                      <div class="form-group {% if form.data_publicacao_retificacao.errors %} has -error {%endif %}">
                         <textarea id="justificativa_situacao" name="justificativa" class="form-control hide" style="resize:none" placeholder="Justificativa" rows="4" cols="20">{% if ente.estado_processo == '3' %} {{ ente.justificativa}} {% endif %}</textarea>
-                        <input type="text" id="data_reatificacao_situacao" name="data_publicacao_reatificacao" class="form-control date hide" value="{% if ente.data_publicacao_reatificacao %} {{ente.data_publicacao_reatificacao | date:'SHORT_DATE_FORMAT'}} {% endif %}" placeholder="Data da Publicação de Reatificação (opcional)"></input>
+                        <input type="text" id="data_retificacao_situacao" name="data_publicacao_retificacao" class="form-control date hide" value="{% if ente.data_publicacao_retificacao %} {{ente.data_publicacao_retificacao | date:'SHORT_DATE_FORMAT'}} {% endif %}" placeholder="Data da Publicação de Retificação (opcional)"></input>
                         <span class="help-block">
-                          {{ form.data_publicacao_reatificacao.errors }}
+                          {{ form.data_publicacao_retificacao.errors }}
                         </span>
                         <input type="text" id="localizacao_situacao" name="localizacao" class="form-control hide" placeholder="Localização" value="{% if ente.estado_processo == '2' %} {{ente.localizacao}} {% endif %}"></input>
+                      </div>
+
+                      <div class="form-group {% if form.link_publicacao_retificacao%} has-error {% endif %}">
+                          <input type="text" id="link_retificacao_situacao" name="link_publicacao_retificacao" class="form-control" placeholder="Link da Publicação de Retificação (opcional)" value="{% if ente.link_publicacao_retificacao %} {{ente.link_publicacao_retificacao}} {% endif %}"></input>
+                          <span class="help-block">
+                            {{ form.link_publicacao_retificacao.errors }}
+                          </span>
                       </div>
 
                       <div class="row">
@@ -681,17 +681,17 @@
           $("#data_acordo_situacao").removeClass('hide');
           $("#data_acordo_situacao").fadeIn();
         }
-        if($("#data_reatificacao_situacao").hasClass('hide')){
-          $("#data_reatificacao_situacao").removeClass('hide');
-          $("#data_reatificacao_situacao").fadeIn();
+        if($("#data_retificacao_situacao").hasClass('hide')){
+          $("#data_retificacao_situacao").removeClass('hide');
+          $("#data_retificacao_situacao").fadeIn();
         }
         if($("#link_acordo_situacao").hasClass('hide')){
           $("#link_acordo_situacao").removeClass('hide');
           $("#link_acordo_situacao").fadeIn();
         }
-        if($("#link_reatificacao_situacao").hasClass('hide')){
-          $("#link_reatificacao_situacao").removeClass('hide');
-          $("#link_reatificacao_situacao").fadeIn();
+        if($("#link_retificacao_situacao").hasClass('hide')){
+          $("#link_retificacao_situacao").removeClass('hide');
+          $("#link_retificacao_situacao").fadeIn();
         }
       }
       else {

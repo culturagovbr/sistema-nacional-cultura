@@ -285,9 +285,9 @@ class Usuario(models.Model):
         choices=LISTA_ESTADOS_PROCESSO,
         default='0')
     data_publicacao_acordo = models.DateField(blank=True, null=True)
-    data_publicacao_reatificacao = models.DateField(blank=True, null=True)
+    data_publicacao_retificacao = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=200, blank=True, null=True)
-    link_publicacao_reatificacao = models.CharField(max_length=200, blank=True, null=True)
+    link_publicacao_retificacao = models.CharField(max_length=200, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     codigo_ativacao = models.CharField(max_length=12, unique=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
@@ -324,7 +324,7 @@ class Usuario(models.Model):
         """
 
         propriedades = ("plano_trabalho", "municipio", "secretario",
-                        "responsavel", "data_publicacao_acordo", "data_publicacao_reatificacao",
+                        "responsavel", "data_publicacao_acordo", "data_publicacao_retificacao",
                         "estado_processo")
 
         for propriedade in propriedades:
@@ -436,9 +436,9 @@ class SistemaCultura(models.Model):
         choices=LISTA_ESTADOS_PROCESSO,
         default='0')
     data_publicacao_acordo = models.DateField(blank=True, null=True)
-    data_publicacao_reatificacao = models.DateField(blank=True, null=True)
+    data_publicacao_retificacao = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=200, blank=True, null=True)
-    link_publicacao_reatificacao = models.CharField(max_length=200, blank=True, null=True)
+    link_publicacao_retificacao = models.CharField(max_length=200, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     numero_processo = models.CharField(max_length=50, null=True, blank=True)
     localizacao = models.CharField(_("Localização do Processo"), max_length=10, blank=True, null=True)
