@@ -20,14 +20,5 @@ class Migration(migrations.Migration):
             name='link_publicacao_retificacao',
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
-        migrations.AddField(
-            model_name='usuario',
-            name='data_publicacao_retificacao',
-            field=models.DateField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name='usuario',
-            name='link_publicacao_retificacao',
-            field=models.CharField(blank=True, max_length=200, null=True),
-        ),
+        
     ]
