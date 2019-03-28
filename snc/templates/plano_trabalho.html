@@ -18,28 +18,28 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#orgao" data-toggle="tab">
+                    <a class="nav-link" href="#orgao_tab" data-toggle="tab">
                     Órgão Gestor
                     <div class="ripple-container"></div>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#conselho" data-toggle="tab">
+                    <a class="nav-link" href="#conselho_tab" data-toggle="tab">
                         Conselho Cultura
                         <div class="ripple-container"></div>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#fundo" data-toggle="tab">
+                    <a class="nav-link" href="#fundo_tab" data-toggle="tab">
                         Fundo de Cultura
                         <div class="ripple-container"></div>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#plano" data-toggle="tab">
+                    <a class="nav-link" href="#plano_tab" data-toggle="tab">
                         Plano de Cultura
                         <div class="ripple-container"></div>
                     </a>
@@ -52,19 +52,19 @@
 
         <div class="card-body">
             <div class="tab-content">
-            <div class="tab-pane active" id="sistema">
+            <div class="tab-pane active" id="sistema_tab">
                 {% include "gestao/planotrabalho/acompanhar_legislacao.html" %}
             </div>
-            <div class="tab-pane" id="orgao">
+            <div class="tab-pane" id="orgao_tab">
                 {% include "gestao/planotrabalho/acompanhar_orgao_gestor.html" %}
             </div>
-            <div class="tab-pane" id="conselho">
+            <div class="tab-pane" id="conselho_tab">
                 {% include "gestao/planotrabalho/acompanhar_conselho.html" %}
             </div>
-            <div class="tab-pane" id="fundo">
+            <div class="tab-pane" id="fundo_tab">
                 {% include "gestao/planotrabalho/acompanhar_fundo_cultura.html" %}
             </div>
-            <div class="tab-pane" id="plano">
+            <div class="tab-pane" id="plano_tab">
                 {% include "gestao/planotrabalho/acompanhar_plano.html" %}
             </div>
             </div>
@@ -76,9 +76,12 @@
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
-  csrf_token = '{{ csrf_token }}';
+csrf_token = '{{ csrf_token }}';
 
-  var tabela = $('#tabela-componente').DataTable({
+$('.datatable').each(function(){
+    $(`#${this.id}`).DataTable({
+    "autoWidth": false,
+
     order: [1, 'asc'],
     language:{
             "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
@@ -98,9 +101,8 @@
           data: null,
           name: "link",
           orderable: false,
-          //abstrair pra todos os componentes
           render: (data) => `
-            <a href="/gestao/${data[0]}/diligencia/legislacao">
+            <a href="/gestao/${data[0]}/diligencia/${data[4]}">
                 Avaliar
             </a>`
         },
@@ -122,9 +124,11 @@
       url: "{% url 'gestao:ajax_plano_trabalho' %}",
       data: {
         csrfmiddlewaretoken: csrf_token,
+        componente: this.id
       },
       type: "POST",
     },
   });
+});
 </script>
 {% endblock js%}

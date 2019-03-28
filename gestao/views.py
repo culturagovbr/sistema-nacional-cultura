@@ -786,11 +786,15 @@ class DataTablePlanoTrabalho(BaseDatatableView):
     def get_initial_queryset(self):
         sistemas = SistemaCultura.sistema.values_list('id', flat=True)
         sistemas = SistemaCultura.objects.filter(id__in=sistemas, estado_processo='6')
+        componente = self.request.POST.get('componente', None)
 
-        #TODO abstrair pra todos os componentes
-        kwargs = {'{0}__situacao'.format('legislacao'): 1}
+        sistemas = sistemas.filter(estado_processo='6')
+        kwargs = {'{0}'.format(componente): None}
+        sistemas = sistemas.exclude(**kwargs)
+
+        kwargs = {'{0}__situacao'.format(componente): 1}
         sistemas = sistemas.filter(**kwargs)
-        kwargs = {'{0}__arquivo'.format('legislacao'): None}
+        kwargs = {'{0}__arquivo'.format(componente): None}
         sistemas = sistemas.exclude(**kwargs)
 
         return sistemas
@@ -807,13 +811,14 @@ class DataTablePlanoTrabalho(BaseDatatableView):
 
     def prepare_results(self, qs):
         json_data = []
+        componente = self.request.POST.get('componente', None)
         for item in qs:
             json_data.append([
                 item.id,
                 escape(item.ente_federado),
                 escape(item.sede.cnpj) if item.sede else '',
-                #TODO abstrair pra todos os componentes
-                item.legislacao.arquivo.url,
+                getattr(item, componente).arquivo.url,
+                componente,
             ])
         return json_data
 
