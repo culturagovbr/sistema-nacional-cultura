@@ -433,23 +433,23 @@ button.context.reply-to-comment-button {
 }
 
 .painel {
-    /*background-color: #1659BF;*/
    /* background-repeat: no-repeat;*/
+    background-color: #1659BF;
     position: absolute;
     text-align:center;
-    top: 850px;
-    margin-top:2cm;
     left: 0;
-    width:378px;
-    height: 436px;
+    width: 368px;
+    height: auto;
+    padding: 6px;
+    border-radius: 5px;
+    padding-bottom: 40px;
 }
 
 .fundo_painel {
     background-image: url("../img/banner_grafico.png");
-    margin-top: 2cm;
-    width: 378px;
-    height: 436px;
-
+    background-repeat: no-repeat;
+    width: 368px;
+    height: 13 4px;
 }
 
 .painel_agenda {
