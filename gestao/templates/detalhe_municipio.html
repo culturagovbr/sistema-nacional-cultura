@@ -71,6 +71,16 @@
                           {% endif %}
                       </p>
                     {% endif %}
+                    {% if ente.data_publicacao_retificacao %}
+                      <p>
+                        <strong>Publicação da Retificacao:</strong>
+                          {% if ente.link_publicacao_retificacao %}
+                            <a href="{{ ente.link_publicacao_retificacao }}"> {{ente.data_publicacao_retificacao|date:'d/m/Y'}}</a>
+                          {% else %}
+                            {{ente.data_publicacao_retificacao|date:'d/m/Y'}}
+                          {% endif %}
+                      </p>
+                    {% endif %}
                     <p>
                       <strong>Última atualização:</strong>
                         {{ente.alterado_em}}
