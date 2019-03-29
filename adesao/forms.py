@@ -52,7 +52,7 @@ class CadastrarUsuarioForm(UserCreationForm):
         return self.cleaned_data['confirmar_email']
 
     def clean_confirmar_email_pessoal(self):
-        if self.cleaned_data['email_pessoal']:
+        if self.cleaned_data.get('email_pessoal', None):
             if self.data.get('email_pessoal') != self.cleaned_data['confirmar_email_pessoal']:
                 raise forms.ValidationError(
                     'Confirmação de e-mail pessoal não confere.')
@@ -63,13 +63,14 @@ class CadastrarUsuarioForm(UserCreationForm):
         usuarios = Usuario.objects.filter(
             Q(user__email=self.cleaned_data['email']) |
             Q(email_pessoal=self.cleaned_data['email']))
+
         if not usuarios:
             return self.cleaned_data['email']
         else:
             raise forms.ValidationError('Este e-mail já foi cadastrado!')
 
     def clean_email_pessoal(self):
-        if self.cleaned_data['email_pessoal']:
+        if self.cleaned_data.get('email_pessoal', None):
             usuarios = Usuario.objects.filter(
                 Q(user__email=self.cleaned_data['email_pessoal']) |
                 Q(email_pessoal=self.cleaned_data['email_pessoal']))
