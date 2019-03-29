@@ -120,7 +120,7 @@ class EnteFederado(models.Model):
 
     def get_regiao(self):
         digito = str(self.cod_ibge)[0]
-        regiao = REGIOES[digito]  
+        regiao = REGIOES[digito]
         return regiao
 
     def faixa_populacional(self):
@@ -136,12 +136,12 @@ class EnteFederado(models.Model):
         elif self.populacao <= 100000:
             faixa = "De 50.001 até 100.000"
         elif self.populacao <= 500000:
-            faixa = "De 100.001 até 500.000" 
+            faixa = "De 100.001 até 500.000"
         else:
-            faixa =  "Acima de 500.000"         
+            faixa =  "Acima de 500.000"
         return faixa
-        
-    
+
+
     @property
     def is_municipio(self):
         digits = int(math.log10(self.cod_ibge))+1
@@ -423,7 +423,7 @@ class SistemaCultura(models.Model):
     fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
     conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
-    
+
     secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
     responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
@@ -455,12 +455,18 @@ class SistemaCultura(models.Model):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url
 
-    def get_componentes_diligencias(self):
+    def get_componentes_diligencias(self, componente=None):
         diligencias_componentes = []
-        componentes = ['legislacao', 'orgao_gestor', 'plano', 'conselho', 'fundo_cultura']
+        if componente:
+            componentes = [componente]
+        else:
+            componentes = ['legislacao', 'orgao_gestor',
+                           'plano', 'conselho', 'fundo_cultura']
+
         for componente in componentes:
             componente = getattr(self, componente)
             if componente and componente.diligencia:
+                componente.historico_diligencia = componente.diligencia.history.all()
                 diligencias_componentes.append(componente)
         return diligencias_componentes
 
