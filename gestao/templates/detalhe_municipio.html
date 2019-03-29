@@ -196,7 +196,7 @@
               {% else %}
               <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' arquivo='arquivo' %}">
               {% endif %}
-                {{ ente.legislacao.get_situacao_display }}
+                <b>{{ ente.legislacao.get_situacao_display }}</b>
               </a>
             </div>
 
@@ -233,8 +233,8 @@
             <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='orgao_gestor' arquivo='arquivo' pk=ente.orgao_gestor.diligencia.id %}">
               {% else %}
               <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' arquivo='arquivo' %}">
-                {% endif %}
-                {{ ente.orgao_gestor.get_situacao_display }}
+              {% endif %}
+                <b>{{ ente.orgao_gestor.get_situacao_display }}</b>
               </a>
           </div>
 
@@ -274,7 +274,7 @@
             {% else %}
             <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='arquivo' %}">
             {% endif %}
-              {{ ente.conselho.get_situacao_display }}
+              <b>{{ ente.conselho.get_situacao_display }}</b>
             </a>
           </div>
 
@@ -314,7 +314,7 @@
             {% else %}
             <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='lei' %}">
             {% endif %}
-              {{ ente.conselho.lei.get_situacao_display }}
+              <b>{{ ente.conselho.lei.get_situacao_display }}</b>
             </a>
           </div>
 
@@ -352,7 +352,7 @@
             {% else %}
             <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='arquivo' %}">
             {% endif %}
-              {{ ente.fundo_cultura.get_situacao_display }}
+              <b>{{ ente.fundo_cultura.get_situacao_display }}</b>
             </a>
           </div>
 
@@ -394,7 +394,7 @@
             {% else %}
             <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' arquivo='arquivo' %}">
             {% endif %}
-              {{ ente.plano.get_situacao_display }}
+              <b>{{ ente.plano.get_situacao_display }}</b>
             </a>
           </div>
 
