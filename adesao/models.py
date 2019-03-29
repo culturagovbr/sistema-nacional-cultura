@@ -290,6 +290,7 @@ class Usuario(models.Model):
     codigo_ativacao = models.CharField(max_length=12, unique=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     prazo = models.IntegerField(default=2)
+    email_pessoal = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username

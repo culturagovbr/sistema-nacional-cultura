@@ -163,6 +163,8 @@ def test_save_cadastrar_usuario(client, login, sistema_cultura):
     data = {'username': '552.091.100-28',
             'email': 'email@email.com',
             'confirmar_email': 'email@email.com',
+            'email_pessoal': 'email@pessoal.com',
+            'confirmar_email_pessoal': 'email@pessoal.com',
             'nome_usuario': 'Teste',
             'password1': '123456',
             'password2': '123456'}
