@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
             bases=('planotrabalho.componente2',),
         ),
         migrations.AddField(
-            model_name='componente2',
+            model_name='Componente2',
             name='diligencia',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='gestao.DiligenciaSimples'),
         ),
