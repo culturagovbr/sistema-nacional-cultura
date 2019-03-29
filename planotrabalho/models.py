@@ -105,7 +105,8 @@ class ArquivoComponente2(models.Model):
         'gestao.DiligenciaSimples',
         on_delete=models.CASCADE,
         blank=True,
-        null=True
+        null=True,
+        related_name='arquivo'
     )
     data_envio = models.DateField(default=datetime.date.today)
     data_publicacao = models.DateField(
