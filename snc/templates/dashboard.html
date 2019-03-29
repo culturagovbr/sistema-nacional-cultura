@@ -38,7 +38,7 @@
 
 <menu data-target="inicio" ></menu>
 <div class="row">
-    <div class="col-xl-4 col-lg-12">
+    <div class="col-xl-6 col-lg-12">
       <div class="card card-chart">
         <div class="card-header card-header-success">
           <div class="ct-chart" id="wtf"></div>
@@ -55,10 +55,10 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4 col-lg-12">
+    <div class="col-xl-6 col-lg-12">
       <div class="card card-chart">
         <div class="card-header card-header-warning">
-          <div class="ct-chart" id="websiteViewsChart"></div>
+          <div class="ct-chart" id="situacoes"></div>
         </div>
         <div class="card-body">
           <h4 class="card-title">Email Subscriptions</h4>
@@ -104,6 +104,11 @@
         </div>
     </div>
   </div>
+  <div class="row">
+    <div class="aaa">
+
+    </div>
+  </div>
 
 
 {% endblock content %}
@@ -113,9 +118,8 @@
 <script type='text/javascript' src='http://localhost:8000/static/js/leaflet.markercluster.js'></script>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
 <script>
-
-
 $(document).ready(function(){
 
   var lat = -2.885310540095;
@@ -263,7 +267,6 @@ $(document).ready(function(){
     var layer = e.target;
     info.update(layer.feature.properties);
 
-    // console.log(layer.feature);
     if (layer.feature.properties.hasOwnProperty('enteObject')) {
       color = getColor(layer.feature.properties.enteObject.estado_processo);
       layer.setStyle({
@@ -323,7 +326,6 @@ $(document).ready(function(){
           grades = [1, 2, 3, 4, 5, 6, 7],
           labels = [];
 
-      // loop through our density intervals and generate a label with a colored square for each interval
       for (var i = 0; i < colorGrade.length; i++) {
           div.innerHTML +=
               '<i style="background:' + colorGrade[i].color + '"></i> ' +
@@ -342,8 +344,12 @@ $(document).ready(function(){
   }).addTo(mymap);
 
 
+
+
+
+
   var names = {
-      labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+      labels: ['S', 'T', 'W', 'T', 'F', 'S', 'S'],
       series: [
         [12, 17, 7, 17, 23, 18, 38]
       ]
@@ -354,7 +360,7 @@ $(document).ready(function(){
         tension: 0
       }),
       low: 0,
-      high: 100,
+      high: 60,
       chartPadding: {
         top: 0,
         right: 0,
@@ -366,6 +372,50 @@ $(document).ready(function(){
     var chart = new Chartist.Line('#wtf', names, options);
 
     md.startAnimationForLineChart(chart);
+
+
+    console.log(Chartist)
+    var dataWebsiteViewsChart = {
+      labels: [0,100, 1000, 5000, 10000, 50000],
+      series: [
+        [
+          5000,
+          12500,
+          35000,
+          26000,
+          47000,
+        ]
+      ]
+    };
+    var optionsWebsiteViewsChart = {
+      lineSmooth: Chartist.Interpolation.cardinal({
+          tension: 0
+        }),
+        low: 0,
+        high: 50000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+        chartPadding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0
+        },
+      // plugins: [
+      //   Chartist.plugins.tooltip()
+      // ]
+    };
+      var responsiveOptions = [
+        // ['screen and (max-width: 640px)', {
+        //   seriesBarDistance: 5,
+        //   axisX: {
+        //     labelInterpolationFnc: function(value) {
+        //       return value[0];
+        //     }
+        //   }
+        // }]
+      ];
+     var aa = Chartist.Bar('#situacoes', dataWebsiteViewsChart, optionsWebsiteViewsChart, responsiveOptions);
+      md.startAnimationForBarChart(aa);
+
  });
 </script>
 

@@ -1,6 +1,5 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
 <menu data-target="documentacao" ></menu>
-
 <div class="row">
     <div class="col-lg-12  col-md-12">
         <div class="card">
@@ -99,10 +98,13 @@
           //TODO colocar if para só mostrar se tiver dado
           name: "legislacao__arquivo__url",
           orderable: false,
-          render: (data) => `
-            <a href="${data[3]}">
-                Download
-            </a>`
+          render: (data) => {
+              if(!(data[3].length > 0)) return ''
+           return `
+                <a href="${data[3]}">
+                    Download
+                </a>`
+          }
         },
         {
           data: null,

@@ -11,16 +11,15 @@
               <table id="tabela-ente" class="datatable table table-hover">
                   <thead>
                       <tr>
-                          <th>Análise</th>
                           <th>Município/Estado</th>
                           <th>Prefeito/Governador</th>
                           <th>RG</th>
                           <th>CPF</th>
                           <th>CNPJ</th>
                           <th>Situação</th>
+                          <th>&nbsp</th>
                       </tr>
                   </thead>
-
               </table>
           </div>
         </div>
@@ -32,27 +31,17 @@
 <script type="text/javascript">
 $(document).ready(function(){
   $('#tabela-ente').dataTable({
-    order: [1, 'asc'],
+    order: [0, 'asc'],
     language:{
             "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
           },
     columns: [
-        {
-          width: '5%',
-          data: null,
-          name: "id",
-          orderable: false,
-          render: function (data, type, row) {
-            return `<center><a href="/gestao/ente/${data[7]}"><i class="fa fa-file"></i></a></center>`
-          }
-        },
         {
           data: null,
           name: "ente_federado",
           render: (data) => data[1]
         },
         {
-          width: '25%',
           data: null,
           name: "gestor__nome",
           render: (data) => {
@@ -73,12 +62,8 @@ $(document).ready(function(){
           }
         },
         {
-          width: '15%',
           data: null,
           name: "gestor__cpf",
-          render: function (data, type, row) {
-            return data[4]
-          },
           render: (data) => {
             if (data[11].length > 0){
               return `<a href="${data[11]}">${data[4]}</a>`
@@ -96,11 +81,22 @@ $(document).ready(function(){
           name: "estado_processo",
           render: (data) => data[6]
         },
+        {
+          width: '5%',
+          data: null,
+          name: "id",
+          orderable: false,
+          render: (data) => `
+            <a rel="tooltip" title="" href="/gestao/ente/${data[7]}" class="btn btn-primary btn-link btn-sm">
+              <i class="material-icons">zoom_in</i>
+            </a>
+          `
+        },
     ],
     searching: true,
     processing: true,
     serverSide: true,
-    stateSave: true,
+    // stateSave: true,
     ajax: {
       url: "{% url 'gestao:ajax_entes' %}",
       data: {

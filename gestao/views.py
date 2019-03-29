@@ -195,8 +195,9 @@ class AcompanharSistemaCultura(TemplateView):
 
 
 class AcompanharComponente(TemplateView):
-    def get_template_names(self):
-        return ['gestao/planotrabalho/acompanhar_legislacao.html' % self.kwargs['componente']]
+    template_name = 'gestao/planotrabalho/acompanhar.html'
+    # def get_template_names(self):
+    #     return ['gestao/planotrabalho/acompanhar_legislacao.html' % self.kwargs['componente']]
 
 
 # class AcompanharComponente(ListView):
@@ -412,26 +413,7 @@ class ListarDocumentosComponentes(TemplateView):
         return ['gestao/inserir_documentos/%s.html' % self.kwargs['template']]
 
 
-# class ListarDocumentosComponentes(ListView):
-#     paginate_by = 10
-
-#     def get_template_names(self):
-#         return ['gestao/inserir_documentos/%s.html' % self.kwargs['template']]
-
-#     def get_queryset(self):
-#         q = self.request.GET.get('q', None)
-
-#         sistemas = SistemaCultura.sistema.filter(estado_processo='6')
-
-#         if q:
-#             sistemas = sistemas.filter(
-#                 ente_federado__nome__unaccent__icontains=q)
-
-#         return sistemas
-
-
 class InserirComponente(CreateView):
-
     def get_template_names(self):
         return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
 
@@ -458,9 +440,7 @@ class InserirComponente(CreateView):
 class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
     model = Componente
-
-    def get_template_names(self):
-        return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
+    template_name = 'gestao/inserir_documentacao.html'
 
     def get_success_url(self):
         messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
@@ -799,12 +779,11 @@ class DataTablePlanoTrabalho(BaseDatatableView):
 
         return sistemas
 
-
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
 
-        if search:           
-            return qs.filter(Q(ente_federado__nome__unaccent__icontains=search) | \
+        if search:
+            return qs.filter(Q(ente_federado__nome__unaccent__icontains=search) |
                 Q(sede__cnpj__contains=search))
 
         return qs
@@ -815,7 +794,7 @@ class DataTablePlanoTrabalho(BaseDatatableView):
         for item in qs:
             json_data.append([
                 item.id,
-                escape(item.ente_federado),
+                item.ente_federado.__str__(),
                 escape(item.sede.cnpj) if item.sede else '',
                 getattr(item, componente).arquivo.url,
                 componente,
@@ -826,15 +805,17 @@ class DataTablePlanoTrabalho(BaseDatatableView):
 class DataTableListarDocumentos(BaseDatatableView):
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
-
-        return SistemaCultura.objects.filter(id__in=sistema).filter(
+        qs = SistemaCultura.objects.filter(id__in=sistema).filter(
             estado_processo='6')
+
+        return qs
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
 
-        if search:           
-            return qs.filter(Q(ente_federado__nome__unaccent__icontains=search) | \
+        if search:
+            return qs.filter(
+                Q(ente_federado__nome__unaccent__icontains=search) |
                 Q(sede__cnpj__contains=search))
 
         return qs
@@ -846,7 +827,6 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.id,
                 escape(item.ente_federado),
                 escape(item.sede.cnpj) if item.sede else '',
-                #TODO abstrair pra todos os componentes
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data

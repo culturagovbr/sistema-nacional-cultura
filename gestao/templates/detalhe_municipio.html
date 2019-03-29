@@ -70,18 +70,18 @@
         <div class="card-header card-header-primary">
           <h4 class="card-title">Interlocutor</h4>
           {% if ente.secretario %}
-      
+
           <a href="{% url 'gestao:alterar_funcionario' pk=ente.secretario.id tipo='secretario' %}" class="card-category">editar</a>
 
           {% else %}
-          
+
           <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='secretario' %}" class="card-category">cadastrar</a>
 
           {% endif %}
         </div>
         <div class="card-body">
             <div class="row">
-              
+
             </div>
           <div class="card-body">
             <p><strong>Nome:</strong> {{ ente.secretario.nome }}</p>
@@ -90,7 +90,7 @@
             <p><strong>Cargo:</strong> {{ ente.secretario.cargo }}</p>
             <p><strong>Instituição:</strong> {{ ente.secretario.instituicao }}</p>
             <p><strong>E-mail:</strong> {{ ente.secretario.email_institucional }}</p>
-            <p><strong>Telefone:</strong> {{ ente.secretario.telefone_um }}</p>     
+            <p><strong>Telefone:</strong> {{ ente.secretario.telefone_um }}</p>
           </div>
       </div>
     </div>
@@ -104,13 +104,13 @@
           <div class="card-header card-header-primary">
             <h4 class="card-title">Responsável Indicado</h4>
             {% if ente.responsavel %}
-        
+
             <a href="{% url 'gestao:alterar_funcionario' pk=ente.responsavel.id tipo='responsavel' %}" class="card-category">editar</a>
-  
+
             {% else %}
-            
+
             <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='responsavel' %}" class="card-category">cadastrar</a>
-  
+
             {% endif %}
           </div>
           <div class="card-body">
@@ -177,6 +177,10 @@
                       </div>
                       <div class="card-footer">
                         <div class="stats">
+                            <i class="material-icons">edit</i>
+                            <a href="{% url 'gestao:alterar_componente' 'legislacao' ente.legislacao.id %}" class="warning-link">Editar</a>
+                        </div>
+                        <div class="stats">
                           <i class="material-icons">save_alt</i>
                           <a href="{{ente.legislacao.arquivo.url}}" class="warning-link">Download</a>
                         </div>
@@ -201,6 +205,10 @@
                       </h3>
                     </div>
                     <div class="card-footer">
+                      <div class="stats">
+                          <i class="material-icons">edit</i>
+                          <a href="{% url 'gestao:alterar_componente' 'orgao_gestor' ente.orgao_gestor.id %}" class="warning-link">Editar</a>
+                      </div>
                       <div class="stats">
                         <i class="material-icons">save_alt</i>
                         <a href="{{ente.orgao_gestor.arquivo.url}}" class="warning-link">Download</a>
@@ -227,6 +235,10 @@
                     </div>
                     <div class="card-footer">
                       <div class="stats">
+                          <i class="material-icons">edit</i>
+                          <a href="{% url 'gestao:alterar_componente' 'fundo_cultura' ente.fundo_cultura.id %}" class="warning-link">Editar</a>
+                      </div>
+                      <div class="stats">
                         <i class="material-icons">save_alt</i>
                         <a href="{{ente.fundo_cultura.arquivo}}" class="warning-link">Download</a>
                       </div>
@@ -251,6 +263,10 @@
                         </h3>
                       </div>
                       <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">edit</i>
+                            <a href="{% url 'gestao:alterar_componente' 'plano' ente.plano.id %}" class="warning-link">Editar</a>
+                        </div>
                         <div class="stats">
                           <i class="material-icons">save_alt</i>
                           <a href="{{ente.plano.arquivo.url}}" class="warning-link">Download</a>
@@ -277,6 +293,10 @@
                       </div>
                       <div class="card-footer">
                         <div class="stats">
+                            <i class="material-icons">edit</i>
+                            <a href="{% url 'gestao:alterar_componente' 'conselho' ente.conselho.id %}" class="warning-link">Editar</a>
+                        </div>
+                        <div class="stats">
                           <i class="material-icons">save_alt</i>
                           <a href="{{ente.conselho.arquivo.url}}" class="warning-link">Download</a>
                         </div>
@@ -293,22 +313,20 @@
 
 
 <div id="container-floating">
-
-    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
-        <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
-    </div>
-    <div class="nd3 nds"  data-toggle="tooltip" data-placement="left" title="Alterar Dados do Ente" rel="tooltip">
-        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:alterar_sistema' pk=ente.id %}'">edit_location</div>
-    </div>
-    <div class="nd2 nds" data-toggle="tooltip" data-placement="left" title="Alterar Cadastrador" rel="tooltip">
-        <div class="material-icons float-options" data-toggle="modal" data-target="#cadastradorModal" data-cadastrador-nome="{{ object.cadastrador.nome_usuario }}" data-cadastrador-cpf="{{ object.cadastrador.user.username }}" >loop</div>
-    </div>
     {% if ente.estado_processo == '6' %}
-    <div class="nd1 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
+    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
       <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
     </div>
     {% endif %}
-  
+    <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
+        <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
+    </div>
+    <div class="nd2 nds"  data-toggle="tooltip" data-placement="left" title="Alterar Dados do Ente" rel="tooltip">
+        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:alterar_sistema' pk=ente.id %}'">edit_location</div>
+    </div>
+    <div class="nd1 nds" data-toggle="tooltip" data-placement="left" title="Alterar Cadastrador" rel="tooltip">
+        <div class="material-icons float-options" data-toggle="modal" data-target="#cadastradorModal" data-cadastrador-nome="{{ object.cadastrador.nome_usuario }}" data-cadastrador-cpf="{{ object.cadastrador.user.username }}" >loop</div>
+    </div>
     <div id="floating-button">
       <div class="material-icons first-ico">add</div>
       <div class="second-ico">arrow_downward</div>
@@ -347,8 +365,6 @@
 {% block js%}
 <script type="text/javascript">
   $(document).ready(function(){
-
-    // $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
 
     var situacao_campos = function(e){
 
@@ -415,13 +431,6 @@
       }
     }
     $('#select_situacoes').change(situacao_campos).ready(situacao_campos);
-
-
-
-
-
-
-
 
 });
 </script>

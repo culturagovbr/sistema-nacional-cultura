@@ -1,51 +1,24 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class=" card  ">
-  <div class=" card-header">
-    Inserir lei do fundo de cultura no cadastro
-  </div>
-  <div class=" card-body">
-    <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-      <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Anexo</label>
-
-        <div class="col-sm-7">
-          {% render_field form.arquivo %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.arquivo.errors}}</span>
-        </div>
+<div class="row">
+    {{form.media}}
+    <div class="col-md-5">
+      <div class="card">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title">Edição do Componente</h4>
+        <p class="card-category">Lei do Fundo de Cultura</p>
       </div>
-
-      <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">CNPJ do Fundo de Cultura</label>
-
-        <div class="col-sm-7">
-          <span class="help-block">{% render_field form.cnpj %}</span>
-        </div>
-        <div class="col-sm-offset-3 col-sm-9 has-error">
-            <span class="help-block">{{ form.cnpj.errors}}</span>
-        </div>
+      <div class="card-body">
+        <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
+          <div class="row">
+              <div class="col-md-12">
+                {% render_field form %}
+              </div>
+          </div>
+        <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+        <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+        </form>
       </div>
-
-      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
-
-        <div class="col-sm-7">
-          <span class="help-block">{% render_field form.data_publicacao class="date" %}</span>
-        </div>
-        <div class="col-sm-offset-3 col-sm-9 has-error">
-            <span class="help-block">{{ form.data_publicacao.errors}}</span>
-        </div>
       </div>
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-11">
-          <a class="btn btn-default" href="{% url 'gestao:listar_documentos' template='listar_fundos' %}">Cancelar</a>
-          <button type="submit" class="btn btn-primary">Salvar</button>
-
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
 </div>
 {% endblock content %}
