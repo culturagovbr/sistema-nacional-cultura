@@ -608,6 +608,7 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'])
 
         return context
 
