@@ -924,7 +924,7 @@ def test_salvar_informacoes_no_banco_diligencia_geral(url, client, login_staff):
 
     assert DiligenciaSimples.objects.count() == 1
     assert DiligenciaSimples.objects.first() == sistema_cultura.diligencia
-    assert sistema_cultura.alterado_por == login_staff   
+    assert sistema_cultura.alterado_por == login_staff
 
 
 def test_redirecionamento_de_pagina_apos_POST_diligencia_geral(
@@ -2066,3 +2066,40 @@ def test_criar_dados_secretario(client, login_staff):
     assert sistema_cultura.secretario.email_pessoal == funcionario.email_pessoal
     assert sistema_cultura.secretario.telefone_um == funcionario.telefone_um
     assert sistema_cultura.secretario.tipo_funcionario == 0
+
+
+def test_alteracao_diligencia(client, login_staff):
+    diligencia = mommy.make('DiligenciaSimples')
+    componente = mommy.make('Componente', situacao=3, tipo=0, diligencia=diligencia)
+
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        legislacao=componente
+    )
+
+    texto_diligencia = "Arquivo não pode ser aberto"
+
+    url = reverse(
+        'gestao:alterar_diligencia_componente',
+        kwargs={
+            "ente": sistema_cultura.id,
+            "componente": "legislacao",
+            "arquivo": "arquivo",
+            "pk": componente.diligencia.id
+        })
+
+    response = client.post(
+        url,
+        {
+            "texto_diligencia": texto_diligencia,
+            "classificacao_arquivo": 4
+        },
+    )
+
+    sistema_cultura = SistemaCultura.sistema.get(ente_federado__cod_ibge=123456)
+
+    assert response.status_code == 302
+    assert sistema_cultura.legislacao.situacao == 4
+    assert sistema_cultura.legislacao.diligencia.texto_diligencia == texto_diligencia
+    assert len(sistema_cultura.legislacao.diligencia.history.all()) == 2
