@@ -1019,7 +1019,7 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
 def test_envio_email_diligencia_geral(client, login_staff):
     """ Testa envio do email para diligência geral """
     sistema_cultura = mommy.make(
-        "SistemaCultura", _fill_optional="cadastrador", ente_federado__cod_ibge=123456
+        "SistemaCultura", _fill_optional=["cadastrador", "gestor"], ente_federado__cod_ibge=123456
     )
 
     sistema_cultura.cadastrador.user.email = "teste@teste.com"
@@ -1029,6 +1029,10 @@ def test_envio_email_diligencia_geral(client, login_staff):
     request = client.post(url, data={"classificacao_arquivo": "3", "texto_diligencia": "Ta errado cara"})
 
     assert len(mail.outbox) == 1
+    assert mail.outbox[0].to == [sistema_cultura.cadastrador.user.email,
+        sistema_cultura.cadastrador.email_pessoal,
+        sistema_cultura.gestor.email_pessoal,
+        sistema_cultura.gestor.email_institucional]
 
 
 def test_diligencia_geral_sem_componentes(url, client, plano_trabalho, login_staff):

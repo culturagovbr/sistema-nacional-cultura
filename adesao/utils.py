@@ -2,7 +2,6 @@ import re
 
 from threading import Thread
 
-from django.core.mail import send_mail
 from django.forms.models import model_to_dict
 from adesao.models import SistemaCultura
 from django.core.exceptions import ObjectDoesNotExist
