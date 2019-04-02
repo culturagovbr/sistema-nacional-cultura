@@ -6,20 +6,24 @@ from django.core.mail import send_mail
 from django.forms.models import model_to_dict
 from adesao.models import SistemaCultura
 from django.core.exceptions import ObjectDoesNotExist
+from templated_email import send_templated_mail
 
 
 def limpar_mascara(mascara):
     return ''.join(re.findall('\d+', mascara))
 
 
-def enviar_email_conclusao(user, message_txt, message_html):
-    Thread(target=send_mail, args=(
-        'Sistema Nacional de Cultura - Solicitação de Adesão ao SNC',
-        message_txt,
-        'naoresponda@cultura.gov.br',
-        [user.email],),
-        kwargs = {'fail_silently': 'False', 'html_message': message_html}
-        ).start()
+def enviar_email_conclusao(request):
+    send_templated_mail(
+        template_name='conclusao_cadastro',
+        from_email='naoresponda@cultura.gov.br',
+        recipient_list=[request.user.email, request.user.usuario.email_pessoal,
+            request.session['sistema_gestor']['email_institucional'], 
+            request.session['sistema_gestor']['email_pessoal']],
+        context={
+            'request':request,
+        },
+    )
 
 
 def verificar_anexo(sistema, componente):
