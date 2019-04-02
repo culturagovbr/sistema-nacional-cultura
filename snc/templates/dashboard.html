@@ -1,8 +1,8 @@
 
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
-<link rel="stylesheet" href="http://localhost:8000/static/css/leaflet.css" />
-<link rel="stylesheet" type="text/css" href="http://localhost:8000/static/css/MarkerCluster.css" />
-<link rel="stylesheet" type="text/css" href="http://localhost:8000/static/css/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="/static/css/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/MarkerCluster.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/MarkerCluster.Default.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
 
 <style>
@@ -115,7 +115,7 @@
 
 {% block js%}
 <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>
-<script type='text/javascript' src='http://localhost:8000/static/js/leaflet.markercluster.js'></script>
+<script type='text/javascript' src='/static/js/leaflet.markercluster.js'></script>
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
