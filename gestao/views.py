@@ -664,13 +664,13 @@ class DataTableEntes(BaseDatatableView):
                 escape(item.ente_federado.cod_ibge) if item.ente_federado else '',
                 escape(item.data_criacao),
                 escape(
-                    item.gestor.termo_posse.url if item.gestor.termo_posse else ''
+                    item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
                 escape(
-                    item.gestor.rg_copia.url if item.gestor.rg_copia else ''
+                    item.gestor.rg_copia.url if item.gestor and item.gestor.rg_copia else ''
                 ),
                 escape(
-                    item.gestor.cpf_copia.url if item.gestor.cpf_copia else ''
+                    item.gestor.cpf_copia.url if item.gestor and item.gestor.cpf_copia else ''
                 ),
             ])
         return json_data
