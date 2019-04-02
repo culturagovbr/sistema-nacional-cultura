@@ -11,7 +11,6 @@ from django.http import Http404, HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy, reverse
-from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.template.loader import render_to_string
@@ -80,11 +79,7 @@ def home(request):
         sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=ente_federado['cod_ibge'])
         atualiza_session(sistema_atualizado, request)
 
-        message_txt = render_to_string("conclusao_cadastro.txt", {"request": request})
-        message_html = render_to_string(
-            "conclusao_cadastro.email", {"request": request}
-        )
-        enviar_email_conclusao(request.user, message_txt, message_html)
+        enviar_email_conclusao(request)
     return render(request, "home.html", {"historico": historico})
 
 
