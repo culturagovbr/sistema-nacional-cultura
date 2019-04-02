@@ -23,7 +23,7 @@ urlpatterns = [
     path('funcionario/<int:sistema>/<str:tipo>',
         staff_member_required(views.CadastrarFuncionario.as_view()),
         name='cadastrar_funcionario'),
-    
+
     # Rota para AlterarCadastrador
     path('ente/<int:cod_ibge>/alterarcadastrador',
         staff_member_required(views.AlterarCadastradorEnte.as_view()),
@@ -34,7 +34,7 @@ urlpatterns = [
         staff_member_required(views.AcompanharPrazo.as_view()), name='acompanhar_prazo'),
      url(r'^aditivar/prazo/(?P<id>[\w]+)/(?P<page>[\w]+)$',
         staff_member_required(views.aditivar_prazo, login_url='adesao:login'), name='aditivar_prazo'),
-    
+
     # Acompanhar componentes
     path('acompanhar/<str:componente>',
             staff_member_required(views.AcompanharComponente.as_view()),
@@ -69,7 +69,7 @@ urlpatterns = [
 
     path("inserir-documentos/<str:componente>/<int:pk>", staff_member_required(
         views.InserirComponente.as_view(),
-        login_url='adesao:login'), name='inserir_componente'), 
+        login_url='adesao:login'), name='inserir_componente'),
     # Inserção de documentos da criação do sistema de cultura
     url(r'^listar-documentos/(?P<template>\w+)$', staff_member_required(
         views.ListarDocumentosComponentes.as_view(),
@@ -84,7 +84,7 @@ urlpatterns = [
         login_url='adesao:login'), name='alterar_conselho'),
     path("inserir-documentos/<str:componente>/alterar/<int:pk>", staff_member_required(
         views.AlterarComponente.as_view(),
-        login_url='adesao:login'), name='alterar_componente'), 
+        login_url='adesao:login'), name='alterar_componente'),
 
     # ajax mudança de cadastrador
     url(r'^ajax_cadastrador_cpf$', staff_member_required(views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
@@ -95,19 +95,24 @@ urlpatterns = [
     # url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
     #     staff_member_required(views.DiligenciaComponenteView.as_view()), name="diligencia_componente"),
 
-    path("<int:pk>/diligencia/add", 
+    path("<int:pk>/diligencia/add",
         staff_member_required(views.DiligenciaGeralCreateView.as_view()),
         name="diligencia_geral_adicionar"),
 
-    path("<int:pk>/diligencia/<str:componente>/<str:arquivo>", 
+    path("<int:pk>/diligencia/<str:componente>/<str:arquivo>",
         staff_member_required(views.DiligenciaComponenteView.as_view()),
         name="diligencia_componente"),
+
+    path("<int:ente>/diligencia/<str:componente>/<str:arquivo>/<int:pk>",
+         staff_member_required(
+             views.AlterarDiligenciaComponenteView.as_view()),
+        name="alterar_diligencia_componente"),
 
     path("<int:pk>/diligencia/<str:componente>/<int:pk_componente>/situacao",
         staff_member_required(views.SituacaoArquivoComponenteUpdateView.as_view()),
         name="componente_situacao_atualiza"),
 
-    path("<int:pk>/diligencia", 
+    path("<int:pk>/diligencia",
         staff_member_required(views.DiligenciaGeralDetailView.as_view()),
         name="diligencia_geral"),
 

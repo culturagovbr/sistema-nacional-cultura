@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
 
         for componente in Componente.objects.all():
             componente.diligencia_arquivo = componente.diligencia
-            diligencia.save()
+            componente.save()
 
     operations = [
         migrations.AddField(
@@ -26,4 +26,5 @@ class Migration(migrations.Migration):
             name='diligencia_arquivo',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='gestao.DiligenciaSimples'),
         ),
+        migrations.RunPython(migrar_diligencia_para_arquivo),
     ]

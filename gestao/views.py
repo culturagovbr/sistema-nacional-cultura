@@ -608,11 +608,22 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'])
 
         return context
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form), status=400)
+
+
+class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):
+    template_name = 'diligencia.html'
+    model = DiligenciaSimples
+    form_class = DiligenciaComponenteForm
+    context_object_name = "diligencia"
+
+    def get_sistema_cultura(self):
+        return get_object_or_404(SistemaCultura, pk=int(self.kwargs['ente']))
 
 
 class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
