@@ -10,6 +10,7 @@ from django.forms.models import model_to_dict
 from model_mommy import mommy
 
 from adesao.models import Municipio, Funcionario, EnteFederado, Gestor, Sede, SistemaCultura
+from adesao.models import Usuario
 
 pytestmark = pytest.mark.django_db
 
@@ -36,6 +37,49 @@ def test_home_page(client, login):
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+def test_envio_email_novo_usuario(client):
+
+    url = reverse("adesao:usuario")
+
+    response = client.post(
+        url,
+        {
+            "username": "054.470.811-30",
+            "email": "email@email.com",
+            "confirmar_email": "email@email.com",
+            "email_pessoal": "email@pessoal.com",
+            "confirmar_email_pessoal": "email@pessoal.com",
+            "nome_usuario": "Nome Teste",
+            "password1": "123456",
+            "password2": "123456",
+        },
+    )
+
+    usuario = Usuario.objects.get(user__username='05447081130')
+
+    texto = f"""Prezad@ Nome Teste,
+
+Recebemos o seu cadastro no Sistema Nacional de Cultura.
+Por favor confirme seu e-mail clicando no endereço abaixo:
+
+http://snc.cultura.gov.br/adesao/ativar/usuario/{usuario.codigo_ativacao}
+
+Atenciosamente,
+
+Equipe SNC
+Secretaria Especial da Cultura / Ministério da Cidadania
+"""
+
+    assert len(mail.outbox) == 1
+    assert (
+        mail.outbox[0].subject
+        == "Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO"
+    )
+    assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
+    assert mail.outbox[0].to == ["email@email.com", "email@pessoal.com"]
+    assert mail.outbox[0].body == texto
 
 
 def test_envio_email_em_nova_adesao(client):

@@ -263,37 +263,27 @@ def exportar_xls(request):
     return response
 
 
-class CadastrarUsuario(CreateView):
+class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     form_class = CadastrarUsuarioForm
     template_name = "usuario/cadastrar_usuario.html"
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
-    def get_success_url(self):
-        # TODO: Refatorar para usar django-templated-email
-        Thread(
-            target=send_mail,
-            args=(
-                "Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO",
-                "Prezad@ "
-                + self.object.usuario.nome_usuario
-                + ",\n"
-                + "Recebemos o seu cadastro no Sistema Nacional de Cultura. "
-                + "Por favor confirme seu e-mail clicando no endereço abaixo:\n\n"
-                + self.request.build_absolute_uri(
-                    reverse(
-                        "adesao:ativar_usuario",
-                        args=[self.object.usuario.codigo_ativacao],
-                    )
-                )
-                + "\n\n"
-                + "Atenciosamente,\n\n"
-                + "Equipe SNC\nSecretaria Especial da Cultura / Ministério da Cidadania",
-                "naoresponda@cultura.gov.br",
-                [self.object.email],
-            ),
-            kwargs={"fail_silently": "False"},
-        ).start()
-        return super(CadastrarUsuario, self).get_success_url()
+    templated_email_template_name = "usuario"
+    templated_email_from_email = "naoresponda@cultura.gov.br"
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def templated_email_get_context_data(self, **kwargs):
+        context = super().templated_email_get_context_data(**kwargs)
+        context["object"] = self.object
+
+        return context
+
+    def templated_email_get_recipients(self, form):
+        recipiente_list = [self.object.email, self.object.usuario.email_pessoal]
+
+        return recipiente_list
 
 
 @login_required
