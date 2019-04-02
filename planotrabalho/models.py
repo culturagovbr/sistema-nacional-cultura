@@ -111,7 +111,7 @@ class ArquivoComponente2(models.Model):
     data_envio = models.DateField(default=datetime.date.today)
     data_publicacao = models.DateField(
         _("Data de Publicação do Arquivo do Componente"), null=True, blank=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(inherit=True)
 
 
 class Componente(ArquivoComponente2):
