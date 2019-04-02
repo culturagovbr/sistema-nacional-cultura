@@ -42,14 +42,15 @@ def test_envio_email_em_nova_adesao(client):
     user = User.objects.create(username="teste", email="email@email.com")
     user.set_password("123456")
     user.save()
-    usuario = mommy.make("Usuario", user=user, nome_usuario="teste")
+    usuario = mommy.make("Usuario", user=user, nome_usuario="teste", email_pessoal="email@pessoal.com")
 
     ente_federado = mommy.make("EnteFederado", cod_ibge=123456)
 
     client.login(username=user.username, password="123456")
 
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
-        nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
+        nome="nome", telefone_um="123456", email_institucional="email@email.com", email_pessoal="email@pes.com",
+        tipo_funcionario=2)
     sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
@@ -66,6 +67,7 @@ def test_envio_email_em_nova_adesao(client):
             "estado_expeditor": 29,
             "telefone_um": gestor.telefone_um,
             "email_institucional": gestor.email_institucional,
+            "email_pessoal": gestor.email_pessoal,
             "tipo_funcionario": gestor.tipo_funcionario,
             "termo_posse": SimpleUploadedFile(
                 "test_file.pdf", bytes("test text", "utf-8")
@@ -109,7 +111,8 @@ SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA"""
         == "SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - SOLICITAÇÃO NOVA ADESÃO"
     )
     assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
-    assert mail.outbox[0].to == [user.email]
+    assert mail.outbox[0].to == [user.email, usuario.email_pessoal, sistema.gestor.email_pessoal,
+        sistema.gestor.email_institucional]
     assert mail.outbox[0].body == texto
 
 
