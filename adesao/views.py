@@ -11,7 +11,6 @@ from django.http import Http404, HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy, reverse
-from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.template.loader import render_to_string
@@ -80,11 +79,7 @@ def home(request):
         sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=ente_federado['cod_ibge'])
         atualiza_session(sistema_atualizado, request)
 
-        message_txt = render_to_string("conclusao_cadastro.txt", {"request": request})
-        message_html = render_to_string(
-            "conclusao_cadastro.email", {"request": request}
-        )
-        enviar_email_conclusao(request.user, message_txt, message_html)
+        enviar_email_conclusao(request)
     return render(request, "home.html", {"historico": historico})
 
 
@@ -263,37 +258,27 @@ def exportar_xls(request):
     return response
 
 
-class CadastrarUsuario(CreateView):
+class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     form_class = CadastrarUsuarioForm
     template_name = "usuario/cadastrar_usuario.html"
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
-    def get_success_url(self):
-        # TODO: Refatorar para usar django-templated-email
-        Thread(
-            target=send_mail,
-            args=(
-                "Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO",
-                "Prezad@ "
-                + self.object.usuario.nome_usuario
-                + ",\n"
-                + "Recebemos o seu cadastro no Sistema Nacional de Cultura. "
-                + "Por favor confirme seu e-mail clicando no endereço abaixo:\n\n"
-                + self.request.build_absolute_uri(
-                    reverse(
-                        "adesao:ativar_usuario",
-                        args=[self.object.usuario.codigo_ativacao],
-                    )
-                )
-                + "\n\n"
-                + "Atenciosamente,\n\n"
-                + "Equipe SNC\nSecretaria Especial da Cultura / Ministério da Cidadania",
-                "naoresponda@cultura.gov.br",
-                [self.object.email],
-            ),
-            kwargs={"fail_silently": "False"},
-        ).start()
-        return super(CadastrarUsuario, self).get_success_url()
+    templated_email_template_name = "usuario"
+    templated_email_from_email = "naoresponda@cultura.gov.br"
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def templated_email_get_context_data(self, **kwargs):
+        context = super().templated_email_get_context_data(**kwargs)
+        context["object"] = self.object
+
+        return context
+
+    def templated_email_get_recipients(self, form):
+        recipiente_list = [self.object.email, self.object.usuario.email_pessoal]
+
+        return recipiente_list
 
 
 @login_required
@@ -365,7 +350,10 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
     def templated_email_get_recipients(self, form):
-        recipiente_list = [self.request.user.email]
+        gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
+        gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
+        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal, 
+            gestor_pessoal, gestor_institucional]
 
         return recipiente_list
 

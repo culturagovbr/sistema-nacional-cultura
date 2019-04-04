@@ -1,0 +1,13 @@
+{% block subject %}Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO{% endblock %}
+{% block plain %}Prezad@ {{object.usuario.nome_usuario}},
+
+Recebemos o seu cadastro no Sistema Nacional de Cultura.
+Por favor confirme seu e-mail clicando no endereço abaixo:
+
+http://snc.cultura.gov.br/adesao/ativar/usuario/{{object.usuario.codigo_ativacao}}
+
+Atenciosamente,
+
+Equipe SNC
+Secretaria Especial da Cultura / Ministério da Cidadania
+{% endblock %}
