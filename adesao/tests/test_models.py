@@ -31,7 +31,7 @@ def test_existencia_campos_atributo_models():
     fields = ('id', 'cadastrador', 'ente_federado', 'data_criacao', 
         'legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 
         'plano', 'secretario', 'responsavel', 'gestor', 'sede', 
-        'estado_processo', 'data_publicacao_acordo', 'link_publicacao_acordo', 
+        'estado_processo', 'data_publicacao_acordo', 'data_publicacao_retificacao', 'link_publicacao_acordo','link_publicacao_retificacao', 
         'processo_sei', 'numero_processo', 'localizacao', 'justificativa',
         'diligencia', 'alterado_em')
     for field in fields:

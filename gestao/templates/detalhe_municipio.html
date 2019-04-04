@@ -71,6 +71,16 @@
                           {% endif %}
                       </p>
                     {% endif %}
+                    {% if ente.data_publicacao_retificacao %}
+                      <p>
+                        <strong>Publicação da Retificacao:</strong>
+                          {% if ente.link_publicacao_retificacao %}
+                            <a href="{{ ente.link_publicacao_retificacao }}"> {{ente.data_publicacao_retificacao|date:'d/m/Y'}}</a>
+                          {% else %}
+                            {{ente.data_publicacao_retificacao|date:'d/m/Y'}}
+                          {% endif %}
+                      </p>
+                    {% endif %}
                     <p>
                       <strong>Última atualização:</strong>
                         {{ente.alterado_em}}
@@ -512,7 +522,22 @@
                           {{ form.processo_sei.errors }}
                         </span>
                       </div>
+                      
+                      <div class="form-group {% if form.data_publicacao_retificacao.errors %} has -error {%endif %}">
+                        <textarea id="justificativa_situacao" name="justificativa" class="form-control hide" style="resize:none" placeholder="Justificativa" rows="4" cols="20">{% if ente.estado_processo == '3' %} {{ ente.justificativa}} {% endif %}</textarea>
+                        <input type="text" id="data_retificacao_situacao" name="data_publicacao_retificacao" class="form-control date hide" value="{% if ente.data_publicacao_retificacao %} {{ente.data_publicacao_retificacao | date:'SHORT_DATE_FORMAT'}} {% endif %}" placeholder="Data da Publicação de Retificação (opcional)"></input>
+                        <span class="help-block">
+                          {{ form.data_publicacao_retificacao.errors }}
+                        </span>
+                        <input type="text" id="localizacao_situacao" name="localizacao" class="form-control hide" placeholder="Localização" value="{% if ente.estado_processo == '2' %} {{ente.localizacao}} {% endif %}"></input>
+                      </div>
 
+                      <div class="form-group {% if form.link_publicacao_retificacao%} has-error {% endif %}">
+                          <input type="text" id="link_retificacao_situacao" name="link_publicacao_retificacao" class="form-control" placeholder="Link da Publicação de Retificação (opcional)" value="{% if ente.link_publicacao_retificacao %} {{ente.link_publicacao_retificacao}} {% endif %}"></input>
+                          <span class="help-block">
+                            {{ form.link_publicacao_retificacao.errors }}
+                          </span>
+                      </div>
 
                       <div class="row">
                           <div class="col-md-12 text-center">
@@ -631,9 +656,17 @@
           $("#data_acordo_situacao").removeClass('hide');
           $("#data_acordo_situacao").fadeIn();
         }
+        if($("#data_retificacao_situacao").hasClass('hide')){
+          $("#data_retificacao_situacao").removeClass('hide');
+          $("#data_retificacao_situacao").fadeIn();
+        }
         if($("#link_acordo_situacao").hasClass('hide')){
           $("#link_acordo_situacao").removeClass('hide');
           $("#link_acordo_situacao").fadeIn();
+        }
+        if($("#link_retificacao_situacao").hasClass('hide')){
+          $("#link_retificacao_situacao").removeClass('hide');
+          $("#link_retificacao_situacao").fadeIn();
         }
       }
       else {

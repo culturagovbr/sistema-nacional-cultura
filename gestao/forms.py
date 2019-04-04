@@ -94,8 +94,8 @@ class AlterarDadosEnte(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('processo_sei', 'justificativa', 'localizacao',
-                  'estado_processo', 'data_publicacao_acordo',
-                  'link_publicacao_acordo')
+                  'estado_processo', 'data_publicacao_acordo','data_publicacao_retificacao',
+                  'link_publicacao_acordo', 'link_publicacao_retificacao')
 
 
 class DiligenciaForm(ModelForm):
