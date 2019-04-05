@@ -9,4 +9,3 @@ class GestaoConfig(AppConfig):
     def ready(self):
         import gestao.signals
         from simple_history.signals import pre_create_historical_record
-        from .models import HistoricalDiligenciaSimples
