@@ -7,7 +7,7 @@ import planotrabalho.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('planotrabalho', '0030_auto_20190402_1805'),
+        ('planotrabalho', '0029_auto_20190402_1551'),
     ]
 
     operations = [

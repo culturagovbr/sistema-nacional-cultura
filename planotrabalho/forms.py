@@ -88,7 +88,7 @@ class CriarFundoForm(CriarComponenteForm):
 
     class Meta:
         model = FundoDeCultura
-        fields = ('cnpj', 'arquivo', 'data_publicacao')
+        fields = ('cnpj', 'arquivo', 'data_publicacao', 'comprovante_cnpj')
 
 
 class CriarConselhoForm(ModelForm):

@@ -6,9 +6,44 @@
   <h3>
     <strong>Estruturação dos Componentes</strong>
   </h3>
+
+  <h5>
+    <strong>É a mesma lei do sistema municipal de cultura?</strong>
+  </h5>
+
+  <div>
+    <input type="radio" name="visibilidade_form" id="igual_lei_sistema" value="1">Sim<br>
+    <input type="radio" name="visibilidade_form" id="diferente_lei_sistema" value="0">Não<br>
+  </div>
+
   <h5>
     <strong>2.3 Instituição do Fundo de Cultura</strong>
   </h5>
+
+  <div id="lei_data_form" style="display: none">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao.id_for_label }}">
+        Data de Publicação da Lei do Fundo de Cultura
+      </label>
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+      {{ form.data_publicacao.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo.id_for_label }}">
+        Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
+      </label>
+      {% if form.arquivo.value %}
+      <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+      {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+      <p>Modificar: {% render_field form.arquivo %}</p>
+      {% endif %}
+      {% else %}
+      <p>{% render_field form.arquivo %}</p>
+      {% endif %}
+      {{ form.arquivo.errors }}
+    </div>
+  </div>
 
   <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
     <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
@@ -21,26 +56,18 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}">
-      Data de Publicação da Lei do Fundo de Cultura
+    <label for="{{ form.comprovante_cnpj.id_for_label }}">
+      Comprovante do CNPJ
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
-    {{ form.data_publicacao.errors }}
-  </div>
-
-  <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">
-      Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
-    </label>
-    {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+    {% if form.comprovante_cnpj.value %}
+    <p><a href="{{ form.comprovante_cnpj.value.url }}">Baixar arquivo atual</a></p>
     {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
+    <p>Modificar: {% render_field form.comprovante_cnpj %}</p>
     {% endif %}
     {% else %}
-    <p>{% render_field form.arquivo %}</p>
+    <p>{% render_field form.comprovante_cnpj %}</p>
     {% endif %}
-    {{ form.arquivo.errors }}
+    {{ form.comprovante_cnpj.errors }}
   </div>
 
   <div class="alert alert-info" role="alert">
@@ -58,3 +85,19 @@
 </form>
 </div>
 {% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $('input[name=visibilidade_form]').change(function() { 
+      if(this.value==0) {
+        $('#lei_data_form').css('display', 'none');
+      }
+      else {
+        $('#lei_data_form').css('display', 'block');
+      }
+    })
+  });
+
+</script>
+{% endblock js%}
