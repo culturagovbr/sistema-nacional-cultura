@@ -135,15 +135,15 @@ class DiligenciaComponenteForm(DiligenciaForm):
 
         if commit:
             componente = getattr(self.sistema_cultura, self.tipo_componente)
-            if self.arquivo == 'arquivo':     
+            if self.arquivo == 'arquivo':
                 componente.diligencia = diligencia
                 componente.situacao = self.cleaned_data['classificacao_arquivo']
-                componente.save()
+                componente.save(update_fields={"diligencia", "situacao"})
             else:
                 arquivo = getattr(componente, self.arquivo)
                 arquivo.diligencia = diligencia
                 arquivo.situacao = self.cleaned_data['classificacao_arquivo']
-                arquivo.save()
+                arquivo.save(update_fields={"diligencia", "situacao"})
 
     class Meta:
         model = DiligenciaSimples
