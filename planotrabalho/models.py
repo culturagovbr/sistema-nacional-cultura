@@ -106,7 +106,7 @@ class ArquivoComponente2(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name='arquivo'
+        related_name='componente'
     )
     data_envio = models.DateField(default=datetime.date.today)
     data_publicacao = models.DateField(
@@ -134,6 +134,7 @@ class FundoDeCultura(Componente):
         blank=True,
         null=True,
         default=None)
+    comprovante_cnpj = models.FileField(upload_to=upload_to, null=True, blank=True)
 
 
 class ConselhoDeCultura(Componente):
