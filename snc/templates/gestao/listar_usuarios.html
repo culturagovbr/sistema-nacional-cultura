@@ -2,10 +2,15 @@
 {% include 'messages.html' %}
 <style>
 .editable-input, .form-inline .form-control {
-  width: 100%
+  width: 100%;
 }
 .editable-error-block{
   display: none !important;
+}
+.focus-expandable{
+  border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3);
 }
 </style>
 <menu data-target="usuarios" ></menu>
@@ -23,8 +28,10 @@
                       <th>CPF</th>
                       <th>Nome Completo</th>
                       <th>E-mail</th>
+                      <th>Último acesso</th>
                       <th>Situação</th>
                       <th>Perfil</th>
+                      <th>&nbsp;</th>
                     </tr>
                   </thead>
             </table>
@@ -93,6 +100,16 @@ $(document).ready(function(){
         },
         {
           data: null,
+          name: "user__last_login",
+          render: (data) => {
+            if (!data[4].length){
+              return 'Nunca entrou'
+            }
+            return data[4]
+          }
+        },
+        {
+          data: null,
           name: "user__is_active",
           render: (data) =>`
               <a
@@ -101,9 +118,9 @@ $(document).ready(function(){
               data-name="is_active"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[4] == 'Ativo' ? 1 : 0}"
+              data-value="${data[5] == 'Ativo' ? 1 : 0}"
               data-title="Alterar Situação">
-                ${data[4]}
+                ${data[5]}
               </a>`
         },
         {
@@ -116,10 +133,16 @@ $(document).ready(function(){
               data-name="is_staff"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[5] == 'Administrador' ? 1 : 0}"
+              data-value="${data[6] == 'Administrador' ? 1 : 0}"
               data-title="Alterar Perfil">
-                ${data[5]}
+                ${data[6]}
               </a>`
+        },
+        {
+          data: null,
+          className: "text-center",
+          name: "user__is_staff",
+          render: (data) => '<i class="material-icons expandable-icon">expand_more</i>'
         },
     ],
     searching: true,
@@ -172,6 +195,64 @@ $(document).ready(function(){
         );
       }
     });
+  });
+
+
+  function diasSemLogar(data_cadastro){
+    var data_cadastro = new Date(data_cadastro);
+    var hoje = new Date();
+    var um_dia = 86400000;
+    dias_sem_logar_timestamp = hoje.getTime() - data_cadastro.getTime();
+    dias_sem_logar = parseInt(dias_sem_logar_timestamp/um_dia);
+    return dias_sem_logar
+  }
+
+  function format ( data ) {
+    var link_ente_federado = '-';
+    if (data[8])
+      link_ente_federado = `<a href="/gestao/ente/${data[8]}">${data[7]} <i class="material-icons expandable-icon">call_made</i></a>`
+
+    return `
+    <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+         <tbody>
+            <tr>
+                <td style="font-weight: bold;">Ente Federado:</td>
+                <td>${link_ente_federado}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Data cadastro:</td>
+                <td>${data[9]}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Dias sem logar:</td>
+                <td>${diasSemLogar(data[4])}</td>
+            </tr>
+        </tbody>
+    </table>`;
+  }
+
+  $("#tabela-ente tbody").on('click', 'td', function () {
+        var tr = $(this).closest("tr[role='row']");
+        var row = tabela.row( tr );
+        var expandable_icon = tr.find('.expandable-icon');
+        var clicked_contains_editable = $(this).children().hasClass('editable');
+
+        if(!tr.length || clicked_contains_editable){
+          return;
+        }
+
+        expandable_icon.css({'transform': 'rotate(-180deg)'});
+
+        if ( row.child.isShown() ) {
+            row.child.hide();
+            expandable_icon.css({'transform': 'rotate(0deg)'});
+            tr.removeClass('shown');
+        }
+        else {
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+            row.child().children(":first").addClass('focus-expandable')
+        }
   });
 
 });
