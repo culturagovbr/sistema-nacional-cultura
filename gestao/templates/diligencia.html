@@ -151,6 +151,9 @@
 		                <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b>{{ diligencia_historica.get_classificacao_arquivo_display }}</li>
 						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
 						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe}}</li>
+						{% if diligencia_historica.arquivo_url %}
+						<li class="list-group-item" style="border: 1px solid #b3b5b6"><a href="{{ diligencia_historica.arquivo_url }}">Download do Arquivo</a></li>
+						{% endif %}
 					</ul>
 				</div>
 				{% empty %}

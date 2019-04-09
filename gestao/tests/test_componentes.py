@@ -169,13 +169,13 @@ def test_formatacao_individual_das_diligencias_no_historico(template, client, co
     """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
 
     diligencias = [
-        {"usuario": {"nome_usuario": "Jaozin Silva" }, "data_criacao": "10/08/2018", 
+        {"usuario": {"nome_usuario": "Jaozin Silva" }, "data_criacao": "10/08/2018",
             "texto_diligencia": "Arquivo danificado, corrompido"},
 
-        {"usuario": {"nome_usuario": "Pedrin Silva" }, "data_criacao": "10/08/2018", 
+        {"usuario": {"nome_usuario": "Pedrin Silva" }, "data_criacao": "10/08/2018",
             "texto_diligencia": "Arquivo incompleto, informações faltando"},
 
-        {"usuario": {"nome_usuario": "Luizin Silva" }, "data_criacao": "10/08/2018", 
+        {"usuario": {"nome_usuario": "Luizin Silva" }, "data_criacao": "10/08/2018",
             "texto_diligencia": "Arquivo com informações incorretas"}
     ]
 
@@ -253,7 +253,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, s
     request = client.get(f"/gestao/ente/{sistema_cultura.ente_federado.cod_ibge}")
 
     for componente in componentes:
-        assert '<a href=\"/gestao/{}/diligencia/{}/arquivo">'.format(sistema_cultura.id, componente) in request.rendered_content
+        assert '<a href=\"/gestao/{}/diligencia/{}/arquivo/{}">'.format(sistema_cultura.id, componente, diligencia.id) in request.rendered_content
 
 
 def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura):
