@@ -21,14 +21,14 @@
               </p>
               <p><strong>CPF:</strong>
                   {% if ente.gestor.cpf %}
-                  <a href="{{ ente.gestor.cpf.url }}">{{ ente.gestor.cpf }}</a>
+                  <a href="{{ ente.gestor.cpf_copia.url }}">{{ ente.gestor.cpf }}</a>
                   {% else %}
                   {{ ente.gestor.cpf }}
                   {% endif %}
               </p>
               <p><strong>RG:</strong>
                     {% if ente.gestor.rg %}
-                    <a href="{{ ente.gestor.rg.url }}">{{ ente.gestor.rg }}</a>
+                    <a href="{{ ente.gestor.rg_copia.url }}">{{ ente.gestor.rg }}</a>
                     {% else %}
                     {{ ente.gestor.rg }}
                     {% endif %}
