@@ -12,11 +12,9 @@
                   <thead>
                       <tr>
                           <th>Município/Estado</th>
-                          <th>Prefeito/Governador</th>
-                          <th>RG</th>
-                          <th>CPF</th>
-                          <th>CNPJ</th>
                           <th>Situação</th>
+                          <th>Data da Adesão</th>
+                          <th>Prefeito/Governador</th>
                           <th>&nbsp</th>
                       </tr>
                   </thead>
@@ -26,12 +24,80 @@
       </div>
 </div>
 
+<div class="modal fade" id="modal-exportacao" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Selecione um modo de exportação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="list-group">
+              <a href="#" class="export list-group-item list-group-item-action" id="print" data-dismiss="modal">Impressão</a>
+              <a href="#" class="export list-group-item list-group-item-action" id="pdf" data-dismiss="modal">PDF</a>
+              <a href="#" class="export list-group-item list-group-item-action" id="excel" data-dismiss="modal">EXCEL</a>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  $('#tabela-ente').dataTable({
+  var colunasParaExportacao = [0,1,2,3];
+
+  var tabela = $('#tabela-ente').dataTable({
     order: [0, 'asc'],
+    aLengthMenu: [
+        [10, 25, 50, 100, -1],
+        [10, 25, 50, 100, "Todos"]
+    ],
+    dom:
+      `<'row'<'col-sm-12 col-md-2'l>
+      <'col-sm-12 col-md-4'B>
+      <'col-sm-12 col-md-6'f>>
+      <'row'<'col-sm-12'tr>>
+      <'row'<'col-sm-12 col-md-5'i>
+      <'col-sm-12 col-md-7'p>>`,
+    buttons: [
+      {
+        extend: 'excel',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao
+        }
+      },
+      {
+        extend: 'pdf',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao,
+            rows: null,
+            selected: false,
+        }
+      },
+      {
+        extend: 'print',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao
+        }
+      },
+      {
+        text: '<i class="material-icons">save_alt</i>',
+        className: 'btn btn-info btn-sm',
+        action: (e, dt, node, config) => {
+          $('#modal-exportacao').modal('show')
+        }
+      }
+    ],
     language:{
             "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
           },
@@ -43,43 +109,23 @@ $(document).ready(function(){
         },
         {
           data: null,
+          name: "estado_processo",
+          render: (data) => data[3]
+        },
+        {
+          data: null,
+          name: "data_publicacao_acordo",
+          render: (data) => data[6]
+        },
+        {
+          data: null,
           name: "gestor__nome",
           render: (data) => {
-            if (data[9].length > 0){
-              return `<a href="${data[9]}">${data[2]}</a>`
+            if (data[5].length > 0){
+              return `<a href="${data[5]}">${data[2]}</a>`
             }
             return data[2]
           }
-        },
-        {
-          data: null,
-          name: "gestor__rg",
-          render: (data) => {
-            if (data[10].length > 0){
-              return `<a href="${data[10]}">${data[3]}</a>`
-            }
-            return data[3]
-          }
-        },
-        {
-          data: null,
-          name: "gestor__cpf",
-          render: (data) => {
-            if (data[11].length > 0){
-              return `<a href="${data[11]}">${data[4]}</a>`
-            }
-            return data[4]
-          }
-        },
-        {
-          data: null,
-          name: "sede__cnpj",
-          render: (data) => data[5]
-        },
-        {
-          data: null,
-          name: "estado_processo",
-          render: (data) => data[6]
         },
         {
           width: '5%',
@@ -87,7 +133,7 @@ $(document).ready(function(){
           name: "id",
           orderable: false,
           render: (data) => `
-            <a rel="tooltip" title="" href="/gestao/ente/${data[7]}" class="btn btn-primary btn-link btn-sm">
+            <a rel="tooltip" title="" href="/gestao/ente/${data[4]}" class="btn btn-primary btn-link btn-sm">
               <i class="material-icons">zoom_in</i>
             </a>
           `
@@ -96,7 +142,7 @@ $(document).ready(function(){
     searching: true,
     processing: true,
     serverSide: true,
-    // stateSave: true,
+    stateSave: true,
     ajax: {
       url: "{% url 'gestao:ajax_entes' %}",
       data: {
@@ -104,7 +150,15 @@ $(document).ready(function(){
       },
       type: "POST",
     },
+    initComplete: () => {
+      $('.export').each((chave, tipoExportacao)=> {
+        $(`#${tipoExportacao.id}`).on('click', (e) => {
+          $(`.buttons-${e.target.id}`).trigger('click')
+        });
+      });
+    }
   });
+
 });
 </script>
 {% endblock js %}

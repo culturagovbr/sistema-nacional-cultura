@@ -625,9 +625,6 @@ class DataTableEntes(BaseDatatableView):
             filtros_queryset = [
                 Q(ente_federado__nome__unaccent__icontains=search),
                 Q(gestor__nome__unaccent__icontains=search),
-                Q(gestor__rg__contains=search),
-                Q(gestor__cpf__contains=search),
-                Q(sede__cnpj__contains=search)
             ]
             estados_para_pesquisa = []
             for tupla_estado_processo in LISTA_ESTADOS_PROCESSO:
@@ -657,21 +654,12 @@ class DataTableEntes(BaseDatatableView):
                 escape(item.id),
                 escape(item.ente_federado),
                 escape(item.gestor.nome) if item.gestor else '',
-                escape(item.gestor.rg) if item.gestor else '',
-                escape(item.gestor.cpf) if item.gestor else '',
-                escape(item.sede.cnpj) if item.sede else '',
                 escape(item.get_estado_processo_display()),
                 escape(item.ente_federado.cod_ibge) if item.ente_federado else '',
-                escape(item.data_criacao),
                 escape(
                     item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
-                escape(
-                    item.gestor.rg_copia.url if item.gestor and item.gestor.rg_copia else ''
-                ),
-                escape(
-                    item.gestor.cpf_copia.url if item.gestor and item.gestor.cpf_copia else ''
-                ),
+                escape(item.data_publicacao_acordo) if item.data_publicacao_acordo else '',
             ])
         return json_data
 
