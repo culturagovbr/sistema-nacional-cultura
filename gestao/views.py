@@ -620,6 +620,7 @@ class DataTableEntes(BaseDatatableView):
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
         custom_search = self.request.POST.get('columns[0][search][value]', None)
+        componentes_search = self.request.POST.get('columns[1][search][value]', None)
 
         if search:
             query = Q()
@@ -647,6 +648,22 @@ class DataTableEntes(BaseDatatableView):
 
         if custom_search:
             qs = qs.filter(ente_federado__cod_ibge__startswith=custom_search)
+
+        if componentes_search:
+            componentes = {
+                0: "legislacao",
+                1: "orgao_gestor",
+                2: "fundo_cultura",
+                3: "conselho",
+                4: "plano",
+            }
+
+            componentes_search = componentes_search.split(',')
+
+            for id in componentes_search:
+                nome_componente = componentes.get(int(id))
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [2, 3]}
+                qs = qs.filter(**kwargs)
 
         return qs
 

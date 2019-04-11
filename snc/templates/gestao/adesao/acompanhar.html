@@ -1,5 +1,11 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<style>
+li a.selected {
+    background-color: rgba(0,0,0,0.1);
+}
+</style>
 <menu data-target="ente" ></menu>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card card-default">
@@ -62,8 +68,8 @@ $(document).ready(function(){
     dom:
       `<'row'<'col-sm-12 col-md-2'l>
       <'col-sm-12 col-md-4'B>
-      <'col-sm-12 col-md-5'f>
-      <'col-sm-12 col-md-1'<"#filtro-estados">>>
+      <'col-sm-12 col-md-2'f>
+      <'col-sm-12 col-md-2'<"#filtro-estados">><"#filtro-componentes">>
       <'row'<'col-sm-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
@@ -158,6 +164,22 @@ $(document).ready(function(){
         });
       });
 
+      $('#filtro-componentes').html(`
+        <select title="filtrar concluídos" data-style="btn btn-info btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Criação do Sistema</option>
+          <option value="1">Órgão Gestor</option>
+          <option value="2">Fundo de Cultura</option>
+          <option value="3">Conselho Cultural</option>
+          <option value="4">Plano Cultura</option>
+        </select>
+      `);
+      $('#filtro-componentes select').selectpicker();
+
+      $('select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var filtro_componentes = $(this).val();
+        tabela.columns(1).search(filtro_componentes).draw()
+      });
+
       $('#filtro-estados').html(`
         <select id="input-estados" class="form-control form-control-sm">
           <option value="" selected>Todos</option>
@@ -186,6 +208,9 @@ $(document).ready(function(){
 
     }
   });
+
+
+
 
 });
 </script>
