@@ -76,9 +76,14 @@ def test_cadastrar_componente_tipo_fundo_cultura(client, login):
     arquivo = SimpleUploadedFile(
         "componente.txt", b"file_content", content_type="text/plain"
     )
+    cnpj = SimpleUploadedFile(
+        "cnpj.txt", b"file_content", content_type="text/plain"
+    )
     response = client.post(url, data={"arquivo": arquivo,
                                       "data_publicacao": '28/06/2018',
-                                      "cnpj": '75.336.659/0001-12'})
+                                      "cnpj": '75.336.659/0001-12',
+                                      'mesma_lei': 'False',
+                                      "comprovante_cnpj": cnpj})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)

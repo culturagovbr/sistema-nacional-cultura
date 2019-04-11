@@ -7,20 +7,22 @@
     <strong>Estruturação dos Componentes</strong>
   </h3>
 
-  <h5>
-    <strong>É a mesma lei do sistema municipal de cultura?</strong>
-  </h5>
 
-  <div>
-    <input type="radio" name="visibilidade_form" id="igual_lei_sistema" value="1">Sim<br>
-    <input type="radio" name="visibilidade_form" id="diferente_lei_sistema" value="0">Não<br>
+  <div class="form-group">
+    <label for="{{ form.mesma_lei.id_for_label }}">
+      É a mesma lei do sistema municipal de cultura?</br>
+    </label>
+    {% for radio in form.mesma_lei %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.mesma_lei.errors }}
   </div>
 
   <h5>
     <strong>2.3 Instituição do Fundo de Cultura</strong>
   </h5>
 
-  <div id="lei_data_form" style="display: none">
+  <div id="lei_data_form">
     <div class="form-group">
       <label for="{{ form.data_publicacao.id_for_label }}">
         Data de Publicação da Lei do Fundo de Cultura
@@ -89,12 +91,14 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
-    $('input[name=visibilidade_form]').change(function() { 
-      if(this.value==0) {
-        $('#lei_data_form').css('display', 'none');
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
       }
       else {
-        $('#lei_data_form').css('display', 'block');
+        $('#lei_data_form').fadeOut();
+        $('#id_data_publicacao').removeAttr('required');
+        $('#id_arquivo').removeAttr('required');
       }
     })
   });

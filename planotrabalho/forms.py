@@ -85,6 +85,51 @@ class CriarComponenteForm(ModelForm):
 
 class CriarFundoForm(CriarComponenteForm):
     cnpj = BRCNPJField()
+    comprovante_cnpj = forms.FileField(required=True, widget=FileInput)
+    arquivo = forms.FileField(required=False, widget=FileInput)
+    data_publicacao = forms.DateField(required=False)
+    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+                                                            (False, 'Não')]))
+    def clean_arquivo(self):
+        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
+            raise forms.ValidationError("Este campo é obrigatório.")
+
+        return self.cleaned_data['arquivo']
+
+    def clean_data_publicacao(self):
+        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['data_publicacao']:
+            raise forms.ValidationError("Este campo é obrigatório.")
+
+        return self.cleaned_data['data_publicacao']
+
+    def clean_mesma_lei(self):
+        if self.data['mesma_lei'] == 'True':
+            try:
+                if self.sistema.legislacao.arquivo.url:
+                    return self.cleaned_data['mesma_lei']
+            except ValueError:    
+                raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
+
+    def save(self, commit=True, *args, **kwargs):
+        componente = super(CriarComponenteForm, self).save(commit=False)
+        if self.cleaned_data['mesma_lei'] == 'True':
+            componente.arquivo = componente.legislacao.arquivo
+            componente.data_publicacao = componente.legislacao.arquivo
+        else:
+            componente.tipo = self.componentes.get(self.tipo_componente)
+            componente.data_publicacao = self.cleaned_data['data_publicacao']
+            componente.arquivo = None
+            componente.comprovante_cnpj = None
+            componente.save()
+            sistema_cultura = getattr(componente, self.tipo_componente)
+            sistema_cultura.add(self.sistema)
+            componente.arquivo = self.cleaned_data['arquivo']
+
+        componente.cnpj = self.cleaned_data['cnpj']
+        componente.comprovante_cnpj = self.cleaned_data['comprovante_cnpj']
+        componente.save()
+        setattr(self.sistema, self.tipo_componente, componente)
+        self.sistema.save()
 
     class Meta:
         model = FundoDeCultura
