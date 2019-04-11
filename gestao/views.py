@@ -619,6 +619,7 @@ class DataTableEntes(BaseDatatableView):
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
+        custom_search = self.request.POST.get('columns[0][search][value]', None)
 
         if search:
             query = Q()
@@ -643,6 +644,9 @@ class DataTableEntes(BaseDatatableView):
                 query |= filtro
 
             qs = qs.filter(query)
+
+        if custom_search:
+            qs = qs.filter(ente_federado__cod_ibge__startswith=custom_search)
 
         return qs
 
