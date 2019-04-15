@@ -16,82 +16,90 @@
 		color: #337ab7;
 	}
 </style>
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header card-header-primary"><h2>Informações sobre o Arquivo Enviado</h2></div>
+			<div class="card-body">
+			<div class="row panel panel-default">
+				<div class="panel-body">
+					{% if componente == plano_trabalho  %}
+						<h2>Informações sobre o Plano Trabalho</h2>
+						<br>
+						<p><b>Ente Federado:</b> {{ ente_federado }}</p>
 
-<div id="painel-diligencia" class="row panel panel-default">
-	<div class="panel-body">
-		{% if componente == plano_trabalho  %}
-			<h2>Informações sobre o Plano Trabalho</h2>
+						<p><b>Criação Sistema: </b> {{ situacoes.legislacao }}
+							{% if situacoes.legislacao != 'Concluída' %}
+								<i class="glyphicon glyphicon-remove"></i>
+							{% else %}
+								<i class="glyphicon glyphicon-ok"></i>
+							{% endif %}
+						</p>
+						<p><b>Fundo Cultura: </b> {{ situacoes.fundo_cultura }}
+							{% if situacoes.fundo_cultura != 'Concluída' %}
+							<i class="glyphicon glyphicon-remove"></i>
+							{% else %}
+							<i class="glyphicon glyphicon-ok"></i>
+							{% endif %}
+						</p>
+						<p><b>Conselho Cultural: </b> {{ situacoes.conselho}}
+							{% if situacoes.conselho != 'Concluída' %}
+								<i class="glyphicon glyphicon-remove"></i>
+							{% else %}
+								<i class="glyphicon glyphicon-ok"></i>
+							{% endif %}
+						</p>
+						<p><b>Orgao Gestor: </b> {{ situacoes.orgao_gestor }}
+							{% if situacoes.orgao_gestor != 'Concluída' %}
+								<i class="glyphicon glyphicon-remove"></i>
+							{% else %}
+								<i class="glyphicon glyphicon-ok"></i>
+							{% endif %}
+						</p>
+						<p><b>Plano Cultura: </b> {{ situacoes.plano }}
+							{% if situacoes.plano != 'Concluída' %}
+								<i class="glyphicon glyphicon-remove"></i>
+							{% else %}
+								<i class="glyphicon glyphicon-ok"></i>
+							{% endif %}
+						</p>
+
+					{% else %}
+
+						
+						<p><b>Ente Federado:</b> {{ ente_federado }}</p>
+						<p><b>Data de Envio do Arquivo:</b> {{ data_envio }}</p>
+						<a href = {{arquivo.url}}> <b>Download do arquivo</b></a>
+
+					{% endif %}
+				</div>
+			</div>
+
+
+			<div class="row">
+				<form method="POST" class='{% if form.texto_diligencia.errors %} has-error {% endif %}'>
+					{% csrf_token %}
+					{{form.texto_diligencia}}
+					{% if form.texto_diligencia.errors %}
+						<span class="help-block">{{ form.texto_diligencia.errors }}</span>
+					{% endif %}
+					<br>
+
+					{% if componente != plano_trabalho %}
+						<b>Classificação do Arquivo:</b> {{form.classificacao_arquivo}}
+					{% endif %}
+
+					{{form.media}}
+					<br><br>
+					<input class="btn btn-primary pull-right" type="submit"></input>
+					<a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}" class="btn btn-secondary pull-right">Cancelar</a>
+				</form>
+			</div>
 			<br>
-			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
-
-            <p><b>Criação Sistema: </b> {{ situacoes.legislacao }}
-                {% if situacoes.legislacao != 'Concluída' %}
-                    <i class="glyphicon glyphicon-remove"></i>
-                {% else %}
-                    <i class="glyphicon glyphicon-ok"></i>
-                {% endif %}
-            </p>
-            <p><b>Fundo Cultura: </b> {{ situacoes.fundo_cultura }}
-                {% if situacoes.fundo_cultura != 'Concluída' %}
-                <i class="glyphicon glyphicon-remove"></i>
-                {% else %}
-                <i class="glyphicon glyphicon-ok"></i>
-                {% endif %}
-            </p>
-            <p><b>Conselho Cultural: </b> {{ situacoes.conselho}}
-                {% if situacoes.conselho != 'Concluída' %}
-                    <i class="glyphicon glyphicon-remove"></i>
-                {% else %}
-                    <i class="glyphicon glyphicon-ok"></i>
-                {% endif %}
-            </p>
-            <p><b>Orgao Gestor: </b> {{ situacoes.orgao_gestor }}
-                {% if situacoes.orgao_gestor != 'Concluída' %}
-                    <i class="glyphicon glyphicon-remove"></i>
-                {% else %}
-                    <i class="glyphicon glyphicon-ok"></i>
-                {% endif %}
-            </p>
-            <p><b>Plano Cultura: </b> {{ situacoes.plano }}
-                {% if situacoes.plano != 'Concluída' %}
-                    <i class="glyphicon glyphicon-remove"></i>
-                {% else %}
-                    <i class="glyphicon glyphicon-ok"></i>
-                {% endif %}
-            </p>
-
-		{% else %}
-
-			<h2>Informações sobre o Arquivo Enviado</h2>
-			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
-			<p><b>Data de Envio do Arquivo:</b> {{ data_envio }}</p>
-			<a href = {{arquivo.url}}> <b>Download do arquivo</b></a>
-
-		{% endif %}
+			</div>
+		</div>
 	</div>
 </div>
-
-
-<div class="row">
-	<form method="POST" class='{% if form.texto_diligencia.errors %} has-error {% endif %}'>
-		{% csrf_token %}
-		{{form.texto_diligencia}}
-		{% if form.texto_diligencia.errors %}
-			<span class="help-block">{{ form.texto_diligencia.errors }}</span>
-        {% endif %}
-		<br>
-
-		{% if componente != plano_trabalho %}
-			<b>Classificação do Arquivo:</b> {{form.classificacao_arquivo}}
-		{% endif %}
-
-		{{form.media}}
-		<br><br>
-		<input class="btn btn-primary" type="submit"></input>
-		<a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}" class="btn btn-danger">Cancelar</a>
-	</form>
-</div>
-<br>
 
 <div class="row">
 	{% if historico_diligencias %}
