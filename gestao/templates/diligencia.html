@@ -1,101 +1,104 @@
-{% extends 'gestao/base_gestao.html' %} {% block content %}
-
+{% extends 'gestao/base_gestao.html' %} {% load widget_tweaks %} {% block content %}
 <style>
-	#painel-diligencia{
-		background-color: #eee;
-		margin-top: 2rem;
-		width: 83.5rem;
-	}
-	#lista-diligencia{
+	.lista-diligencia{
 		margin-bottom: 2rem;
+		border: 1px solid #bec5c5;
+		border-radius: 10px;
 	}
-	.glyphicon.glyphicon-remove {
-		color: #d9534f;
+
+	.lista-diligencia > li.list-group-item{
+		border-bottom: 1px solid #bec5c5;
 	}
-	.glyphicon.glyphicon-ok {
-		color: #337ab7;
+
+	.lista-diligencia > li.list-group-item:last-child{
+		border-bottom: 0px;
+		border-top: 0px;
 	}
+
+	table > tbody > tr > td:first-child {
+    font-weight: bold;
+	}
+
 </style>
+<menu data-target="plano" ></menu>
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-10">
 		<div class="card">
-			<div class="card-header card-header-primary"><h2>Informações sobre o Arquivo Enviado</h2></div>
+			<div class="card-header card-plain card-header-primary">
+				<h4>Diligência</h4>
+				<p class="card-category">Envio de diligência para componente do plano de trabalho</p>
+			</div>
 			<div class="card-body">
-			<div class="row panel panel-default">
-				<div class="panel-body">
-					{% if componente == plano_trabalho  %}
-						<h2>Informações sobre o Plano Trabalho</h2>
-						<br>
-						<p><b>Ente Federado:</b> {{ ente_federado }}</p>
-
-						<p><b>Criação Sistema: </b> {{ situacoes.legislacao }}
-							{% if situacoes.legislacao != 'Concluída' %}
-								<i class="glyphicon glyphicon-remove"></i>
-							{% else %}
-								<i class="glyphicon glyphicon-ok"></i>
+				<form method="POST">
+				{% csrf_token %}
+				<div class="row">
+					<div class="col-md-4">
+						{% if componente == plano_trabalho  %}
+						<table class="table">
+							<tr>
+								<td>Ente Federado</td>
+								<td>{{ sistema_cultura.ente_federado.nome }}</td>
+							</tr>
+							<tr>
+								<td>Criação Sistema</td>
+								<td>{{ situacoes.legislacao }}</td>
+							</tr>
+							<tr>
+								<td>Fundo Cultura</td>
+								<td>{{ situacoes.fundo_cultura }}</td>
+							</tr>
+							<tr>
+								<td>Conselho Cultural</td>
+								<td>{{ situacoes.conselho }}</td>
+							</tr>
+							<tr>
+								<td>Orgao Gestor</td>
+								<td>{{ situacoes.orgao_gestor }}</td>
+							</tr>
+							<tr>
+								<td>Plano Cultura</td>
+								<td>{{ situacoes.plano }}</td>
+							</tr>
+						</table>
+						{% else %}
+						<table class="table">
+							<tr>
+								<td>Ente Federado</td>
+								<td>{{ sistema_cultura.ente_federado.nome }}</td>
+							</tr>
+							<tr>
+								<td>Data de envio do arquivo</td>
+								<td>{{ data_envio }}</td>
+							</tr>
+							<tr>
+								<td>Anexo</td>
+								<td>
+									<a class="btn btn-sm btn-primary" href="{{ arquivo.url }}">
+										<i class="material-icons" style="color:white;">save_alt</i>
+									</a>
+								</td>
+							</tr>
+							{% if componente != plano_trabalho %}
+							<tr>
+								<td>Classificação</td>
+								<td>
+									{% render_field form.classificacao_arquivo class="form-control form-control-sm" %}
+								</td>
+							</tr>
 							{% endif %}
-						</p>
-						<p><b>Fundo Cultura: </b> {{ situacoes.fundo_cultura }}
-							{% if situacoes.fundo_cultura != 'Concluída' %}
-							<i class="glyphicon glyphicon-remove"></i>
-							{% else %}
-							<i class="glyphicon glyphicon-ok"></i>
-							{% endif %}
-						</p>
-						<p><b>Conselho Cultural: </b> {{ situacoes.conselho}}
-							{% if situacoes.conselho != 'Concluída' %}
-								<i class="glyphicon glyphicon-remove"></i>
-							{% else %}
-								<i class="glyphicon glyphicon-ok"></i>
-							{% endif %}
-						</p>
-						<p><b>Orgao Gestor: </b> {{ situacoes.orgao_gestor }}
-							{% if situacoes.orgao_gestor != 'Concluída' %}
-								<i class="glyphicon glyphicon-remove"></i>
-							{% else %}
-								<i class="glyphicon glyphicon-ok"></i>
-							{% endif %}
-						</p>
-						<p><b>Plano Cultura: </b> {{ situacoes.plano }}
-							{% if situacoes.plano != 'Concluída' %}
-								<i class="glyphicon glyphicon-remove"></i>
-							{% else %}
-								<i class="glyphicon glyphicon-ok"></i>
-							{% endif %}
-						</p>
-
-					{% else %}
-
-						
-						<p><b>Ente Federado:</b> {{ ente_federado }}</p>
-						<p><b>Data de Envio do Arquivo:</b> {{ data_envio }}</p>
-						<a href = {{arquivo.url}}> <b>Download do arquivo</b></a>
-
-					{% endif %}
-				</div>
-			</div>
-
-
-			<div class="row">
-				<form method="POST" class='{% if form.texto_diligencia.errors %} has-error {% endif %}'>
-					{% csrf_token %}
-					{{form.texto_diligencia}}
-					{% if form.texto_diligencia.errors %}
-						<span class="help-block">{{ form.texto_diligencia.errors }}</span>
-					{% endif %}
-					<br>
-
-					{% if componente != plano_trabalho %}
-						<b>Classificação do Arquivo:</b> {{form.classificacao_arquivo}}
-					{% endif %}
-
-					{{form.media}}
-					<br><br>
-					<input class="btn btn-primary pull-right" type="submit"></input>
-					<a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}" class="btn btn-secondary pull-right">Cancelar</a>
+						</table>
+						{% endif %}
+					</div>
+					<div class="col-md-8">
+						<div class="row">
+								{{form.texto_diligencia}}
+								{{form.media}}
+						</div>
+						<button class="btn btn-primary pull-right" type="submit">Enviar</button>
+						<a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}" class="btn btn-secondary pull-right">Cancelar</a>
+					</div>
 				</form>
-			</div>
-			<br>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -103,50 +106,49 @@
 
 <div class="row">
 	{% if historico_diligencias %}
-		<div class="col-md-6">
-			<div class="row panel panel-info">
-				<div class="panel-heading">
-					Histórico de Diligências
-				</div>
-
-				{% for diligencia in historico_diligencias %}
-				<div id="lista-diligencia" class="col-md-12">
-					<ul class="list-group"></ul>
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
-		                {% if componente != plano_trabalho %}
-		                    <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
-		                {% endif %}
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ diligencia.data_criacao }}</li>
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{ diligencia.texto_diligencia | striptags | safe}}</li>
-					</ul>
-				</div>
-				{% endfor %}
-
+	<div class="col-md-5">
+		<div class="card">
+			<div class="card-header card-plain card-header-primary">
+				<h4>Histórico de Diligências</h4>
+			</div>
+			<div class="card-body">
+					{% for diligencia in historico_diligencias %}
+					<div class="col-md-12 lista-diligencia">
+						<ul class="list-group"></ul>
+							<li class="list-group-item"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
+							{% if componente != plano_trabalho %}
+							<li class="list-group-item"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
+							{% endif %}
+							<li class="list-group-item"><b>Data:</b> {{ diligencia.data_criacao }}</li>
+							<li class="list-group-item"><b>Resumo:</b> {{ diligencia.texto_diligencia | striptags | safe}}</li>
+						</ul>
+					</div>
+					{% endfor %}
 			</div>
 		</div>
-	{% endif %}
-
+	</div>
+	{% endif%}
 	{% if historico_diligencias_componentes %}
-		<div class="col-md-6">
-			<div class="row panel panel-info">
-				<div class="panel-heading">
-					Histórico de Diligências dos Componentes
-				</div>
-
+	<div class="col-md-5">
+		<div class="card">
+			<div class="card-header card-plain card-header-primary">
+				<h4>Histórico de Diligências dos Componentes</h4>
+			</div>
+			<div class="card-body">
 				{% for componente in historico_diligencias_componentes %}
-				<div id="lista-diligencia" class="col-md-12">
+				<div class="col-md-12 lista-diligencia">
 					<ul class="list-group"></ul>
-					<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
-		                <li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
-						<li class="list-group-item" style="border: 1px solid #b3b5b6"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
+						<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+						<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+						<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+						<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+						<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
 					</ul>
 				</div>
 				{% endfor %}
-
 			</div>
 		</div>
+	</div>
 	{% endif %}
 </div>
 
