@@ -619,15 +619,14 @@ class DataTableEntes(BaseDatatableView):
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
+        custom_search = self.request.POST.get('columns[0][search][value]', None)
+        componentes_search = self.request.POST.get('columns[1][search][value]', None)
 
         if search:
             query = Q()
             filtros_queryset = [
                 Q(ente_federado__nome__unaccent__icontains=search),
                 Q(gestor__nome__unaccent__icontains=search),
-                Q(gestor__rg__contains=search),
-                Q(gestor__cpf__contains=search),
-                Q(sede__cnpj__contains=search)
             ]
             estados_para_pesquisa = []
             for tupla_estado_processo in LISTA_ESTADOS_PROCESSO:
@@ -647,6 +646,25 @@ class DataTableEntes(BaseDatatableView):
 
             qs = qs.filter(query)
 
+        if custom_search:
+            qs = qs.filter(ente_federado__cod_ibge__startswith=custom_search)
+
+        if componentes_search:
+            componentes = {
+                0: "legislacao",
+                1: "orgao_gestor",
+                2: "fundo_cultura",
+                3: "conselho",
+                4: "plano",
+            }
+
+            componentes_search = componentes_search.split(',')
+
+            for id in componentes_search:
+                nome_componente = componentes.get(int(id))
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [2, 3]}
+                qs = qs.filter(**kwargs)
+
         return qs
 
     def prepare_results(self, qs):
@@ -657,21 +675,12 @@ class DataTableEntes(BaseDatatableView):
                 escape(item.id),
                 escape(item.ente_federado),
                 escape(item.gestor.nome) if item.gestor else '',
-                escape(item.gestor.rg) if item.gestor else '',
-                escape(item.gestor.cpf) if item.gestor else '',
-                escape(item.sede.cnpj) if item.sede else '',
                 escape(item.get_estado_processo_display()),
                 escape(item.ente_federado.cod_ibge) if item.ente_federado else '',
-                escape(item.data_criacao),
                 escape(
                     item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
-                escape(
-                    item.gestor.rg_copia.url if item.gestor and item.gestor.rg_copia else ''
-                ),
-                escape(
-                    item.gestor.cpf_copia.url if item.gestor and item.gestor.cpf_copia else ''
-                ),
+                escape(item.data_publicacao_acordo) if item.data_publicacao_acordo else '',
             ])
         return json_data
 
@@ -751,13 +760,27 @@ class DataTableUsuarios(BaseDatatableView):
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
+            try:
+                sistema = SistemaCultura.sistema.get(
+                    cadastrador=item.id)
+                ente_nome = sistema.ente_federado.nome
+                ente_id = sistema.ente_federado.cod_ibge
+            except SistemaCultura.DoesNotExist:
+                ente_nome = ''
+                ente_id = ''
+                pass
+
             json_data.append([
                 item.user.id,
                 item.user.username,
                 item.nome_usuario,
                 item.user.email,
+                item.user.last_login if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
-                'Administrador' if item.user.is_staff else 'Cadastrador'
+                'Administrador' if item.user.is_staff else 'Cadastrador',
+                ente_nome,
+                ente_id,
+                item.user.date_joined,
             ])
         return json_data
 
