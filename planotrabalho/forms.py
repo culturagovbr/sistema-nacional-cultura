@@ -85,10 +85,12 @@ class CriarComponenteForm(ModelForm):
 
 class CriarFundoForm(CriarComponenteForm):
     cnpj = BRCNPJField()
-    comprovante_cnpj = forms.FileField(required=True, widget=FileInput)
+    comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
     data_publicacao = forms.DateField(required=False)
     mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+                                                            (False, 'Não')]))
+    possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     def clean_arquivo(self):
         if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
@@ -112,25 +114,29 @@ class CriarFundoForm(CriarComponenteForm):
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
-        if self.cleaned_data['mesma_lei'] == 'True':
-            componente.arquivo = componente.legislacao.arquivo
-            componente.data_publicacao = componente.legislacao.arquivo
-        else:
-            componente.tipo = self.componentes.get(self.tipo_componente)
-            componente.data_publicacao = self.cleaned_data['data_publicacao']
-            componente.arquivo = None
-            componente.comprovante_cnpj = None
-            componente.save()
-            sistema_cultura = getattr(componente, self.tipo_componente)
-            sistema_cultura.add(self.sistema)
-            componente.arquivo = self.cleaned_data['arquivo']
-
-        componente.cnpj = self.cleaned_data['cnpj']
-        componente.comprovante_cnpj = self.cleaned_data['comprovante_cnpj']
+        
+        componente.arquivo = None
+        componente.tipo = self.componentes.get(self.tipo_componente)
         componente.save()
-        setattr(self.sistema, self.tipo_componente, componente)
-        self.sistema.save()
+        sistema_cultura = getattr(componente, self.tipo_componente)
+        sistema_cultura.add(self.sistema)
 
+        if self.cleaned_data['mesma_lei']:
+            componente.arquivo = self.sistema.legislacao.arquivo
+            componente.data_publicacao = self.sistema.legislacao.data_publicacao
+        else:
+            componente.arquivo = self.cleaned_data['arquivo']
+            componente.data_publicacao = self.cleaned_data['data_publicacao']
+            
+        componente.cnpj = self.cleaned_data['cnpj']
+        componente.comprovante_cnpj = ArquivoComponente2()
+        componente.comprovante_cnpj.save()
+        componente.comprovante_cnpj.comprovantes.add(componente)
+        componente.comprovante_cnpj.arquivo = self.cleaned_data['comprovante']
+
+        componente.comprovante_cnpj.save()
+        componente.save()
+        
     class Meta:
         model = FundoDeCultura
         fields = ('cnpj', 'arquivo', 'data_publicacao', 'comprovante_cnpj')

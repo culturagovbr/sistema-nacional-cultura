@@ -66,20 +66,10 @@ def upload_to(instance, filename):
     ext = slugify(filename.split(".").pop(-1))
     new_name = slugify(filename.rsplit(".", 1)[0])
 
-    componente = instance.conselhos.all().first()
+    nome_componente = componentes.get(instance.tipo)
+    name = f"docs/{nome_componente}/{instance.id}/{new_name}.{ext}"
 
-    if componente:
-        nome_componente = componentes.get(componente.tipo)
-        sistema_cultura = getattr(componente, nome_componente)
-    else:
-        nome_componente = componentes.get(instance.tipo)
-        sistema_cultura = getattr(instance, nome_componente)
-
-    entefederado = sistema_cultura.first().ente_federado.cod_ibge
-
-    name = f"{entefederado}/docs/{nome_componente}/{new_name}.{ext}"
-
-    return name
+    return new_name
 
 
 class ArquivoComponente(models.Model):
@@ -134,7 +124,12 @@ class FundoDeCultura(Componente):
         blank=True,
         null=True,
         default=None)
-    comprovante_cnpj = models.FileField(upload_to=upload_to, null=True, blank=True)
+    comprovante_cnpj = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='comprovantes')
 
 
 class ConselhoDeCultura(Componente):
