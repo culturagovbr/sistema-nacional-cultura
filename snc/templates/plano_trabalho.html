@@ -102,8 +102,8 @@ $('.datatable').each(function(){
           name: "link",
           orderable: false,
           render: (data) => `
-            <a href="/gestao/${data[0]}/diligencia/${data[4]}">
-                <i class="fa fa-gavel"></i>
+            <a class="btn btn-sm btn-primary" href="/gestao/${data[0]}/diligencia/${data[4]}">
+                <i class="material-icons">gavel</i>
             </a>`
         },
         {
@@ -111,7 +111,7 @@ $('.datatable').each(function(){
           name: "sede__cnpj",
           orderable: false,
           render: (data) => `
-            <a href="${data[3]}">
+            <a class="btn btn-sm btn-primary" href="${data[3]}">
                 <i class="material-icons">save_alt</i>
             </a>`
         },
