@@ -66,7 +66,16 @@ def upload_to(instance, filename):
     ext = slugify(filename.split(".").pop(-1))
     new_name = slugify(filename.rsplit(".", 1)[0])
 
-    nome_componente = componentes.get(instance.tipo)
+    conselho = instance.conselhos.all().first()
+    comprovante_cnpj = instance.comprovantes.all().first()
+
+    if conselho:
+        nome_componente = componentes.get(conselho.tipo)
+    elif comprovante_cnpj:
+        nome_componente = componentes.get(comprovante_cnpj.tipo)
+    else:
+        nome_componente = componentes.get(instance.tipo)
+
     name = f"docs/{nome_componente}/{instance.id}/{new_name}.{ext}"
 
     return new_name
