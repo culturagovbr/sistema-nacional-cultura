@@ -52,7 +52,6 @@ class InserirSEI(ModelForm):
 
 class CadastradorEnte(forms.ModelForm):
     cpf_cadastrador = BRCPFField()
-    data_publicacao_acordo = forms.DateField(required=False)
 
     def clean_cpf_cadastrador(self):
         try:
@@ -66,17 +65,13 @@ class CadastradorEnte(forms.ModelForm):
         sistema = self.instance
         cadastrador = Usuario.objects.get(user__username=self.cleaned_data['cpf_cadastrador'])
         sistema.cadastrador = cadastrador
-
-        if self.cleaned_data['data_publicacao_acordo']:
-            sistema.data_publicacao_acordo = self.cleaned_data['data_publicacao_acordo']
-
         sistema.save()
 
         return sistema
 
     class Meta:
         model = SistemaCultura
-        fields = ["cpf_cadastrador", "data_publicacao_acordo"]
+        fields = ["cpf_cadastrador"]
 
 
 class AlterarDadosEnte(ModelForm):
@@ -94,8 +89,8 @@ class AlterarDadosEnte(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('processo_sei', 'justificativa', 'localizacao',
-                  'estado_processo', 'data_publicacao_acordo',
-                  'link_publicacao_acordo')
+                  'estado_processo', 'data_publicacao_acordo','data_publicacao_retificacao',
+                  'link_publicacao_acordo', 'link_publicacao_retificacao')
 
 
 class DiligenciaForm(ModelForm):
@@ -127,6 +122,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
 
     def __init__(self, *args, **kwargs):
         self.tipo_componente = kwargs.pop("componente")
+        self.arquivo = kwargs.pop("arquivo")
         super(DiligenciaComponenteForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
@@ -134,9 +130,15 @@ class DiligenciaComponenteForm(DiligenciaForm):
 
         if commit:
             componente = getattr(self.sistema_cultura, self.tipo_componente)
-            componente.diligencia = diligencia
-            componente.situacao = self.cleaned_data['classificacao_arquivo']
-            componente.save()
+            if self.arquivo == 'arquivo':
+                componente.diligencia = diligencia
+                componente.situacao = self.cleaned_data['classificacao_arquivo']
+                componente.save(update_fields={"diligencia", "situacao"})
+            else:
+                arquivo = getattr(componente, self.arquivo)
+                arquivo.diligencia = diligencia
+                arquivo.situacao = self.cleaned_data['classificacao_arquivo']
+                arquivo.save(update_fields={"diligencia", "situacao"})
 
     class Meta:
         model = DiligenciaSimples

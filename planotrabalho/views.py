@@ -19,10 +19,13 @@ from .models import FundoCultura
 from .models import FundoDeCultura
 from .models import PlanoCultura
 from .models import Componente
+from .models import ConselhoDeCultura
 from adesao.models import SistemaCultura
 
 from .forms import CriarComponenteForm
 from .forms import CriarFundoForm
+from .forms import CriarConselhoForm
+from .forms import AlterarConselhoForm
 from .forms import DesabilitarConselheiroForm
 from .forms import CriarConselheiroForm
 from .forms import AlterarConselheiroForm
@@ -54,6 +57,8 @@ class CadastrarComponente(CreateView):
         if componente:
             if self.kwargs['tipo'] == 'fundo_cultura':
                 return redirect('planotrabalho:alterar_fundo', pk=componente.id)
+            elif self.kwargs['tipo'] == 'conselho':
+                return redirect('planotrabalho:alterar_conselho', pk=componente.id)
             else:
                 return redirect('planotrabalho:alterar_componente', pk=componente.id,
                     tipo=self.kwargs['tipo'])
@@ -63,6 +68,8 @@ class CadastrarComponente(CreateView):
     def get_form_class(self):
         if self.kwargs['tipo'] == 'fundo_cultura':
             form_class = CriarFundoForm
+        elif self.kwargs['tipo'] == 'conselho':
+            form_class = CriarConselhoForm
         else:
             form_class = CriarComponenteForm
 
@@ -112,6 +119,26 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
+
+
+class AlterarConselhoCultura(UpdateView):
+    model = ConselhoDeCultura
+    form_class = AlterarConselhoForm
+    template_name = 'planotrabalho/alterar_conselho.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'conselho'
+        if self.object.lei:
+            kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
+                'data_publicacao_lei': self.object.lei.data_publicacao}
         return kwargs
 
     def get_success_url(self):

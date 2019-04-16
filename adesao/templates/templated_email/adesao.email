@@ -11,7 +11,7 @@ Nome do Prefeito: {{form_data.nome}}
 Estado: {{object.ente_federado.nome}}{% endif %}
 Email Institucional: {{form_data.email_institucional}}
 Telefone de Contato: {{form_data.telefone_um}}
-Link da Adesão: http://snc.cultura.gov.br/gestao/detalhar/{{sistema_atualizado.id}}
+Link da Adesão: http://snc.cultura.gov.br/gestao/detalhar/{{sistema_atualizado.ente_federado.cod_ibge}}
 
 Equipe SNC
 SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA{% endblock %}

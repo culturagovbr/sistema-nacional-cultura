@@ -70,7 +70,7 @@ def test_entidades_principais_sistema_cultura_local(client, sistema_cultura):
     request = client.get(url, content_type="application/hal+json")
 
     entidades = set(["data_adesao", "situacao_adesao",
-                        "cod_situacao_adesao", "_embedded",
+                        "cod_situacao_adesao", "conferencia_nacional", "_embedded",
                         "_links", "id", "acoes_plano_trabalho"])
 
     assert entidades.symmetric_difference(request.data) == set()

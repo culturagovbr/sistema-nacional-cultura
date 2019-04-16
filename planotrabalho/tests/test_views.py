@@ -8,6 +8,7 @@ from adesao.models import SistemaCultura
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
 from planotrabalho.models import Conselheiro
+from planotrabalho.models import ConselhoDeCultura
 
 from model_mommy import mommy
 
@@ -98,18 +99,25 @@ def test_cadastrar_componente_tipo_conselho(client, login):
 
     url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "conselho"})
 
-    arquivo = SimpleUploadedFile(
-        "componente.txt", b"file_content", content_type="text/plain"
+    arquivo_ata = SimpleUploadedFile(
+        "ata.txt", b"file_content", content_type="text/plain"
     )
-    response = client.post(url, data={"arquivo": arquivo,
-                                      'data_publicacao': '28/06/2018'})
+    arquivo_lei = SimpleUploadedFile(
+        "lei.txt", b"file_content", content_type="text/plain"
+    )
+    response = client.post(url, data={"arquivo": arquivo_ata,
+                                      'data_publicacao': '28/06/2018',
+                                      'arquivo_lei': arquivo_lei,
+                                      'data_publicacao_lei': '29/06/2018'})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
 
     assert response.status_code == 302
-    assert arquivo.name.split(".")[0] in sistema_atualizado.conselho.arquivo.name.split("/")[-1]
+    assert arquivo_ata.name.split(".")[0] in sistema_atualizado.conselho.arquivo.name.split("/")[-1]
+    assert arquivo_lei.name.split(".")[0] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
     assert sistema_atualizado.conselho.data_publicacao == datetime.date(2018, 6, 28)
+    assert sistema_atualizado.conselho.lei.data_publicacao == datetime.date(2018, 6, 29)
     assert sistema_atualizado.conselho.tipo == 3
 
 
@@ -202,6 +210,47 @@ def test_alterar_fundo_cultura(client, login):
     assert sistema_atualizado.fundo_cultura.data_publicacao == datetime.date(2018, 6, 25)
     assert sistema_atualizado.fundo_cultura.cnpj == "56.385.239/0001-81"
     assert sistema_atualizado.fundo_cultura.tipo == 2
+
+
+def test_alterar_conselho_cultura(client, login):
+
+    componente = mommy.make("ConselhoDeCultura", tipo=3, _fill_optional=True)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
+        cadastrador=login, conselho=componente)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("planotrabalho:alterar_conselho", kwargs={"pk": sistema_cultura.conselho.id})
+
+    numero_componentes = Componente.objects.count()
+    numero_conselho_cultura = ConselhoDeCultura.objects.count()
+
+    arquivo_lei = SimpleUploadedFile(
+        "novo_lei.txt", b"file_content", content_type="text/plain"
+    )
+    arquivo_ata = SimpleUploadedFile(
+        "novo_ata.txt", b"file_content", content_type="text/plain"
+    )
+    response = client.post(url, data={"arquivo": arquivo_ata,
+                                      "data_publicacao": "25/06/2018",
+                                      "arquivo_lei": arquivo_lei,
+                                      "data_publicacao_lei": "26/06/2018"})
+
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__nome=sistema_cultura.ente_federado.nome)
+
+    numero_componentes_apos_update = Componente.objects.count()
+    numero_conselho_cultura_apos_update = ConselhoDeCultura.objects.count()
+
+    assert numero_conselho_cultura == numero_conselho_cultura_apos_update
+    assert numero_componentes == numero_componentes_apos_update
+    assert response.status_code == 302
+    assert arquivo_ata.name.split(".")[0] in sistema_atualizado.conselho.arquivo.name.split("/")[-1]
+    assert arquivo_lei.name.split(".")[0] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
+    assert sistema_atualizado.conselho.data_publicacao == datetime.date(2018, 6, 25)
+    assert sistema_atualizado.conselho.lei.data_publicacao == datetime.date(2018, 6, 26)
+    assert sistema_atualizado.conselho.tipo == 3
 
 
 def teste_criar_conselheiro(client, login):

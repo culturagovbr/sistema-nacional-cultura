@@ -10,9 +10,12 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
+from planotrabalho.models import ConselhoDeCultura
+
 from gestao.models import Diligencia
 
 from planotrabalho.models import FundoDeCultura
+
 from adesao.managers import SistemaManager
 from adesao.managers import HistoricoManager
 
@@ -67,6 +70,14 @@ UFS = {
     53: "DF"
 }
 
+REGIOES = {
+    '1': "Norte",
+    '2': "Nordeste",
+    '3': "Sudeste",
+    '4': "Sul",
+    '5': "Centro Oeste",
+}
+
 
 # Create your models here.
 class Uf(models.Model):
@@ -86,9 +97,9 @@ class EnteFederado(models.Model):
     nome = models.CharField(_("Nome do EnteFederado"), max_length=300)
     gentilico = models.CharField(_("Gentilico"), max_length=300, null=True, blank=True)
     mandatario = models.CharField(_("Nome do Mandataio"), max_length=300, null=True, blank=True)
-    territorio = models.DecimalField(_("Área territorial - km²"), max_digits=10, decimal_places=3)
+    territorio = models.DecimalField(_("Área territorial - km²"), max_digits=15, decimal_places=3)
     populacao = models.IntegerField(_("População Estimada - pessoas"))
-    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), max_digits=10, decimal_places=2)
+    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), null=True, blank=True, max_digits=10, decimal_places=2)
     idh = models.DecimalField(_("IDH / IDHM"), max_digits=10, decimal_places=3, null=True, blank=True)
     receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"), null=True, blank=True)
     despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"), null=True, blank=True)
@@ -102,10 +113,34 @@ class EnteFederado(models.Model):
 
         digits = int(math.log10(self.cod_ibge))+1
 
-        if digits > 2:
+        if digits > 2 or self.cod_ibge == 53:
             return f"{self.nome}/{uf}"
 
         return f"Estado de {self.nome} ({uf})"
+
+    def get_regiao(self):
+        digito = str(self.cod_ibge)[0]
+        regiao = REGIOES[digito]
+        return regiao
+
+    def faixa_populacional(self):
+
+        if self.populacao <= 5000:
+            faixa = "Até 5.000"
+        elif self.populacao <= 10000:
+            faixa = "De 5.001 até 10.000"
+        elif self.populacao <= 20000:
+            faixa = "De 10.001 até 20.000"
+        elif self.populacao <= 50000:
+            faixa = "De 20.001 até 50.000"
+        elif self.populacao <= 100000:
+            faixa = "De 50.001 até 100.000"
+        elif self.populacao <= 500000:
+            faixa = "De 100.001 até 500.000"
+        else:
+            faixa =  "Acima de 500.000"
+        return faixa
+
 
     @property
     def is_municipio(self):
@@ -117,7 +152,7 @@ class EnteFederado(models.Model):
 
     @property
     def sigla(self):
-        if self.is_municipio is False:
+        if self.is_municipio is False and self.cod_ibge != 53:
             uf = re.search('\(([A-Z]+)\)', self.__str__())[0]
             return re.search('[A-Z]+', uf)[0]
 
@@ -255,6 +290,7 @@ class Usuario(models.Model):
     codigo_ativacao = models.CharField(max_length=12, unique=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     prazo = models.IntegerField(default=2)
+    email_pessoal = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -286,7 +322,7 @@ class Usuario(models.Model):
         """
 
         propriedades = ("plano_trabalho", "municipio", "secretario",
-                        "responsavel", "data_publicacao_acordo",
+                        "responsavel", "data_publicacao_acordo", "data_publicacao_retificacao",
                         "estado_processo")
 
         for propriedade in propriedades:
@@ -348,6 +384,7 @@ class Funcionario(models.Model):
     telefone_dois = models.CharField(max_length=50, blank=True)
     telefone_tres = models.CharField(max_length=50, blank=True)
     email_institucional = models.EmailField()
+    email_pessoal = models.EmailField(null=True, blank=True)
     tipo_funcionario = models.IntegerField(
         choices=LISTA_TIPOS_FUNCIONARIOS,
         default='0')
@@ -385,8 +422,9 @@ class SistemaCultura(models.Model):
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")
     orgao_gestor = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
     fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
-    conselho = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="conselho")
+    conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
+
     secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
     responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
@@ -396,13 +434,16 @@ class SistemaCultura(models.Model):
         choices=LISTA_ESTADOS_PROCESSO,
         default='0')
     data_publicacao_acordo = models.DateField(blank=True, null=True)
+    data_publicacao_retificacao = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=200, blank=True, null=True)
+    link_publicacao_retificacao = models.CharField(max_length=200, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     numero_processo = models.CharField(max_length=50, null=True, blank=True)
     localizacao = models.CharField(_("Localização do Processo"), max_length=10, blank=True, null=True)
     justificativa = models.TextField(_("Justificativa"), blank=True, null=True)
     diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
     prazo = models.IntegerField(default=2)
+    conferencia_nacional = models.BooleanField(blank=True, default=False)
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
     alterado_por = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistemas_alterados")
 
@@ -417,14 +458,36 @@ class SistemaCultura(models.Model):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url
 
-    def get_componentes_diligencias(self):
+    def get_componentes_diligencias(self, componente=None, arquivo='arquivo'):
         diligencias_componentes = []
-        componentes = ['legislacao', 'orgao_gestor', 'plano', 'conselho', 'fundo_cultura']
+        if componente:
+            componentes = [componente]
+        else:
+            componentes = ['legislacao', 'orgao_gestor',
+                           'plano', 'conselho', 'fundo_cultura']
+
         for componente in componentes:
             componente = getattr(self, componente)
+
+            if arquivo != 'arquivo':
+                componente = getattr(componente, arquivo)
+
             if componente and componente.diligencia:
+                componente.historico_diligencia = componente.diligencia.history.all()
                 diligencias_componentes.append(componente)
         return diligencias_componentes
+
+    def historico_cadastradores(self):
+        sistemas = SistemaCultura.historico.ente(self.ente_federado.cod_ibge)
+        sistema_base = sistemas.first()
+        historico_cadastradores = [sistema_base]
+
+        for sistema in sistemas:
+            if sistema.cadastrador != sistema_base.cadastrador:
+                historico_cadastradores.append(sistema)
+                sistema_base = sistema
+
+        return historico_cadastradores
 
 
     def get_situacao_componentes(self):
@@ -443,7 +506,6 @@ class SistemaCultura(models.Model):
         """
         Compara os valores de determinada propriedade entre dois objetos.
         """
-
         return (getattr(obj_anterior, field.attname) == getattr(self, field.attname) for field in
                           fields)
 

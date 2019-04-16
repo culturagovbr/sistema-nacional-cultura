@@ -75,7 +75,7 @@
 <ul>
   {% for sistema in object_list %}
   <li>
-    <a href="{% url 'adesao:detalhar' sistema.id %}">{{ sistema.ente_federado }}</a>
+    <a href="{% url 'adesao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">{{ sistema.ente_federado }}</a>
   </li>
   {% empty %}
   <li>

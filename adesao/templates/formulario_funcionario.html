@@ -3,7 +3,7 @@
   <div class="col-md-12">
 		<div class="card">
 		<div class="card-header card-header-primary">
-			<h4 class="card-title">Dados do 
+			<h4 class="card-title">Dados do
         {% if view.kwargs.tipo == 'secretario' %}
           Interlocutor
         {% else %}
@@ -18,7 +18,7 @@
           <div class="form-group">
             <label>Nome Completo</label>
             {% render_field form.nome class="form-control" %}
-            {% if form.nome.errors %} 
+            {% if form.nome.errors %}
               <span class="help-block">{{ form.nome.errors }}</span>
             {% endif %}
           </div>
@@ -27,7 +27,7 @@
           <div class="form-group">
             <label>Cargo</label>
             {% render_field form.cargo class="form-control" %} {{ form.cargo.errors }}
-            {% if form.cargo.errors %} 
+            {% if form.cargo.errors %}
               <span class="help-block">{{ form.cargo.errors }}</span>
             {% endif %}
           </div>
@@ -39,7 +39,7 @@
           <div class="form-group {% if form.rg.errors %} has-error {% endif %}">
             <label>RG</label>
             {% render_field form.rg class="form-control" %}
-            {% if form.rg.errors %} 
+            {% if form.rg.errors %}
               <span class="help-block">{{ form.rg.errors }}</span>
             {% endif %}
           </div>
@@ -48,7 +48,7 @@
           <div class="form-group {% if form.cpf.errors %} has-error {% endif %}">
             <label>CPF</label>
             {% render_field form.cpf class="form-control cpf" %}
-            {% if form.cpf.errors %} 
+            {% if form.cpf.errors %}
               <span class="help-block">{{ form.cpf.errors }}</span>
             {% endif %}
           </div>
@@ -57,7 +57,7 @@
           <div class="form-group">
             <label>Órgão Expeditor</label>
             {% render_field form.orgao_expeditor_rg class="form-control" %}
-            {% if form.orgao_expeditor_rg.errors %} 
+            {% if form.orgao_expeditor_rg.errors %}
               <span class="help-block">{{ form.orgao_expeditor_rg.errors }}</span>
             {% endif %}
           </div>
@@ -66,19 +66,19 @@
           <div class="form-group">
             <label>Estado</label>
             {% render_field form.estado_expeditor class="form-control" %}
-            {% if form.estado_expeditor.errors %} 
+            {% if form.estado_expeditor.errors %}
               <span class="help-block">{{ form.estado_expeditor.errors }}</span>
             {% endif %}
           </div>
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col-sm-6">
           <div class="form-group">
             <label>Instituição</label>
             {% render_field form.instituicao class="form-control" %}
-            {% if form.instituicao.errors %} 
+            {% if form.instituicao.errors %}
               <span class="help-block">{{ form.instituicao.errors }}</span>
             {% endif %}
           </div>
@@ -87,7 +87,7 @@
           <div class="form-group">
             <label>E-mail Institucional</label>
             {% render_field form.email_institucional class="form-control" %}
-            {% if form.email_institucional.errors %} 
+            {% if form.email_institucional.errors %}
               <span class="help-block">{{ form.email_institucional.errors }}</span>
             {% endif %}
           </div>
@@ -123,7 +123,84 @@
         </div>
       </form>
     </div>
+  </div>
+
+  <div class="form-group {% if form.instituicao.errors %} has-error {% endif %}">
+    <label for="{{ form.instituicao.id_for_label }}" class="col-sm-3 control-label">Instituição</label>
+
+    <div class="col-sm-9">
+      {% render_field form.instituicao class="form-control" %}
+      {% if form.instituicao.errors %}
+        <span class="help-block">{{ form.instituicao.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group {% if form.email_institucional.errors %} has-error {% endif %}">
+    <label for="{{ form.email_institucional.id_for_label }}" class="col-sm-3 control-label">E-mail Institucional</label>
+
+    <div class="col-sm-9">
+      {% render_field form.email_institucional class="form-control" %}
+      {% if form.email_institucional.errors %}
+        <span class="help-block">{{ form.email_institucional.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.email_pessoal.errors %} has-error {% endif %}">
+      <label for="{{ form.email_pessoal.id_for_label }}" class="col-sm-3 control-label">E-mail Pessoal</label>
+
+      <div class="col-sm-9">
+        {% render_field form.email_pessoal class="form-control" %}
+        {% if form.email_pessoal.errors %}
+          <span class="help-block">{{ form.email_pessoal.errors }}</span>
+        {% endif %}
+      </div>
+
+    </div>
+
+  <div class="form-group {% if form.telefone_um.errors %} has-error {% endif %}">
+
+    <label for="{{ form.telefone_um.id_for_label }}" class="col-sm-3 control-label">Telefone Institucional (máximo 3)</label>
+
+    <div class="col-sm-4">
+      <div class="input-group input-group-sm">
+        {% render_field form.telefone_um class="form-control telefone" %}
+      </div>
+      {% if form.telefone_um.errors %}
+        <span class="help-block">{{ form.telefone_um.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group telefone2 {% if form.telefone_dois.errors %} has-error {% endif %}">
+    <div class="col-sm-offset-3 col-sm-4">
+      <div class="input-group input-group-sm">
+        {% render_field form.telefone_dois class="form-control telefone" %}
+      </div>
+      {% if form.telefone_dois.errors %}
+        <span class="help-block">{{ form.telefone_dois.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group telefone3 {% if form.telefone_tres.errors %} has-error {% endif %}">
+    <div class="col-sm-offset-3 col-sm-4">
+      <div class="input-group input-group-sm">
+        {% render_field form.telefone_tres class="form-control telefone" %}
+      </div>
+      {% if form.telefone_tres.errors %}
+        <span class="help-block">{{ form.telefone_tres.errors }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-10">
+      <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
+      <input type="submit" class="btn btn-success" value="Salvar" />
     </div>
   </div>
 </div>
-  

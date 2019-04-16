@@ -184,6 +184,14 @@
             ],
             "version": "==0.5"
         },
+        "django-simple-history": {
+            "hashes": [
+                "sha256:2f35bbb2ac37ae726ce4ef4a8cc053ede5f881a6985f5445f438dc297b12e7c5",
+                "sha256:7ba6220ed2ef3562ed8de9c66551da2a25d26b969f94226d41342769c3782630"
+            ],
+            "index": "pypi",
+            "version": "==2.7.0"
+        },
         "django-templated-email": {
             "hashes": [
                 "sha256:536c4e5ae099eabfb9aab36087d4d7799948c654e73da55a744213d086d5bb33"

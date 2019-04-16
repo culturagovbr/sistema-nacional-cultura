@@ -132,6 +132,15 @@
     </p>
     
   {% endif %}
+
+  {% if request.session.sistema_cultura_selecionado.alterado_em %}
+    <p>Última atualização em: {{ request.session.sistema_cultura_selecionado.alterado_em }}</p>
+  {% endif %}
+
+  {% if request.session.sistema_cultura_selecionado.alterado_por %}
+    <p>Atualizado pelo usuário de CPF: {{ request.session.sistema_cultura_selecionado.alterado_por }}</p>
+  {% endif %}
+  
 {% endif %}
 
 {% if historico %}

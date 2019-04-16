@@ -66,5 +66,5 @@ urlpatterns = [
 
     # Consulta
     path('consultar/<str:tipo>', views.ConsultarEnte.as_view(), name='consultar'),
-    url(r'^detalhar/(?P<pk>[0-9]+)$', views.Detalhar.as_view(), name='detalhar'),
+    path('detalhar/<int:cod_ibge>', views.Detalhar.as_view(), name='detalhar'),
     ]

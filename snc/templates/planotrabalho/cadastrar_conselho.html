@@ -11,6 +11,22 @@
   </h5>
 
   <div class="form-group">
+    <label for="{{ form.data_publicacao_lei.id_for_label }}">
+      Data de Publicação da Lei do Conselho de Cultura
+    </label>
+    {% render_field form.data_publicacao_lei class="form-control date half-width" %}
+    {{ form.data_publicacao_lei.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.arquivo_lei.id_for_label }}">
+      Lei de criação do Conselho Estadual/Municipal de Cultura
+    </label>
+    <p>{% render_field form.arquivo_lei %}</p>
+    {{ form.arquivo_lei.errors }}
+  </div>
+
+  <div class="form-group">
     <label for="{{ form.data_publicacao.id_for_label }}">
       Data de Assinatura da Ata da última reunião
     </label>
@@ -22,14 +38,7 @@
     <label for="{{ form.arquivo.id_for_label }}">
       Ata da última reunião realizada pelo conselho
     </label>
-    {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-    {% if view.kwargs.sistema.conselho.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
-    {% else %}
     <p>{% render_field form.arquivo %}</p>
-    {% endif %}
     {{ form.arquivo.errors }}
   </div>
 
@@ -44,7 +53,10 @@
     - Realizar o processo de eleição;<br>
     - Definir estrutura de apoio/suporte ao conselho;<br>
     - Convocar os Conselheiros eleitos e realizar reunião de instalação e posse;<br>
-    - Aprovar o regimento Interno do Conselho.
+    - Aprovar o regimento Interno do Conselho;<br>
+     <strong>Observação:&nbsp</strong><br>
+    -Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a>
+    -Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
   <input type="submit" class="btn btn-success" value="Salvar" />
