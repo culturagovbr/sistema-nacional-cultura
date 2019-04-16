@@ -119,6 +119,18 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+
+        if self.object.arquivo == self.sistema.legislacao.arquivo:
+            kwargs['initial']['mesma_lei'] = True
+        else:
+            kwargs['initial']['mesma_lei'] = False
+
+        if self.object.comprovante_cnpj:
+            kwargs['initial']['possui_cnpj'] = True
+            kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
+        else:
+            kwargs['initial']['possui_cnpj'] = False
+
         return kwargs
 
     def get_success_url(self):
