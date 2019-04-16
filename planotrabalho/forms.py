@@ -129,8 +129,12 @@ class CriarFundoForm(CriarComponenteForm):
         componente = super(CriarComponenteForm, self).save(commit=False)
         componente.tipo = self.componentes.get(self.tipo_componente)
 
+        if 'arquivo' in self.changed_data:
+            componente.situacao = 1
+
         if self.cleaned_data['mesma_lei']:
             componente.arquivo = self.sistema.legislacao.arquivo
+            componente.situacao = self.sistema.legislacao.situacao
             componente.data_publicacao = self.sistema.legislacao.data_publicacao
         else:
             componente.arquivo = self.cleaned_data['arquivo']
@@ -139,11 +143,13 @@ class CriarFundoForm(CriarComponenteForm):
         componente.cnpj = self.cleaned_data['cnpj']
         componente.save()
 
-        componente.comprovante_cnpj = ArquivoComponente2()
-        componente.comprovante_cnpj.save()
-        componente.comprovante_cnpj.comprovantes.add(componente)
-        componente.comprovante_cnpj.arquivo = self.cleaned_data['comprovante']
-        componente.comprovante_cnpj.save()
+        if 'comprovante' in self.changed_data:
+            componente.comprovante_cnpj.situacao = 1
+            componente.comprovante_cnpj = ArquivoComponente2()
+            componente.comprovante_cnpj.save()
+            componente.comprovante_cnpj.comprovantes.add(componente)
+            componente.comprovante_cnpj.arquivo = self.cleaned_data['comprovante']
+            componente.comprovante_cnpj.save()
 
         sistema_cultura = getattr(componente, self.tipo_componente)
         sistema_cultura.add(self.sistema)

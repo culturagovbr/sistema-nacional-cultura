@@ -1016,6 +1016,42 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     assert DiligenciaSimples.objects.first() == sistema_cultura.orgao_gestor.diligencia
 
 
+def test_tipo_diligencia_sistema_com_fundo_igual(url, client, plano_trabalho, login_staff):
+    """ Testa criação da diligência específica de um componente"""
+
+    DiligenciaSimples.objects.all().delete()
+
+    legislacao = mommy.make("Componente", tipo=0, situacao=1)
+    fundo_cultura = mommy.make("FundoDeCultura", tipo=2, situacao=1)
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
+        legislacao=legislacao,
+        fundo_cultura=fundo_cultura
+    )
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    legislacao.arquivo = arquivo
+    legislacao.save()
+    fundo_cultura.arquivo = legislacao.arquivo
+    fundo_cultura.save()
+
+    request = client.post(
+        url.format(id=sistema_cultura.id, componente="legislacao", arquivo="arquivo"),
+        data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
+    )
+
+    sistema_cultura.legislacao.refresh_from_db()
+    sistema_cultura.fundo_cultura.refresh_from_db()
+    diligencia = DiligenciaSimples.objects.first()
+
+    assert DiligenciaSimples.objects.count() == 1
+    assert diligencia == sistema_cultura.legislacao.diligencia
+    assert diligencia == sistema_cultura.fundo_cultura.diligencia
+    assert sistema_cultura.fundo_cultura.situacao == 4
+
+
 def test_envio_email_diligencia_geral(client, login_staff):
     """ Testa envio do email para diligência geral """
     sistema_cultura = mommy.make(
