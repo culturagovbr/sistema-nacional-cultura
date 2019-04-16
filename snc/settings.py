@@ -293,38 +293,6 @@ LOGIN_REDIRECT_URL = 'adesao:home'
 LOGIN_URL = 'adesao:login'
 LOGOUT_URL = 'adesao:logout'
 
-# LOGGING CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
-
 # Your common stuff: Below this line define 3rd party library settings
 USE_DJANGO_JQUERY = False
 JQUERY_URL = STATIC_URL + 'js/jquery.min.js'
@@ -349,5 +317,6 @@ PIWIK_URL = ''
 if env("SENTRY_DSN"):
     sentry_sdk.init(
             dsn=env("SENTRY_DSN"),
-            integrations=[DjangoIntegration()]
+            integrations=[DjangoIntegration()],
+            send_default_pii=True
             )
