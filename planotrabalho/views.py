@@ -120,7 +120,7 @@ class AlterarFundoCultura(UpdateView):
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
 
-        if self.object.arquivo == self.sistema.legislacao.arquivo:
+        if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
             kwargs['initial']['mesma_lei'] = True
         else:
             kwargs['initial']['mesma_lei'] = False

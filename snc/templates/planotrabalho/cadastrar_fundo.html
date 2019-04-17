@@ -103,14 +103,26 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    if($('#id_possui_cnpj_0').is(":checked")){
+      $('#cnpj_form').css('display', 'block');
+    }
+    if($('#id_possui_cnpj_1').is(":checked")){
+      $('#cnpj_form').css('display', 'none');
+    }
+
     $('input[name=mesma_lei]').change(function() { 
       if(this.value=='False') {
         $('#lei_data_form').fadeIn();
       }
       else {
         $('#lei_data_form').fadeOut();
-        $('#id_data_publicacao').removeAttr('required');
-        $('#id_arquivo').removeAttr('required');
       }
     })
 

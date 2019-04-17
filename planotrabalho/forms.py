@@ -115,12 +115,17 @@ class CriarFundoForm(CriarComponenteForm):
     def clean_cnpj(self):
         if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['cnpj']:   
             raise forms.ValidationError("Este campo é obrigatório")
+        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['cnpj']:
+            self.cleaned_data['cnpj'] = None
 
         return self.cleaned_data['cnpj']
 
     def clean_comprovante(self):
         if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['comprovante']:   
             raise forms.ValidationError("Este campo é obrigatório")
+        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['comprovante']:
+            self.cleaned_data['comprovante'] = None
+            self.changed_data.remove('comprovante')
 
         return self.cleaned_data['comprovante']
 
@@ -144,8 +149,8 @@ class CriarFundoForm(CriarComponenteForm):
         componente.save()
 
         if 'comprovante' in self.changed_data:
-            componente.comprovante_cnpj.situacao = 1
             componente.comprovante_cnpj = ArquivoComponente2()
+            componente.comprovante_cnpj.situacao = 1
             componente.comprovante_cnpj.save()
             componente.comprovante_cnpj.comprovantes.add(componente)
             componente.comprovante_cnpj.arquivo = self.cleaned_data['comprovante']
