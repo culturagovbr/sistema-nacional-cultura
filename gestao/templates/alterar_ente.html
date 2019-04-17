@@ -3,173 +3,23 @@
 	{{form.media}}
 	<div class="col-md-12">
 		<div class="card">
-		<div class="card-header card-header-primary">
-			<h4 class="card-title">Editar Ente</h4>
-			<p class="card-category">{{object.ente_federado}}</p>
+			<div class="card-header card-header-primary">
+				<h4 class="card-title">Editar Ente</h4>
+				<p class="card-category">{{object.ente_federado}}</p>
+			</div>
+			<div class="card-body">
+				<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+					<select name="ente_federado" class="form-control d-none"  id="id_ente_federado">
+						<option value="{{object.ente_federado.id}}" selected="">{{object.ente_federado}}</option>
+					</select>
+
+					{% include "formulario_sistema.html" %}
+
+					<button type="submit" class="btn btn-primary pull-right">Salvar</button>
+					<a class="btn btn-secondary pull-right" href="{% url 'adesao:home' %}">Cancelar</a>
+				</form>
+			</div>
 		</div>
-		<div class="card-body">
-			<form method="post" enctype="multipart/form-data">{% csrf_token %}
-			<div class="row">
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Nome do Gestor (Prefeito ou Governador)</label>
-					{% render_field form_gestor.nome class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-3">
-				<div class="form-group">
-					<label>CPF do Gestor (Prefeito ou Governador)</label>
-					{% render_field form_gestor.cpf class="form-control cpf" %}
-				</div>
-				</div>
-				<div class="col-md-3">
-				<div class="form-group">
-					<label>RG do Gestor (Prefeito ou Governador)</label>
-					{% render_field form_gestor.rg class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-1">
-				<div class="form-group">
-					<label>Órgão Expeditor</label>
-					{% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-1">
-				<div class="form-group">
-					<label>UF</label>
-					{% render_field form_gestor.estado_expeditor class="form-control" %}
-				</div>
-				</div>
-			</div>
-			<div class="row">
-
-				<div class="col-md-5">
-				<div class="form-group">
-					<label>E-mail Institucional</label>
-					{% render_field form_gestor.email_institucional class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-3">
-				<div class="form-group">
-					<label>CNPJ do Ente Federado (Estado ou Município)</label>
-					{% render_field form_sede.cnpj class="form-control cnpj" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>CEP</label>
-					{% render_field form_sede.cep class="form-control cep" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Complemento</label>
-					{% render_field form_sede.complemento class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Bairro</label>
-					{% render_field form_sede.bairro class="form-control" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Endereço Eletrônico (Agenda Digital)</label>
-					{% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Telefone Institucional</label>
-					{% render_field form_sede.telefone_um class="form-control telefone" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Telefone Institucional</label>
-					{% render_field form_sede.telefone_dois class="form-control telefone" %}
-				</div>
-				</div>
-				<div class="col-md-4">
-				<div class="form-group">
-					<label>Telefone Institucional</label>
-					{% render_field form_sede.telefone_tres class="form-control telefone" %}
-				</div>
-				</div>
-
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-				<div class="form-group">
-					<label>Endereço Institucional</label>
-					<div class="form-group">
-					{% render_field form_sede.endereco class="form-control" %}
-
-					</div>
-				</div>
-				</div>
-			</div>
-			<div class="row">
-					{% if form_gestor.termo_posse %}
-					<div class="col-md-3">
-						{{form_gestor.termo_posse}}
-					</div>
-					{% endif %}
-					{% if form_gestor.rg_copia %}
-					<div class="col-md-3">
-						{{form_gestor.rg_copia }}
-					</div>
-					{% endif %}
-					{% if form_gestor.cpf_copia %}
-					<div class="col-md-3">
-						{{form_gestor.cpf_copia}}
-					</div>
-					{% endif %}
-				</div>
-			<button type="submit" class="btn btn-primary pull-right">Salvar</button>
-			<a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
-			</form>
-		</div>
-		</div>
-
-<div class="panel panel-info">
-	<div class="panel-heading">
-		Dados do Ente Federado
-    </div>
-	<div class="panel-body">
-		<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
-			<div class="form-group">
-			    <label class="col-sm-4 control-label">Ente Federado (Estado ou Município)</label>
-
-			    <div class="col-sm-2">
-			    	<select name="ente_federado" class="form-control"  id="id_ente_federado">
-			    		<option value="{{object.ente_federado.id}}" selected="">{{object.ente_federado}}</option>
-			        </select>
-			    </div>
-			</div>
-
-			{% include "formulario_sistema.html" %}
-
-			<div class="form-group {% if form_sistema.conferencia_nacional.errors %} has-error {% endif %}">
-				<label for="{{ form_sistema.conferencia_nacional.id_for_label }}" class="col-sm-4 control-label">
-					Participou da Conferência Nacional:</label>
-
-				<div class="col-sm-4">
-					{% render_field form_sistema.conferencia_nacional %}
-					{% if form_sistema.conferencia_nacional.errors %}
-						<span class="help-block">{{ form_sistema.conferencia_nacional.errors }}</span>
-					{% endif %}
-				</div>
-			</div>
-
-			<div class="form-group">
-			    <div class="col-sm-offset-3 col-sm-10">
-					<a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
-					<input type="submit" class="btn btn-success" value="Salvar" />
-			    </div>
-			</div>
-		</form>
 	</div>
 </div>
 
