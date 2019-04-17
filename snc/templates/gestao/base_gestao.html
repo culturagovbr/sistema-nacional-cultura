@@ -307,9 +307,12 @@
         {% endverbatim %}
 
         md.initDashboardPageCharts();
-        $(".date").datepicker({
-          showButtonPanel: true,
-          locale: "pt-br"
+
+        $('.date').each(function() {
+          $(this).datepicker({
+            showButtonPanel: true,
+           locale: "pt-br"
+          });
         });
 
       });
