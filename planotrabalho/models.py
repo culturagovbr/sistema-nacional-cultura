@@ -78,7 +78,7 @@ def upload_to(instance, filename):
 
     name = f"docs/{nome_componente}/{instance.id}/{new_name}.{ext}"
 
-    return new_name
+    return name
 
 
 class ArquivoComponente(models.Model):
