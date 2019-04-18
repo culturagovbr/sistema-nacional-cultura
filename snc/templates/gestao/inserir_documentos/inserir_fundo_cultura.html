@@ -27,6 +27,17 @@
         </div>
       </div>
 
+      <div class="form-group {% if form.comprovante.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label">Comprovante do CNPJ</label>
+
+        <div class="col-sm-7">
+          {% render_field form.comprovante %}
+        </div>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">{{ form.comprovante.errors}}</span>
+        </div>
+      </div>
+
       <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
         <label class="col-sm-3 control-label">Data de publicação da Lei</label>
 

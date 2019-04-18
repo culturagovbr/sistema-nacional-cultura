@@ -759,7 +759,7 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
         fundo_cultura=fundo)
 
     arquivo = SimpleUploadedFile(
-        "fundo_cultura.txt", b"file_content", content_type="text/plain"
+        "fundo_cultura_alterar.txt", b"file_content", content_type="text/plain"
     )
     comprovante = SimpleUploadedFile(
         "comprovante_alterar_fundo.txt", b"file_content", content_type="text/plain"

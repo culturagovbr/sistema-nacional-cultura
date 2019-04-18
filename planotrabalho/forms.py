@@ -85,27 +85,33 @@ class CriarComponenteForm(ModelForm):
 
 class CriarFundoForm(CriarComponenteForm):
     cnpj = BRCNPJField(required=False)
-    comprovante = forms.FileField(required=False, widget=FileInput)
-    arquivo = forms.FileField(required=False, widget=FileInput)
+    comprovante = RestrictedFileField(
+        required=False,
+        content_types=content_types,
+        max_upload_size=52428800)
+    arquivo = RestrictedFileField(
+        required=False,
+        content_types=content_types,
+        max_upload_size=52428800)
     data_publicacao = forms.DateField(required=False)
     mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     def clean_arquivo(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['data_publicacao']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['data_publicacao']
 
     def clean_mesma_lei(self):
-        if self.data['mesma_lei'] == 'True':
+        if self.data.get('mesma_lei', None) == 'True':
             try:
                 if self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
@@ -113,17 +119,17 @@ class CriarFundoForm(CriarComponenteForm):
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_cnpj(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['cnpj']:   
+        if self.data.get('possui_cnpj', None) == 'True' and not self.cleaned_data['cnpj']:
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['cnpj']:
+        elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['cnpj']:
             self.cleaned_data['cnpj'] = None
 
         return self.cleaned_data['cnpj']
 
     def clean_comprovante(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['comprovante']:   
+        if self.data.get('possui_cnpj', None) == 'True' and not self.cleaned_data['comprovante']:
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['comprovante']:
+        elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['comprovante']:
             self.cleaned_data['comprovante'] = None
             self.changed_data.remove('comprovante')
 
@@ -146,8 +152,6 @@ class CriarFundoForm(CriarComponenteForm):
         else:
             componente.arquivo = self.cleaned_data['arquivo']
             componente.data_publicacao = self.cleaned_data['data_publicacao']
-            
-        componente.cnpj = self.cleaned_data['cnpj']
 
         if 'comprovante' in self.changed_data:
             componente.comprovante_cnpj = ArquivoComponente2()

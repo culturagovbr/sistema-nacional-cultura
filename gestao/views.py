@@ -532,10 +532,11 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
-        return kwargs
 
-    def form_invalid(self, form):
-        import ipdb; ipdb.set_trace()
+        if self.object.comprovante_cnpj:
+            kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
+
+        return kwargs
 
     def get_success_url(self):
         messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
