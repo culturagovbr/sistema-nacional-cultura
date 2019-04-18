@@ -66,14 +66,6 @@ def upload_to(instance, filename):
     name = ""
     ext = slugify(filename.split(".").pop(-1))
     new_name = slugify(filename.rsplit(".", 1)[0])
-    componente = componentes.get(instance.tipo)
-
-    kws = {componente: instance.tipo}
-    ente = SistemaCultura.sistema.get(**kws)
-    print(ente)
-    instance_componente = getattr(instance, componente)
-
-    entefederado = instance_componente.first().ente_federado.cod_ibge
 
     componente = instance.conselhos.all().first()
 
