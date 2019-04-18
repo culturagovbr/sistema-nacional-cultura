@@ -534,6 +534,9 @@ class AlterarFundoCultura(UpdateView):
         kwargs['tipo'] = 'fundo_cultura'
         return kwargs
 
+    def form_invalid(self, form):
+        import ipdb; ipdb.set_trace()
+
     def get_success_url(self):
         messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
         return reverse_lazy('gestao:listar_documentos',kwargs={'template': 'listar_fundo_cultura'})

@@ -744,7 +744,7 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     name = novo_fundo.arquivo.name.split(str(novo_fundo.id)+"/")[1]
 
     assert name == arquivo.name
-    assert novo_fundo.comprovante_cnpj.arquivo.name.split(str(novo_fundo.id)+"/")[1] == comprovante.name
+    assert novo_fundo.comprovante_cnpj.arquivo.name.split(str(novo_fundo.comprovante_cnpj.id)+"/")[1] == comprovante.name
     assert novo_fundo.situacao == 1
     assert novo_fundo.cnpj == "27.082.838/0001-28"
     assert novo_fundo.data_publicacao == datetime.date(2018, 6, 28)
@@ -772,7 +772,7 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
     numero_fundos = FundoDeCultura.objects.count()
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
-        "cnpj": "27.082.838/0001-28", "comprovante_cnpj": comprovante, "mesma_lei": "False",
+        "cnpj": "27.082.838/0001-28", "comprovante": comprovante, "mesma_lei": "False",
         "possui_cnpj": "True"})
 
     numero_fundos_pos_update = FundoDeCultura.objects.count()
@@ -781,7 +781,7 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
 
     assert numero_fundos == numero_fundos_pos_update
     assert name == arquivo.name
-    assert fundo.comprovante_cnpj.arquivo.name.split(str(fundo.id)+"/")[1] == comprovante.name
+    assert fundo.comprovante_cnpj.arquivo.name.split(str(fundo.comprovante_cnpj.id)+"/")[1] == comprovante.name
     assert fundo.situacao == 1
     assert fundo.data_publicacao == datetime.date(2018, 6, 28)
     assert fundo.cnpj == "27.082.838/0001-28"
@@ -862,7 +862,7 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
     )
 
     conselho.refresh_from_db()
-    assert lei.name == conselho.lei.arquivo.name.split(str(conselho.id)+"/")[1]
+    assert lei.name == conselho.lei.arquivo.name.split(str(conselho.lei.id)+"/")[1]
     assert arquivo.name == conselho.arquivo.name.split(str(conselho.id)+"/")[1]
     assert conselho.situacao == 1
     assert conselho.lei.situacao == 1
@@ -889,7 +889,7 @@ def test_inserir_documentos_conselho_cultural(client, sistema_cultura, login_sta
         ente_federado__nome=sistema_cultura.ente_federado.nome)
 
     name = sistema_atualizado.conselho.arquivo.name.split(str(sistema_atualizado.conselho.id)+"/")[1]
-    name_lei = sistema_atualizado.conselho.lei.arquivo.name.split(str(sistema_atualizado.conselho.id)+"/")[1]
+    name_lei = sistema_atualizado.conselho.lei.arquivo.name.split(str(sistema_atualizado.conselho.lei.id)+"/")[1]
 
     assert name == arquivo.name
     assert name_lei == arquivo_lei.name

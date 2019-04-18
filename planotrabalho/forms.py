@@ -133,6 +133,8 @@ class CriarFundoForm(CriarComponenteForm):
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
         componente.tipo = self.componentes.get(self.tipo_componente)
+        componente.arquivo = None
+        componente.save()
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
@@ -146,7 +148,6 @@ class CriarFundoForm(CriarComponenteForm):
             componente.data_publicacao = self.cleaned_data['data_publicacao']
             
         componente.cnpj = self.cleaned_data['cnpj']
-        componente.save()
 
         if 'comprovante' in self.changed_data:
             componente.comprovante_cnpj = ArquivoComponente2()
@@ -156,6 +157,7 @@ class CriarFundoForm(CriarComponenteForm):
             componente.comprovante_cnpj.arquivo = self.cleaned_data['comprovante']
             componente.comprovante_cnpj.save()
 
+        componente.save()
         sistema_cultura = getattr(componente, self.tipo_componente)
         sistema_cultura.add(self.sistema)
         
