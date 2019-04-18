@@ -36,7 +36,8 @@ from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
-from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session, preenche_planilha
+from adesao.utils import enviar_email_conclusao, verificar_anexo
+from adesao.utils import atualiza_session, preenche_planilha
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
@@ -61,7 +62,10 @@ def home(request):
     sistema = request.session.get('sistema_cultura_selecionado', False)
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
-    sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado__nome', 'ente_federado')
+    sistemas_cultura = SistemaCultura.sistema.filter(cadastrador=request.user.usuario)
+
+    if not sistemas_cultura:
+        request.session.pop('sistema_cultura_selecionado', None)
 
     request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
@@ -352,7 +356,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal, 
+        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
             gestor_pessoal, gestor_institucional]
 
         return recipiente_list
@@ -579,11 +583,11 @@ class Detalhar(DetailView):
     def get_context_data(self, **kwargs):
         context = super(Detalhar, self).get_context_data(**kwargs)
         try:
-            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho, 
+            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho,
                 situacao="1")
         except:
             context["conselheiros"] = None
-        
+
         return context
 
 
