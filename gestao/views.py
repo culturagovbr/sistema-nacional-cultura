@@ -616,14 +616,17 @@ class DiligenciaComponenteView(CreateView):
         if self.kwargs['arquivo'] == 'arquivo':
             context['arquivo'] = componente.arquivo
         else:
-            context['arquivo'] = getattr(componente, self.kwargs['arquivo']).arquivo
+            context['arquivo'] = getattr(componente, self.kwargs['arquivo'])
         context['ente_federado'] = ente_federado
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
-        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'], arquivo=self.kwargs['arquivo'])
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'])
 
         return context
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form), status=400)
 
 
 class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):

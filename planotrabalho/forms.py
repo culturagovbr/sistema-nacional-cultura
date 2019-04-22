@@ -132,10 +132,11 @@ class CriarFundoForm(CriarComponenteForm):
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
         componente.tipo = self.componentes.get(self.tipo_componente)
-        componente.save()
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
+            componente.arquivo = None
+            componente.save()
 
         if self.cleaned_data['mesma_lei']:
             componente.arquivo = self.sistema.legislacao.arquivo
