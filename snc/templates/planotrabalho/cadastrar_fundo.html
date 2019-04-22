@@ -36,12 +36,12 @@
         Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
       </label>
       {% if form.arquivo.value %}
-      <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-      {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
-      <p>Modificar: {% render_field form.arquivo %}</p>
-      {% endif %}
+        <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+        {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+        {% endif %}
       {% else %}
-      <p>{% render_field form.arquivo %}</p>
+        <p>{% render_field form.arquivo %}</p>
       {% endif %}
       {{ form.arquivo.errors }}
     </div>
@@ -73,12 +73,12 @@
         Comprovante do CNPJ
       </label>
       {% if form.comprovante.value %}
-      <p><a href="{{ form.comprovante.value.url }}">Baixar arquivo atual</a></p>
-      {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
-      <p>Modificar: {% render_field form.comprovante %}</p>
-      {% endif %}
+        <p><a href="{{ form.comprovante.value.url }}">Baixar arquivo atual</a></p>
+        {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+          <p>Modificar: {% render_field form.comprovante %}</p>
+        {% endif %}
       {% else %}
-      <p>{% render_field form.comprovante %}</p>
+        <p>{% render_field form.comprovante %}</p>
       {% endif %}
       {{ form.comprovante.errors }}
     </div>
