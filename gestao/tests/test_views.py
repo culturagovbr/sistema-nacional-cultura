@@ -2153,13 +2153,17 @@ def test_criar_dados_secretario(client, login_staff):
 
 def test_alteracao_diligencia(client, login_staff):
     diligencia = mommy.make('DiligenciaSimples')
-    componente = mommy.make('Componente', situacao=3, tipo=0, diligencia=diligencia)
+    componente = mommy.make('Componente', situacao=3, tipo=0, diligencia=diligencia, _fill_optional=True)
+    ente_federado = mommy.make('EnteFederado', cod_ibge=123456, _fill_optional=True)
 
     sistema_cultura = mommy.make(
         "SistemaCultura",
-        ente_federado__cod_ibge=123456,
+        ente_federado=ente_federado,
         legislacao=componente
     )
+
+    sistema_cultura.legislacao.arquivo = SimpleUploadedFile("legislacao.txt", b"file_content", content_type="text/plain")
+    sistema_cultura.legislacao.save()
 
     texto_diligencia = "Arquivo não pode ser aberto"
 

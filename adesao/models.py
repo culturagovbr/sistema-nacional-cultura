@@ -458,7 +458,7 @@ class SistemaCultura(models.Model):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url
 
-    def get_componentes_diligencias(self, componente=None):
+    def get_componentes_diligencias(self, componente=None, arquivo='arquivo'):
         diligencias_componentes = []
         if componente:
             componentes = [componente]
@@ -468,6 +468,10 @@ class SistemaCultura(models.Model):
 
         for componente in componentes:
             componente = getattr(self, componente)
+
+            if arquivo != 'arquivo':
+                componente = getattr(componente, arquivo)
+
             if componente and componente.diligencia:
                 componente.historico_diligencia = componente.diligencia.history.all()
                 diligencias_componentes.append(componente)
