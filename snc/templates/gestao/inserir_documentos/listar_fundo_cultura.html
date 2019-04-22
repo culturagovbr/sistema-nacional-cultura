@@ -30,6 +30,7 @@
                 <th>Município/Estado</th>
                 <th>CNPJ</th>
                 <th>CNPJ do Fundo de Cultura</th>
+                <th>Anexo do Comprovante do CNPJ</th>
                 <th>Anexo Atual</th>
                 <th align="center" >Upload</th>
               </tr>
@@ -41,6 +42,13 @@
                   <td>{{ sistema.sede.cnpj }}</td>
                   {% if sistema.fundo_cultura.cnpj %}
                     <td>{{ sistema.fundo_cultura.cnpj }}</td>
+                  {% else %}
+                    <td></td>
+                  {% endif %}
+                  {% if sistema.fundo_cultura.comprovante_cnpj.arquivo %}
+                    <td>
+                      <a href="{{ sistema.fundo_cultura.comprovante_cnpj.arquivo.url }}">Download</a>
+                    </td>
                   {% else %}
                     <td></td>
                   {% endif %}
