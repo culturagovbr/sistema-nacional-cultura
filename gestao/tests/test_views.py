@@ -1065,6 +1065,36 @@ def test_tipo_diligencia_sistema_com_fundo_igual(url, client, plano_trabalho, lo
     assert sistema_cultura.fundo_cultura.situacao == 4
 
 
+def test_tipo_diligencia_comprovante_cnpj(url, client, plano_trabalho, login_staff):
+    """ Testa criação da diligência específica de um componente"""
+
+    DiligenciaSimples.objects.all().delete()
+
+    fundo_cultura = mommy.make("FundoDeCultura", tipo=2, situacao=1, _fill_optional='comprovante_cnpj')
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
+        fundo_cultura=fundo_cultura
+    )
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    fundo_cultura.comprovante_cnpj.arquivo = arquivo
+    fundo_cultura.comprovante_cnpj.save()
+
+    request = client.post(
+        url.format(id=sistema_cultura.id, componente="fundo_cultura", arquivo="comprovante_cnpj"),
+        data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
+    )
+
+    sistema_cultura = SistemaCultura.sistema.get(ente_federado__nome=sistema_cultura.ente_federado.nome)
+    diligencia = DiligenciaSimples.objects.first()
+
+    assert DiligenciaSimples.objects.count() == 1
+    assert diligencia == sistema_cultura.fundo_cultura.comprovante_cnpj.diligencia
+    assert sistema_cultura.fundo_cultura.comprovante_cnpj.situacao == 4
+
+
 def test_envio_email_diligencia_geral(client, login_staff):
     """ Testa envio do email para diligência geral """
     sistema_cultura = mommy.make(

@@ -384,7 +384,43 @@
     </div>
     {% endif %}
 
+    {% if ente.fundo_cultura.comprovante_cnpj.arquivo %}
+    <div class="list-group row">
+       <div class="col-md-12">
+          <div class="list-group-item col-xs-8">
+            Fundo de Cultura - Comprovante do CNPJ do Fundo
+          </div>
 
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{{ ente.fundo_cultura.comprovante_cnpj.arquivo.url }}">Download</a>
+          </div>
+          {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+          </div>
+
+          {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+            {% endif %}
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+            </a>
+          </div>
+
+          {% else %}
+          <div class="list-group-item col-xs-2 text-center">
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+          </div>
+          {% endif %}
+
+       </div>
+    </div>
+    {% endif %}
 
     {% if ente.plano.arquivo %}
     <div class="list-group row">
