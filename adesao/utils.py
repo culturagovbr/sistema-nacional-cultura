@@ -171,16 +171,10 @@ def atualiza_session(sistema_cultura, request):
         if request.session.get('sistema_sede', False):
             request.session['sistema_sede'].clear()
 
-    if sistema_cultura.responsavel:
-        request.session['sistema_responsavel'] = model_to_dict(sistema_cultura.responsavel)
+    if sistema_cultura.gestor_cultura:
+        request.session['sistema_gestor_cultura'] = model_to_dict(sistema_cultura.gestor_cultura)
     else:
-        if request.session.get('sistema_responsavel', False):
-            request.session['sistema_responsavel'].clear()
-
-    if sistema_cultura.secretario:
-        request.session['sistema_secretario'] = model_to_dict(sistema_cultura.secretario)
-    else:
-        if request.session.get('sistema_secretario', False):
-            request.session['sistema_secretario'].clear()
+        if request.session.get('sistema_gestor_cultura', False):
+            request.session['sistema_gestor_cultura'].clear()
 
     request.session.modified = True
