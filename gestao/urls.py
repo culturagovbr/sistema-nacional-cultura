@@ -9,6 +9,9 @@ app_name = 'gestao'
 urlpatterns = [
     # Acompanhar andamento dos processos de adesão
     path('', staff_member_required(
+        views.dashboard,
+        login_url='adesao:login'), name='dashboard'),
+    path('entes', staff_member_required(
         views.AcompanharSistemaCultura.as_view(),
         login_url='adesao:login'), name='acompanhar_adesao'),
     path('ente/<int:cod_ibge>/dados-adesao',
@@ -32,10 +35,16 @@ urlpatterns = [
     # Acompanhar e aditivar prazos dos municípios
     url(r'^acompanhar/prazo/',
         staff_member_required(views.AcompanharPrazo.as_view()), name='acompanhar_prazo'),
-     url(r'^aditivar/prazo/(?P<id>[\w]+)/(?P<page>[\w]+)$',
+    url(r'^aditivar-prazo/',
         staff_member_required(views.aditivar_prazo, login_url='adesao:login'), name='aditivar_prazo'),
 
     # Acompanhar componentes
+    path('plano-trabalho/',
+            staff_member_required(views.plano_trabalho),
+            name='plano_trabalho'),
+    path('docs-componentes/',
+            staff_member_required(views.listar_componentes),
+            name='listar_componentes'),
     path('acompanhar/<str:componente>',
             staff_member_required(views.AcompanharComponente.as_view()),
             name='acompanhar_componente'),
@@ -51,9 +60,9 @@ urlpatterns = [
         staff_member_required(
             views.ListarUsuarios.as_view(),
             login_url='adesao:login'), name='usuarios'),
-    url(r'^alterar/usuario/(?P<pk>[\d]+)$',
+    url(r'^alterar/usuario/',
         staff_member_required(
-            views.AlterarUsuario.as_view(),
+            views.alterar_usuario,
             login_url='adesao:login'), name='alterar_usuario'),
 
     # UF e Município aninhados
@@ -119,4 +128,20 @@ urlpatterns = [
     path("ajax/consultar_cpf",
             staff_member_required(views.ajax_consulta_cpf),
             name="ajax-consulta-cpf"),
+
+    # ajax leaflet
+    url(r'^ajax-consulta-entes$', staff_member_required(views.ajax_consulta_entes), name='ajax_consulta_entes'),
+
+    # ajax datatable
+    url(r'^datatable-entes$', staff_member_required(views.DataTableEntes.as_view()),
+        name='ajax_entes'),
+    url(r'^datatable-prazo$', staff_member_required(views.DataTablePrazo.as_view()),
+        name='ajax_prazo'),
+    url(r'^datatable-usuarios$', staff_member_required(views.DataTableUsuarios.as_view()),
+        name='ajax_usuarios'),
+    url(r'^datatable-plano-trabalho$', staff_member_required(views.DataTablePlanoTrabalho.as_view()),
+        name='ajax_plano_trabalho'),
+    url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
+        name='ajax_docs_componentes'),
+
     ]

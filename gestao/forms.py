@@ -1,21 +1,15 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from django.template.defaultfilters import filesizeformat
 
 from localflavor.br.forms import BRCPFField
-
-from dal import autocomplete
 
 from ckeditor.widgets import CKEditorWidget
 
 from snc.forms import RestrictedFileField
+from snc.widgets import FileUploadWidget
 
 from adesao.models import Usuario
-from adesao.models import Historico
-from adesao.models import Cidade
-from adesao.models import Uf
-from adesao.models import Municipio
 from adesao.models import LISTA_ESTADOS_PROCESSO
 from adesao.models import SistemaCultura, Gestor
 
@@ -23,6 +17,7 @@ from adesao.models import SistemaCultura, Gestor
 from planotrabalho.models import CriacaoSistema, FundoCultura, Componente
 from planotrabalho.models import PlanoCultura, OrgaoGestor, ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
+from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
 from gestao.models import Diligencia, DiligenciaSimples, LISTA_SITUACAO_ARQUIVO
 
@@ -197,9 +192,17 @@ class AlterarDocumentosEnteFederadoForm(ModelForm):
 
 class AlterarComponenteForm(ModelForm):
     arquivo = RestrictedFileField(
+        widget=FileUploadWidget(),
         content_types=content_types,
         max_upload_size=max_upload_size)
     data_publicacao = forms.DateField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(AlterarComponenteForm, self).__init__(*args, **kwargs)
+        pk = str(kwargs.get('instance', None))
+        componente = Componente.objects.get(pk=pk)
+
+        self.fields['arquivo'].widget.attrs = {'label': componente.nome_componente}
 
     def save(self, commit=True, *args, **kwargs):
         sistema = super(AlterarComponenteForm, self).save(commit=False)

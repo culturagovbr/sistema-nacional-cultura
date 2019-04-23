@@ -532,6 +532,9 @@ class SistemaCultura(models.Model):
 
         return comparacao_fk
 
+    def get_estado_processo_display(self):
+        estado_index = int(self.estado_processo)
+        return LISTA_ESTADOS_PROCESSO[estado_index][1]
 
     def save(self, *args, **kwargs):
         """

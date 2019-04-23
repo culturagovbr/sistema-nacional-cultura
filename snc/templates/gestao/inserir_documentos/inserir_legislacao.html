@@ -1,9 +1,9 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class=" card  ">
+  <div class=" card-header">
     Inserir lei do sistema cultura no cadastro
   </div>
-  <div class="panel-body">
+  <div class=" card-body">
     <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
       <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
       

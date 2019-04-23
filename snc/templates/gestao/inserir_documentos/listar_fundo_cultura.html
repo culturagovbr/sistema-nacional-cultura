@@ -1,4 +1,4 @@
-{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+{% load gestao_tags %} {% block content %}
 {% include 'messages.html' %}
 
 <div class="row">
@@ -22,7 +22,7 @@
         <div class="dataTable_wrapper">
         {% if not object_list %}
           <p></p>
-          <p>Ente federado não encontrado</p>   
+          <p>Ente federado não encontrado</p>
         {% else %}
           <table class="table table-striped table-bordered table-hover" id="dataTables-example">
             <thead>

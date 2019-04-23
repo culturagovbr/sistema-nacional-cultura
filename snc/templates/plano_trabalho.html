@@ -1,0 +1,134 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<menu data-target="plano" ></menu>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-header card-header-tabs card-header-primary">
+            <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <span class="nav-tabs-title">Componentes:</span>
+                <ul class="nav nav-tabs" data-tabs="tabs">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#sistema" data-toggle="tab">
+                    Sistema de Cultura
+                    <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#orgao_tab" data-toggle="tab">
+                    Órgão Gestor
+                    <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#conselho_tab" data-toggle="tab">
+                        Conselho Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#fundo_tab" data-toggle="tab">
+                        Fundo de Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#plano_tab" data-toggle="tab">
+                        Plano de Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content">
+            <div class="tab-pane active" id="sistema_tab">
+                {% include "gestao/planotrabalho/acompanhar_legislacao.html" %}
+            </div>
+            <div class="tab-pane" id="orgao_tab">
+                {% include "gestao/planotrabalho/acompanhar_orgao_gestor.html" %}
+            </div>
+            <div class="tab-pane" id="conselho_tab">
+                {% include "gestao/planotrabalho/acompanhar_conselho.html" %}
+            </div>
+            <div class="tab-pane" id="fundo_tab">
+                {% include "gestao/planotrabalho/acompanhar_fundo_cultura.html" %}
+            </div>
+            <div class="tab-pane" id="plano_tab">
+                {% include "gestao/planotrabalho/acompanhar_plano.html" %}
+            </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block js%}
+<script type="text/javascript">
+csrf_token = '{{ csrf_token }}';
+
+$('.datatable').each(function(){
+    $(`#${this.id}`).DataTable({
+    "autoWidth": false,
+
+    order: [1, 'asc'],
+    language:{
+            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+          },
+    columns: [
+        {
+          data: null,
+          name: "ente_federado",
+          render: (data) => data[1],
+        },
+        {
+          data: null,
+          name: "sede__cnpj",
+          render: (data) => data[2],
+        },
+        {
+          data: null,
+          name: "link",
+          orderable: false,
+          render: (data) => `
+            <a class="btn btn-sm btn-primary" href="/gestao/${data[0]}/diligencia/${data[4]}/arquivo">
+                <i class="material-icons">gavel</i>
+            </a>`
+        },
+        {
+          data: null,
+          name: "sede__cnpj",
+          orderable: false,
+          render: (data) => `
+            <a class="btn btn-sm btn-primary" href="${data[3]}">
+                <i class="material-icons">save_alt</i>
+            </a>`
+        },
+    ],
+    searching: true,
+    processing: true,
+    serverSide: true,
+    stateSave: true,
+    ajax: {
+      url: "{% url 'gestao:ajax_plano_trabalho' %}",
+      data: {
+        csrfmiddlewaretoken: csrf_token,
+        componente: this.id
+      },
+      type: "POST",
+    },
+  });
+});
+</script>
+{% endblock js%}

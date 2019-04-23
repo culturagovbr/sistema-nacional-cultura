@@ -1,0 +1,423 @@
+
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<link rel="stylesheet" href="/static/css/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/MarkerCluster.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+
+<style>
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.leaflet-button-icon{
+  font-size: 1.5em;
+}
+</style>
+
+<menu data-target="inicio" ></menu>
+<div class="row">
+    <div class="col-xl-6 col-lg-12">
+      <div class="card card-chart">
+        <div class="card-header card-header-success">
+          <div class="ct-chart" id="wtf"></div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Daily Sales</h4>
+          <p class="card-category">
+            <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.</p>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">access_time</i> updated 4 minutes ago
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-12">
+      <div class="card card-chart">
+        <div class="card-header card-header-warning">
+          <div class="ct-chart" id="situacoes"></div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Email Subscriptions</h4>
+          <p class="card-category">Last Campaign Performance</p>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">access_time</i> campaign sent 2 days ago
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-12">
+      <div class="card card-chart">
+        <div class="card-header card-header-danger">
+          <div class="ct-chart" id="completedTasksChart"></div>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Completed Tasks</h4>
+          <p class="card-category">Last Campaign Performance</p>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">access_time</i> campaign sent 2 days ago
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-header card-header-danger">
+                <div >Mapa da Adesão</div>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Pesquisa vai ficar aqui</h4>
+
+                <div id="mapid1" style="width: 100%; height: 600px; border-radius: 4px;"></div>
+
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="aaa">
+
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+{% block js%}
+<script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>
+<script type='text/javascript' src='/static/js/leaflet.markercluster.js'></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  var lat = -2.885310540095;
+  var lng = -40.1182414711655;
+  var markers = []
+  //@TODO Trazer a label da requisição dos entes
+  var colorGrade = [
+    {
+      id: 0,
+      color: '#FFEDA0',
+      label: 'Aguardando preenchimento dos dados cadastrais'
+
+    },
+    {
+      id: 1,
+      color: '#FED976',
+      label: 'Aguardando envio da documentação'
+    },
+    {
+      id: 2,
+      color:'#FEB24C',
+      label:'Documentação Recebida - Aguarda Análise',
+    },
+    {
+      id: 3,
+      color: '#FD8D3C',
+      label: 'Diligência Documental'
+    },
+    {
+      id: 4,
+      color: '#FC4E2A',
+      label: 'Encaminhado para assinatura do Secretário SAI'
+    },
+    {
+      id: 5,
+      color: '#E31A1C',
+      label:'Aguarda Publicação no DOU'
+    },
+    {
+      id: 6,
+      color: '#BD0026',
+      label: 'Publicado no DOU'
+    },
+    {
+      id: 7,
+      color: '#800026',
+      label: 'Responsável confirmado'
+    },
+  ]
+
+
+  var mymap = L.map('mapid1').setView([lat, lng], 4);
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+
+    maxZoom: 12,
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    // id: 'mapbox.streets',
+    id: 'mapbox.light',
+  }).addTo(mymap);
+
+
+  $.ajax({
+    type: 'GET',
+    url: '{% url 'gestao:ajax_consulta_entes' %}',
+    data: {},
+    dataType: 'json',
+    success: function (entes) {
+      var clusters = new L.markerClusterGroup();
+      entes.forEach(function(ente){
+        // console.log(ente)
+          var marker = new L.marker(
+              new L.LatLng(ente.latitude, ente.longitude),
+              {
+                  title: 'Clique para ver mais.',
+                  riseOnHover: false,
+                  enteObject: ente
+              }
+          ).bindPopup(ente.nome)
+          .on('click', function(e){
+            mymap.setView(e.latlng, 13);
+          });
+
+          markers.push(marker);
+
+          clusters.addLayer(marker);
+      });
+      mymap.addLayer(clusters);
+    }
+  });
+
+  if(!localStorage.getItem('geoJson')){
+    $.ajax({
+      type: 'GET',
+      url: 'https://servicodados.ibge.gov.br/api/v2/malhas/?resolucao=5&formato=application/vnd.geo+json',
+      data: {},
+      dataType: 'json',
+      success: function (data) {
+        data.features.forEach(function(enteGeoJson, key){
+          for(let i = 0; i < markers.length; i++){
+            if(markers[i].options.enteObject.cod_ibge == enteGeoJson.properties.codarea){
+              data.features[key].properties['enteObject'] = markers[i].options.enteObject;
+              continue;
+            }
+          }
+        });
+        localStorage.setItem('geoJson', LZString.compress(JSON.stringify(data)));
+
+        geojson = L.geoJson(data, {
+          style: style,
+          onEachFeature: onEachFeature
+        }).addTo(mymap);
+      }
+    });
+  }else{
+    var geoJsonString = LZString.decompress(localStorage.getItem('geoJson'));
+    geojson = L.geoJson(JSON.parse(geoJsonString), {
+        style: style,
+        onEachFeature: onEachFeature
+      }).addTo(mymap);
+  }
+
+  function getColor(situacao) {
+    //@TODO ajustar cores
+    return colorGrade[situacao].color;
+  }
+
+  function style(feature) {
+    let color = '#D3D3D3';
+    if (feature.properties.hasOwnProperty('enteObject')) {
+      color = getColor(feature.properties.enteObject.estado_processo);
+    }
+    return {
+        fillColor: color,
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+  }
+
+  function highlightFeature(e) {
+    var layer = e.target;
+    info.update(layer.feature.properties);
+
+    if (layer.feature.properties.hasOwnProperty('enteObject')) {
+      color = getColor(layer.feature.properties.enteObject.estado_processo);
+      layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+      });
+    }
+
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+  }
+
+  function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+    info.update();
+  }
+
+  function zoomToFeature(e) {
+    mymap.fitBounds(e.target.getBounds());
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+  }
+
+  var info = L.control();
+
+  info.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+
+  info.update = function (props) {
+    console.log(props)
+    this._div.innerHTML = '<h4>Dados do Ente Federado</h4>' +  (props && props.hasOwnProperty('enteObject') ?
+      '<b>Nome:</b> '+ props.enteObject.nome + ' - ' + props.enteObject.sigla + '</br>' +
+      '<b>Situação:</b> '+ colorGrade[props.enteObject.estado_processo].label
+      : 'Passe o mouse sob um ente aderido');
+
+  };
+  info.addTo(mymap);
+
+  var legend = L.control({position: 'bottomright'});
+
+  legend.onAdd = function (mymap) {
+
+      var div = L.DomUtil.create('div', 'info legend'),
+          grades = [1, 2, 3, 4, 5, 6, 7],
+          labels = [];
+
+      for (var i = 0; i < colorGrade.length; i++) {
+          div.innerHTML +=
+              '<i style="background:' + colorGrade[i].color + '"></i> ' +
+              colorGrade[i].label + '<br>';
+      }
+
+
+      return div;
+  };
+
+  legend.addTo(mymap);
+
+  L.easyButton( '<span class="leaflet-button-icon">&#x21bb;</span>', function(){
+    localStorage.clear();
+    location.reload();
+  }).addTo(mymap);
+
+
+
+
+
+
+  var names = {
+      labels: ['S', 'T', 'W', 'T', 'F', 'S', 'S'],
+      series: [
+        [12, 17, 7, 17, 23, 18, 38]
+      ]
+    };
+
+  var options = {
+      lineSmooth: Chartist.Interpolation.cardinal({
+        tension: 0
+      }),
+      low: 0,
+      high: 60,
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      },
+    }
+
+    var chart = new Chartist.Line('#wtf', names, options);
+
+    md.startAnimationForLineChart(chart);
+
+
+    console.log(Chartist)
+    var dataWebsiteViewsChart = {
+      labels: [0,100, 1000, 5000, 10000, 50000],
+      series: [
+        [
+          5000,
+          12500,
+          35000,
+          26000,
+          47000,
+        ]
+      ]
+    };
+    var optionsWebsiteViewsChart = {
+      lineSmooth: Chartist.Interpolation.cardinal({
+          tension: 0
+        }),
+        low: 0,
+        high: 50000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+        chartPadding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0
+        },
+      // plugins: [
+      //   Chartist.plugins.tooltip()
+      // ]
+    };
+      var responsiveOptions = [
+        // ['screen and (max-width: 640px)', {
+        //   seriesBarDistance: 5,
+        //   axisX: {
+        //     labelInterpolationFnc: function(value) {
+        //       return value[0];
+        //     }
+        //   }
+        // }]
+      ];
+     var aa = Chartist.Bar('#situacoes', dataWebsiteViewsChart, optionsWebsiteViewsChart, responsiveOptions);
+      md.startAnimationForBarChart(aa);
+
+ });
+</script>
+
+
+{% endblock js%}

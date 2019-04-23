@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
+from adesao.models import *
 
 from simple_history.models import HistoricalRecords
 
@@ -42,7 +43,7 @@ def upload_to_componente(instance, filename):
             componente=componente,
             new_name=new_name,
             ext=ext)
-    except:
+    except Exception:
         plano_id = instance.planotrabalho.id
         name = "sem_ente_federado/{plano_id}/docs/{componente}/{new_name}.{ext}".format(
                 plano_id=plano_id,
@@ -124,6 +125,10 @@ class Componente(ArquivoComponente2):
     def get_absolute_url(self):
         url = reverse_lazy("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
         return url
+
+    @property
+    def nome_componente(self):
+        return LISTA_TIPOS_COMPONENTES[self.tipo][1]
 
 
 class FundoDeCultura(Componente):

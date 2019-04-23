@@ -1,0 +1,138 @@
+{% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-default">
+            <div class="card-header card-plain card-header-primary">
+                <h4 class="card-title">Componente</h4>
+                <p class="card-category">Inserir componente do plano de trabalho</p>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% render_field form.data_publicacao class="date" %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% render_field form.arquivo %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+                            <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* @TODO migrar para arquivo separado */
+    .card-input-file .card-header + .card-footer {
+        border-top: 1px solid #eee;
+        margin-top: 20px;
+    }
+
+    .card-input-file .card-header.card-header-icon, .card-input-file .card-header.card-header-text {
+        text-align: right;
+    }
+    .card-input-file .card-header .file-label-name:not([class*="text-"]) {
+        color: #999999;
+        font-size: 14px;
+    }
+    .card-input-file .card-header .card-icon + .file-name, .card-input-file .card-header .card-icon + .card-category {
+        padding-top: 10px;
+    }
+
+    .card .upload-icon{
+        border-radius: 3px;
+        background-color: white;
+        padding: 15px;
+        margin-top: -20px;
+        margin-right: 15px;
+        float: left;
+        border-style:dashed;
+        border-color: #999999;
+    }
+
+    .upload-icon .material-icons{
+        color: #999999;
+    }
+
+
+    .card .card-footer .stats {
+        color: #999999;
+        font-size: 12px;
+        line-height: 22px;
+    }
+    .card .card-header.card-header-icon .file-name, .card .card-header.card-header-text .file-name{
+        margin-top: 15px;
+        color: #3C4858;
+    }
+
+    .card .upload-icon:hover{
+        -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+
+    input[type='file'] {
+        display: none
+    }
+</style>
+
+{% endblock content %}
+
+{% block js%}
+<script>
+
+    onDragEnter = function(event) {
+        event.preventDefault();
+    },
+
+    onDragOver = function(event) {
+        event.preventDefault();
+    },
+
+    onDragLeave = function(event) {
+        event.preventDefault();
+    },
+
+    onDrop = function(event, a) {
+        event.preventDefault();
+        var inputId = $(event.target).data('target');
+        var input = document.getElementById(inputId);
+        var inputName = input.name
+        var fileName = event.originalEvent.dataTransfer.files[0].name;
+        var file = event.originalEvent.dataTransfer.files;
+
+        $('#file-name-termo_posse').html(fileName);
+        $(`#footer-${inputName}`).hide()
+
+        input.files = event.originalEvent.dataTransfer.files;
+    };
+
+    $('input[type="file"]').each((key,element) => {
+        $(`#${element.id}`).on("change", function(event){
+            var inputName = event.target.name;
+            var newFile = event.target.files[0];
+            $(`#file-name-${inputName}`).html(newFile.name);
+            $(`#footer-${inputName}`).hide();
+        });
+
+        $(`#drag-space-${element.name}`)
+        .on("dragenter", onDragEnter)
+        .on("dragover", onDragOver)
+        .on("dragleave", onDragLeave)
+        .on("drop", onDrop)
+        .on("click", function(){
+            $(`#${element.id}`).trigger('click');
+        });
+    });
+
+</script>
+{% endblock js%}

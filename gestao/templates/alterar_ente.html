@@ -1,44 +1,75 @@
-{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
-{% load widget_tweaks %}
-
-<div class="panel panel-info">
-	<div class="panel-heading">
-		Dados do Ente Federado
-    </div>
-	<div class="panel-body">
-		<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
-			<div class="form-group">
-			    <label class="col-sm-4 control-label">Ente Federado (Estado ou Município)</label>
-
-			    <div class="col-sm-2">
-			    	<select name="ente_federado" class="form-control"  id="id_ente_federado">
-			    		<option value="{{object.ente_federado.id}}" selected="">{{object.ente_federado}}</option>
-			        </select>
-			    </div>
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %} {% load widget_tweaks %}
+<div class="row">
+	{{form.media}}
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header card-header-primary">
+				<h4 class="card-title">Editar Ente</h4>
+				<p class="card-category">{{object.ente_federado}}</p>
 			</div>
+			<div class="card-body">
+				<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+					<select name="ente_federado" class="form-control d-none"  id="id_ente_federado">
+						<option value="{{object.ente_federado.id}}" selected="">{{object.ente_federado}}</option>
+					</select>
+					{% include "formulario_sistema_gestao.html" %}
 
-			{% include "formulario_sistema.html" %}
-
-			<div class="form-group {% if form_sistema.conferencia_nacional.errors %} has-error {% endif %}">
-				<label for="{{ form_sistema.conferencia_nacional.id_for_label }}" class="col-sm-4 control-label">
-					Participou da Conferência Nacional:</label>
-
-				<div class="col-sm-4">
-					{% render_field form_sistema.conferencia_nacional %}
-					{% if form_sistema.conferencia_nacional.errors %}
-						<span class="help-block">{{ form_sistema.conferencia_nacional.errors }}</span>
-					{% endif %}
-				</div>
+					<button type="submit" class="btn btn-primary pull-right">Salvar</button>
+					<a class="btn btn-secondary pull-right" href="{% url 'adesao:home' %}">Cancelar</a>
+				</form>
 			</div>
-
-			<div class="form-group">
-			    <div class="col-sm-offset-3 col-sm-10">
-					<a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
-					<input type="submit" class="btn btn-success" value="Salvar" />
-			    </div>
-			</div>
-		</form>
+		</div>
 	</div>
 </div>
 
 {% endblock content %}
+
+{% block js%}
+<script>
+
+onDragEnter = function(event) {
+    event.preventDefault();
+},
+
+onDragOver = function(event) {
+    event.preventDefault();
+},
+
+onDragLeave = function(event) {
+    event.preventDefault();
+},
+
+onDrop = function(event, a) {
+	event.preventDefault();
+	var inputId = $(event.target).data('target');
+	var input = document.getElementById(inputId);
+	var inputName = input.name
+	var fileName = event.originalEvent.dataTransfer.files[0].name;
+	var file = event.originalEvent.dataTransfer.files;
+
+	$('#file-name-termo_posse').html(fileName);
+	$(`#footer-${inputName}`).hide()
+
+	input.files = event.originalEvent.dataTransfer.files;
+};
+
+$('input[type="file"]').each((key,element) => {
+	$(`#${element.id}`).on("change", function(event){
+		var inputName = event.target.name;
+		var newFile = event.target.files[0];
+		$(`#file-name-${inputName}`).html(newFile.name);
+		$(`#footer-${inputName}`).hide();
+	});
+
+	$(`#drag-space-${element.name}`)
+	.on("dragenter", onDragEnter)
+	.on("dragover", onDragOver)
+	.on("dragleave", onDragLeave)
+	.on("drop", onDrop)
+	.on("click", function(){
+		$(`#${element.id}`).trigger('click');
+	});
+});
+
+</script>
+{% endblock js%}

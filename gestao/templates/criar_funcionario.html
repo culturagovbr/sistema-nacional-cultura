@@ -1,14 +1,14 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
 
 <div class="panel panel-info">
-	<div class="panel-heading">
+	<!--<div class="panel-heading">
     	Dados do 
     	{% if view.kwargs.tipo == 'secretario' %}
     		Interlocutor
     	{% else %}
     		Responsável Indicado
     	{% endif %}
-    </div>
+    </div>-->
 	<div class="panel-body">
 		{% include "formulario_funcionario.html" %}
 	</div>
