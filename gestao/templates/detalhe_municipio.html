@@ -465,7 +465,7 @@
 
 {% block js%}
 <script type="text/javascript">
-    $(document).ready(function(){
+  $(document).ready(function(){
     var situacao_campos = function(e){
       if($('#select_situacoes').val()==="2"){
         $("input[id$='_situacao'], textarea[id$='_situacao']").each(function(){
@@ -537,6 +537,54 @@
       }
     }
     $('#select_situacoes').change(situacao_campos).ready(situacao_campos);
+
+    $('#cadastradorModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var nome_atual = button.data('cadastrador-nome')
+      var cpf_atual = button.data('cadastrador-cpf')
+
+      $('#nome-atual').val(nome_atual)
+      $('#cpf-atual').val(cpf_atual)
+    })
+
+    search = function(){
+      $url = "{% url 'gestao:ajax-consulta-cpf' %}"
+      csrf_token = "{{ csrf_token }}"
+      cpf = $('#id_cpf_usuario').val()
+
+      $.ajax({
+        type: "POST",
+        url: $url,
+        data: {
+          cpf: cpf,
+          csrfmiddlewaretoken: csrf_token
+        },
+        dataType: 'json',
+        cache: false,
+        success: function(response){
+          if (response){
+            $('#nome-novo').val(response.data.nome)
+            $.notify(
+              {
+                icon: "check_circle",
+                message: `Usuario encontrado: ${response.data.nome}`,
+              },
+              {type: "success"}
+            );
+          }
+        },
+        error: function(error){
+          $.notify(
+            {
+              icon: "error",
+              message: error.responseJSON.message,
+            },
+            {type: "danger"}
+          );
+        },
+      })
+    }
+
 });
 </script>
 {% endblock js%}
