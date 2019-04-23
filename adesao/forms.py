@@ -115,25 +115,33 @@ class CadastrarUsuarioForm(UserCreationForm):
 class CadastrarGestor(ModelForm):
     cpf = BRCPFField()
     termo_posse = RestrictedFileField(
-        widget=FileUploadWidget(attrs={
-            'label': 'Termo de Posse'
-        }),
         content_types=content_types,
         max_upload_size=52428800)
     rg_copia = RestrictedFileField(
-        widget=FileUploadWidget(attrs={
-            'label': 'Cópia do RG'
-        }),
+
         content_types=content_types,
         max_upload_size=52428800)
     cpf_copia = RestrictedFileField(
-        widget=FileUploadWidget(attrs={
-            'label': 'Cópia do CPF'
-        }),
         content_types=content_types,
         max_upload_size=52428800)
-    
-    # termo_posse.widget.attrs.update({'class': 'wtf'})
+
+
+    def __init__(self, *args, **kwargs):
+        logged_user = kwargs.pop('logged_user')
+        super(CadastrarGestor, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['rg_copia'].widget = FileUploadWidget(attrs={
+                'label': 'Cópia do RG'
+            })
+            self.fields['cpf_copia'].widget = FileUploadWidget(attrs={
+                'label': 'Cópia do CPF'
+                })
+            self.fields['termo_posse'].widget = FileUploadWidget(attrs={
+                'label': 'Cópia do CPF'
+            })
+
+
 
     class Meta:
         model = Gestor
@@ -150,7 +158,7 @@ class CadastrarSede(ModelForm):
 
 class CadastrarSistemaCulturaForm(ModelForm):
 
-    def clean(self):    
+    def clean(self):
         super(CadastrarSistemaCulturaForm, self).clean()
 
         if 'ente_federado' in self.changed_data:

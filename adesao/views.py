@@ -342,17 +342,17 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
             context['form_sede'] = CadastrarSede()
-            context['form_gestor'] = CadastrarGestor()
+            context['form_gestor'] = CadastrarGestor(logged_user=self.request.user)
         return context
 
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal, 
+        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
             gestor_pessoal, gestor_institucional]
 
         return recipiente_list
@@ -397,11 +397,11 @@ class AlterarSistemaCultura(UpdateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES, instance=self.object)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES, instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor, logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
             context['form_sede'] = CadastrarSede(instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor)
+            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor, logged_user=self.request.user)
 
         return context
 
@@ -579,11 +579,11 @@ class Detalhar(DetailView):
     def get_context_data(self, **kwargs):
         context = super(Detalhar, self).get_context_data(**kwargs)
         try:
-            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho, 
+            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho,
                 situacao="1")
         except:
             context["conselheiros"] = None
-        
+
         return context
 
 
