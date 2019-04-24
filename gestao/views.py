@@ -705,7 +705,7 @@ class DataTableEntes(BaseDatatableView):
                 escape(
                     item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
-                escape(item.data_publicacao_acordo) if item.data_publicacao_acordo else '',
+                escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")) if item.data_publicacao_acordo else '',
             ])
         return json_data
 
@@ -739,8 +739,7 @@ class DataTablePrazo(BaseDatatableView):
                 item.id,
                 escape(item.ente_federado),
                 escape(item.sede.cnpj) if item.sede else '',
-                item.data_publicacao_acordo.strftime(
-                    "%d de %B de %Y") if item.data_publicacao_acordo else '',
+                item.data_publicacao_acordo.strftime("%d/%m/%Y") if item.data_publicacao_acordo else '',
                 escape(item.prazo),
             ])
         return json_data
@@ -800,7 +799,7 @@ class DataTableUsuarios(BaseDatatableView):
                 item.user.username,
                 item.nome_usuario,
                 item.user.email,
-                item.user.last_login if item.user.last_login else '',
+                item.user.last_login.strftime("%d/%m/%Y") if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
                 'Administrador' if item.user.is_staff else 'Cadastrador',
                 ente_nome,

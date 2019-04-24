@@ -105,7 +105,7 @@ $(document).ready(function(){
             if (!data[4].length){
               return 'Nunca entrou'
             }
-            return data[4]
+            return data[4] 
           }
         },
         {
@@ -120,7 +120,7 @@ $(document).ready(function(){
               data-url="${alterar_usuario_url}${data[0]}"
               data-value="${data[5] == 'Ativo' ? 1 : 0}"
               data-title="Alterar Situação">
-                ${data[5]} <i class="fa fa-edit"></i>
+                ${data[5]}  
               </a>`
         },
         {
@@ -167,24 +167,52 @@ $(document).ready(function(){
           {type: "danger"}
         );
         }
-      }
+        else {
+          $.notify(
+          {
+            icon: "check_circle",
+            message: 'E-mail alterado com sucesso!',
+          },
+          {type: "success"}
+        );
+        }
+      },
+      display: function(value) {
+        $(this).html(`${value} <i class="fa fa-edit"></i>`);
+      },
+          
     });
-
+    
     $('.user__is_active').editable({
       type: 'select',
       title: 'Selecione',
       source: [
-        {value: 1, text: 'Ativo'},
-        {value: 0, text: 'Inativo'},
-      ]
+        {value: 0, text: 'Ativo'},
+        {value: 1, text: 'Inativo'},
+      ], 
+      display: function(value, source) {
+        $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
+      },
+      success: function(response, newValue) {
+        $.notify(
+          {
+            icon: "check_circle",
+            message: 'Alterado com sucesso!',
+          },
+          {type: "success"}
+        );
+      }
     });
 
     $('.user__is_staff').editable({
       type: 'select',
       source: [
-        {value: 1, text: 'Administrador'},
-        {value: 0, text: 'Cadastrador'},
+        {value: 0, text: 'Administrador'},
+        {value: 1, text: 'Cadastrador'},
       ],
+      display: function(value, source) {
+        $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
+      },
       success: function(response, newValue) {
         $.notify(
           {
