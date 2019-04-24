@@ -57,7 +57,10 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
+  console.log(new URLSearchParams(window.location.search).get('q'))
   var colunasParaExportacao = [0,1,2,3];
+
+
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -205,6 +208,11 @@ $(document).ready(function(){
           });
         }
       });
+
+      var urlSearchParam = new URLSearchParams(window.location.search).get('q');
+      if (urlSearchParam) {
+        tabela.search(urlSearchParam).draw();
+      }
 
     }
   });
