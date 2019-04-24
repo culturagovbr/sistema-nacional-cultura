@@ -15,21 +15,21 @@
               <p><strong>CNPJ:</strong> {{ ente.sede.cnpj }}</p>
               <p><strong>Prefeito:</strong>
                   {% if ente.gestor.termo_posse %}
-                  <a href="{{ ente.gestor.termo_posse.url }}">{{ ente.gestor.nome }}</a>
+                  <a href="{% if ente.gestor.termo_posse %} {{ ente.gestor.termo_posse.url }} {% endif %}">{{ ente.gestor.nome }}</a>
                   {% else %}
                   {{ ente.gestor.nome }}
                   {% endif %}
               </p>
               <p><strong>CPF:</strong>
                   {% if ente.gestor.cpf %}
-                  <a href="{{ ente.gestor.cpf_copia.url }}">{{ ente.gestor.cpf }}</a>
+                  <a href="{% if ente.gestor.cpf_copia %} {{ ente.gestor.cpf_copia.url }} {% endif %}">{{ ente.gestor.cpf }}</a>
                   {% else %}
                   {{ ente.gestor.cpf }}
                   {% endif %}
               </p>
               <p><strong>RG:</strong>
                     {% if ente.gestor.rg %}
-                    <a href="{{ ente.gestor.rg_copia.url }}">{{ ente.gestor.rg }}</a>
+                    <a href="{% if ente.gestor.rg_copia %} {{ ente.gestor.rg_copia.url }} {% endif %}">{{ ente.gestor.rg }}</a>
                     {% else %}
                     {{ ente.gestor.rg }}
                     {% endif %}
