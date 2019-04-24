@@ -467,6 +467,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     var situacao_campos = function(e){
+      $('div.form-group').removeClass('d-none');
       if($('#select_situacoes').val()==="2"){
         $("input[id$='_situacao'], textarea[id$='_situacao']").each(function(){
           if(!$(this).hasClass('d-none')){
@@ -515,8 +516,8 @@
           $("#data_acordo_situacao").fadeIn();
         }
         if($("#data_retificacao_situacao").hasClass('d-none')){
-          $("#data_retificacao_situacao").removeClass('d-none');
-          $("#data_retificacao_situacao").fadeIn();
+          $('#data_retificacao_situacao').removeClass('d-none');
+          $('#data_retificacao_situacao').fadeIn();
         }
         if($("#link_acordo_situacao").hasClass('d-none')){
           $("#link_acordo_situacao").removeClass('d-none');
@@ -535,6 +536,11 @@
           }
         });
       }
+      $('.gj-textbox-md').each(function(){
+        if($(this).hasClass('d-none')){
+          $(this).closest('div.form-group').addClass('d-none');
+        }
+      });
     }
     $('#select_situacoes').change(situacao_campos).ready(situacao_campos);
 
