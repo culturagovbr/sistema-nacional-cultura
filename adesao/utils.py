@@ -17,7 +17,7 @@ def enviar_email_conclusao(request):
         template_name='conclusao_cadastro',
         from_email='naoresponda@cultura.gov.br',
         recipient_list=[request.user.email, request.user.usuario.email_pessoal,
-            request.session['sistema_gestor']['email_institucional'], 
+            request.session['sistema_gestor']['email_institucional'],
             request.session['sistema_gestor']['email_pessoal']],
         context={
             'request':request,
@@ -61,7 +61,7 @@ def preenche_planilha(planilha):
     planilha.write(0, 21, "Email do Responsável")
     planilha.write(0, 22, "Localização do processo")
     planilha.write(0, 23, "Última atualização")
-    
+
     ultima_linha = 0
 
     for i, sistema in enumerate(SistemaCultura.objects.distinct('ente_federado__cod_ibge').order_by(
@@ -78,7 +78,7 @@ def preenche_planilha(planilha):
             pib = sistema.ente_federado.pib
             populacao = sistema.ente_federado.populacao
             faixa_populacional = sistema.ente_federado.faixa_populacional()
-                
+
         else:
             nome = "Não cadastrado"
             cod_ibge = "Não cadastrado"
@@ -143,7 +143,7 @@ def preenche_planilha(planilha):
         planilha.write(i, 21, email_responsavel)
         planilha.write(i, 22, local)
         planilha.write(i, 23, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
-        
+
         ultima_linha = i
 
     return ultima_linha
@@ -153,7 +153,7 @@ def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura, exclude=['data_criacao', 'alterado_em',
         'data_publicacao_acordo'])
     request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime("%d/%m/%Y às %H:%M:%S")
-    
+
     if sistema_cultura.alterado_por:
         request.session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura.alterado_por.user.username
     request.session['sistema_situacao'] = sistema_cultura.get_estado_processo_display()
@@ -171,16 +171,10 @@ def atualiza_session(sistema_cultura, request):
         if request.session.get('sistema_sede', False):
             request.session['sistema_sede'].clear()
 
-    if sistema_cultura.responsavel:
-        request.session['sistema_responsavel'] = model_to_dict(sistema_cultura.responsavel)
+    if sistema_cultura.gestor_cultura:
+        request.session['sistema_gestor_cultura'] = model_to_dict(sistema_cultura.gestor_cultura)
     else:
-        if request.session.get('sistema_responsavel', False):
-            request.session['sistema_responsavel'].clear()
-
-    if sistema_cultura.secretario:
-        request.session['sistema_secretario'] = model_to_dict(sistema_cultura.secretario)
-    else:
-        if request.session.get('sistema_secretario', False):
-            request.session['sistema_secretario'].clear()
+        if request.session.get('sistema_gestor_cultura', False):
+            request.session['sistema_gestor_cultura'].clear()
 
     request.session.modified = True

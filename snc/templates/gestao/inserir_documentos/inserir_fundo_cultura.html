@@ -3,21 +3,21 @@
     {{form.media}}
     <div class="col-md-5">
       <div class="card">
-      <div class="card-header card-header-primary">
-        <h4 class="card-title">Edição do Componente</h4>
-        <p class="card-category">Lei do Fundo de Cultura</p>
-      </div>
-      <div class="card-body">
-        <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-          <div class="row">
-              <div class="col-md-12">
-                {% render_field form %}
-              </div>
-          </div>
-        <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-        <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
-        </form>
-      </div>
+        <div class="card-header card-header-primary">
+          <h4 class="card-title">Edição do Componente</h4>
+          <p class="card-category">Lei do Fundo de Cultura</p>
+        </div>
+        <div class="card-body">
+          <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+                  {% render_field form %}
+                </div>
+            </div>
+          <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+          <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+          </form>
+        </div>
       </div>
 
       <div class="form-group">
@@ -31,3 +31,42 @@
   </div>
 </div>
 {% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    if($('#id_possui_cnpj_0').is(":checked")){
+      $('#cnpj_form').css('display', 'block');
+    }
+    if($('#id_possui_cnpj_1').is(":checked")){
+      $('#cnpj_form').css('display', 'none');
+    }
+
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    $('input[name=possui_cnpj]').change(function() { 
+      if(this.value=='True') {
+        $('#cnpj_form').fadeIn();
+      }
+      else {
+        $('#cnpj_form').fadeOut();
+      }
+    })
+  });
+
+</script>
+{% endblock js%}

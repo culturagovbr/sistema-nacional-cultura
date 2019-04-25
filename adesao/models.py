@@ -36,7 +36,7 @@ LISTA_ESTADOS_PROCESSO = (
     ('7', 'Responsável confirmado'),)
 
 LISTA_TIPOS_FUNCIONARIOS = (
-    (0, 'Secretário'),
+    (0, 'Gestor de Cultura'),
     (1, 'Responsável'),
     (2, 'Gestor'),)
 
@@ -425,8 +425,7 @@ class SistemaCultura(models.Model):
     conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
 
-    secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
-    responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
+    gestor_cultura = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_gestor_cultura")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
     sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
     estado_processo = models.CharField(

@@ -90,14 +90,14 @@
   <div class="col-sm-12 col-md-6">
       <div class="card">
         <div class="card-header card-header-primary">
-          <h4 class="card-title">Interlocutor</h4>
-          {% if ente.secretario %}
+          <h4 class="card-title">Dados do Gestor de Cultura</h4>
+          {% if ente.gestor_cultura %}
 
-          <a href="{% url 'gestao:alterar_funcionario' pk=ente.secretario.id tipo='secretario' %}" class="card-category">editar</a>
+          <a href="{% url 'gestao:alterar_funcionario' pk=ente.gestor_cultura.id %}" class="card-category">editar</a>
 
           {% else %}
 
-          <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='secretario' %}" class="card-category">cadastrar</a>
+          <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id %}" class="card-category">cadastrar</a>
 
           {% endif %}
         </div>
@@ -106,69 +106,36 @@
 
             </div>
           <div class="card-body">
-            <p><strong>Nome:</strong> {{ ente.secretario.nome }}</p>
-            <p><strong>CPF:</strong> {{ ente.secretario.cpf }}</p>
-            <p><strong>RG:</strong> {{ ente.secretario.rg }}</p>
-            <p><strong>Cargo:</strong> {{ ente.secretario.cargo }}</p>
-            <p><strong>Instituição:</strong> {{ ente.secretario.instituicao }}</p>
-            <p><strong>E-mail:</strong> {{ ente.secretario.email_institucional }}</p>
-            <p><strong>Telefone:</strong> {{ ente.secretario.telefone_um }}</p>
+            <p><strong>Nome:</strong> {{ ente.gestor_cultura.nome }}</p>
+            <p><strong>CPF:</strong> {{ ente.gestor_cultura.cpf }}</p>
+            <p><strong>RG:</strong> {{ ente.gestor_cultura.rg }}</p>
+            <p><strong>Cargo:</strong> {{ ente.gestor_cultura.cargo }}</p>
+            <p><strong>Instituição:</strong> {{ ente.gestor_cultura.instituicao }}</p>
+            <p><strong>E-mail Institucional:</strong> {{ ente.gestor_cultura.email_institucional }}</p>
+            {% if ente.gestor_cultura.email_pessoal %}
+              <p><strong>E-mail Pessoal:</strong> {{ ente.gestor_cultura.email_pessoal }}</p>
+            {% endif %}
+            <p><strong>Telefone:</strong> {{ ente.gestor_cultura.telefone_um }}</p>
           </div>
       </div>
     </div>
   </div>
 
-</div>
+  <div class="col-sm-12 col-md-6">
+    <div class="card">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title">Dados do Cadastrador</h4>
+      </div>
 
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div class="card">
-          <div class="card-header card-header-primary">
-            <h4 class="card-title">Responsável Indicado</h4>
-            {% if ente.responsavel %}
-
-            <a href="{% url 'gestao:alterar_funcionario' pk=ente.responsavel.id tipo='responsavel' %}" class="card-category">editar</a>
-
-            {% else %}
-
-            <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='responsavel' %}" class="card-category">cadastrar</a>
-
-            {% endif %}
-          </div>
-          <div class="card-body">
-              <div class="row">
-                  <div class="col-md-6">
-                    <p><strong>Nome:</strong> {{ ente.responsavel.nome }}</p>
-                    <p><strong>CPF:</strong> {{ ente.responsavel.cpf }}</p>
-                    <p><strong>RG:</strong> {{ ente.responsavel.rg }}</p>
-                    <p><strong>Cargo:</strong> {{ ente.responsavel.cargo }}</p>
-
-                  </div>
-                  <div class="col-md-6">
-                    <p><strong>Instituição:</strong> {{ ente.responsavel.instituicao }}</p>
-                    <p><strong>E-mail Institucional:</strong> {{ ente.responsavel.email_institucional }}</p>
-                    <p><strong>Telefone:</strong> {{ ente.responsavel.telefone_um }}</p>
-                  </div>
-
-              </div>
-        </div>
+      <div class="card-body">
+        <p><strong>CPF:</strong> {{ ente.cadastrador.user.username }}</p>
+        <p><strong>Nome:</strong> {{ ente.cadastrador.nome_usuario }}</p>
+        <p><strong>E-mail:</strong> {{ ente.cadastrador.user.email }}</p>
+        <p><strong>Data de cadastro:</strong> {{ ente.cadastrador.data_cadastro }}</p>
       </div>
     </div>
+  </div>
 
-    <div class="col-sm-12 col-md-6">
-        <div class="card">
-          <div class="card-header card-header-primary">
-            <h4 class="card-title">Cadastrador</h4>
-          </div>
-
-          <div class="card-body">
-            <p><strong>CPF:</strong> {{ ente.cadastrador.user.username }}</p>
-            <p><strong>Nome:</strong> {{ ente.cadastrador.nome_usuario }}</p>
-            <p><strong>E-mail:</strong> {{ ente.cadastrador.user.email }}</p>
-            <p><strong>Data de cadastro:</strong> {{ ente.cadastrador.data_cadastro }}</p>
-          </div>
-        </div>
-    </div>
 </div>
 
 {% if ente.estado_processo == '6' %}

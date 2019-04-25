@@ -20,10 +20,10 @@ urlpatterns = [
     path('alterar/<int:pk>',
         staff_member_required(views.AlterarDadosSistemaCultura.as_view()),
         name='alterar_sistema'),
-     path('alterar/funcionario/<str:tipo>/<int:pk>',
+     path('alterar/funcionario/<int:pk>',
         staff_member_required(views.AlterarFuncionario.as_view()),
         name='alterar_funcionario'),
-    path('funcionario/<int:sistema>/<str:tipo>',
+    path('funcionario/<int:sistema>',
         staff_member_required(views.CadastrarFuncionario.as_view()),
         name='cadastrar_funcionario'),
 

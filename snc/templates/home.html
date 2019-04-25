@@ -149,10 +149,7 @@
 {% if request.session.sistema_cultura_selecionado.ente_federado %}
   {% include "dados_municipio.html" %}
 {% endif %}
-{% if request.session.sistema_cultura_selecionado.secretario %} 
-  {% include "dados_secretario.html" %}
-{% endif %}
-{% if request.session.sistema_cultura_selecionado.responsavel %}
-  {% include "dados_responsavel.html" %}
+{% if request.session.sistema_gestor_cultura %} 
+  {% include "dados_gestor_cultura.html" %}
 {% endif %}
 {% endblock content %}
