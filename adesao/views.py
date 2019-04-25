@@ -417,6 +417,8 @@ class CadastrarFuncionario(CreateView):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['sistema']))
 
     def form_valid(self, form):
+        GESTOR_CULTURA = 0
+        form.instance.tipo_funcionario = GESTOR_CULTURA
         sistema = self.get_sistema_cultura()
         setattr(sistema, 'gestor_cultura', form.save())
         sistema.save()
