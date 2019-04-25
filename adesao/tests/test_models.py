@@ -30,7 +30,7 @@ def test_existencia_campos_atributo_models():
     sistema = SistemaCultura()
     fields = ('id', 'cadastrador', 'ente_federado', 'data_criacao', 
         'legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 
-        'plano', 'secretario', 'responsavel', 'gestor', 'sede', 
+        'plano', 'gestor_cultura', 'gestor', 'sede', 
         'estado_processo', 'data_publicacao_acordo', 'data_publicacao_retificacao', 'link_publicacao_acordo','link_publicacao_retificacao', 
         'processo_sei', 'numero_processo', 'localizacao', 'justificativa',
         'diligencia', 'alterado_em')
@@ -252,9 +252,8 @@ def test_criacao_funcionario(client):
     Verifica se é possível criar um novo funcionario.
     """
 
-    secretario = mommy.make("Funcionario", tipo_funcionario=0)
-    responsavel = mommy.make("Funcionario", tipo_funcionario=1)
-    sistema = mommy.make("SistemaCultura", secretario=secretario, responsavel=responsavel)
+    gestor_cultura = mommy.make("Funcionario", tipo_funcionario=0)
+    sistema = mommy.make("SistemaCultura", gestor_cultura=gestor_cultura)
   
     assert SistemaCultura.objects.get(pk=sistema.pk) == sistema
 

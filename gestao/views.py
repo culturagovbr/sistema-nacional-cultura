@@ -358,7 +358,7 @@ class AlterarFuncionario(AlterarFuncionario):
 
     def get_success_url(self):
         funcionario = Funcionario.objects.get(id=self.kwargs['pk'])
-        sistema = getattr(funcionario, 'sistema_cultura_%s' % self.kwargs['tipo'])
+        sistema = getattr(funcionario, 'sistema_cultura_gestor_cultura')
         return reverse_lazy('gestao:detalhar', kwargs={'cod_ibge': sistema.all()[0].ente_federado.cod_ibge})
 
 

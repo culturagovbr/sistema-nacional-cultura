@@ -83,72 +83,38 @@
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Informações do Interlocutor</strong>
+      <strong>Informações do Gestor de Cultura</strong>
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
-      CPF: {{request.session.sistema_secretario.cpf}}
+      CPF: {{request.session.sistema_gestor_cultura.cpf}}
     </div>
     <div class="col-xs-12">
-      Nome Completo: {{request.session.sistema_secretario.nome}}
+      Nome Completo: {{request.session.sistema_gestor_cultura.nome}}
     </div>
     <div class="col-xs-4">
-      RG: {{request.session.sistema_secretario.rg}}
+      RG: {{request.session.sistema_gestor_cultura.rg}}
     </div>
     <div class="col-xs-4">
-      Órgão Expeditor: {{request.session.sistema_secretario.orgao_expeditor_rg}}
+      Órgão Expeditor: {{request.session.sistema_gestor_cultura.orgao_expeditor_rg}}
     </div>
     <div class="col-xs-4">
-      UF: {{request.session.sistema_secretario.estado_expeditor}}
+      UF: {{request.session.sistema_gestor_cultura.estado_expeditor}}
     </div>
     <div class="col-xs-12">
-      Cargo: {{request.session.sistema_secretario.cargo}}
+      Cargo: {{request.session.sistema_gestor_cultura.cargo}}
     </div>
     <div class="col-xs-12">
-      Instituição: {{request.session.sistema_secretario.instituicao}}
+      Instituição: {{request.session.sistema_gestor_cultura.instituicao}}
     </div>
     <div class="col-xs-12">
-      Email Institucional: {{request.session.sistema_secretario.email_institucional}}
+      Email Institucional: {{request.session.sistema_gestor_cultura.email_institucional}}
     </div>
     <div class="col-xs-10">
-      Telefone Institucional: {{request.session.sistema_secretario.telefone_um}}; {{request.session.sistema_secretario.telefone_dois}}; {{request.session.sistema_secretario.telefone_tres}}
+      Telefone Institucional: {{request.session.sistema_gestor_cultura.telefone_um}}; {{request.session.sistema_gestor_cultura.telefone_dois}}; {{request.session.sistema_gestor_cultura.telefone_tres}}
     </div>
   </div>
 
-  <div class="row">
-    <hr style="background-color:black;" />
-    <center>
-      <strong>Informações do Responsável Indicado - Acompanhamento de Acordo</strong>
-    </center>
-    <hr style="background-color:black;" />
-      <div class="col-xs-12">
-        CPF: {{request.session.sistema_responsavel.cpf}}
-      </div>
-      <div class="col-xs-12">
-        Nome Completo: {{request.session.sistema_responsavel.nome}}
-      </div>
-      <div class="col-xs-4">
-        RG: {{request.session.sistema_responsavel.rg}}
-      </div>
-      <div class="col-xs-4">
-        Órgão Expeditor: {{request.session.sistema_responsavel.orgao_expeditor_rg}}
-      </div>
-      <div class="col-xs-4">
-        UF: {{request.session.sistema_responsavel.estado_expeditor}}
-      </div>
-      <div class="col-xs-12">
-        Cargo: {{request.session.sistema_responsavel.cargo}}
-      </div>
-      <div class="col-xs-12">
-        Instituição: {{request.session.sistema_responsavel.instituicao}}
-      </div>
-      <div class="col-xs-12">
-        Email Institucional: {{request.session.sistema_responsavel.email_institucional}}
-      </div>
-      <div class="col-xs-10">
-        Telefone Institucional: {{request.session.sistema_responsavel.telefone_um}}; {{request.session.sistema_responsavel.telefone_dois}}; {{request.session.sistema_responsavel.telefone_tres}}
-      </div>
-  </div>
   <br /><br />
   <div class="row">
     <hr style="background-color:black;" />
