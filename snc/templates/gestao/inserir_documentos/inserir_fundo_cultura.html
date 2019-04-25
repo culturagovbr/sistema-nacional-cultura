@@ -5,36 +5,94 @@
   </div>
   <div class="panel-body">
     <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-      <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Anexo</label>
 
+      <div class="form-group {% if form.mesma_lei.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label" for="{{ form.mesma_lei.id_for_label }}">
+            É a mesma lei do sistema municipal de cultura?</br>
+          </label>
         <div class="col-sm-7">
-          {% render_field form.arquivo %}
+          {% for radio in form.mesma_lei %}
+            {{ radio }}</br>
+          {% endfor %}
         </div>
         <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.arquivo.errors}}</span>
+          <span class="help-block">{{ form.mesma_lei.errors }}</span>
         </div>
       </div>
 
-      <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">CNPJ do Fundo de Cultura</label>
+      <div id="lei_data_form">
+        <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
+          <label class="col-sm-3 control-label">Data de publicação da Lei</label>
 
-        <div class="col-sm-7">
-          <span class="help-block">{% render_field form.cnpj %}</span>
+          <div class="col-sm-7">
+            <span class="help-block">{% render_field form.data_publicacao class="date" %}</span>
+          </div>
+          <div class="col-sm-offset-3 col-sm-9 has-error">
+              <span class="help-block">{{ form.data_publicacao.errors}}</span>
+          </div>
         </div>
-        <div class="col-sm-offset-3 col-sm-9 has-error">
-            <span class="help-block">{{ form.cnpj.errors}}</span>
+
+        <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
+          <label class="col-sm-3 control-label">Anexo da Lei</label>
+
+          <div class="col-sm-7">
+            {% if form.arquivo.value %}
+              <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+              {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+                <p>Modificar: {% render_field form.arquivo %}</p>
+              {% endif %}
+            {% else %}
+              <p>{% render_field form.arquivo %}</p>
+            {% endif %}
+          </div>
+          <div class="col-sm-offset-3 col-sm-9">
+            <span class="help-block">{{ form.arquivo.errors}}</span>
+          </div>
         </div>
       </div>
 
-      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
-
+      <div class="form-group {% if form.possui_cnpj.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label" for="{{ form.possui_cnpj.id_for_label }}">
+          O fundo possui cnpj?</br>
+        </label>
         <div class="col-sm-7">
-          <span class="help-block">{% render_field form.data_publicacao class="date" %}</span>
+          {% for radio in form.possui_cnpj %}
+            {{ radio }}</br>
+          {% endfor %}
         </div>
-        <div class="col-sm-offset-3 col-sm-9 has-error">
-            <span class="help-block">{{ form.data_publicacao.errors}}</span>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">{{ form.possui_cnpj.errors }}</span>
+        </div>
+      </div>
+
+      <div id="cnpj_form">
+        <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
+          <label class="col-sm-3 control-label">CNPJ do Fundo de Cultura</label>
+
+          <div class="col-sm-7">
+            {% render_field form.cnpj %}
+          </div>
+          <div class="col-sm-offset-3 col-sm-9 has-error">
+              <span class="help-block">{{ form.cnpj.errors}}</span>
+          </div>
+        </div>
+
+        <div class="form-group {% if form.comprovante.errors %} has-error {% endif %}">
+          <label class="col-sm-3 control-label">Comprovante do CNPJ</label>
+
+          <div class="col-sm-7">
+            {% if form.comprovante.value %}
+              <p><a href="{{ form.comprovante.value.url }}">Baixar arquivo atual</a></p>
+              {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+                <p>Modificar: {% render_field form.comprovante %}</p>
+              {% endif %}
+            {% else %}
+              <p>{% render_field form.comprovante %}</p>
+            {% endif %}
+          </div>
+          <div class="col-sm-offset-3 col-sm-9">
+            <span class="help-block">{{ form.comprovante.errors}}</span>
+          </div>
         </div>
       </div>
 
@@ -49,3 +107,42 @@
   </div>
 </div>
 {% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    if($('#id_possui_cnpj_0').is(":checked")){
+      $('#cnpj_form').css('display', 'block');
+    }
+    if($('#id_possui_cnpj_1').is(":checked")){
+      $('#cnpj_form').css('display', 'none');
+    }
+
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    $('input[name=possui_cnpj]').change(function() { 
+      if(this.value=='True') {
+        $('#cnpj_form').fadeIn();
+      }
+      else {
+        $('#cnpj_form').fadeOut();
+      }
+    })
+  });
+
+</script>
+{% endblock js%}

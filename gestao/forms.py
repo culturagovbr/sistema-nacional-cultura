@@ -145,6 +145,12 @@ class DiligenciaComponenteForm(DiligenciaForm):
                 arquivo.situacao = self.cleaned_data['classificacao_arquivo']
                 arquivo.save(update_fields={"diligencia", "situacao"})
 
+            if self.tipo_componente == "legislacao":
+                if self.sistema_cultura.fundo_cultura and self.sistema_cultura.fundo_cultura.arquivo == componente.arquivo:
+                    self.sistema_cultura.fundo_cultura.diligencia = diligencia
+                    self.sistema_cultura.fundo_cultura.situacao = self.cleaned_data['classificacao_arquivo']
+                    self.sistema_cultura.fundo_cultura.save()
+
     class Meta:
         model = DiligenciaSimples
         fields = ('texto_diligencia', 'classificacao_arquivo')

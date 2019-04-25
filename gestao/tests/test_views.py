@@ -644,7 +644,7 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     orgao_gestor.refresh_from_db()
-    name = orgao_gestor.arquivo.name.split("orgao_gestor/")[1]
+    name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
     situacao = orgao_gestor.situacao
 
     assert name == arquivo.name
@@ -664,8 +664,9 @@ def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.last().arquivo.name.split("orgao_gestor/")[1]
-    situacao = Componente.objects.last().situacao
+    orgao_gestor = Componente.objects.last()
+    name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
+    situacao = orgao_gestor.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -691,7 +692,7 @@ def test_alterar_documentos_legislacao(client, login_staff):
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     legislacao.refresh_from_db()
-    name = legislacao.arquivo.name.split("legislacao/")[1]
+    name = legislacao.arquivo.name.split(str(legislacao.id)+"/")[1]
     situacao = legislacao.situacao
 
     assert name == arquivo.name
@@ -711,8 +712,9 @@ def test_inserir_documentos_legislacao(client, sistema_cultura, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.last().arquivo.name.split("legislacao/")[1]
-    situacao = Componente.objects.last().situacao
+    legislacao = Componente.objects.last()
+    name = legislacao.arquivo.name.split(str(legislacao.id)+"/")[1]
+    situacao = legislacao.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -725,6 +727,9 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     arquivo = SimpleUploadedFile(
         "fundo_cultura.txt", b"file_content", content_type="text/plain"
     )
+    comprovante = SimpleUploadedFile(
+        "insere_comprovante.txt", b"file_content", content_type="text/plain"
+    )
 
     url = reverse(
         "gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
@@ -732,12 +737,14 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
-        "cnpj": "27.082.838/0001-28"})
+        "cnpj": "27.082.838/0001-28", "comprovante": comprovante,
+        "mesma_lei": "False", "possui_cnpj": "True"})
 
     novo_fundo = FundoDeCultura.objects.last()
-    name = novo_fundo.arquivo.name.split("fundo_cultura/")[1]
+    name = novo_fundo.arquivo.name.split(str(novo_fundo.id)+"/")[1]
 
     assert name == arquivo.name
+    assert novo_fundo.comprovante_cnpj.arquivo.name.split(str(novo_fundo.comprovante_cnpj.id)+"/")[1] == comprovante.name
     assert novo_fundo.situacao == 1
     assert novo_fundo.cnpj == "27.082.838/0001-28"
     assert novo_fundo.data_publicacao == datetime.date(2018, 6, 28)
@@ -752,7 +759,10 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
         fundo_cultura=fundo)
 
     arquivo = SimpleUploadedFile(
-        "fundo_cultura.txt", b"file_content", content_type="text/plain"
+        "fundo_cultura_alterar.txt", b"file_content", content_type="text/plain"
+    )
+    comprovante = SimpleUploadedFile(
+        "comprovante_alterar_fundo.txt", b"file_content", content_type="text/plain"
     )
 
     url = reverse(
@@ -762,14 +772,16 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
     numero_fundos = FundoDeCultura.objects.count()
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
-        "cnpj": "27.082.838/0001-28"})
+        "cnpj": "27.082.838/0001-28", "comprovante": comprovante, "mesma_lei": "False",
+        "possui_cnpj": "True"})
 
     numero_fundos_pos_update = FundoDeCultura.objects.count()
     fundo.refresh_from_db()
-    name = fundo.arquivo.name.split("fundo_cultura/")[1]
+    name = fundo.arquivo.name.split(str(fundo.id)+"/")[1]
 
     assert numero_fundos == numero_fundos_pos_update
     assert name == arquivo.name
+    assert fundo.comprovante_cnpj.arquivo.name.split(str(fundo.comprovante_cnpj.id)+"/")[1] == comprovante.name
     assert fundo.situacao == 1
     assert fundo.data_publicacao == datetime.date(2018, 6, 28)
     assert fundo.cnpj == "27.082.838/0001-28"
@@ -790,8 +802,9 @@ def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
-    name = Componente.objects.last().arquivo.name.split("plano/")[1]
-    situacao = Componente.objects.last().situacao
+    plano = Componente.objects.last()
+    name = plano.arquivo.name.split(str(plano.id)+"/")[1]
+    situacao = plano.situacao
 
     assert name == arquivo.name
     assert situacao == 1
@@ -816,7 +829,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
 
     plano.refresh_from_db()
-    name = plano.arquivo.name.split("plano/")[1]
+    name = plano.arquivo.name.split(str(plano.id)+"/")[1]
     situacao = plano.situacao
 
     assert name == arquivo.name
@@ -849,8 +862,8 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
     )
 
     conselho.refresh_from_db()
-    assert lei.name == conselho.lei.arquivo.name.split("conselho/")[1]
-    assert arquivo.name == conselho.arquivo.name.split("conselho/")[1]
+    assert lei.name == conselho.lei.arquivo.name.split(str(conselho.lei.id)+"/")[1]
+    assert arquivo.name == conselho.arquivo.name.split(str(conselho.id)+"/")[1]
     assert conselho.situacao == 1
     assert conselho.lei.situacao == 1
 
@@ -875,8 +888,8 @@ def test_inserir_documentos_conselho_cultural(client, sistema_cultura, login_sta
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
 
-    name = sistema_atualizado.conselho.arquivo.name.split("conselho/")[1]
-    name_lei = sistema_atualizado.conselho.lei.arquivo.name.split("conselho/")[1]
+    name = sistema_atualizado.conselho.arquivo.name.split(str(sistema_atualizado.conselho.id)+"/")[1]
+    name_lei = sistema_atualizado.conselho.lei.arquivo.name.split(str(sistema_atualizado.conselho.lei.id)+"/")[1]
 
     assert name == arquivo.name
     assert name_lei == arquivo_lei.name
@@ -1014,6 +1027,72 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
 
     assert DiligenciaSimples.objects.count() == 1
     assert DiligenciaSimples.objects.first() == sistema_cultura.orgao_gestor.diligencia
+
+
+def test_tipo_diligencia_sistema_com_fundo_igual(url, client, plano_trabalho, login_staff):
+    """ Testa criação da diligência específica de um componente"""
+
+    DiligenciaSimples.objects.all().delete()
+
+    legislacao = mommy.make("Componente", tipo=0, situacao=1)
+    fundo_cultura = mommy.make("FundoDeCultura", tipo=2, situacao=1)
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
+        legislacao=legislacao,
+        fundo_cultura=fundo_cultura
+    )
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    legislacao.arquivo = arquivo
+    legislacao.save()
+    fundo_cultura.arquivo = legislacao.arquivo
+    fundo_cultura.save()
+
+    request = client.post(
+        url.format(id=sistema_cultura.id, componente="legislacao", arquivo="arquivo"),
+        data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
+    )
+
+    sistema_cultura.legislacao.refresh_from_db()
+    sistema_cultura.fundo_cultura.refresh_from_db()
+    diligencia = DiligenciaSimples.objects.first()
+
+    assert DiligenciaSimples.objects.count() == 1
+    assert diligencia == sistema_cultura.legislacao.diligencia
+    assert diligencia == sistema_cultura.fundo_cultura.diligencia
+    assert sistema_cultura.fundo_cultura.situacao == 4
+
+
+def test_tipo_diligencia_comprovante_cnpj(url, client, plano_trabalho, login_staff):
+    """ Testa criação da diligência específica de um componente"""
+
+    DiligenciaSimples.objects.all().delete()
+
+    fundo_cultura = mommy.make("FundoDeCultura", tipo=2, situacao=1, _fill_optional='comprovante_cnpj')
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        _fill_optional='cadastrador',
+        fundo_cultura=fundo_cultura
+    )
+
+    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
+    fundo_cultura.comprovante_cnpj.arquivo = arquivo
+    fundo_cultura.comprovante_cnpj.save()
+
+    request = client.post(
+        url.format(id=sistema_cultura.id, componente="fundo_cultura", arquivo="comprovante_cnpj"),
+        data={"classificacao_arquivo": "4", "texto_diligencia": "Ta errado cara"},
+    )
+
+    sistema_cultura = SistemaCultura.sistema.get(ente_federado__nome=sistema_cultura.ente_federado.nome)
+    diligencia = DiligenciaSimples.objects.first()
+
+    assert DiligenciaSimples.objects.count() == 1
+    assert diligencia == sistema_cultura.fundo_cultura.comprovante_cnpj.diligencia
+    assert sistema_cultura.fundo_cultura.comprovante_cnpj.situacao == 4
 
 
 def test_envio_email_diligencia_geral(client, login_staff):
@@ -1917,16 +1996,15 @@ def test_alterar_dados_sistema_cultura(client, login_staff):
     assert sistema_cultura.sede.telefone_um == sede.telefone_um
 
 
-def test_alterar_dados_secretario(client, login_staff):
+def test_alterar_dados_gestor_cultura(client, login_staff):
     sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
-        secretario__tipo_funcionario=0, _fill_optional=['sede', 'gestor'])
+        gestor_cultura__tipo_funcionario=0, _fill_optional=['sede', 'gestor'])
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29, telefone_um="999999999",
         nome="Joao silva", email_institucional="joao@email.com")
 
-    url = reverse("gestao:alterar_funcionario", kwargs={"pk": sistema_cultura.secretario.id,
-        "tipo": "secretario"})
+    url = reverse("gestao:alterar_funcionario", kwargs={"pk": sistema_cultura.gestor_cultura.id})
 
     response = client.post(
         url,
@@ -1943,56 +2021,17 @@ def test_alterar_dados_secretario(client, login_staff):
 
     sistema_cultura = SistemaCultura.sistema.get(ente_federado__cod_ibge=123456)
 
-    assert sistema_cultura.secretario.cpf == funcionario.cpf
-    assert sistema_cultura.secretario.rg == funcionario.rg
-    assert sistema_cultura.secretario.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
-    assert sistema_cultura.secretario.estado_expeditor == funcionario.estado_expeditor
-    assert sistema_cultura.secretario.nome == funcionario.nome
-    assert sistema_cultura.secretario.email_institucional == funcionario.email_institucional
-    assert sistema_cultura.secretario.telefone_um == funcionario.telefone_um
-    assert sistema_cultura.secretario.tipo_funcionario == 0
+    assert sistema_cultura.gestor_cultura.cpf == funcionario.cpf
+    assert sistema_cultura.gestor_cultura.rg == funcionario.rg
+    assert sistema_cultura.gestor_cultura.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
+    assert sistema_cultura.gestor_cultura.estado_expeditor == funcionario.estado_expeditor
+    assert sistema_cultura.gestor_cultura.nome == funcionario.nome
+    assert sistema_cultura.gestor_cultura.email_institucional == funcionario.email_institucional
+    assert sistema_cultura.gestor_cultura.telefone_um == funcionario.telefone_um
+    assert sistema_cultura.gestor_cultura.tipo_funcionario == 0
 
 
-def test_alterar_dados_responsavel(client, login_staff):
-    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
-        responsavel__tipo_funcionario=1, _fill_optional=['sede', 'gestor'])
-
-    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
-        orgao_expeditor_rg="SSP", estado_expeditor=29, telefone_um="999999999",
-        nome="Joao silva", email_institucional="joao@email.com", email_pessoal="email@email.com")
-
-    url = reverse("gestao:alterar_funcionario", kwargs={"pk": sistema_cultura.responsavel.id,
-        "tipo": "responsavel"})
-
-    response = client.post(
-        url,
-        {
-            "cpf": funcionario.cpf,
-            "rg": funcionario.rg,
-            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
-            "estado_expeditor": funcionario.estado_expeditor,
-            "nome": funcionario.nome,
-            "email_institucional": funcionario.email_institucional,
-            "email_pessoal": funcionario.email_pessoal,
-            "telefone_um": funcionario.telefone_um
-        },
-    )
-
-    sistema_cultura = SistemaCultura.sistema.get(ente_federado__cod_ibge=123456)
-
-    assert sistema_cultura.alterado_por == login_staff
-
-    assert sistema_cultura.responsavel.cpf == funcionario.cpf
-    assert sistema_cultura.responsavel.rg == funcionario.rg
-    assert sistema_cultura.responsavel.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
-    assert sistema_cultura.responsavel.estado_expeditor == funcionario.estado_expeditor
-    assert sistema_cultura.responsavel.nome == funcionario.nome
-    assert sistema_cultura.responsavel.email_institucional == funcionario.email_institucional
-    assert sistema_cultura.responsavel.telefone_um == funcionario.telefone_um
-    assert sistema_cultura.responsavel.tipo_funcionario == 1
-
-
-def test_criar_dados_responsavel(client, login_staff):
+def test_criar_dados_gestor_cultura(client, login_staff):
     sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
         _fill_optional=['sede', 'gestor'])
 
@@ -2000,8 +2039,7 @@ def test_criar_dados_responsavel(client, login_staff):
         orgao_expeditor_rg="SSP", estado_expeditor=29, telefone_um="999999999",
         nome="Joao silva", email_institucional="joao@email.com", email_pessoal="email@email.com")
 
-    url = reverse("gestao:cadastrar_funcionario", kwargs={"sistema": sistema_cultura.id,
-        "tipo": "responsavel"})
+    url = reverse("gestao:cadastrar_funcionario", kwargs={"sistema": sistema_cultura.id})
 
     response = client.post(
         url,
@@ -2021,55 +2059,15 @@ def test_criar_dados_responsavel(client, login_staff):
 
     assert sistema_cultura.alterado_por == login_staff
 
-    assert sistema_cultura.responsavel.cpf == funcionario.cpf
-    assert sistema_cultura.responsavel.rg == funcionario.rg
-    assert sistema_cultura.responsavel.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
-    assert sistema_cultura.responsavel.estado_expeditor == funcionario.estado_expeditor
-    assert sistema_cultura.responsavel.nome == funcionario.nome
-    assert sistema_cultura.responsavel.email_institucional == funcionario.email_institucional
-    assert sistema_cultura.responsavel.email_pessoal == funcionario.email_pessoal
-    assert sistema_cultura.responsavel.telefone_um == funcionario.telefone_um
-    assert sistema_cultura.responsavel.tipo_funcionario == 1
-
-
-def test_criar_dados_secretario(client, login_staff):
-    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
-        _fill_optional=['sede', 'gestor'])
-
-    funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
-        orgao_expeditor_rg="SSP", estado_expeditor=29, telefone_um="999999999",
-        nome="Joao silva", email_institucional="joao@email.com", email_pessoal="email@email.com")
-
-    url = reverse("gestao:cadastrar_funcionario", kwargs={"sistema": sistema_cultura.id,
-        "tipo": "secretario"})
-
-    response = client.post(
-        url,
-        {
-            "cpf": funcionario.cpf,
-            "rg": funcionario.rg,
-            "orgao_expeditor_rg": funcionario.orgao_expeditor_rg,
-            "estado_expeditor": funcionario.estado_expeditor,
-            "nome": funcionario.nome,
-            "email_institucional": funcionario.email_institucional,
-            "email_pessoal": funcionario.email_pessoal,
-            "telefone_um": funcionario.telefone_um
-        },
-    )
-
-    sistema_cultura = SistemaCultura.sistema.get(ente_federado__cod_ibge=123456)
-
-    assert sistema_cultura.alterado_por == login_staff
-
-    assert sistema_cultura.secretario.cpf == funcionario.cpf
-    assert sistema_cultura.secretario.rg == funcionario.rg
-    assert sistema_cultura.secretario.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
-    assert sistema_cultura.secretario.estado_expeditor == funcionario.estado_expeditor
-    assert sistema_cultura.secretario.nome == funcionario.nome
-    assert sistema_cultura.secretario.email_institucional == funcionario.email_institucional
-    assert sistema_cultura.secretario.email_pessoal == funcionario.email_pessoal
-    assert sistema_cultura.secretario.telefone_um == funcionario.telefone_um
-    assert sistema_cultura.secretario.tipo_funcionario == 0
+    assert sistema_cultura.gestor_cultura.cpf == funcionario.cpf
+    assert sistema_cultura.gestor_cultura.rg == funcionario.rg
+    assert sistema_cultura.gestor_cultura.orgao_expeditor_rg == funcionario.orgao_expeditor_rg
+    assert sistema_cultura.gestor_cultura.estado_expeditor == funcionario.estado_expeditor
+    assert sistema_cultura.gestor_cultura.nome == funcionario.nome
+    assert sistema_cultura.gestor_cultura.email_institucional == funcionario.email_institucional
+    assert sistema_cultura.gestor_cultura.email_pessoal == funcionario.email_pessoal
+    assert sistema_cultura.gestor_cultura.telefone_um == funcionario.telefone_um
+    assert sistema_cultura.gestor_cultura.tipo_funcionario == 0
 
 
 def test_alteracao_diligencia(client, login_staff):

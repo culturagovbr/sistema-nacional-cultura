@@ -203,26 +203,14 @@
                         <!-- FIM DO DADOS DO PREFEITO-->
 
 
-                        <!-- DADOS DO RESPONSAVEL-->
-                        <h3 class="portlet-topper "> Responsável / Dirigente Cultural</h3>
+                        <!-- DADOS DO GESTOR DE CULTURA-->
+                        <h3 class="portlet-topper "> Gestor de Cultura</h3>
 
-                        <!--<div><img src="img/foto.png" align="left"> </div>-->
-                        <div id="parent-fieldname-description" class="documentDescription texto_cor" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.responsavel.nome }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Cargo:<p style="color: #6f7681">{{ object.responsavel.cargo }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.responsavel.email_institucional }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.responsavel.telefone_um }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.gestor_cultura.nome }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.gestor_cultura.email_institucional }}</div>
+                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.gestor_cultura.telefone_um }}</div>
                         <p></p>
-                        <!-- FIM DO DADOS DO RESPONSAVEL-->
-
-
-                        <!-- DADOS DO INTERLOCUTOR-->
-                        <h3 class="portlet-topper "> Interlocutor / Cadastrador</h3>
-
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Nome:<p style="color: #6f7681">{{ object.secretario.nome }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">E-mail:<p style="color: #6f7681">{{ object.secretario.email_institucional }}</div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color: #0E3F98">Telefone:<p style="color: #6f7681">{{ object.secretario.telefone_um }}</div>
-                        <p></p>
-                        <!-- FIM DO DADOS DO INTERLOCUTOR-->
+                        <!-- FIM DO DADOS DO GESTOR DE CULTURA-->
 
 
                         <!-- DADOS DO CONSELHEIROS-->
@@ -300,25 +288,20 @@
                     <div class="painel_situacao">
                         <div class="fundo_situacao"></div>
                             <div class="situacao_bloco_texto">
-                                <h3 class="titulo_situacao">Data de Publicação</h3>
-                                <h5 class="texto_situacao">{{ object.data_publicacao_acordo|default:"Sem data de publicação" }}</h5>
                                 <h3 class="titulo_situacao">Situação do Acordo</h3>
+                                <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                                <h3 class="titulo_situacao">Data de Publicação</h3>
                                 {% if object.link_publicacao_acordo %}
                                     <a href="{{ object.link_publicacao_acordo }}">
-                                        <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                                        <h5 class="texto_situacao">{{ object.data_publicacao_acordo|default:"Sem data de publicação" }}</h5>
                                     </a>
                                 {% else %}
-                                    <h3 class="texto_situacao">{{ object.get_estado_processo_display|default:"Não encontrado" }}</h3>
+                                    <h5 class="texto_situacao">{{ object.data_publicacao_acordo|default:"Sem data de publicação" }}</h5>
                                 {% endif %}
                                 {% if object.link_publicacao_retificacao %}
-                                    <h3 class="titulo_situacao">Link da Retificação</h3>
                                     <a href="{{ object.link_publicacao_retificacao }}">
-                                        <h6 class="texto_situacao">{{ object.link_publicacao_retificacao }}</h6>
+                                        <h5 class="texto_situacao">{{ object.data_publicacao_retificacao|default:"Sem data de retificação" }}</h5>
                                     </a>
-                                {% endif %}
-                                {% if object.data_publicacao_retificacao %}
-                                    <h3 class="titulo_situacao">Data da Retificação</h3>
-                                    <h5 class="texto_situacao">{{ object.data_publicacao_retificacao }}</h5>
                                 {% endif %}
                             </div>
                     </div>
@@ -370,7 +353,7 @@
                                 Ata de Reunião de Criação do Conselho de Políticas Culturais
                             </a>
                             {% else %}
-                            <i class="fa fa-times"></i> Ata de Reunião de Criação do Conselho de Políticas Culturais
+                            <i class="fa fa-times"></i> Ata de reunião do Conselho de Política Cultural
                             {% endif %}
                         </div>
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
@@ -380,7 +363,7 @@
                                 Lei de Regulamentação da Criação do Conselho de Políticas Culturais
                             </a>
                             {% else %}
-                            <i class="fa fa-times"></i> Lei de Regulamentação da Criação do Conselho de Políticas Culturais
+                            <i class="fa fa-times"></i> Lei de criação do Conselho de Política Cultural
                             {% endif %}
                         </div>
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">

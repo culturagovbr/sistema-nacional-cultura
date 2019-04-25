@@ -100,72 +100,34 @@
     <div class="col-sm-12 col-md-6">
        <div class="panel panel-info">
           <div class="panel-heading">
-            Dados do Interlocutor
-            {% if ente.secretario %}
-              <a href="{% url 'gestao:alterar_funcionario' pk=ente.secretario.id tipo='secretario' %}">
+            Dados do Gestor de Cultura
+            {% if ente.gestor_cultura %}
+              <a href="{% url 'gestao:alterar_funcionario' pk=ente.gestor_cultura.id %}">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             {% else %}
-              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='secretario' %}">
+              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id %}">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             {% endif %}
           </div>
           <div class="panel-body">
-            <p><strong>Nome:</strong> {{ ente.secretario.nome }}</p>
-            <p><strong>CPF:</strong> {{ ente.secretario.cpf }}</p>
-            <p><strong>RG:</strong> {{ ente.secretario.rg }}</p>
-            <p><strong>Cargo:</strong> {{ ente.secretario.cargo }}</p>
-            <p><strong>Instituição:</strong> {{ ente.secretario.instituicao }}</p>
-            <p><strong>E-mail Institucional:</strong> {{ ente.secretario.email_institucional }}</p>
-            {% if ente.secretario.email_pessoal %}
-              <p><strong>E-mail Pessoal:</strong> {{ ente.secretario.email_pessoal }}</p>
+            <p><strong>Nome:</strong> {{ ente.gestor_cultura.nome }}</p>
+            <p><strong>CPF:</strong> {{ ente.gestor_cultura.cpf }}</p>
+            <p><strong>RG:</strong> {{ ente.gestor_cultura.rg }}</p>
+            <p><strong>Cargo:</strong> {{ ente.gestor_cultura.cargo }}</p>
+            <p><strong>Instituição:</strong> {{ ente.gestor_cultura.instituicao }}</p>
+            <p><strong>E-mail Institucional:</strong> {{ ente.gestor_cultura.email_institucional }}</p>
+            {% if ente.gestor_cultura.email_pessoal %}
+              <p><strong>E-mail Pessoal:</strong> {{ ente.gestor_cultura.email_pessoal }}</p>
             {% endif %}
-            <p><strong>Telefone:</strong> {{ ente.secretario.telefone_um }}</p>
+            <p><strong>Telefone:</strong> {{ ente.gestor_cultura.telefone_um }}</p>
           </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            Dados do Responsável Indicado
-            {% if ente.responsavel %}
-              <a href="{% url 'gestao:alterar_funcionario' pk=ente.responsavel.id tipo='responsavel' %}">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
-            {% else %}
-              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='responsavel' %}">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
-            {% endif %}
-          </div>
-          <div class="panel-body">
-              <div class="row">
-                  <div class="col-md-6">
-                    <p><strong>Nome:</strong> {{ ente.responsavel.nome }}</p>
-                    <p><strong>CPF:</strong> {{ ente.responsavel.cpf }}</p>
-                    <p><strong>RG:</strong> {{ ente.responsavel.rg }}</p>
-                    <p><strong>Cargo:</strong> {{ ente.responsavel.cargo }}</p>
-
-                  </div>
-                  <div class="col-md-6">
-
-                    <p><strong>Instituição:</strong> {{ ente.responsavel.instituicao }}</p>
-                    <p><strong>E-mail Institucional:</strong> {{ ente.responsavel.email_institucional }}</p>
-                    {% if ente.responsavel.email_pessoal %}
-                      <p><strong>E-mail Pessoal:</strong> {{ ente.responsavel.email_pessoal }}</p>
-                    {% endif %}
-                    <p><strong>Telefone:</strong> {{ ente.responsavel.telefone_um }}</p>
-                  </div>
-
-              </div>
-          </div>
-        </div>
-    </div>
-
     <div class="col-sm-12 col-md-6">
         <div class="panel panel-info">
           <div class="panel-heading">
@@ -413,7 +375,43 @@
     </div>
     {% endif %}
 
+    {% if ente.fundo_cultura.comprovante_cnpj.arquivo %}
+    <div class="list-group row">
+       <div class="col-md-12">
+          <div class="list-group-item col-xs-8">
+            Fundo de Cultura - Comprovante do CNPJ do Fundo
+          </div>
 
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{{ ente.fundo_cultura.comprovante_cnpj.arquivo.url }}">Download</a>
+          </div>
+          {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+          </div>
+
+          {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+            {% endif %}
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+            </a>
+          </div>
+
+          {% else %}
+          <div class="list-group-item col-xs-2 text-center">
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+          </div>
+          {% endif %}
+
+       </div>
+    </div>
+    {% endif %}
 
     {% if ente.plano.arquivo %}
     <div class="list-group row">

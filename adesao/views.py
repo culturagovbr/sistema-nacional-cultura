@@ -36,7 +36,8 @@ from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
-from adesao.utils import enviar_email_conclusao, verificar_anexo, atualiza_session, preenche_planilha
+from adesao.utils import enviar_email_conclusao, verificar_anexo
+from adesao.utils import atualiza_session, preenche_planilha
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
@@ -56,12 +57,14 @@ def fale_conosco(request):
 @login_required
 def home(request):
     ente_federado = request.session.get('sistema_ente', False)
-    secretario = request.session.get('sistema_secretario', False)
-    responsavel = request.session.get('sistema_responsavel', False)
+    gestor_cultura = request.session.get('sistema_gestor_cultura', False)
     sistema = request.session.get('sistema_cultura_selecionado', False)
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
-    sistemas_cultura = request.user.usuario.sistema_cultura.all().distinct('ente_federado__nome', 'ente_federado')
+    sistemas_cultura = SistemaCultura.sistema.filter(cadastrador=request.user.usuario)
+
+    if not sistemas_cultura:
+        request.session.pop('sistema_cultura_selecionado', None)
 
     request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
@@ -71,7 +74,7 @@ def home(request):
     if sistemas_cultura.count() == 1:
         atualiza_session(sistemas_cultura[0], request)
 
-    if ente_federado and secretario and responsavel and sistema and int(sistema['estado_processo']) < 1:
+    if ente_federado and gestor_cultura and sistema and int(sistema['estado_processo']) < 1:
         sistema = SistemaCultura.sistema.get(id=sistema['id'])
         sistema.estado_processo = "1"
         sistema.save()
@@ -352,7 +355,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal, 
+        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
             gestor_pessoal, gestor_institucional]
 
         return recipiente_list
@@ -414,17 +417,11 @@ class CadastrarFuncionario(CreateView):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['sistema']))
 
     def form_valid(self, form):
-        LISTA_TIPOS_FUNCIONARIOS = {
-            'secretario': 0,
-            'responsavel': 1
-        }
-        tipo_funcionario = self.kwargs['tipo']
-        form.instance.tipo_funcionario = LISTA_TIPOS_FUNCIONARIOS[tipo_funcionario]
+        GESTOR_CULTURA = 0
+        form.instance.tipo_funcionario = GESTOR_CULTURA
         sistema = self.get_sistema_cultura()
-        setattr(sistema, tipo_funcionario, form.save())
+        setattr(sistema, 'gestor_cultura', form.save())
         sistema.save()
-
-        funcionario = getattr(sistema, tipo_funcionario)
 
         sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
         atualiza_session(sistema_atualizado, self.request)
@@ -435,43 +432,14 @@ class CadastrarFuncionario(CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def dispatch(self, *args, **kwargs):
-        funcionario = getattr(self.get_sistema_cultura(), self.kwargs['tipo'])
+        funcionario = getattr(self.get_sistema_cultura(), 'gestor_cultura')
         if funcionario:
-            return redirect("adesao:alterar_funcionario", tipo=self.kwargs['tipo'], pk=funcionario.id)
+            return redirect("adesao:alterar_funcionario", pk=funcionario.id)
 
         return super(CadastrarFuncionario, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('adesao:sucesso_funcionario')
-
-
-@login_required
-def importar_secretario(request):
-    secretario_id = request.session['sistema_cultura_selecionado']['secretario']
-    sistema_id = request.session['sistema_cultura_selecionado']['id']
-
-    try:
-        sistema = SistemaCultura.sistema.get(id=sistema_id)
-        secretario = Funcionario.objects.get(id=secretario_id)
-
-        responsavel = secretario
-        responsavel.tipo_funcionario = 1
-
-        responsavel.full_clean()
-        responsavel.save()
-
-    except (ValidationError, ObjectDoesNotExist) as error:
-        return redirect("adesao:cadastrar_funcionario",
-            sistema=sistema.id, tipo='responsavel')
-
-    sistema.responsavel = responsavel
-    sistema.save()
-
-    sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
-    atualiza_session(sistema_atualizado, request)
-
-    return redirect("adesao:cadastrar_funcionario",
-        sistema=sistema.id, tipo='responsavel')
 
 
 class AlterarFuncionario(UpdateView):
@@ -484,7 +452,7 @@ class AlterarFuncionario(UpdateView):
         funcionario = form.instance
 
         if funcionario:
-            sistema = getattr(funcionario, 'sistema_cultura_%s' % self.kwargs['tipo']).all().first()
+            sistema = getattr(funcionario, 'sistema_cultura_gestor_cultura').all().first()
             sistema.save()
             funcionario.save()
 
@@ -579,11 +547,11 @@ class Detalhar(DetailView):
     def get_context_data(self, **kwargs):
         context = super(Detalhar, self).get_context_data(**kwargs)
         try:
-            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho, 
+            context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho,
                 situacao="1")
         except:
             context["conselheiros"] = None
-        
+
         return context
 
 
