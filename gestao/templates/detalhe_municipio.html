@@ -35,9 +35,7 @@
                          {% endif %}
                     </p>
                     <p><strong>E-mail Institucional:</strong> {{ ente.gestor.email_institucional }}</p>
-                    {% if ente.gestor.email_pessoal %}
-                      <p><strong>E-mail Pessoal:</strong> {{ ente.gestor.email_pessoal }}</p>
-                    {% endif %}
+                    <p><strong>E-mail Pessoal:</strong> {% if ente.gestor.email_pessoal %} {{ ente.gestor.email_pessoal }} {% endif %}</p>
                     <p>
                       <strong>Participou da Conferência Nacional:</strong>
                       {% if ente.conferencia_nacional %}

@@ -67,8 +67,8 @@ msgid "Sair"
 msgstr "Sair"
 
 #: templates/base.html:96
-msgid "Ministério da Cultura"
-msgstr "Ministério da Cultura"
+msgid "Secretaria Especial da Cultura / Ministério da Cidadania"
+msgstr "Secretaria Especial da Cultura / Ministério da Cidadania"
 
 #: templates/base.html:97
 msgid "Nome da secretaria"
