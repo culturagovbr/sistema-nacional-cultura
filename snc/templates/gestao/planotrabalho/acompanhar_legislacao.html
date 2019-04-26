@@ -39,7 +39,7 @@
                   <td>{{ sistema.sede.cnpj }}</td>
                   <td><a href="{{ sistema.legislacao.arquivo.url }}">Download</a></td>
                   <td>
-                <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='legislacao' %}">Avaliar</a>
+                <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='legislacao' arquivo='arquivo' %}">Avaliar</a>
                   </td>
                 </tr>
               {% endfor %}

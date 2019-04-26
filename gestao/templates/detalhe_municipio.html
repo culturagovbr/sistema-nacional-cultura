@@ -69,9 +69,25 @@
                           {% endif %}
                       </p>
                     {% endif %}
+                    {% if ente.data_publicacao_retificacao %}
+                      <p>
+                        <strong>Publicação da Retificacao:</strong>
+                          {% if ente.link_publicacao_retificacao %}
+                            <a href="{{ ente.link_publicacao_retificacao }}"> {{ente.data_publicacao_retificacao|date:'d/m/Y'}}</a>
+                          {% else %}
+                            {{ente.data_publicacao_retificacao|date:'d/m/Y'}}
+                          {% endif %}
+                      </p>
+                    {% endif %}
                     <p>
                       <strong>Última atualização:</strong>
                         {{ente.alterado_em}}
+                    </p>
+                    <p>
+                      <strong>Atualizado pelo usuário de CPF:</strong>
+                        {% if ente.alterado_por %}
+                          {{ente.alterado_por}}
+                        {% endif %}
                     </p>
                 </div>
             </div>
@@ -82,68 +98,34 @@
     <div class="col-sm-12 col-md-6">
        <div class="panel panel-info">
           <div class="panel-heading">
-            Dados do Interlocutor
-            {% if ente.secretario %}
-              <a href="{% url 'gestao:alterar_funcionario' pk=ente.secretario.id tipo='secretario' %}">
+            Dados do Gestor de Cultura
+            {% if ente.gestor_cultura %}
+              <a href="{% url 'gestao:alterar_funcionario' pk=ente.gestor_cultura.id %}">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             {% else %}
-              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='secretario' %}">
+              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id %}">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             {% endif %}
           </div>
           <div class="panel-body">
-            <p><strong>Nome:</strong> {{ ente.secretario.nome }}</p>
-            <p><strong>CPF:</strong> {{ ente.secretario.cpf }}</p>
-            <p><strong>RG:</strong> {{ ente.secretario.rg }}</p>
-            <p><strong>Cargo:</strong> {{ ente.secretario.cargo }}</p>
-            <p><strong>Instituição:</strong> {{ ente.secretario.instituicao }}</p>
-            <p><strong>E-mail Institucional:</strong> {{ ente.secretario.email_institucional }}</p>
-            <p><strong>E-mail Pessoal:</strong> {% if ente.secretario.email_pessoal %} {{ ente.secretario.email_pessoal }} {% endif %}</p>
-            <p><strong>Telefone:</strong> {{ ente.secretario.telefone_um }}</p>
+            <p><strong>Nome:</strong> {{ ente.gestor_cultura.nome }}</p>
+            <p><strong>CPF:</strong> {{ ente.gestor_cultura.cpf }}</p>
+            <p><strong>RG:</strong> {{ ente.gestor_cultura.rg }}</p>
+            <p><strong>Cargo:</strong> {{ ente.gestor_cultura.cargo }}</p>
+            <p><strong>Instituição:</strong> {{ ente.gestor_cultura.instituicao }}</p>
+            <p><strong>E-mail Institucional:</strong> {{ ente.gestor_cultura.email_institucional }}</p>
+            {% if ente.gestor_cultura.email_pessoal %}
+              <p><strong>E-mail Pessoal:</strong> {{ ente.gestor_cultura.email_pessoal }}</p>
+            {% endif %}
+            <p><strong>Telefone:</strong> {{ ente.gestor_cultura.telefone_um }}</p>
           </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            Dados do Responsável Indicado
-            {% if ente.responsavel %}
-              <a href="{% url 'gestao:alterar_funcionario' pk=ente.responsavel.id tipo='responsavel' %}">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
-            {% else %}
-              <a href="{% url 'gestao:cadastrar_funcionario' sistema=ente.id tipo='responsavel' %}">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
-            {% endif %}
-          </div>
-          <div class="panel-body">
-              <div class="row">
-                  <div class="col-md-6">
-                    <p><strong>Nome:</strong> {{ ente.responsavel.nome }}</p>
-                    <p><strong>CPF:</strong> {{ ente.responsavel.cpf }}</p>
-                    <p><strong>RG:</strong> {{ ente.responsavel.rg }}</p>
-                    <p><strong>Cargo:</strong> {{ ente.responsavel.cargo }}</p>
-
-                  </div>
-                  <div class="col-md-6">
-
-                    <p><strong>Instituição:</strong> {{ ente.responsavel.instituicao }}</p>
-                    <p><strong>E-mail Institucional:</strong> {{ ente.responsavel.email_institucional }}</p>
-                    <p><strong>E-mail Pessoal:</strong> {% if ente.responsavel.email_pessoal %}{{ ente.responsavel.email_pessoal }}{% endif %}</p>
-                    <p><strong>Telefone:</strong> {{ ente.responsavel.telefone_um }}</p>
-                  </div>
-
-              </div>
-          </div>
-        </div>
-    </div>
-
     <div class="col-sm-12 col-md-6">
         <div class="panel panel-info">
           <div class="panel-heading">
@@ -177,10 +159,28 @@
               <a href="{{ ente.legislacao.arquivo.url}}">Download</a>
             </div>
             {% if ente.legislacao.situacao == 1 %}
-
-              <div class="list-group-item col-xs-2 text-center ">
-                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' %}">Avaliar</a>
+              <div class="list-group-item col-xs-2 text-center">
+              {% if ente.legislacao.diligencia %}
+                <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='legislacao' arquivo='arquivo' pk=ente.legislacao.diligencia.id %}">
+                  Avaliar
+                </a>
+              {% else %}
+                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' arquivo='arquivo' %}">Avaliar</a>
+              {% endif %}
               </div>
+
+            {% elif ente.legislacao.situacao > 1 %}
+
+            <div class="list-group-item col-xs-2 text-center">
+              {% if ente.legislacao.diligencia %}
+              <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='legislacao' arquivo='arquivo' pk=ente.legislacao.diligencia.id %}">
+              {% else %}
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='legislacao' arquivo='arquivo' %}">
+              {% endif %}
+                <b>{{ ente.legislacao.get_situacao_display }}</b>
+              </a>
+            </div>
+
             {% else %}
             <div class="list-group-item col-xs-2 text-center">
                 <b>{{ ente.legislacao.get_situacao_display }}</b>
@@ -203,13 +203,34 @@
           </div>
           {% if ente.orgao_gestor.situacao == 1 %}
 
+            <div class="list-group-item col-xs-2 text-center">
+            {% if ente.orgao_gestor.diligencia %}
+              <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='orgao_gestor' arquivo='arquivo' pk=ente.orgao_gestor.diligencia.id %}">
+                Avaliar
+              </a>
+            {% else %}
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' arquivo='arquivo' %}">Avaliar</a>
+            {% endif %}
+            </div>
+
+          {% elif ente.orgao_gestor.situacao > 1 %}
+
           <div class="list-group-item col-xs-2 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' %}"> Avaliar</a>
+            {% if ente.orgao_gestor.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='orgao_gestor' arquivo='arquivo' pk=ente.orgao_gestor.diligencia.id %}">
+              {% else %}
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' arquivo='arquivo' %}">
+              {% endif %}
+                <b>{{ ente.orgao_gestor.get_situacao_display }}</b>
+              </a>
           </div>
+
           {% else %}
+
           <div class="list-group-item col-xs-2 text-center">
               <b>{{ ente.orgao_gestor.get_situacao_display }}</b>
           </div>
+
           {% endif %}
 
       </div>
@@ -227,16 +248,82 @@
             <a href="{{ ente.conselho.arquivo.url }}">Download</a>
           </div>
           {% if ente.conselho.situacao == 1 %}
+
             <div class="list-group-item col-xs-2 text-center">
-                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' %}">Avaliar</a>
+            {% if ente.conselho.diligencia %}
+              <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='arquivo' pk=ente.conselho.diligencia.id %}">
+                Avaliar
+              </a>
+            {% else %}
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='arquivo' %}">Avaliar</a>
+            {% endif %}
             </div>
+
+          {% elif ente.conselho.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.conselho.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='arquivo' pk=ente.conselho.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='arquivo' %}">
+            {% endif %}
+              <b>{{ ente.conselho.get_situacao_display }}</b>
+            </a>
+          </div>
+
           {% else %}
+
           <div class="list-group-item col-xs-2 text-center">
               <b>{{ ente.conselho.get_situacao_display }}</b>
           </div>
+
           {% endif %}
 
       </div>
+    </div>
+    {% endif %}
+
+    {% if ente.conselho.lei.arquivo %}
+    <div class="list-group row">
+       <div class="col-md-12">
+          <div class="list-group-item col-xs-8">
+            Conselho Cultural - Lei
+          </div>
+
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{{ ente.conselho.lei.arquivo.url }}">Download</a>
+          </div>
+          {% if ente.conselho.lei.situacao == 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.conselho.lei.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='lei' pk=ente.conselho.lei.diligencia.id %}">
+              Avaliar
+            </a>
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='lei' %}">Avaliar</a>
+            {% endif %}
+          </div>
+
+          {% elif ente.conselho.lei.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.conselho.lei.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='lei' pk=ente.conselho.lei.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='lei' %}">
+            {% endif %}
+              <b>{{ ente.conselho.lei.get_situacao_display }}</b>
+            </a>
+          </div>
+
+          {% else %}
+          <div class="list-group-item col-xs-2 text-center">
+              <b>{{ ente.conselho.lei.get_situacao_display }}</b>
+          </div>
+          {% endif %}
+
+       </div>
     </div>
     {% endif %}
 
@@ -251,20 +338,78 @@
             <a href="{{ ente.fundo_cultura.arquivo.url }}">Download</a>
           </div>
           {% if ente.fundo_cultura.situacao == 1 %}
+
             <div class="list-group-item col-xs-2 text-center">
-                <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' %}">Avaliar</a>
+              {% if ente.fundo_cultura.diligencia %}
+              <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='arquivo' pk=ente.fundo_cultura.diligencia.id %}">
+                Avaliar
+              </a>
+              {% else %}
+              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='arquivo' %}">Avaliar</a>
+              {% endif %}
             </div>
+
+          {% elif ente.fundo_cultura.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.fundo_cultura.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='arquivo' pk=ente.fundo_cultura.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='arquivo' %}">
+            {% endif %}
+              <b>{{ ente.fundo_cultura.get_situacao_display }}</b>
+            </a>
+          </div>
+
           {% else %}
+
           <div class="list-group-item col-xs-2 text-center">
               <b>{{ ente.fundo_cultura.get_situacao_display }}</b>
           </div>
+
           {% endif %}
 
        </div>
     </div>
     {% endif %}
 
+    {% if ente.fundo_cultura.comprovante_cnpj.arquivo %}
+    <div class="list-group row">
+       <div class="col-md-12">
+          <div class="list-group-item col-xs-8">
+            Fundo de Cultura - Comprovante do CNPJ do Fundo
+          </div>
 
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{{ ente.fundo_cultura.comprovante_cnpj.arquivo.url }}">Download</a>
+          </div>
+          {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+          </div>
+
+          {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+            {% endif %}
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+            </a>
+          </div>
+
+          {% else %}
+          <div class="list-group-item col-xs-2 text-center">
+              <b>{{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}</b>
+          </div>
+          {% endif %}
+
+       </div>
+    </div>
+    {% endif %}
 
     {% if ente.plano.arquivo %}
     <div class="list-group row">
@@ -279,8 +424,27 @@
           {% if ente.plano.situacao == 1 %}
 
           <div class="list-group-item col-xs-2 text-center">
-              <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' %}"> Avaliar</a>
+            {% if ente.plano.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='plano' arquivo='arquivo' pk=ente.plano.diligencia.id %}">
+              Avaliar
+            </a>
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' arquivo='arquivo' %}"> Avaliar</a>
+            {% endif %}
           </div>
+
+          {% elif ente.plano.situacao > 1 %}
+
+          <div class="list-group-item col-xs-2 text-center">
+            {% if ente.plano.diligencia %}
+            <a href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='plano' arquivo='arquivo' pk=ente.plano.diligencia.id %}">
+            {% else %}
+            <a href="{% url 'gestao:diligencia_componente' pk=ente.id componente='plano' arquivo='arquivo' %}">
+            {% endif %}
+              <b>{{ ente.plano.get_situacao_display }}</b>
+            </a>
+          </div>
+
           {% else %}
           <div class="list-group-item col-xs-2 text-center">
               <b>{{ ente.plano.get_situacao_display }}</b>
@@ -389,7 +553,22 @@
                           {{ form.processo_sei.errors }}
                         </span>
                       </div>
+                      
+                      <div class="form-group {% if form.data_publicacao_retificacao.errors %} has -error {%endif %}">
+                        <textarea id="justificativa_situacao" name="justificativa" class="form-control hide" style="resize:none" placeholder="Justificativa" rows="4" cols="20">{% if ente.estado_processo == '3' %} {{ ente.justificativa}} {% endif %}</textarea>
+                        <input type="text" id="data_retificacao_situacao" name="data_publicacao_retificacao" class="form-control date hide" value="{% if ente.data_publicacao_retificacao %} {{ente.data_publicacao_retificacao | date:'SHORT_DATE_FORMAT'}} {% endif %}" placeholder="Data da Publicação de Retificação (opcional)"></input>
+                        <span class="help-block">
+                          {{ form.data_publicacao_retificacao.errors }}
+                        </span>
+                        <input type="text" id="localizacao_situacao" name="localizacao" class="form-control hide" placeholder="Localização" value="{% if ente.estado_processo == '2' %} {{ente.localizacao}} {% endif %}"></input>
+                      </div>
 
+                      <div class="form-group {% if form.link_publicacao_retificacao%} has-error {% endif %}">
+                          <input type="text" id="link_retificacao_situacao" name="link_publicacao_retificacao" class="form-control" placeholder="Link da Publicação de Retificação (opcional)" value="{% if ente.link_publicacao_retificacao %} {{ente.link_publicacao_retificacao}} {% endif %}"></input>
+                          <span class="help-block">
+                            {{ form.link_publicacao_retificacao.errors }}
+                          </span>
+                      </div>
 
                       <div class="row">
                           <div class="col-md-12 text-center">
@@ -508,9 +687,17 @@
           $("#data_acordo_situacao").removeClass('hide');
           $("#data_acordo_situacao").fadeIn();
         }
+        if($("#data_retificacao_situacao").hasClass('hide')){
+          $("#data_retificacao_situacao").removeClass('hide');
+          $("#data_retificacao_situacao").fadeIn();
+        }
         if($("#link_acordo_situacao").hasClass('hide')){
           $("#link_acordo_situacao").removeClass('hide');
           $("#link_acordo_situacao").fadeIn();
+        }
+        if($("#link_retificacao_situacao").hasClass('hide')){
+          $("#link_retificacao_situacao").removeClass('hide');
+          $("#link_retificacao_situacao").fadeIn();
         }
       }
       else {

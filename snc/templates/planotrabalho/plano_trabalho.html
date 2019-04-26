@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
+<h1>  Bem vindo ao Plano de Cultura  </h1>
   <p style="text-align: justify;">
     Você está no ambiente do Plano de Trabalho. Nesta fase, é preciso anexar as comprovações de execução de cada um dos componentes do sistema de cultura local (como leis, decretos e demais normativas), bem como a data de publicação de cada uma delas, nos campos específicos disponíveis nesta plataforma.
   </p>
@@ -8,7 +9,7 @@
     Tais arquivos serão validados pela equipe da Secretaria Especial da Cultura / Ministério da Cidadania responsável pelo SNC que enviará uma mensagem após conclusão do procedimento, para o e-mail cadastrado pelo ente federado (estado/município). É importante manter suas informações sempre atualizadas.
   </p>
   <p style="text-align: justify;">
-    OBS: Conforme Acordo de Cooperação Federativa assinado, o ente federado compromete-se a cumprir com o Plano de Trabalho em até dois anos contados da data de publicação do referido Acordo no Diário Oficial da União (DOU). Caso o prazo não seja cumprido, é necessário que o ente federado envie um Oficio assinado pelo Governador – Estado ou Prefeito – Município, solicitando prorrogação por mais dois anos para o e-mail <strong>snc@cultura.gov.br</strong>. Vide tutorial <a href="http://www.cultura.gov.br/documents/1440656/0/%255bNOVA+PLATAFORMA%255d+Como+preencher+o+Plano+de+Trabalho+-+atual..pdf/265b3f60-0e0e-4fd2-a813-85bb3790e64b">“Ofício de Prazo do Plano de Trabalho”</a>
+    OBS: Conforme Acordo de Cooperação Federativa assinado, o ente federado compromete-se a cumprir com o Plano de Trabalho em até dois anos contados da data de publicação do referido Acordo no Diário Oficial da União (DOU). Caso o prazo não seja cumprido, é necessário que o ente federado envie um Oficio assinado pelo Governador – Estado ou Prefeito – Município, solicitando prorrogação por mais dois anos para o e-mail <strong>snc@cultura.gov.br</strong>. Vide tutorial <a href="http://portalsnc.cultura.gov.br/wp-content/uploads/sites/32/2019/02/MODELO-DE-OF%C3%8DCIO-PARA-PRORROGA%C3%87%C3%83O-DE-PRAZO-DO-PLANO-DE-TRABALHO-2019.pdf">“Ofício de Prazo do Plano de Trabalho”</a>
   </p>
   <hr />
 
@@ -69,6 +70,7 @@
             <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}" >Enviar Comprovação</a>
           {% endif %}
         {% endif %}
+
         <br />
         <br />
     </li>

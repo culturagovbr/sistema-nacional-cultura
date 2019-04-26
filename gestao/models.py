@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from simple_history.models import HistoricalRecords
+
 TIPOS_DILIGENCIA = (
     ('geral', 'Geral'),
     ('componente', 'Específica'),)
@@ -21,10 +23,10 @@ LISTA_SITUACAO_ARQUIVO = (
 
 class Diligencia(models.Model):
     texto_diligencia = models.TextField(max_length=200)
-    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO, 
+    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO,
                                                 null=True, blank=True)
     data_criacao = models.DateField(default=datetime.date.today)
-    # sistema_cultura = models.ForeignKey('adesao.SistemaCultura', on_delete=models.CASCADE, 
+    # sistema_cultura = models.ForeignKey('adesao.SistemaCultura', on_delete=models.CASCADE,
                                         # null=True, blank=True)
     componente_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     componente_id = models.PositiveIntegerField()
@@ -38,9 +40,17 @@ class Diligencia(models.Model):
         return str(self.id)
 
 
+class ArquivoHistoricalDiligenciaSimples(models.Model):
+    arquivo_url = models.URLField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
 class DiligenciaSimples(models.Model):
     texto_diligencia = models.TextField(max_length=200)
-    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO, 
+    classificacao_arquivo = models.IntegerField(choices=LISTA_SITUACAO_ARQUIVO,
                                                 null=True, blank=True)
     data_criacao = models.DateField(default=datetime.date.today)
     usuario = models.ForeignKey('adesao.Usuario', on_delete=models.CASCADE)
+    history = HistoricalRecords(bases=[ArquivoHistoricalDiligenciaSimples, ])

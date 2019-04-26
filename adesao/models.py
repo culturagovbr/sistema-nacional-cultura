@@ -10,9 +10,12 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 from planotrabalho.models import PlanoTrabalho
 from planotrabalho.models import Componente
+from planotrabalho.models import ConselhoDeCultura
+
 from gestao.models import Diligencia
 
 from planotrabalho.models import FundoDeCultura
+
 from adesao.managers import SistemaManager
 from adesao.managers import HistoricoManager
 
@@ -33,7 +36,7 @@ LISTA_ESTADOS_PROCESSO = (
     ('7', 'Responsável confirmado'),)
 
 LISTA_TIPOS_FUNCIONARIOS = (
-    (0, 'Secretário'),
+    (0, 'Gestor de Cultura'),
     (1, 'Responsável'),
     (2, 'Gestor'),)
 
@@ -117,9 +120,28 @@ class EnteFederado(models.Model):
 
     def get_regiao(self):
         digito = str(self.cod_ibge)[0]
-        regiao = REGIOES[digito]  
+        regiao = REGIOES[digito]
         return regiao
-    
+
+    def faixa_populacional(self):
+
+        if self.populacao <= 5000:
+            faixa = "Até 5.000"
+        elif self.populacao <= 10000:
+            faixa = "De 5.001 até 10.000"
+        elif self.populacao <= 20000:
+            faixa = "De 10.001 até 20.000"
+        elif self.populacao <= 50000:
+            faixa = "De 20.001 até 50.000"
+        elif self.populacao <= 100000:
+            faixa = "De 50.001 até 100.000"
+        elif self.populacao <= 500000:
+            faixa = "De 100.001 até 500.000"
+        else:
+            faixa =  "Acima de 500.000"
+        return faixa
+
+
     @property
     def is_municipio(self):
         digits = int(math.log10(self.cod_ibge))+1
@@ -268,6 +290,7 @@ class Usuario(models.Model):
     codigo_ativacao = models.CharField(max_length=12, unique=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     prazo = models.IntegerField(default=2)
+    email_pessoal = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -299,7 +322,7 @@ class Usuario(models.Model):
         """
 
         propriedades = ("plano_trabalho", "municipio", "secretario",
-                        "responsavel", "data_publicacao_acordo",
+                        "responsavel", "data_publicacao_acordo", "data_publicacao_retificacao",
                         "estado_processo")
 
         for propriedade in propriedades:
@@ -399,10 +422,10 @@ class SistemaCultura(models.Model):
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")
     orgao_gestor = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
     fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
-    conselho = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="conselho")
+    conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
-    secretario = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_secretario")
-    responsavel = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_responsavel")
+
+    gestor_cultura = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_gestor_cultura")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
     sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
     estado_processo = models.CharField(
@@ -410,7 +433,9 @@ class SistemaCultura(models.Model):
         choices=LISTA_ESTADOS_PROCESSO,
         default='0')
     data_publicacao_acordo = models.DateField(blank=True, null=True)
+    data_publicacao_retificacao = models.DateField(blank=True, null=True)
     link_publicacao_acordo = models.CharField(max_length=200, blank=True, null=True)
+    link_publicacao_retificacao = models.CharField(max_length=200, blank=True, null=True)
     processo_sei = models.CharField(max_length=100, blank=True, null=True)
     numero_processo = models.CharField(max_length=50, null=True, blank=True)
     localizacao = models.CharField(_("Localização do Processo"), max_length=10, blank=True, null=True)
@@ -432,12 +457,22 @@ class SistemaCultura(models.Model):
         url = reverse_lazy("gestao:detalhar", kwargs={"cod_ibge": self.ente_federado.cod_ibge})
         return url
 
-    def get_componentes_diligencias(self):
+    def get_componentes_diligencias(self, componente=None, arquivo='arquivo'):
         diligencias_componentes = []
-        componentes = ['legislacao', 'orgao_gestor', 'plano', 'conselho', 'fundo_cultura']
+        if componente:
+            componentes = [componente]
+        else:
+            componentes = ['legislacao', 'orgao_gestor',
+                           'plano', 'conselho', 'fundo_cultura']
+
         for componente in componentes:
             componente = getattr(self, componente)
+
+            if arquivo != 'arquivo':
+                componente = getattr(componente, arquivo)
+
             if componente and componente.diligencia:
+                componente.historico_diligencia = componente.diligencia.history.all()
                 diligencias_componentes.append(componente)
         return diligencias_componentes
 

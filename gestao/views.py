@@ -47,6 +47,7 @@ from planotrabalho.models import ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
+from planotrabalho.models import ConselhoDeCultura
 
 from gestao.utils import empty_to_none
 
@@ -62,6 +63,8 @@ from .forms import AlterarDadosEnte
 
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
+from planotrabalho.forms import CriarConselhoForm
+from planotrabalho.forms import AlterarConselhoForm
 
 from .forms import CadastradorEnte
 
@@ -271,10 +274,15 @@ class AcompanharComponente(ListView):
         sistemas = sistemas.exclude(**kwargs)
 
         if anexo == 'arquivo':
-            kwargs = {'{0}__situacao'.format(self.kwargs['componente']): 1}
-            sistemas = sistemas.filter(**kwargs)
-            kwargs = {'{0}__arquivo'.format(self.kwargs['componente']): None}
-            sistemas = sistemas.exclude(**kwargs)
+            if self.kwargs['componente'] == 'conselho':
+                sistemas = sistemas.filter((Q(conselho__lei__situacao=1)
+                    & ~Q(conselho__lei__arquivo=None)) |
+                    (Q(conselho__situacao=1) & ~Q(conselho__arquivo=None)))
+            else:
+                kwargs = {'{0}__situacao'.format(self.kwargs['componente']): 1}
+                sistemas = sistemas.filter(**kwargs)
+                kwargs = {'{0}__arquivo'.format(self.kwargs['componente']): None}
+                sistemas = sistemas.exclude(**kwargs)
         else:
             raise Http404
 
@@ -350,7 +358,7 @@ class AlterarFuncionario(AlterarFuncionario):
 
     def get_success_url(self):
         funcionario = Funcionario.objects.get(id=self.kwargs['pk'])
-        sistema = getattr(funcionario, 'sistema_cultura_%s' % self.kwargs['tipo'])
+        sistema = getattr(funcionario, 'sistema_cultura_gestor_cultura')
         return reverse_lazy('gestao:detalhar', kwargs={'cod_ibge': sistema.all()[0].ente_federado.cod_ibge})
 
 
@@ -468,6 +476,8 @@ class InserirComponente(CreateView):
     def get_form_class(self):
         if self.kwargs['componente'] == 'fundo_cultura':
             form_class = CriarFundoForm
+        elif self.kwargs['componente'] == 'conselho':
+            form_class = CriarConselhoForm
         else:
             form_class = CriarComponenteForm
 
@@ -490,6 +500,27 @@ class AlterarComponente(UpdateView):
         return reverse_lazy('gestao:listar_documentos',kwargs={'template': 'listar_%s' % self.kwargs['componente']})
 
 
+class AlterarConselhoCultura(UpdateView):
+    form_class = AlterarConselhoForm
+    model = ConselhoDeCultura
+    template_name = 'gestao/inserir_documentos/inserir_conselho.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
+        sistema_id = self.object.conselho.last().id
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'conselho'
+        if self.object.lei:
+            kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
+                'data_publicacao_lei': self.object.lei.data_publicacao}
+        return kwargs
+
+    def get_success_url(self):
+        messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
+        return reverse_lazy('gestao:listar_documentos',kwargs={'template': 'listar_conselho'})
+
+
 class AlterarFundoCultura(UpdateView):
     form_class = CriarFundoForm
     model = FundoDeCultura
@@ -501,6 +532,19 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+
+        if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
+            kwargs['initial']['mesma_lei'] = True
+        else:
+            kwargs['initial']['mesma_lei'] = False
+
+        if self.object.comprovante_cnpj:
+            kwargs['initial']['possui_cnpj'] = True
+            kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
+        else:
+            kwargs['initial']['possui_cnpj'] = False
+
+
         return kwargs
 
     def get_success_url(self):
@@ -537,6 +581,7 @@ class DiligenciaComponenteView(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(DiligenciaComponenteView, self).get_form_kwargs()
+        kwargs['arquivo'] = self.kwargs['arquivo']
         kwargs['componente'] = self.kwargs['componente']
         kwargs['sistema_cultura'] = self.get_sistema_cultura()
         kwargs['usuario'] = self.request.user.usuario
@@ -568,17 +613,30 @@ class DiligenciaComponenteView(CreateView):
         context = super().get_context_data(**kwargs)
         componente = self.get_componente()
         ente_federado = self.get_sistema_cultura().ente_federado.nome
-
-        context['arquivo'] = componente.arquivo
+        if self.kwargs['arquivo'] == 'arquivo':
+            context['arquivo'] = componente.arquivo
+        else:
+            context['arquivo'] = getattr(componente, self.kwargs['arquivo'])
         context['ente_federado'] = ente_federado
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = "--/--/----"
         context['componente'] = componente
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'])
 
         return context
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form), status=400)
+
+
+class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):
+    template_name = 'diligencia.html'
+    model = DiligenciaSimples
+    form_class = DiligenciaComponenteForm
+    context_object_name = "diligencia"
+
+    def get_sistema_cultura(self):
+        return get_object_or_404(SistemaCultura, pk=int(self.kwargs['ente']))
 
 
 class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
@@ -615,7 +673,12 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['pk']))
 
     def templated_email_get_recipients(self, form):
-        recipiente_list = [self.get_sistema_cultura().cadastrador.user.email]
+        recipiente_list = [self.get_sistema_cultura().cadastrador.user.email,
+            self.get_sistema_cultura().cadastrador.email_pessoal]
+
+        if self.get_sistema_cultura().gestor:
+            recipiente_list.append(self.get_sistema_cultura().gestor.email_pessoal)
+            recipiente_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
         return recipiente_list
 

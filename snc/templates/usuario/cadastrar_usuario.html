@@ -52,6 +52,30 @@
 
   </div>
 
+  <div class="form-group {% if form.email_pessoal.errors %} has-error {% endif %}">
+    <label for="{{ form.email_pessoal.id_for_label }}" class="col-sm-3 control-label">E-mail Pessoal</label>
+
+    <div class="col-sm-9">
+      {% render_field form.email_pessoal class="form-control" %}
+      {% if form.email_pessoal.errors %} 
+        <span class="help-block">{{ form.email_pessoal.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="form-group {% if form.confirmar_email_pessoal.errors %} has-error {% endif %}">
+    <label for="{{ form.confirmar_email_pessoal.id_for_label }}" class="col-sm-3 control-label">Repita o E-mail Pessoal</label>
+
+    <div class="col-sm-9">
+      {% render_field form.confirmar_email_pessoal class="form-control" %}
+      {% if form.confirmar_email_pessoal.errors %} 
+        <span class="help-block">{{ form.confirmar_email_pessoal.errors }}</span>
+      {% endif %}
+    </div>
+
+  </div>
+
   <div class="form-group {% if form.password1.errors %} has-error {% endif %}">
     <label for="{{ form.password1.id_for_label }}" class="col-sm-3 control-label">Senha</label>
 

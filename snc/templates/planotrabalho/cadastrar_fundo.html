@@ -6,49 +6,92 @@
   <h3>
     <strong>Estruturação dos Componentes</strong>
   </h3>
+
+
+  <div class="form-group">
+    <label for="{{ form.mesma_lei.id_for_label }}">
+      É a mesma lei do sistema municipal de cultura?</br>
+    </label>
+    {% for radio in form.mesma_lei %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.mesma_lei.errors }}
+  </div>
+
   <h5>
     <strong>2.3 Instituição do Fundo de Cultura</strong>
   </h5>
 
-  <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
-    <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
-      CNPJ
-    </label>
-    {% render_field form.cnpj class="form-control cnpj half-width" %}
-    {% if form.cnpj.errors %} 
-      <span class="help-block">{{ form.cnpj.errors }}</span>
-    {% endif %}
+  <div id="lei_data_form">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao.id_for_label }}">
+        Data de Publicação da Lei do Fundo de Cultura
+      </label>
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+      {{ form.data_publicacao.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo.id_for_label }}">
+        Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
+      </label>
+      {% if form.arquivo.value %}
+        <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+        {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+        {% endif %}
+      {% else %}
+        <p>{% render_field form.arquivo %}</p>
+      {% endif %}
+      {{ form.arquivo.errors }}
+    </div>
   </div>
 
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}">
-      Data de Publicação da Lei do Fundo de Cultura
+    <label for="{{ form.possui_cnpj.id_for_label }}">
+      O fundo possui cnpj?</br>
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
-    {{ form.data_publicacao.errors }}
+    {% for radio in form.possui_cnpj %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.possui_cnpj.errors }}
   </div>
 
-  <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">
-      Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
-    </label>
-    {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-    {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
-    {% else %}
-    <p>{% render_field form.arquivo %}</p>
-    {% endif %}
-    {{ form.arquivo.errors }}
+  <div id="cnpj_form">
+    <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
+      <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
+        CNPJ
+      </label>
+      {% render_field form.cnpj class="form-control cnpj half-width" %}
+      {% if form.cnpj.errors %} 
+        <span class="help-block">{{ form.cnpj.errors }}</span>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.comprovante.id_for_label }}">
+        Comprovante do CNPJ
+      </label>
+      {% if form.comprovante.value %}
+        <p><a href="{{ form.comprovante.value.url }}">Baixar arquivo atual</a></p>
+        {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
+          <p>Modificar: {% render_field form.comprovante %}</p>
+        {% endif %}
+      {% else %}
+        <p>{% render_field form.comprovante %}</p>
+      {% endif %}
+      {{ form.comprovante.errors }}
+    </div>
   </div>
 
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
     - Elaborar minuta (proposta) de regulamentação do fundo e de outros mecanismos de financiamento;<br>
     - Encaminhar para discussão a minuta para avaliação e aprovação;<br>
-    - Publicar no Diário Oficial a regulamentação do fundo e dos outros mecanismos de financiamento.<br>
-
+    - Publicar no Diário Oficial a regulamentação do fundo e dos outros mecanismos de financiamento<br>
+    <strong>Observação:&nbsp</strong><br>
+    - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a>
+    - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
 
@@ -56,3 +99,42 @@
 </form>
 </div>
 {% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    if($('#id_possui_cnpj_0').is(":checked")){
+      $('#cnpj_form').css('display', 'block');
+    }
+    if($('#id_possui_cnpj_1').is(":checked")){
+      $('#cnpj_form').css('display', 'none');
+    }
+
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    $('input[name=possui_cnpj]').change(function() { 
+      if(this.value=='True') {
+        $('#cnpj_form').fadeIn();
+      }
+      else {
+        $('#cnpj_form').fadeOut();
+      }
+    })
+  });
+
+</script>
+{% endblock js%}

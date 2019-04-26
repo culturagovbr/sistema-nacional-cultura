@@ -17,8 +17,8 @@ pytestmark = pytest.mark.django_db
 def test_existencia_form_diligencia_componente(client, login, sistema_cultura):
     """ Testa existência da classe form para a diligência de componentes"""
 
-    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
-        usuario=login)
+    form = DiligenciaComponenteForm(componente='orgao_gestor', arquivo='arquivo',
+        sistema_cultura=sistema_cultura, usuario=login)
 
     assert form
 
@@ -36,8 +36,8 @@ def test_campo_texto_diligencia_form_componente(client, login, sistema_cultura):
     Testa existência do campo texto_diligência no form referente a diligência de componente
     """
 
-    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
-        usuario=login)
+    form = DiligenciaComponenteForm(componente='orgao_gestor', arquivo='arquivo',
+        sistema_cultura=sistema_cultura, usuario=login)
 
     assert "<textarea cols=\"40\" id=\"id_texto_diligencia\" name=\"texto_diligencia\" " in form.as_p()
 
@@ -55,8 +55,8 @@ def test_campo_texto_diligencia_form_geral(client, login, sistema_cultura):
 def test_campo_classificao_arquivo_no_form_diligencia_componente(client, login, sistema_cultura):
     """ Testa a existência do campo referente a seleção para a classificação do arquivo """
 
-    form = DiligenciaComponenteForm(componente='orgao_gestor', sistema_cultura=sistema_cultura,
-        usuario=login)
+    form = DiligenciaComponenteForm(componente='orgao_gestor', arquivo='arquivo',
+        sistema_cultura=sistema_cultura, usuario=login)
 
     assert "<select name=\"classificacao_arquivo\" id=\"id_classificacao_arquivo\"" in form.as_p()
 
@@ -85,7 +85,7 @@ def test_validacao_de_dados_invalidos(client, login, sistema_cultura):
     data = {'texto_diligencia': 'ta certo, parceiro', 'classificacao_arquivo': 'bla'}
 
     form = DiligenciaComponenteForm(data=data, componente='orgao_gestor',
-        sistema_cultura=sistema_cultura, usuario=login)
+        arquivo="arquivo", sistema_cultura=sistema_cultura, usuario=login)
 
     assert not form.is_valid()
 
@@ -106,7 +106,7 @@ def test_diligencia_form_componente_usa_model_correta(client, login, sistema_cul
     """ Testa de a classe DiligenciaForm utiliza a model referente a Diligencia """
 
     form = DiligenciaComponenteForm(componente='orgao_gestor',
-        sistema_cultura=sistema_cultura, usuario=login)
+        arquivo='arquivo', sistema_cultura=sistema_cultura, usuario=login)
 
     assert isinstance(form.instance, DiligenciaSimples)
 
@@ -123,7 +123,7 @@ def test_fields_form_diligencia_componente(client, login, sistema_cultura):
     """Testa as fields dentro do form de diligencia de componente"""
 
     form = DiligenciaComponenteForm(componente='orgao_gestor',
-        sistema_cultura=sistema_cultura, usuario=login)
+        arquivo='arquivo', sistema_cultura=sistema_cultura, usuario=login)
 
     fields = ('texto_diligencia', 'classificacao_arquivo')
 

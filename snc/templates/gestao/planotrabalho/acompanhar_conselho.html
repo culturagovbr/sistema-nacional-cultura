@@ -28,8 +28,10 @@
                 <tr>
                   <th>Município/Estado</th>
                   <th>CNPJ</th>
-                  <th>Anexo</th>
-                  <th></th>
+                  <th>Anexo da Ata</th>
+                  <th>Avaliar Ata</th>
+                  <th>Anexo da Lei</th>
+                  <th>Avaliar Lei</th>
                 </tr>
               </thead>
               <tbody>
@@ -37,12 +39,20 @@
                   <tr class="odd gradeX">
                     <td><a href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">{{ sistema.ente_federado }}</a></td>
                     <td>{{ sistema.sede.cnpj }}</td>
-                    <td>
-                      <a href="{{ sistema.conselho.arquivo.url }}">Download</a>
-                    </td>
-                    <td>
-                      <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='conselho' %}">Avaliar</a>
-                    </td>
+                    {% if sistema.conselho.arquivo %}
+                      <td><a href="{{ sistema.conselho.arquivo.url }}">Download</a></td>
+                      <td><a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='conselho' arquivo='arquivo' %}">Avaliar</a></td>
+                    {% else %}
+                      <td></td>
+                      <td></td>
+                    {% endif %}
+                    {% if sistema.conselho.lei.arquivo %}
+                      <td><a href="{{ sistema.conselho.lei.arquivo.url }}">Download</a></td>
+                      <td><a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='conselho' arquivo='lei' %}">Avaliar</a></td>
+                    {% else %}
+                      <td></td>
+                      <td></td>
+                    {% endif %}
                   </tr>
                 {% endfor %}
               </tbody>

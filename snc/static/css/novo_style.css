@@ -407,57 +407,62 @@ button.context.reply-to-comment-button {
 
 /* NOVOS CSS DA PAGINA */
 .painel_situacao {
-    position: absolute;
-    left: 100px;
-    width: 378px;
-    height: 116px;
+    width: 358px;
+    height: auto;
+    background-color: #1659BF;
+    padding: 10px;
+    overflow: auto;
+    border-radius: 5px;
 }
 
 .fundo_situacao {
     background-image: url("../img/banner_situacao_sem_texto.png");
-    width: 378px;
+    background-repeat: no-repeat;
+    width: 80px;
     height: 116px;
+    float: left;
+}
+
+.situacao_bloco_texto {
+    float: left;
+    padding-left: 10px;
+}
+
+.titulo_situacao {
+    /*text-indent: 80px;*/
+    color: #f8c301;
+    margin: 0em;
 }
 
 .texto_situacao {
     /*text-indent: 80px;*/
     color: #ffffff;
-    margin-top: -1.9cm;
-}
-
-.texto_situacao_data {
-    /*text-indent: 70px;*/
-    color: #ffffff;
-    align-content: center;
-    margin-top: 2.2cm;
+    margin: 0em;
 }
 
 .painel {
-    /*background-color: #1659BF;*/
    /* background-repeat: no-repeat;*/
-    position: absolute;
+    background-color: #1659BF;
     text-align:center;
-    top: 850px;
-    margin-top:2cm;
     left: 0;
-    width:378px;
-    height: 436px;
+    width: 368px;
+    height: auto;
+    padding: 6px;
+    border-radius: 5px;
+    padding-bottom: 40px;
 }
 
 .fundo_painel {
     background-image: url("../img/banner_grafico.png");
-    margin-top: 2cm;
-    width: 378px;
-    height: 436px;
-
+    background-repeat: no-repeat;
+    width: 368px;
+    height: 134px;
 }
 
 .painel_agenda {
     /*background-color: #F8C301;*/
     /* background-repeat: no-repeat;*/
-    position: absolute;
     text-align:center;
-    top: 140px;
     left: 0;
     width:379px;
     height: 154px;
@@ -467,33 +472,25 @@ button.context.reply-to-comment-button {
     background-image: url("../img/banner_agenda.png");
     background-repeat: no-repeat;
     width: 379px;
-    height: 174px;
-
+    height: auto;
 }
 
 .painel_mapa {
-    /*background-color: #1659BF;*/
-    /* background-repeat: no-repeat;*/
-    position: absolute;
     text-align:center;
-    top: 470px;
-    margin-top: -1cm;
-    left: 0;
-    width:378px;
+    width: 378px;
     height: 278px;
 }
 
 .texto_agenda {
     text-indent: 80px;
     color: #ffffff;
-    margin-top: -2cm;
+    padding-top: 25px
 }
 
 .texto_agenda_data {
     text-indent: 70px;
     color: #ffffff;
     align-content: center;
-    margin-top: 2cm;
 }
 
 .texto_cor {
@@ -501,8 +498,10 @@ button.context.reply-to-comment-button {
 }
 
 .fundo_painel_mapa {
+    background-color: #1659BF;
     background-image: url("../img/banner_mapa.png");
+    background-repeat: no-repeat;
     width: 378px;
-    height: 368px;
-
+    height: 100px;
+    border-radius: 5px 5px 0px 0px;
 }

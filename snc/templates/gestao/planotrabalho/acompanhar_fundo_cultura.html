@@ -29,8 +29,10 @@
                 <th>Município/Estado</th>
                 <th>CNPJ do Ente</th>
                 <th>CNPJ do Fundo</th>
-                <th>Anexo</th>
-                <th></th>
+                <th>Comprovante do CNPJ do Fundo</th>
+                <th>Avaliar Comprovante</th>
+                <th>Anexo da Lei</th>
+                <th>Avaliar Lei</th>
               </tr>
             </thead>
             <tbody>
@@ -39,12 +41,22 @@
                   <td><a href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">{{ sistema.ente_federado }}</a></td>
                   <td>{{ sistema.sede.cnpj }}</td>
                   <td>{{sistema.fundo_cultura.cnpj}}</td>
-                  <td>
-                    <a href="{{ sistema.fundo_cultura.arquivo.url }}">Download</a>
-                  </td>
-                  <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='fundo_cultura' %}">Avaliar</a>                  
-                  </td>
+                  {% if sistema.fundo_cultura.arquivo %}
+                    <td><a href="{{ sistema.fundo_cultura.arquivo.url }}">Download</a></td>
+                    <td><a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='fundo_cultura' arquivo='arquivo' %}">Avaliar</a></td>
+                  {% else %}
+                    <td></td>
+                    <td></td>
+                  {% endif %}
+                  {% if sistema.fundo_cultura.comprovante_cnpj.arquivo %}
+                    <td><a href="{{ sistema.fundo_cultura.comprovante_cnpj.arquivo.url }}">Download</a></td>
+                    <td>
+                      <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+                    </td>
+                  {% else %}
+                    <td></td>
+                    <td></td>
+                  {% endif %}
                 </tr>
               {% endfor %}
             </tbody>

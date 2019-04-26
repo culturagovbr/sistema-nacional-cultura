@@ -41,7 +41,7 @@
                     <a href="{{ sistema.orgao_gestor.arquivo.url }}">Download</a>
                   </td>
                   <td>
-                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='orgao_gestor' %}">Avaliar</a>      
+                    <a href="{% url 'gestao:diligencia_componente' pk=sistema.id componente='orgao_gestor' arquivo='arquivo' %}">Avaliar</a>      
                   </td>
                 </tr>
               {% endfor %}

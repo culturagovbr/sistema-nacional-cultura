@@ -1,12 +1,12 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
 <div class="panel panel-default">
   <div class="panel-heading">
-    Inserir ata do conselho cultural no cadastro
+    Inserir arquivos do conselho cultural no cadastro
   </div>
   <div class="panel-body">
     <form class="form-horizontal" method="post" id="form" enctype=multipart/form-data>{% csrf_token %} <div>
       <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Anexo</label>
+        <label class="col-sm-3 control-label">Anexo da Ata</label>
 
         <div class="col-sm-7">
           {% render_field form.arquivo %}
@@ -20,7 +20,7 @@
       </div>
 
       <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
+        <label class="col-sm-3 control-label">Data de publicação da Ata</label>
 
         <div class="col-sm-7">
           {% render_field form.data_publicacao class="date" %}
@@ -32,11 +32,39 @@
           </span>
         </div>
       </div>
+
+      <div class="form-group {% if form.arquivo_lei.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label">Anexo da Lei</label>
+
+        <div class="col-sm-7">
+          {% render_field form.arquivo_lei %}
+
+        </div>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">{{ form.arquivo_lei.errors }}</span>
+          <span class="help-block">{{ form.non_field_errors }}</span>
+
+        </div>
+      </div>
+
+      <div class="form-group {% if form.data_publicacao_lei.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
+
+        <div class="col-sm-7">
+          {% render_field form.data_publicacao_lei class="date" %}
+        </div>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">
+            <span class="help-block">{{ form.data_publicacao_lei.errors }}</span>
+            <span class="help-block">{{ form.non_field_errors }}</span>
+          </span>
+        </div>
+      </div>
   </div>
 
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-11">
-      <a class="btn btn-default" href="{% url 'gestao:listar_documentos' template='listar_conselhos' %}">Cancelar</a>
+      <a class="btn btn-default" href="{% url 'gestao:listar_documentos' template='listar_conselho' %}">Cancelar</a>
       <button type="submit" class="btn btn-primary">Salvar</button>
     </div>
   </div>

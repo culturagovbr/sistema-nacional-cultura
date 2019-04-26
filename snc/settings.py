@@ -78,7 +78,8 @@ THIRD_PARTY_APPS = (
     'drf_hal_json',
     'rest_framework_xml',
     'rest_framework_csv',
-    'corsheaders'
+    'corsheaders',
+    'simple_history'
 )
 
 # Apps specific for this project go here.
@@ -129,6 +130,7 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'adesao.middleware.ThreadLocalUserMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware'
 )
 
 if DEBUG:

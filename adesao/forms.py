@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.crypto import get_random_string
@@ -35,6 +36,8 @@ class CadastrarUsuarioForm(UserCreationForm):
     username = BRCPFField()
     confirmar_email = forms.EmailField(required=True)
     email = forms.EmailField(required=True)
+    email_pessoal = forms.EmailField(required=False)
+    confirmar_email_pessoal = forms.EmailField(required=False)
     nome_usuario = forms.CharField(max_length=100)
 
     class Meta:
@@ -48,12 +51,33 @@ class CadastrarUsuarioForm(UserCreationForm):
 
         return self.cleaned_data['confirmar_email']
 
+    def clean_confirmar_email_pessoal(self):
+        if self.cleaned_data.get('email_pessoal', None):
+            if self.data.get('email_pessoal') != self.cleaned_data['confirmar_email_pessoal']:
+                raise forms.ValidationError(
+                    'Confirmação de e-mail pessoal não confere.')
+
+            return self.cleaned_data['confirmar_email_pessoal']
+
     def clean_email(self):
-        usuarios = User.objects.filter(email=self.cleaned_data['email'])
+        usuarios = Usuario.objects.filter(
+            Q(user__email=self.cleaned_data['email']) |
+            Q(email_pessoal=self.cleaned_data['email']))
+
         if not usuarios:
             return self.cleaned_data['email']
         else:
             raise forms.ValidationError('Este e-mail já foi cadastrado!')
+
+    def clean_email_pessoal(self):
+        if self.cleaned_data.get('email_pessoal', None):
+            usuarios = Usuario.objects.filter(
+                Q(user__email=self.cleaned_data['email_pessoal']) |
+                Q(email_pessoal=self.cleaned_data['email_pessoal']))
+            if not usuarios:
+                return self.cleaned_data['email_pessoal']
+            else:
+                raise forms.ValidationError('Este e-mail já foi cadastrado!')
 
     def clean_username(self):
         try:
@@ -77,6 +101,7 @@ class CadastrarUsuarioForm(UserCreationForm):
         usuario = Usuario()
         usuario.user = user
         usuario.nome_usuario = self.cleaned_data['nome_usuario']
+        usuario.email_pessoal = self.cleaned_data['email_pessoal']
         codigo_ativacao = get_random_string()
         usuario.codigo_ativacao = codigo_ativacao
         if commit:
