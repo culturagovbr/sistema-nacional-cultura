@@ -3,6 +3,13 @@
 li a.selected {
     background-color: rgba(0,0,0,0.1);
 }
+
+@media (max-width: 1780px){
+  .col-lg-custom {
+      flex: 0 0 50%;
+      max-width: 38% ;
+  }
+}
 </style>
 <menu data-target="ente" ></menu>
 
@@ -69,11 +76,11 @@ $(document).ready(function(){
         [10, 25, 50, 100, "Todos"]
     ],
     dom:
-      `<'row'<'col-sm-12 col-md-2'l>
-      <'col-sm-12 col-md-4'B>
-      <'col-sm-12 col-md-2'f>
-      <'col-sm-12 col-md-2'<"#filtro-estados">><"#filtro-componentes">>
-      <'row'<'col-sm-12'tr>>
+      `<'row'<'col-md-auto col-lg-6 col-lg-custom'l>
+      <'col-md-2 col-lg-auto col-sm-auto'B>
+      <'col-sm-auto col-md-auto'f>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-componentes.col-sm-auto col-md-auto">>
+      <'row'<'col-sm-auto col-md-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
     buttons: [
