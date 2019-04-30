@@ -81,7 +81,7 @@ def test_save_cadastrar_gestor_dados_validos(client, login, sistema_cultura):
             'tipo_funcionario': 2, 
     }
 
-    form = CadastrarGestor(data=data, files={"termo_posse": SimpleUploadedFile(
+    form = CadastrarGestor(data=data, logged_user=login.user, files={"termo_posse": SimpleUploadedFile(
                 "test_file.pdf", bytes("test text", "utf-8")
             ),
             "cpf_copia": SimpleUploadedFile(
@@ -110,7 +110,7 @@ def test_save_cadastrar_gestor_cpf_invalido(client, login, sistema_cultura):
             'tipo_funcionario': 2, 
     }
 
-    form = CadastrarGestor(data=data, files={"termo_posse": SimpleUploadedFile(
+    form = CadastrarGestor(data=data, logged_user=login.user, files={"termo_posse": SimpleUploadedFile(
                 "test_file.pdf", bytes("test text", "utf-8")
             ),
             "cpf_copia": SimpleUploadedFile(
