@@ -795,15 +795,13 @@ class DataTableUsuarios(BaseDatatableView):
     def prepare_results(self, qs):
         json_data = []
         for item in qs:
-            try:
-                sistema = SistemaCultura.sistema.get(
-                    cadastrador=item.id)
-                ente_nome = sistema.ente_federado.nome
-                ente_id = sistema.ente_federado.cod_ibge
-            except SistemaCultura.DoesNotExist:
-                ente_nome = ''
-                ente_id = ''
-                pass
+            entes = []
+            sistemas = SistemaCultura.sistema.filter(cadastrador=item.id)
+            for sistema in sistemas:
+                entes.append([
+                    sistema.ente_federado.cod_ibge,
+                    sistema.ente_federado.nome
+                ])
 
             json_data.append([
                 item.user.id,
@@ -813,8 +811,7 @@ class DataTableUsuarios(BaseDatatableView):
                 item.user.last_login.strftime("%d/%m/%Y") if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
                 'Administrador' if item.user.is_staff else 'Cadastrador',
-                ente_nome,
-                ente_id,
+                entes,
                 item.user.date_joined,
             ])
         return json_data

@@ -226,7 +226,7 @@ $(document).ready(function(){
   });
 
 
-  function diasSemLogar(data_cadastro){
+  var diasSemLogar = function (data_cadastro){
     var data_cadastro = new Date(data_cadastro);
     var hoje = new Date();
     var um_dia = 86400000;
@@ -235,28 +235,60 @@ $(document).ready(function(){
     return dias_sem_logar
   }
 
-  function format ( data ) {
-    var link_ente_federado = '-';
-    if (data[8])
-      link_ente_federado = `<a href="/gestao/ente/${data[8]}">${data[7]} <i class="material-icons expandable-icon">call_made</i></a>`
+  var format = function (data) {
+    var linhas_entes = ''
+    var link_pagina_ente = ''
+
+    let entes_usuario = data[7]
+
+    entes_usuario.forEach((ente, chave) => {
+      let ente_cod_ibge = ente[0]
+      let ente_nome =  ente[1]
+
+      link_pagina_ente = `
+        <a href="/gestao/ente/${ente_cod_ibge}">
+          ${ente_nome}
+          <i class="material-icons expandable-icon">call_made</i>
+        </a>
+      `
+
+      if(!chave){
+        linhas_entes += `
+          <tr>
+            <td style="font-weight: bold;">Ente Federado:</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+          `
+      }else{
+        linhas_entes += `
+          <tr>
+            <td>&nbsp;</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+        `
+      }
+    })
+
+    if(!entes_usuario.length) linhas_entes = `
+        <tr>
+          <td style="font-weight: bold;">Ente Federado:</td>
+          <td> - </td>
+        </tr>`
 
     return `
-    <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
-         <tbody>
-            <tr>
-                <td style="font-weight: bold;">Ente Federado:</td>
-                <td>${link_ente_federado}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Data cadastro:</td>
-                <td>${data[9]}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Dias sem logar:</td>
-                <td>${diasSemLogar(data[4])}</td>
-            </tr>
-        </tbody>
-    </table>`;
+      <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+          <tbody>
+              ${linhas_entes}
+              <tr>
+                  <td style="font-weight: bold;">Data cadastro:</td>
+                  <td>${data[9]}</td>
+              </tr>
+              <tr>
+                  <td style="font-weight: bold;">Dias sem logar:</td>
+                  <td>${diasSemLogar(data[4])}</td>
+              </tr>
+          </tbody>
+      </table>`;
   }
 
   $("#tabela-ente tbody").on('click', 'td', function () {
