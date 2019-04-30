@@ -105,7 +105,7 @@ $(document).ready(function(){
             if (!data[4].length){
               return 'Nunca entrou'
             }
-            return data[4]
+            return formatarData(data[4])
           }
         },
         {
@@ -225,8 +225,8 @@ $(document).ready(function(){
     });
   });
 
-
   var diasSemLogar = function (data_cadastro){
+    if(!data_cadastro) return '-'
     var data_cadastro = new Date(data_cadastro);
     var hoje = new Date();
     var um_dia = 86400000;
@@ -235,7 +235,12 @@ $(document).ready(function(){
     return dias_sem_logar
   }
 
-  var format = function (data) {
+  var formatarData = function(data) {
+    var data = new Date(data);
+    return data.toLocaleDateString('pt-BR')
+  }
+
+  var formatar = function (data) {
     var linhas_entes = ''
     var link_pagina_ente = ''
 
@@ -281,7 +286,7 @@ $(document).ready(function(){
               ${linhas_entes}
               <tr>
                   <td style="font-weight: bold;">Data cadastro:</td>
-                  <td>${data[9]}</td>
+                  <td>${formatarData(data[8])}</td>
               </tr>
               <tr>
                   <td style="font-weight: bold;">Dias sem logar:</td>
@@ -309,7 +314,7 @@ $(document).ready(function(){
             tr.removeClass('shown');
         }
         else {
-            row.child( format(row.data()) ).show();
+            row.child( formatar(row.data()) ).show();
             tr.addClass('shown');
             row.child().children(":first").addClass('focus-expandable')
         }

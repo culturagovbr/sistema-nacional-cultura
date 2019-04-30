@@ -808,11 +808,12 @@ class DataTableUsuarios(BaseDatatableView):
                 item.user.username,
                 item.nome_usuario,
                 item.user.email,
-                item.user.last_login.strftime("%d/%m/%Y") if item.user.last_login else '',
+                item.user.last_login if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
                 'Administrador' if item.user.is_staff else 'Cadastrador',
                 entes,
                 item.user.date_joined,
+
             ])
         return json_data
 
