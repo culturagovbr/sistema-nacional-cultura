@@ -831,10 +831,6 @@ class DataTablePlanoTrabalho(BaseDatatableView):
                 & ~Q(conselho__lei__arquivo=None)) |
                 (Q(conselho__situacao=1) & ~Q(conselho__arquivo=None)))
         else:
-            sistemas = sistemas.filter(estado_processo='6')
-            kwargs = {'{0}'.format(componente): None}
-            sistemas = sistemas.exclude(**kwargs)
-
             kwargs = {'{0}__situacao'.format(componente): 1}
             sistemas = sistemas.filter(**kwargs)
             kwargs = {'{0}__arquivo'.format(componente): None}
@@ -855,13 +851,21 @@ class DataTablePlanoTrabalho(BaseDatatableView):
         json_data = []
         componente = self.request.POST.get('componente', None)
         for item in qs:
-            json_data.append([
+            json_response = [
                 item.id,
                 item.ente_federado.__str__(),
                 escape(item.sede.cnpj) if item.sede else '',
                 getattr(item, componente).arquivo.url,
                 componente,
-            ])
+            ]
+
+            json_data.append(json_response)
+
+            if getattr(item, 'lei', None):
+                json_response.append(
+                    getattr(item, componente).lei.arquivo.url
+                )
+
         return json_data
 
 

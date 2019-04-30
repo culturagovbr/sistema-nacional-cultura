@@ -11,7 +11,7 @@
                 <ul class="nav nav-tabs" data-tabs="tabs">
 
                 <li class="nav-item">
-                    <a class="nav-link active" href="#sistema" data-toggle="tab">
+                    <a class="nav-link active" href="#sistema_tab" data-toggle="tab">
                     Sistema de Cultura
                     <div class="ripple-container"></div>
                     </a>
@@ -49,7 +49,6 @@
             </div>
             </div>
         </div>
-
         <div class="card-body">
             <div class="tab-content">
             <div class="tab-pane active" id="sistema_tab">
@@ -76,59 +75,97 @@
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
-csrf_token = '{{ csrf_token }}';
+    var csrf_token = '{{ csrf_token }}';
+    var tabelas = {}
+    $('.datatable').each(function(index){
+        let componente = this.id
+        tabelas[`${componente}`] = $(`#${componente}`).DataTable({
+            "autoWidth": false,
+            order: [1, 'asc'],
+            language:{
+                    "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+                },
+            columns: [
+                {
+                data: null,
+                name: "ente_federado",
+                render: (data) => data[1],
+                },
+                {
+                data: null,
+                name: "sede__cnpj",
+                render: (data) => data[2],
+                },
+                {
+                data: null,
+                name: "diligencia_arquivo",
+                orderable: false,
+                render: (data) => `
+                    <a class="btn btn-sm btn-primary" href="/gestao/${data[0]}/diligencia/${data[4]}/arquivo">
+                        <i class="material-icons">gavel</i>
+                    </a>`
+                },
+                {
+                data: null,
+                name: "download_arquivo",
+                orderable: false,
+                render: (data) => `
+                    <a class="btn btn-sm btn-primary" href="${data[3]}">
+                        <i class="material-icons">save_alt</i>
+                    </a>`
+                },
+                {
+                    data: null,
+                    name: "diligencia_lei",
+                    orderable: false,
+                    render: (data) => {
+                        if (componente === 'conselho' || componente === 'fundo_cultura') {
+                            if (data[5]) {
+                                return `
+                                    <a class="btn btn-sm btn-info" href="/gestao/${data[0]}/diligencia/${data[4]}/lei">
+                                        <i class="material-icons">gavel</i>
+                                    </a>`
+                            }
+                            return null
+                        } else {
+                            return null
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    name: "download_lei",
+                    orderable: false,
+                    render: (data) => {
+                        if (componente === 'conselho' || componente === 'fundo_cultura'){
+                            if(data[5]){
+                                return `
+                                    <a class="btn btn-sm btn-info" href="${data[5]}">
+                                        <i class="material-icons">save_alt</i>
+                                    </a>`
+                            }
+                            return null
+                        }else{
+                            return null
+                        }
 
-$('.datatable').each(function(){
-    $(`#${this.id}`).DataTable({
-    "autoWidth": false,
+                    }
+                },
+            ],
+            searching: true,
+            processing: true,
+            serverSide: true,
+            stateSave: true,
+            ajax: {
+            url: "{% url 'gestao:ajax_plano_trabalho' %}",
+            data: {
+                csrfmiddlewaretoken: csrf_token,
+                componente: this.id
+            },
+            type: "POST",
+            },
+        });
+    });
 
-    order: [1, 'asc'],
-    language:{
-            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
-          },
-    columns: [
-        {
-          data: null,
-          name: "ente_federado",
-          render: (data) => data[1],
-        },
-        {
-          data: null,
-          name: "sede__cnpj",
-          render: (data) => data[2],
-        },
-        {
-          data: null,
-          name: "link",
-          orderable: false,
-          render: (data) => `
-            <a class="btn btn-sm btn-primary" href="/gestao/${data[0]}/diligencia/${data[4]}/arquivo">
-                <i class="material-icons">gavel</i>
-            </a>`
-        },
-        {
-          data: null,
-          name: "sede__cnpj",
-          orderable: false,
-          render: (data) => `
-            <a class="btn btn-sm btn-primary" href="${data[3]}">
-                <i class="material-icons">save_alt</i>
-            </a>`
-        },
-    ],
-    searching: true,
-    processing: true,
-    serverSide: true,
-    stateSave: true,
-    ajax: {
-      url: "{% url 'gestao:ajax_plano_trabalho' %}",
-      data: {
-        csrfmiddlewaretoken: csrf_token,
-        componente: this.id
-      },
-      type: "POST",
-    },
-  });
-});
 </script>
 {% endblock js%}
