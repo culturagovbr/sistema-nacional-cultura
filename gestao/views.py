@@ -657,6 +657,7 @@ class DataTableEntes(BaseDatatableView):
         search = self.request.POST.get('search[value]', None)
         custom_search = self.request.POST.get('columns[0][search][value]', None)
         componentes_search = self.request.POST.get('columns[1][search][value]', None)
+        situacoes_search = self.request.POST.get('columns[2][search][value]', None)
 
         if search:
             query = Q()
@@ -700,6 +701,10 @@ class DataTableEntes(BaseDatatableView):
                 nome_componente = componentes.get(int(id))
                 kwargs = {'{0}__situacao__in'.format(nome_componente): [2, 3]}
                 qs = qs.filter(**kwargs)
+
+        if situacoes_search:
+            situacoes_search = situacoes_search.split(',')
+            qs = qs.filter(estado_processo__in=situacoes_search)
 
         return qs
 

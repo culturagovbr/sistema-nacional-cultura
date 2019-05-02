@@ -7,8 +7,12 @@ li a.selected {
 @media (max-width: 1780px){
   .col-lg-custom {
       flex: 0 0 50%;
-      max-width: 38% ;
+      max-width: 17% ;
   }
+}
+
+.card-body {
+   overflow: inherit;
 }
 </style>
 <menu data-target="ente" ></menu>
@@ -64,10 +68,7 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  console.log(new URLSearchParams(window.location.search).get('q'))
   var colunasParaExportacao = [0,1,2,3];
-
-
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -76,10 +77,10 @@ $(document).ready(function(){
         [10, 25, 50, 100, "Todos"]
     ],
     dom:
-      `<'row'<'col-md-auto col-lg-6 col-lg-custom'l>
+      `<'row'<'col-md-auto col-lg-4 col-lg-custom'l>
       <'col-md-2 col-lg-auto col-sm-auto'B>
       <'col-sm-auto col-md-auto'f>
-      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-componentes.col-sm-auto col-md-auto">>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-componente.col-sm-auto col-md-auto"><"#filtro-situacao.col-sm-auto col-md-auto">>
       <'row'<'col-sm-auto col-md-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
@@ -109,7 +110,7 @@ $(document).ready(function(){
       },
       {
         text: '<i class="material-icons">save_alt</i>',
-        className: 'btn btn-info btn-sm',
+        className: 'btn btn-dark btn-sm',
         action: (e, dt, node, config) => {
           $('#modal-exportacao').modal('show')
         }
@@ -159,7 +160,6 @@ $(document).ready(function(){
     searching: true,
     processing: true,
     serverSide: true,
-    // stateSave: true,
     ajax: {
       url: "{% url 'gestao:ajax_entes' %}",
       data: {
@@ -174,7 +174,7 @@ $(document).ready(function(){
         });
       });
 
-      $('#filtro-componentes').html(`
+      $('#filtro-componente').html(`
         <select title="filtrar concluídos" data-style="btn btn-info btn-sm" data-class="selectpicker" multiple>
           <option value="0">Criação do Sistema</option>
           <option value="1">Órgão Gestor</option>
@@ -183,11 +183,29 @@ $(document).ready(function(){
           <option value="4">Plano Cultura</option>
         </select>
       `);
-      $('#filtro-componentes select').selectpicker();
 
-      $('select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
-        var filtro_componentes = $(this).val();
-        tabela.columns(1).search(filtro_componentes).draw()
+      $('#filtro-situacao').html(`
+        <select title="filtrar situação" data-style="btn btn-success btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Aguardando dados cadastrais</option>
+          <option value="1">Aguardando envio da documentação</option>
+          <option value="2">Documentação Recebida - Aguarda Análise</option>
+          <option value="3">Diligência Documental</option>
+          <option value="4">Encaminhado para assinatura do Secretário SAI</option>
+          <option value="5">Aguarda Publicação do DOU</option>
+          <option value="6">Publicado no DOU</option>
+        </select>
+      `);
+
+      $('#filtro-componente select, #filtro-situacao select').selectpicker();
+
+      $('#filtro-componente select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(1).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-situacao select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(2).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-estados').html(`
@@ -199,7 +217,6 @@ $(document).ready(function(){
       $.ajax({
         type: 'OPTIONS',
         url: '/api/v2/sistemadeculturalocal/',
-        data: {},
         dataType: 'json',
         success: function (response) {
           var estados = response.estado.choices;
@@ -223,10 +240,6 @@ $(document).ready(function(){
 
     }
   });
-
-
-
-
 });
 </script>
 {% endblock js %}
