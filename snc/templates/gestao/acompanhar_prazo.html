@@ -121,7 +121,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			cache: false,
 			success: function(response){
-        tabela.ajax.reload()
+        tabela.ajax.reload(null, false)
         $.notify(
           {
             icon: "check_circle",
@@ -131,7 +131,7 @@ $(document).ready(function(){
         );
 			},
 			error: function(error){
-        tabela.ajax.reload()
+        tabela.ajax.reload(null, false)
         $.notify(
           {
             icon: "error",
