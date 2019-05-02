@@ -15,7 +15,7 @@
 					{% include "formulario_sistema_gestao.html" %}
 
 					<button type="submit" class="btn btn-primary pull-right">Salvar</button>
-					<a class="btn btn-secondary pull-right" href="{% url 'adesao:home' %}">Cancelar</a>
+					<a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' object.ente_federado.cod_ibge %}">Cancelar</a>
 				</form>
 			</div>
 		</div>
