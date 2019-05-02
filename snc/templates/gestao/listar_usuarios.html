@@ -105,7 +105,7 @@ $(document).ready(function(){
             if (!data[4].length){
               return 'Nunca entrou'
             }
-            return data[4] 
+            return formatarData(data[4])
           }
         },
         {
@@ -118,9 +118,9 @@ $(document).ready(function(){
               data-name="is_active"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[5] == 'Ativo' ? 1 : 0}"
+              data-value="${data[5] == 'Ativo' ? 0 : 1}"
               data-title="Alterar Situação">
-                ${data[5]}  
+                ${data[5]}
               </a>`
         },
         {
@@ -133,7 +133,7 @@ $(document).ready(function(){
               data-name="is_staff"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[6] == 'Administrador' ? 1 : 0}"
+              data-value="${data[6] == 'Administrador' ? 0 : 1}"
               data-title="Alterar Perfil">
                 ${data[6]} <i class="fa fa-edit"></i>
               </a>`
@@ -180,16 +180,16 @@ $(document).ready(function(){
       display: function(value) {
         $(this).html(`${value} <i class="fa fa-edit"></i>`);
       },
-          
+
     });
-    
+
     $('.user__is_active').editable({
       type: 'select',
       title: 'Selecione',
       source: [
-        {value: 0, text: 'Ativo'},
-        {value: 1, text: 'Inativo'},
-      ], 
+        {value: 1, text: 'Ativo'},
+        {value: 0, text: 'Inativo'},
+      ],
       display: function(value, source) {
         $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
       },
@@ -207,8 +207,8 @@ $(document).ready(function(){
     $('.user__is_staff').editable({
       type: 'select',
       source: [
-        {value: 0, text: 'Administrador'},
-        {value: 1, text: 'Cadastrador'},
+        {value: 1, text: 'Administrador'},
+        {value: 0, text: 'Cadastrador'},
       ],
       display: function(value, source) {
         $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
@@ -225,8 +225,8 @@ $(document).ready(function(){
     });
   });
 
-
-  function diasSemLogar(data_cadastro){
+  var diasSemLogar = function (data_cadastro){
+    if(!data_cadastro) return '-'
     var data_cadastro = new Date(data_cadastro);
     var hoje = new Date();
     var um_dia = 86400000;
@@ -235,28 +235,65 @@ $(document).ready(function(){
     return dias_sem_logar
   }
 
-  function format ( data ) {
-    var link_ente_federado = '-';
-    if (data[8])
-      link_ente_federado = `<a href="/gestao/ente/${data[8]}">${data[7]} <i class="material-icons expandable-icon">call_made</i></a>`
+  var formatarData = function(data) {
+    var data = new Date(data);
+    return data.toLocaleDateString('pt-BR')
+  }
+
+  var formatar = function (data) {
+    var linhas_entes = ''
+    var link_pagina_ente = ''
+
+    let entes_usuario = data[7]
+
+    entes_usuario.forEach((ente, chave) => {
+      let ente_cod_ibge = ente[0]
+      let ente_nome =  ente[1]
+
+      link_pagina_ente = `
+        <a href="/gestao/ente/${ente_cod_ibge}">
+          ${ente_nome}
+          <i class="material-icons expandable-icon">call_made</i>
+        </a>
+      `
+
+      if(!chave){
+        linhas_entes += `
+          <tr>
+            <td style="font-weight: bold;">Ente Federado:</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+          `
+      }else{
+        linhas_entes += `
+          <tr>
+            <td>&nbsp;</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+        `
+      }
+    })
+
+    if(!entes_usuario.length) linhas_entes = `
+        <tr>
+          <td style="font-weight: bold;">Ente Federado:</td>
+          <td> - </td>
+        </tr>`
 
     return `
-    <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
-         <tbody>
-            <tr>
-                <td style="font-weight: bold;">Ente Federado:</td>
-                <td>${link_ente_federado}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Data cadastro:</td>
-                <td>${data[9]}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Dias sem logar:</td>
-                <td>${diasSemLogar(data[4])}</td>
-            </tr>
-        </tbody>
-    </table>`;
+      <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+          <tbody>
+              ${linhas_entes}
+              <tr>
+                  <td style="font-weight: bold;">Data cadastro:</td>
+                  <td>${formatarData(data[8])}</td>
+              </tr>
+              <tr>
+                  <td style="font-weight: bold;">Dias sem logar:</td>
+                  <td>${diasSemLogar(data[4])}</td>
+              </tr>
+          </tbody>
+      </table>`;
   }
 
   $("#tabela-ente tbody").on('click', 'td', function () {
@@ -277,7 +314,7 @@ $(document).ready(function(){
             tr.removeClass('shown');
         }
         else {
-            row.child( format(row.data()) ).show();
+            row.child( formatar(row.data()) ).show();
             tr.addClass('shown');
             row.child().children(":first").addClass('focus-expandable')
         }
