@@ -13,12 +13,16 @@ def limpar_mascara(mascara):
 
 
 def enviar_email_conclusao(request):
+    recipient_list=[request.user.email, request.user.usuario.email_pessoal]
+
+    if request.session.get('sistema_gestor', False):
+        recipient_list.append(request.session['sistema_gestor']['email_institucional'])
+        recipient_list.append(request.session['sistema_gestor']['email_pessoal'])
+
     send_templated_mail(
         template_name='conclusao_cadastro',
         from_email='naoresponda@cultura.gov.br',
-        recipient_list=[request.user.email, request.user.usuario.email_pessoal,
-            request.session['sistema_gestor']['email_institucional'],
-            request.session['sistema_gestor']['email_pessoal']],
+        recipient_list=recipient_list,
         context={
             'request':request,
         },
