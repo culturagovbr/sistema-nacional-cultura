@@ -1783,7 +1783,7 @@ def test_verificacao_se_prazo_foi_alterado(client, login_staff):
     assert sistema.alterado_por == login_staff
 
 
-def test_datatable_adicionar_prazo_busca(client, login_staff):
+def test_datatable_adicionar_prazo_busca_sem_acento(client, login_staff):
 
     sistema = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
         ente_federado__nome='Acrelândia', estado_processo=6,
@@ -1802,21 +1802,7 @@ def test_datatable_adicionar_prazo_busca(client, login_staff):
     assert len(resultado) == 1
     assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
         '', '01/01/2018', str(sistema.prazo)]
-
-
-def test_pesquisa_de_ente_federado_sem_acento_tela_adicionar_prazo(client, login_staff):
-    """ Testa a pesquisa por nome do ente federado (sem acento) - Deve retornar o nome
-    com o acento normalmente """
-
-    sistema = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
-        ente_federado__nome='Acrelândia', estado_processo=6,
-        data_publicacao_acordo=datetime.date(2018, 1, 1))
-
-    url = reverse("gestao:acompanhar_prazo") + "?ente_federado=Acrelandia"
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema.ente_federado
-
+        
 
 def test_historico_diligencias_componentes(client, login_staff):
     sistema_cultura = mommy.make(
@@ -1875,17 +1861,19 @@ def test_links_para_componentes(client, login_staff):
 
 
 def test_ente_federado_nao_encontrado(client, login_staff):
-    """ Testa se pesquisa retorna um ente federado.
+    """ Testa se pesquisa retorna não retorna um ente federado.
     """
 
     sistema = mommy.make(
         "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="abaete",
     )
 
-    url = reverse("gestao:acompanhar_adesao") + "?ente_federado=aaaa"
-    response = client.get(url)
+    url = reverse("gestao:ajax_entes")
+    response = client.post(url,
+        data={"search[value]": "aaaa"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest")
 
-    assert len(response.context_data["object_list"]) == 0
+    assert len(response.json()["data"]) == 0
 
 
 def test_historico_cadastradores(client, login_staff):
