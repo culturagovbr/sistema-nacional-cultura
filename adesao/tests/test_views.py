@@ -597,3 +597,57 @@ Seu prazo para o envio é de até 60 dias corridos.
     assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
     assert mail.outbox[0].to == [login.user.email, login.email_pessoal]
     assert mail.outbox[0].body == texto
+
+
+def test_alterar_sistema_cultura(login, client):
+    ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
+    gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
+        nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
+    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+        cep="72430101", bairro="bairro", telefone_um="123456")
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("adesao:alterar_sistema", kwargs={"pk": sistema_cultura.id})
+
+    response = client.post(
+        url,
+        {
+            "ente_federado": ente_federado.pk,
+            "cpf": gestor.cpf,
+            "rg": gestor.rg,
+            "nome": gestor.nome,
+            "orgao_expeditor_rg": gestor.orgao_expeditor_rg,
+            "estado_expeditor": gestor.estado_expeditor,
+            "telefone_um": gestor.telefone_um,
+            "email_institucional": gestor.email_institucional,
+            "tipo_funcionario": gestor.tipo_funcionario,
+            "cnpj": sede.cnpj,
+            "endereco": sede.endereco,
+            "complemento": sede.complemento,
+            "cep": sede.cep,
+            "bairro": sede.bairro,
+            "telefone_um": sede.telefone_um,
+            "termo_posse": SimpleUploadedFile(
+                "test_file.pdf", bytes("test text", "utf-8")
+            ),
+            "cpf_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+            "rg_copia": SimpleUploadedFile(
+                "test_file2.pdf", bytes("test text", "utf-8")
+            ),
+        },
+    )
+
+    gestor_salvo = Gestor.objects.last()
+    sede_salva = Sede.objects.last()
+    sistema_salvo = SistemaCultura.sistema.get(ente_federado=ente_federado)
+
+    assert sistema_salvo.ente_federado.cod_ibge == ente_federado.cod_ibge
+    assert sistema_salvo.gestor == gestor_salvo
+    assert sistema_salvo.sede == sede_salva
+    assert sistema_salvo.cadastrador == login
