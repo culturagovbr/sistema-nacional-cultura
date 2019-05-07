@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
@@ -33,6 +34,15 @@
     {% endif %}
     {{ form.arquivo.errors }}
   </div>
+
+  <div class="form-group">
+    <label for="{{ form.perfil.id_for_label }}">
+      Qual o perfil do órgão gestor de cultura?
+    </label>
+    {% render_field form.perfil class="form-control date half-width" %}
+    {{ form.perfil.errors }}
+  </div>
+  </br>
 
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>

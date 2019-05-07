@@ -12,6 +12,7 @@ from .models import FundoCultura, Componente
 from .models import FundoDeCultura, PlanoCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
 from .models import ArquivoComponente2
+from .models import OrgaoGestor2
 from .utils import add_anos
 from adesao.models import SistemaCultura
 from gestao.forms import content_types
@@ -81,6 +82,13 @@ class CriarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
+
+
+class CriarOrgaoGestorForm(CriarComponenteForm):
+
+    class Meta:
+        model = OrgaoGestor2
+        fields = ('perfil', 'arquivo', 'data_publicacao',)
 
 
 class CriarFundoForm(CriarComponenteForm):
