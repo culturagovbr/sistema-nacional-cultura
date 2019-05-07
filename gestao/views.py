@@ -477,7 +477,7 @@ class InserirComponente(CreateView):
     def get_form_class(self):
         if self.kwargs['componente'] == 'fundo_cultura':
             form_class = CriarFundoForm
-        if self.kwargs['componente'] == 'orgao_gestor':
+        elif self.kwargs['componente'] == 'orgao_gestor':
             form_class = CriarOrgaoGestorForm
         elif self.kwargs['componente'] == 'conselho':
             form_class = CriarConselhoForm

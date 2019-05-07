@@ -650,7 +650,7 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
     assert name == arquivo.name
     assert situacao == 1
 
-@pytest.mark.skip("A view será refeita no layout novo")
+
 def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para orgão gestor na
     tela de gestão salva no field arquivo """
