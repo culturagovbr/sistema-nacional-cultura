@@ -45,6 +45,7 @@ from adesao.models import LISTA_ESTADOS_PROCESSO
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
 from planotrabalho.models import ConselhoDeCultura
+from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
 from gestao.utils import empty_to_none, get_uf_by_mun_cod
 
@@ -250,7 +251,32 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context = super().get_context_data(**kwargs)
         context['historico'] = context['object'].historico_cadastradores()[:10]
 
+        sistema = self.get_queryset().get(id=self.object.id)
+        context['componentes_restantes'] = []
+        componentes = {
+            0: "legislacao",
+            1: "orgao_gestor",
+            2: "fundo_cultura",
+            3: "conselho",
+            4: "plano",
+            }
+
+        for componente_id, componente_nome in componentes.items():
+            componente_sistema = getattr(sistema, componente_nome, None)
+            arquivo_componente = getattr(componente_sistema, 'arquivo', None)
+
+            if not arquivo_componente:
+                context['componentes_restantes'].append({
+                    'nome': componente_nome,
+                    'descricao': self.get_descricao_componente(componente_id)
+                })
+
         return context
+
+    def get_descricao_componente(self, id):
+        # print(LISTA_TIPOS_COMPONENTES)
+        # return ''
+        return LISTA_TIPOS_COMPONENTES[id][1]
 
 
 class AlterarDadosSistemaCultura(AlterarSistemaCultura):
@@ -376,12 +402,6 @@ class AlterarDocumentosEnteFederado(UpdateView):
         return reverse_lazy('gestao:inserir_entefederado')
 
 
-class ListarDocumentosComponentes(TemplateView):
-
-    def get_template_names(self):
-        return ['gestao/inserir_documentos/%s.html' % self.kwargs['template']]
-
-
 class InserirComponente(CreateView):
     def get_template_names(self):
         return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
@@ -391,6 +411,7 @@ class InserirComponente(CreateView):
         pk = self.kwargs['pk']
         kwargs['tipo'] = self.kwargs['componente']
         kwargs['sistema'] = SistemaCultura.sistema.get(pk=pk)
+        kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_form_class(self):
@@ -403,9 +424,9 @@ class InserirComponente(CreateView):
 
         return form_class
 
-    def get_success_url(self):
-        messages.success(self.request, 'Sistema da Cultura inserido com sucesso')
-        return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_%s' % self.kwargs['componente']})
+    # def get_success_url(self):
+    #     messages.success(self.request, 'Sistema da Cultura inserido com sucesso')
+    #     return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_%s' % self.kwargs['componente']})
 
 
 class AlterarComponente(UpdateView):
@@ -447,10 +468,10 @@ class AlterarConselhoCultura(UpdateView):
                 'data_publicacao_lei': self.object.lei.data_publicacao}
         return kwargs
 
-    def get_success_url(self):
-        messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
-        return reverse_lazy(
-            'gestao:listar_documentos', kwargs={'template': 'listar_conselho'})
+    # def get_success_url(self):
+    #     messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
+    #     return reverse_lazy(
+    #         'gestao:listar_documentos', kwargs={'template': 'listar_conselho'})
 
 
 class AlterarFundoCultura(UpdateView):
@@ -479,11 +500,11 @@ class AlterarFundoCultura(UpdateView):
 
         return kwargs
 
-    def get_success_url(self):
-        messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
-        return reverse_lazy(
-            'gestao:listar_documentos',
-            kwargs={'template': 'listar_fundo_cultura'})
+    # def get_success_url(self):
+    #     messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
+    #     return reverse_lazy(
+    #         'gestao:listar_documentos',
+    #         kwargs={'template': 'listar_fundo_cultura'})
 
 
 class Prorrogacao(ListView):

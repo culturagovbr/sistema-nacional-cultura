@@ -8,7 +8,7 @@ class FileUploadWidget(forms.FileInput):
         super().render(name, value, attrs)
         footer_class = ''
 
-        if not value.name:
+        if value is None or not value.name:
             footer_class = 'd-none'
             html = '''
             <div class="card card-input-file">

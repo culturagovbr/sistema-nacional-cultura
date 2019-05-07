@@ -79,10 +79,6 @@ urlpatterns = [
     path("inserir-documentos/<str:componente>/<int:pk>", staff_member_required(
         views.InserirComponente.as_view(),
         login_url='adesao:login'), name='inserir_componente'),
-    # Inserção de documentos da criação do sistema de cultura
-    url(r'^listar-documentos/(?P<template>\w+)$', staff_member_required(
-        views.ListarDocumentosComponentes.as_view(),
-        login_url='adesao:login'), name='listar_documentos'),
 
     # Tela de alteração de upload do plano de trabalho
     path("inserir-documentos/fundo/alterar/<int:pk>", staff_member_required(
