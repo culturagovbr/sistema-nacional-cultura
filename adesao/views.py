@@ -385,6 +385,10 @@ class AlterarSistemaCultura(UpdateView):
             gestor = form_gestor.save()
             sistema = form_sistema.save()
 
+            sistema.sede = sede
+            sistema.gestor = gestor
+            sistema.save()
+
             return redirect(self.get_success_url())
         else:
             return self.render_to_response(self.get_context_data(form=form))
