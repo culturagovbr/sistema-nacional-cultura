@@ -43,7 +43,7 @@ def test_url_diligencia_retorna_200(url, client, login_staff):
     Testa se há url referente à página de diligências.
     A url teria o formato: gestao/id_sistema_cultura/diligencia/componente_plano_trabalho
     """
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -86,7 +86,7 @@ def test_recepcao_componente_na_url_diligencia(url, client, plano_trabalho):
 def test_url_componente_retorna_200(url, client, login_staff):
     """Testa se a url retorna 200 ao acessar um componente"""
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -172,7 +172,7 @@ def test_existencia_do_contexto_view(url, client, login_staff):
 def test_retorno_400_post_criacao_diligencia(url, client, login_staff):
     """ Testa se o status do retorno é 400 para requests sem os parâmetros esperados """
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -197,7 +197,7 @@ def test_retorna_400_POST_classificacao_inexistente(url, client, login_staff):
     Testa se o status do retorno é 400 quando feito um POST com a classificao invalida
     de um arquivo.
     """
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -222,7 +222,7 @@ def test_retorna_400_POST_classificacao_inexistente(url, client, login_staff):
 def test_tipo_do_form_utilizado_na_diligencia_view(url, client, login_staff):
     """ Testa se o form utilizado na diligencia_view é do tipo DiligenciaForm """
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -244,7 +244,7 @@ def test_tipo_do_form_utilizado_na_diligencia_view(url, client, login_staff):
 def test_invalido_form_para_post_diligencia(url, client, login_staff):
     """ Testa se o form invalida post com dados errados """
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -267,7 +267,7 @@ def test_invalido_form_para_post_diligencia(url, client, login_staff):
 def test_obj_ente_federado(url, client, login_staff):
     """ Testa se o objeto retornado ente_federado é uma String"""
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -326,7 +326,7 @@ def test_salvar_informacoes_no_banco(url, client, login_staff):
 
     DiligenciaSimples.objects.all().delete()
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -354,7 +354,7 @@ def test_salvar_informacoes_no_banco(url, client, login_staff):
 def test_redirecionamento_de_pagina_apos_POST(url, client, login_staff):
     """ Testa se há o redirecionamento de página após o POST da diligência """
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -448,7 +448,7 @@ def test_captura_nome_usuario_logado_na_diligencia(
     """
         Testa se o nome do usuario logado é capturado assim que uma diligencia for feita
     """
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -553,7 +553,7 @@ def test_retorno_do_form_da_diligencia(url, client, login_staff):
         (6, "Arquivo incorreto"),
     )
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,
@@ -630,7 +630,7 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
     """ Testa se funcionalidade de alterar documento para orgão gestor na
     tela de gestão salva no field arquivo """
 
-    orgao_gestor = mommy.make("Componente", tipo=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
         orgao_gestor=orgao_gestor)
 
@@ -650,7 +650,7 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
     assert name == arquivo.name
     assert situacao == 1
 
-
+@pytest.mark.skip("A view será refeita no layout novo")
 def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para orgão gestor na
     tela de gestão salva no field arquivo """
@@ -966,7 +966,7 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
     """ Testa as informações referentes aos componentes do
     plano de trabalho na diligência geral """
     legislacao = mommy.make("Componente", tipo=0, situacao=1, _create_files=True)
-    orgao = mommy.make("Componente", tipo=1, situacao=2, _create_files=True)
+    orgao = mommy.make("OrgaoGestor2", tipo=1, situacao=2, _create_files=True)
     fundo = mommy.make("FundoDeCultura", tipo=2, situacao=3, _create_files=True)
     conselho = mommy.make("ConselhoDeCultura", tipo=3, situacao=4, _create_files=True)
     plano = mommy.make("Componente", tipo=4, situacao=5, _create_files=True)
@@ -1006,7 +1006,7 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
 
     DiligenciaSimples.objects.all().delete()
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura = mommy.make(
         "SistemaCultura",
         ente_federado__cod_ibge=123456,

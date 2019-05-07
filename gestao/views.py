@@ -64,6 +64,7 @@ from .forms import AlterarDadosEnte
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
 from planotrabalho.forms import CriarConselhoForm
+from planotrabalho.forms import CriarOrgaoGestorForm
 from planotrabalho.forms import AlterarConselhoForm
 
 from .forms import CadastradorEnte
@@ -476,6 +477,8 @@ class InserirComponente(CreateView):
     def get_form_class(self):
         if self.kwargs['componente'] == 'fundo_cultura':
             form_class = CriarFundoForm
+        if self.kwargs['componente'] == 'orgao_gestor':
+            form_class = CriarOrgaoGestorForm
         elif self.kwargs['componente'] == 'conselho':
             form_class = CriarConselhoForm
         else:
