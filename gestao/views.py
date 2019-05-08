@@ -404,7 +404,16 @@ class AlterarDocumentosEnteFederado(UpdateView):
 
 class InserirComponente(CreateView):
     def get_template_names(self):
-        return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
+        componente = self.kwargs['componente']
+        if componente == 'fundo_cultura' or componente == 'conselho':
+            return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
+        return ['gestao/inserir_documentacao.html']
+
+    def get_context_data(self, form=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        context['sistema'] = SistemaCultura.sistema.get(pk=pk)
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(InserirComponente, self).get_form_kwargs()
@@ -424,20 +433,29 @@ class InserirComponente(CreateView):
 
         return form_class
 
-    # def get_success_url(self):
-    #     messages.success(self.request, 'Sistema da Cultura inserido com sucesso')
-    #     return reverse_lazy('gestao:listar_documentos', kwargs={'template': 'listar_%s' % self.kwargs['componente']})
+    def get_success_url(self):
+        pk = self.kwargs['pk']
+        sistema = SistemaCultura.sistema.get(pk=pk)
+        return reverse_lazy('gestao:detalhar', kwargs={
+            'cod_ibge': sistema.ente_federado.cod_ibge
+            })
 
 
 class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
     model = Componente
-    template_name = 'gestao/inserir_documentacao.html'
+
+    def get_template_names(self):
+        componente = self.kwargs['componente']
+        if componente == 'fundo_cultura' or componente == 'conselho':
+            return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
+        return ['gestao/inserir_documentacao.html']
 
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         kwgs = {'{0}'.format(
             self.kwargs['componente']): self.kwargs.get('pk')}
+            
         context['sistema'] = SistemaCultura.sistema.get(
             **kwgs)
         return context
@@ -457,21 +475,33 @@ class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_conselho.html'
 
+    def get_context_data(self, form=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        kwgs = {'conselho': self.kwargs.get('pk')}
+            
+        context['sistema'] = SistemaCultura.sistema.get(
+            **kwgs)
+        return context
+
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
         sistema_id = self.object.conselho.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'conselho'
+        kwargs['logged_user'] = self.request.user
         if self.object.lei:
             kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
                 'data_publicacao_lei': self.object.lei.data_publicacao}
         return kwargs
 
-    # def get_success_url(self):
-    #     messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
-    #     return reverse_lazy(
-    #         'gestao:listar_documentos', kwargs={'template': 'listar_conselho'})
+    def get_success_url(self):
+        kwgs = {'conselho': self.kwargs.get('pk')}
+        ente_pk = SistemaCultura.sistema.get(
+            **kwgs).ente_federado.cod_ibge
+        return reverse_lazy(
+            'gestao:detalhar',
+            kwargs={'cod_ibge': ente_pk})
 
 
 class AlterarFundoCultura(UpdateView):
@@ -497,14 +527,16 @@ class AlterarFundoCultura(UpdateView):
         else:
             kwargs['initial']['possui_cnpj'] = False
 
-
         return kwargs
 
-    # def get_success_url(self):
-    #     messages.success(self.request, 'Sistema da Cultura alterado com sucesso')
-    #     return reverse_lazy(
-    #         'gestao:listar_documentos',
-    #         kwargs={'template': 'listar_fundo_cultura'})
+
+    def get_success_url(self):
+        kwgs = {'fundo_cultura': self.kwargs.get('pk')}
+        ente_pk = SistemaCultura.sistema.get(
+            **kwgs).ente_federado.cod_ibge
+        return reverse_lazy(
+            'gestao:detalhar',
+            kwargs={'cod_ibge': ente_pk})
 
 
 class Prorrogacao(ListView):

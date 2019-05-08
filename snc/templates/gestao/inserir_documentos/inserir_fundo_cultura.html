@@ -9,13 +9,91 @@
         </div>
         <div class="card-body">
           <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-            <div class="row">
+
+            <div class="form-group">
+                <label class="col-sm-12 control-label">Data publicação</label>
                 <div class="col-md-12">
-                  {% render_field form %}
+                    {% render_field form.data_publicacao class="date" %}
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="col-sm-12 control-label">CNPJ</label>
+
+              <div class="col-sm-12">
+                {% render_field form.cnpj class="cnpj form-control" %}
+              </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-12 control-label">Mesma Lei:</label>
+                <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_0" value="True" >
+                            Sim
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_1" value="False">
+                            Não
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-12 control-label">Possui CNPJ:</label>
+                <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_0" value="True" >
+                            Sim
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_1" value="False" >
+                            Não
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-12 control-label">Anexo do Componente</label>
+
+              <div class="col-sm-12">
+                {% render_field form.arquivo %}
+
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-12 control-label">Anexo do Comprovante</label>
+
+              <div class="col-sm-12">
+                {% render_field form.comprovante %}
+
+              </div>
+            </div>
+
           <button type="submit" class="btn btn-primary pull-right">Salvar</button>
           <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+
           </form>
         </div>
       </div>

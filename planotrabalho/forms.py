@@ -101,6 +101,19 @@ class CriarFundoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
     possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
+
+    def __init__(self, *args, **kwargs):
+        logged_user = kwargs['logged_user']
+        super(CriarFundoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Componente'
+            })
+            self.fields['comprovante'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Comprovante'
+            })
+
     def clean_arquivo(self):
         if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
@@ -196,7 +209,10 @@ class CriarConselhoForm(ModelForm):
 
         if logged_user.is_staff:
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Componente'
+                'label': 'Arquivo Componente'
+            })
+            self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Lei'
             })
 
     def save(self, commit=True, *args, **kwargs):
@@ -244,7 +260,16 @@ class AlterarConselhoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
         super(AlterarConselhoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Componente'
+            })
+            self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Lei'
+            })
 
     def save(self, commit=True, *args, **kwargs):
         conselho = super(AlterarConselhoForm, self).save(commit=False)
