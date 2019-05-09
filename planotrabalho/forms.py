@@ -108,10 +108,10 @@ class CriarFundoForm(CriarComponenteForm):
 
         if logged_user.is_staff:
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Componente'
+                'label': 'Anexo da Lei'
             })
             self.fields['comprovante'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Comprovante'
+                'label': 'Comprovante do CNPJ'
             })
 
     def clean_arquivo(self):

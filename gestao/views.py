@@ -274,8 +274,6 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         return context
 
     def get_descricao_componente(self, id):
-        # print(LISTA_TIPOS_COMPONENTES)
-        # return ''
         return LISTA_TIPOS_COMPONENTES[id][1]
 
 
@@ -455,7 +453,7 @@ class AlterarComponente(UpdateView):
         context = super().get_context_data(**kwargs)
         kwgs = {'{0}'.format(
             self.kwargs['componente']): self.kwargs.get('pk')}
-            
+
         context['sistema'] = SistemaCultura.sistema.get(
             **kwgs)
         return context
@@ -478,7 +476,7 @@ class AlterarConselhoCultura(UpdateView):
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         kwgs = {'conselho': self.kwargs.get('pk')}
-            
+
         context['sistema'] = SistemaCultura.sistema.get(
             **kwgs)
         return context
@@ -491,7 +489,8 @@ class AlterarConselhoCultura(UpdateView):
         kwargs['tipo'] = 'conselho'
         kwargs['logged_user'] = self.request.user
         if self.object.lei:
-            kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
+            kwargs['initial'] = {
+                'arquivo_lei': self.object.lei.arquivo,
                 'data_publicacao_lei': self.object.lei.data_publicacao}
         return kwargs
 
@@ -515,6 +514,7 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+        kwargs['logged_user'] = self.request.user
 
         if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
             kwargs['initial']['mesma_lei'] = True

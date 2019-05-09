@@ -9,90 +9,83 @@
         </div>
         <div class="card-body">
           <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-
             <div class="form-group">
+              <label class="col-sm-12 control-label">Mesma Lei:</label>
+              <div class="col-sm-12">
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_0" value="True">
+                    Sim
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_1" value="False">
+                    Não
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="lei_data_form">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  {% render_field form.arquivo %}
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-12 control-label">Data publicação</label>
                 <div class="col-md-12">
-                    {% render_field form.data_publicacao class="date" %}
+                  {% render_field form.data_publicacao class="date" %}
                 </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-12 control-label">Possui CNPJ:</label>
+              <div class="col-sm-12">
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_0" value="True">
+                    Sim
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_1" value="False">
+                    Não
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <div class="form-group">
+            <div id="cnpj_form">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  {% render_field form.comprovante %}
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-12 control-label">CNPJ</label>
-
-              <div class="col-sm-12">
-                {% render_field form.cnpj class="cnpj form-control" %}
-              </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-12 control-label">Mesma Lei:</label>
                 <div class="col-sm-12">
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_0" value="True" >
-                            Sim
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_1" value="False">
-                            Não
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
+                  {% render_field form.cnpj class="cnpj form-control" %}
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-12 control-label">Possui CNPJ:</label>
-                <div class="col-sm-12">
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_0" value="True" >
-                            Sim
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_1" value="False" >
-                            Não
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-sm-12 control-label">Anexo do Componente</label>
-
-              <div class="col-sm-12">
-                {% render_field form.arquivo %}
-
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-12 control-label">Anexo do Comprovante</label>
-
-              <div class="col-sm-12">
-                {% render_field form.comprovante %}
-
-              </div>
-            </div>
-
-          <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-          <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+            <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+            <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
 
           </form>
         </div>
@@ -167,25 +160,35 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
-    if($('#id_mesma_lei_1').is(":checked")){
-      $('#lei_data_form').css('display', 'block');
-    }
-    if($('#id_mesma_lei_0').is(":checked")){
-      $('#lei_data_form').css('display', 'none');
+    if('{{form.initial.mesma_lei}}' == 'True'){
+      $('#id_mesma_lei_0').attr('checked', true)
+    } else if('{{form.initial.mesma_lei}}' == 'False') {
+      $('#id_mesma_lei_1').attr('checked', true)
     }
 
-    if($('#id_possui_cnpj_0').is(":checked")){
+    if ('{{form.initial.possui_cnpj}}' == 'True') {
+      $('#id_possui_cnpj_0').attr('checked', true)
+    } else if ('{{form.initial.possui_cnpj}}' == 'False'){
+      $('#id_possui_cnpj_1').attr('checked', true)
+    }
+
+    if ($('#id_mesma_lei_1').is(":checked")) {
+      $('#lei_data_form').css('display', 'block');
+    }
+    if ($('#id_mesma_lei_0').is(":checked")) {
+      $('#lei_data_form').css('display', 'none');
+    }
+    if ($('#id_possui_cnpj_0').is(":checked")) {
       $('#cnpj_form').css('display', 'block');
     }
-    if($('#id_possui_cnpj_1').is(":checked")){
+    if ($('#id_possui_cnpj_1').is(":checked")) {
       $('#cnpj_form').css('display', 'none');
     }
 
     $('input[name=mesma_lei]').change(function() {
       if(this.value=='False') {
         $('#lei_data_form').fadeIn();
-      }
-      else {
+      } else {
         $('#lei_data_form').fadeOut();
       }
     })
@@ -193,38 +196,36 @@
     $('input[name=possui_cnpj]').change(function() {
       if(this.value=='True') {
         $('#cnpj_form').fadeIn();
-      }
-      else {
+      } else {
         $('#cnpj_form').fadeOut();
       }
     })
   });
 
   onDragEnter = function (event) {
-      event.preventDefault();
-    },
+    event.preventDefault();
+  },
 
-    onDragOver = function (event) {
-      event.preventDefault();
-    },
+  onDragOver = function (event) {
+    event.preventDefault();
+  },
 
-    onDragLeave = function (event) {
-      event.preventDefault();
-    },
+  onDragLeave = function (event) {
+    event.preventDefault();
+  },
 
-    onDrop = function (event, a) {
-      event.preventDefault();
-      var inputId = $(event.target).data('target');
-      var input = document.getElementById(inputId);
-      var inputName = input.name
-      var fileName = event.originalEvent.dataTransfer.files[0].name;
-      var file = event.originalEvent.dataTransfer.files;
+  onDrop = function (event, a) {
+    event.preventDefault();
+    var inputId = $(event.target).data('target');
+    var input = document.getElementById(inputId);
+    var inputName = input.name
+    var fileName = event.originalEvent.dataTransfer.files[0].name;
+    var file = event.originalEvent.dataTransfer.files;
 
-      $('#file-name-termo_posse').html(fileName);
-      $(`#footer-${inputName}`).hide()
+    $(`#footer-${inputName}`).hide()
 
-      input.files = event.originalEvent.dataTransfer.files;
-    };
+    input.files = event.originalEvent.dataTransfer.files;
+  };
 
   $('input[type="file"]').each((key, element) => {
     $(`#${element.id}`).on("change", function (event) {
@@ -243,6 +244,7 @@
         $(`#${element.id}`).trigger('click');
       });
   });
+
 
 </script>
 {% endblock js%}
