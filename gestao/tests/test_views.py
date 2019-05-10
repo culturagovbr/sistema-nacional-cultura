@@ -774,7 +774,7 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
 
     fundo = mommy.make("FundoDeCultura", tipo=2)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
-        fundo_cultura=fundo)
+        fundo_cultura=fundo, ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "fundo_cultura_alterar.txt", b"file_content", content_type="text/plain"
@@ -861,7 +861,7 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
 
     conselho = mommy.make("ConselhoDeCultura", tipo=3)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
-        conselho=conselho)
+        conselho=conselho, ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "ata_conselho_cultural.txt", b"file_content", content_type="text/plain"
