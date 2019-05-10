@@ -217,7 +217,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, s
     legislacao = mommy.make("Componente", tipo=0, situacao=1)
     arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
     diligencia = mommy.make("DiligenciaSimples")
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     fundo = mommy.make("FundoDeCultura", tipo=2, situacao=1)
     conselho = mommy.make("ConselhoDeCultura", tipo=3, situacao=1)
     plano = mommy.make("Componente", tipo=4, situacao=1)
@@ -262,7 +262,7 @@ def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura)
     só deve ser renderizada quando a diligência é por componente
     """
 
-    orgao_gestor = mommy.make("Componente", tipo=1, situacao=1)
+    orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     sistema_cultura.orgao_gestor = orgao_gestor
     sistema_cultura.save()
 

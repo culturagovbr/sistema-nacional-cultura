@@ -61,6 +61,7 @@ from .forms import AlterarDadosEnte
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
 from planotrabalho.forms import CriarConselhoForm
+from planotrabalho.forms import CriarOrgaoGestorForm
 from planotrabalho.forms import AlterarConselhoForm
 
 from .forms import CadastradorEnte
@@ -424,6 +425,8 @@ class InserirComponente(CreateView):
     def get_form_class(self):
         if self.kwargs['componente'] == 'fundo_cultura':
             form_class = CriarFundoForm
+        elif self.kwargs['componente'] == 'orgao_gestor':
+            form_class = CriarOrgaoGestorForm
         elif self.kwargs['componente'] == 'conselho':
             form_class = CriarConselhoForm
         else:
@@ -663,14 +666,14 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['pk']))
 
     def templated_email_get_recipients(self, form):
-        recipiente_list = [self.get_sistema_cultura().cadastrador.user.email,
+        recipient_list = [self.get_sistema_cultura().cadastrador.user.email,
             self.get_sistema_cultura().cadastrador.email_pessoal]
 
         if self.get_sistema_cultura().gestor:
-            recipiente_list.append(self.get_sistema_cultura().gestor.email_pessoal)
-            recipiente_list.append(self.get_sistema_cultura().gestor.email_institucional)
+            recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
+            recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
-        return recipiente_list
+        return recipient_list
 
     def get_success_url(self):
         return reverse_lazy("gestao:detalhar", kwargs={

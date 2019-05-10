@@ -55,9 +55,8 @@
                     <strong>Publicação no DOU:</strong>
                       {% if ente.link_publicacao_acordo %}
                         <a href="{{ ente.link_publicacao_acordo }}"> {{ente.data_publicacao_acordo|date:'d/m/Y'}}</a>
-                      {% else %}
-                        {{ente.data_publicacao_acordo|date:'d/m/Y'}}
-                      {% endif %}
+
+                    <p><strong>E-mail Pessoal:</strong> {% if ente.gestor.email_pessoal %} {{ ente.gestor.email_pessoal }} {% endif %}</p>
                   </p>
                 {% endif %}
                 {% if ente.data_publicacao_retificacao %}
@@ -79,6 +78,14 @@
                     {% if ente.alterado_por %}
                       {{ente.alterado_por}}
                     {% endif %}
+                </p>
+                <p>
+                  <strong>Participou da Conferência Nacional:</strong>
+                  {% if ente.conferencia_nacional %}
+                  Sim
+                  {% else %}
+                  {{ente.data_publicacao_acordo|date:'d/m/Y'}}
+                  {% endif %}
                 </p>
           </div>
 

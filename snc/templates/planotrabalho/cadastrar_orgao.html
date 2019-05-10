@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
@@ -34,6 +35,15 @@
     {{ form.arquivo.errors }}
   </div>
 
+  <div class="form-group">
+    <label for="{{ form.perfil.id_for_label }}">
+      Qual o perfil do órgão gestor de cultura?
+    </label>
+    {% render_field form.perfil class="form-control date half-width" %}
+    {{ form.perfil.errors }}
+  </div>
+  </br>
+
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
     - Elaborar minuta;<br>
@@ -42,8 +52,8 @@
     - Encaminhar ao governador/prefeito para aprovação;<br>
     - Encaminhar ao Poder Legislativo.<br>
     <strong>Observação:&nbsp</strong><br>
-    -Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a>
-    -Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
+    - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a>
+    - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
   <input type="submit" class="btn btn-success" value="Salvar" />

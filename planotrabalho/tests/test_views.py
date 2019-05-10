@@ -52,7 +52,8 @@ def test_cadastrar_componente_tipo_orgao_gestor(client, login):
         "componente.txt", b"file_content", content_type="text/plain"
     )
     response = client.post(url, data={"arquivo": arquivo,
-                                      'data_publicacao': '28/06/2018'})
+                                      'data_publicacao': '28/06/2018',
+                                      'perfil': 0})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
@@ -60,6 +61,33 @@ def test_cadastrar_componente_tipo_orgao_gestor(client, login):
     assert response.status_code == 302
     assert arquivo.name.split(".")[0] in sistema_atualizado.orgao_gestor.arquivo.name.split("/")[-1]
     assert sistema_atualizado.orgao_gestor.data_publicacao == datetime.date(2018, 6, 28)
+    assert sistema_atualizado.orgao_gestor.perfil == 0
+    assert sistema_atualizado.orgao_gestor.tipo == 1
+
+
+def test_alterar_orgao_gestor(client, login):
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'orgao_gestor', 'sede', 'gestor'],
+        cadastrador=login)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("planotrabalho:alterar_orgao", kwargs={"pk": sistema_cultura.orgao_gestor.id})
+
+    arquivo = SimpleUploadedFile(
+        "novo.txt", b"file_content", content_type="text/plain"
+    )
+    response = client.post(url, data={"arquivo": arquivo,
+                                      "data_publicacao": "25/06/2018",
+                                      "perfil": 0})
+
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__nome=sistema_cultura.ente_federado.nome)
+
+    assert arquivo.name.split(".")[0] in sistema_atualizado.orgao_gestor.arquivo.name.split("/")[-1]
+    assert sistema_atualizado.orgao_gestor.data_publicacao == datetime.date(2018, 6, 25)
+    assert sistema_atualizado.orgao_gestor.perfil == 0
     assert sistema_atualizado.orgao_gestor.tipo == 1
 
 

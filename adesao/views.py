@@ -355,10 +355,10 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipiente_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
-            gestor_pessoal, gestor_institucional]
+        recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
+        gestor_pessoal, gestor_institucional]
 
-        return recipiente_list
+        return recipient_list
 
     def templated_email_get_context_data(self, **kwargs):
         context = super().templated_email_get_context_data(**kwargs)
@@ -384,6 +384,10 @@ class AlterarSistemaCultura(UpdateView):
             sede = form_sede.save()
             gestor = form_gestor.save()
             sistema = form_sistema.save()
+
+            sistema.sede = sede
+            sistema.gestor = gestor
+            sistema.save()
 
             return redirect(self.get_success_url())
         else:
