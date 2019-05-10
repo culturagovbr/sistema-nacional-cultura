@@ -55,7 +55,7 @@
                     <strong>Publicação no DOU:</strong>
                       {% if ente.link_publicacao_acordo %}
                         <a href="{{ ente.link_publicacao_acordo }}"> {{ente.data_publicacao_acordo|date:'d/m/Y'}}</a>
-
+                      {% endif %}
                     <p><strong>E-mail Pessoal:</strong> {% if ente.gestor.email_pessoal %} {{ ente.gestor.email_pessoal }} {% endif %}</p>
                   </p>
                 {% endif %}
