@@ -101,58 +101,6 @@
 </div>
 
 <div class="row">
-	{% if historico_diligencias %}
-	<div class="col-md-5">
-		<div class="card">
-			<div class="card-header card-plain card-header-primary">
-				<h4>Histórico de Diligências</h4>
-			</div>
-			<div class="card-body">
-					{% for diligencia in historico_diligencias %}
-					<div class="col-md-12 lista-diligencia">
-						<ul class="list-group"></ul>
-							<li class="list-group-item"><b>Usuário:</b> {{ diligencia.usuario.nome_usuario }}</li>
-							{% if componente != plano_trabalho %}
-							<li class="list-group-item"><b>Motivo:</b> {{ diligencia.get_classificacao_arquivo_display }}</li>
-							{% endif %}
-							<li class="list-group-item"><b>Data:</b> {{ diligencia.data_criacao }}</li>
-							<li class="list-group-item"><b>Resumo:</b> {{ diligencia.texto_diligencia | striptags | safe}}</li>
-						</ul>
-					</div>
-					{% endfor %}
-			</div>
-		</div>
-	</div>
-	{% endif%}
-
-
-
-
-	{% if historico_diligencias_componentes %}
-	<div class="col-md-5">
-		<div class="card">
-			<div class="card-header card-plain card-header-primary">
-				<h4>Histórico de Diligências dos Componentes</h4>
-			</div>
-			<div class="card-body">
-				{% for componente in historico_diligencias_componentes %}
-				<div class="col-md-12 lista-diligencia">
-					<ul class="list-group"></ul>
-						<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-						<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
-						<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-						<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
-						<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
-					</ul>
-				</div>
-				{% endfor %}
-			</div>
-		</div>
-	</div>
-	{% endif %}
-
-
-
 	{% if historico_diligencias_componentes %}
 		<div class="col-md-5">
 			<div class="card">
@@ -161,55 +109,44 @@
 				</div>
 				<div class="card-body">
 					{% if componente == plano_trabalho %}
-					{% for componente in historico_diligencias_componentes %}
-					<div class="col-md-12 lista-diligencia">
-					<ul class="list-group"></ul>
-					<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}
-					</li>
-					<li class="list-group-item">
-						<b>Usuário:</b>{{ componente.diligencia.usuario.nome_usuario }}</li>
-					<li class="list-group-item">
-						<b>Motivo:</b>{{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-					<li class="list-group-item"><b>Data:</b>
-						{{ componente.diligencia.data_criacao }}
-					</li>
-					<li class="list-group-item"><b>Resumo:</b>
-						{{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
-					</ul>
-					</div>
-					{% endfor %}
+						{% for componente in historico_diligencias_componentes %}
+							<div class="col-md-12 lista-diligencia">
+								<ul class="list-group"></ul>
+								<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+								<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+								<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+								<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+								<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
+								</ul>
+							</div>
+						{% endfor %}
 					{% else %}
-					{% for componente in historico_diligencias_componentes %}
-					{% for diligencia_historica in componente.historico_diligencia %}
-					<div class="col-md-12 lista-diligencia">
-						<ul class="list-group"></ul>
-						<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-							<li class="list-group-item"><b>Usuário:</b>{{ diligencia_historica.usuario.nome_usuario }}</li>
-							<li class="list-group-item"><b>Motivo:</b>{{ diligencia_historica.get_classificacao_arquivo_display }}</li>
-							<li class="list-group-item"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
-							<li class="list-group-item"><b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe}}</li>
-							{% if diligencia_historica.arquivo_url %}
-							<li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}">Download do Arquivo</a></li>
-							{% endif %}
-						</ul>
-					</div>
-					{% empty %}
-					<div class="col-md-12 lista-diligencia">
-					<ul class="list-group"></ul>
-					<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}
-					</li>
-					<li class="list-group-item">
-						<b>Usuário:</b>{{ componente.diligencia.usuario.nome_usuario }}</li>
-					<li class="list-group-item">
-						<b>Motivo:</b>{{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-					<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}
-					</li>
-					<li class="list-group-item"><b>Resumo:</b>
-						{{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
-					</ul>
-					</div>
-					{% endfor %}
-					{% endfor %}
+						{% for componente in historico_diligencias_componentes %}
+							{% for diligencia_historica in componente.historico_diligencia %}
+								<div class="col-md-12 lista-diligencia">
+									<ul class="list-group"></ul>
+										<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+										<li class="list-group-item"><b>Usuário:</b> {{ diligencia_historica.usuario.nome_usuario }}</li>
+										<li class="list-group-item"><b>Motivo:</b> {{ diligencia_historica.get_classificacao_arquivo_display }}</li>
+										<li class="list-group-item"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
+										<li class="list-group-item"><b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe}}</li>
+										{% if diligencia_historica.arquivo_url %}
+											<li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}">Download do Arquivo</a></li>
+										{% endif %}
+									</ul>
+								</div>
+							{% empty %}
+  							<div class="col-md-12 lista-diligencia">
+    							<ul class="list-group"></ul>
+      							<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+      							<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+      							<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+      							<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+      							<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
+    							</ul>
+  							</div>
+							{% endfor %}
+						{% endfor %}
 					{% endif %}
 				</div>
 			</div>
