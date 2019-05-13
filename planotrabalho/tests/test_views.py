@@ -188,6 +188,37 @@ def test_cadastrar_componente_tipo_conselho(client, login):
     assert sistema_atualizado.conselho.tipo == 3
 
 
+def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
+        cadastrador=login)
+    legislacao = SimpleUploadedFile(
+        "legislacao.txt", b"file_content", content_type="text/plain"
+    )
+    sistema_cultura.legislacao.arquivo = legislacao
+    sistema_cultura.legislacao.save()
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "conselho"})
+
+    response = client.post(url, data={'mesma_lei': True,
+                                      'possui_ata': False,
+                                      'paritario': True,
+                                      'exclusivo_cultura': True})
+
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__nome=sistema_cultura.ente_federado.nome)
+
+    assert response.status_code == 302
+    assert sistema_atualizado.legislacao.arquivo.name.split("/")[-1] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
+    assert sistema_atualizado.legislacao.data_publicacao == sistema_atualizado.conselho.lei.data_publicacao
+    assert sistema_atualizado.conselho.paritario 
+    assert sistema_atualizado.conselho.exclusivo_cultura
+    assert sistema_atualizado.conselho.tipo == 3
+
+
 def test_cadastrar_componente_tipo_plano(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
