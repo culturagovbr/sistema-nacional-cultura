@@ -183,9 +183,9 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]))
     possui_ata = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    exclusivo_cultura = forms.BooleanField(widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    paritario = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    paritario = forms.BooleanField(widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -220,6 +220,14 @@ class CriarConselhoForm(ModelForm):
 
         return self.cleaned_data['arquivo']
 
+    def clean_data_publicacao(self):
+        if self.data['possui_ata'] == 'True' and not self.cleaned_data['data_publicacao']:   
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif self.data['possui_ata'] == 'False' and self.cleaned_data['data_publicacao']:
+            self.cleaned_data['data_publicacao'] = None
+
+        return self.cleaned_data['data_publicacao']
+
     def save(self, commit=True, *args, **kwargs):
         conselho = super(CriarConselhoForm, self).save(commit=False)
         conselho.tipo = 3
@@ -234,22 +242,22 @@ class CriarConselhoForm(ModelForm):
         conselho.save()
 
         conselho.lei = ArquivoComponente2()
+        conselho.lei.save()
+        conselho.lei.conselhos.add(conselho)
+
         if self.cleaned_data['mesma_lei']:
             conselho.lei.arquivo = self.sistema.legislacao.arquivo
             conselho.lei.situacao = self.sistema.legislacao.situacao
             conselho.lei.data_publicacao = self.sistema.legislacao.data_publicacao
         else:
-            conselho.lei.save()
-            conselho.lei.conselhos.add(conselho)
             conselho.lei.situacao = 1
             conselho.lei.arquivo = self.cleaned_data['arquivo_lei']
             conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
 
         conselho.lei.save()
-        conselho.save()
         
         sistema_cultura = conselho.conselho
-        sistema_cultura.add(self.sistema)    
+        sistema_cultura.add(self.sistema)
 
     class Meta:
         model = ConselhoDeCultura

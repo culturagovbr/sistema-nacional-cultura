@@ -211,6 +211,8 @@ def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
 
+    import ipdb; ipdb.set_trace()
+
     assert response.status_code == 302
     assert sistema_atualizado.legislacao.arquivo.name.split("/")[-1] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
     assert sistema_atualizado.legislacao.data_publicacao == sistema_atualizado.conselho.lei.data_publicacao
