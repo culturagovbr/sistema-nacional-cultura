@@ -139,7 +139,7 @@ class AlterarFundoCultura(UpdateView):
 
 class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
-    form_class = AlterarConselhoForm
+    form_class = CriarConselhoForm
     template_name = 'planotrabalho/alterar_conselho.html'
 
     def get_form_kwargs(self):

@@ -183,9 +183,9 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]))
     possui_ata = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    exclusivo_cultura = forms.BooleanField(widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    paritario = forms.BooleanField(widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    paritario = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -213,9 +213,10 @@ class CriarConselhoForm(ModelForm):
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_arquivo(self):
+        print(self.cleaned_data['arquivo'])
         if self.data['possui_ata'] == 'True' and not self.cleaned_data['arquivo']:   
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_ata'] == 'False' and self.cleaned_data['arquivo']:
+        elif self.data['possui_ata'] == 'False':
             self.cleaned_data['arquivo'] = None
 
         return self.cleaned_data['arquivo']
@@ -223,7 +224,7 @@ class CriarConselhoForm(ModelForm):
     def clean_data_publicacao(self):
         if self.data['possui_ata'] == 'True' and not self.cleaned_data['data_publicacao']:   
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_ata'] == 'False' and self.cleaned_data['data_publicacao']:
+        elif self.data['possui_ata'] == 'False':
             self.cleaned_data['data_publicacao'] = None
 
         return self.cleaned_data['data_publicacao']
@@ -236,25 +237,26 @@ class CriarConselhoForm(ModelForm):
             conselho.situacao = 1
             conselho.arquivo = None
             conselho.save()
-            conselho.arquivo = self.cleaned_data['arquivo']
-            conselho.data_publicacao = self.cleaned_data['data_publicacao']
 
+        conselho.arquivo = self.cleaned_data['arquivo']
+        conselho.data_publicacao = self.cleaned_data['data_publicacao']
         conselho.save()
 
-        conselho.lei = ArquivoComponente2()
-        conselho.lei.save()
-        conselho.lei.conselhos.add(conselho)
+        if 'mesma_lei' in self.changed_data:
+            conselho.lei = ArquivoComponente2()
+            conselho.lei.save()
+            conselho.lei.conselhos.add(conselho)
 
-        if self.cleaned_data['mesma_lei']:
-            conselho.lei.arquivo = self.sistema.legislacao.arquivo
-            conselho.lei.situacao = self.sistema.legislacao.situacao
-            conselho.lei.data_publicacao = self.sistema.legislacao.data_publicacao
-        else:
-            conselho.lei.situacao = 1
-            conselho.lei.arquivo = self.cleaned_data['arquivo_lei']
-            conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
+            if self.cleaned_data['mesma_lei']:
+                conselho.lei.arquivo = self.sistema.legislacao.arquivo
+                conselho.lei.situacao = self.sistema.legislacao.situacao
+                conselho.lei.data_publicacao = self.sistema.legislacao.data_publicacao
+            else:
+                conselho.lei.situacao = 1
+                conselho.lei.arquivo = self.cleaned_data['arquivo_lei']
+                conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
 
-        conselho.lei.save()
+            conselho.lei.save()
         
         sistema_cultura = conselho.conselho
         sistema_cultura.add(self.sistema)
