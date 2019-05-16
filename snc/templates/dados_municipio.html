@@ -3,7 +3,7 @@
 <ul>
     <li>
         Nome:
-        <a class="link-plain" href="#">
+        <a class="link-plain" href="{% url 'adesao:detalhar' cod_ibge=request.session.sistema_ente.cod_ibge %}">
             {{ request.session.sistema_ente.nome }}
         </a>
     </li>
