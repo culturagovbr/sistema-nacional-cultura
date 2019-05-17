@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 
 from .models import PlanoTrabalho
 from .models import CriacaoSistema
-from .models import OrgaoGestor
+from .models import OrgaoGestor2
 from .models import Conselheiro
 from .models import ConselhoCultural
 from .models import FundoCultura
@@ -29,6 +29,7 @@ from .forms import AlterarConselhoForm
 from .forms import DesabilitarConselheiroForm
 from .forms import CriarConselheiroForm
 from .forms import AlterarConselheiroForm
+from .forms import CriarOrgaoGestorForm
 
 from adesao.utils import atualiza_session
 
@@ -59,6 +60,8 @@ class CadastrarComponente(CreateView):
                 return redirect('planotrabalho:alterar_fundo', pk=componente.id)
             elif self.kwargs['tipo'] == 'conselho':
                 return redirect('planotrabalho:alterar_conselho', pk=componente.id)
+            elif self.kwargs['tipo'] == 'orgao_gestor':
+                return redirect('planotrabalho:alterar_orgao', pk=componente.id)
             else:
                 return redirect('planotrabalho:alterar_componente', pk=componente.id,
                     tipo=self.kwargs['tipo'])
@@ -70,6 +73,8 @@ class CadastrarComponente(CreateView):
             form_class = CriarFundoForm
         elif self.kwargs['tipo'] == 'conselho':
             form_class = CriarConselhoForm
+        elif self.kwargs['tipo'] == 'orgao_gestor':
+            form_class = CriarOrgaoGestorForm
         else:
             form_class = CriarComponenteForm
 
@@ -108,10 +113,31 @@ class AlterarComponente(UpdateView):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
 
+class AlterarOrgaoGestor(UpdateView):
+    model = OrgaoGestor2
+    form_class = CriarOrgaoGestorForm
+    template_name = 'planotrabalho/cadastrar_orgao.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarOrgaoGestor, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'orgao_gestor'
+
+        if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
+            kwargs['initial']['perfil'] = sistema.orgao_gestor.perfil
+
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
+
+
 class AlterarFundoCultura(UpdateView):
     model = FundoDeCultura
     form_class = CriarFundoForm
-    template_name = 'planotrabalho/alterar_fundo.html'
+    template_name = 'planotrabalho/cadastrar_fundo.html'
 
     def get_form_kwargs(self):
         kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
@@ -140,7 +166,7 @@ class AlterarFundoCultura(UpdateView):
 class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
     form_class = AlterarConselhoForm
-    template_name = 'planotrabalho/alterar_conselho.html'
+    template_name = 'planotrabalho/cadastrar_conselho.html'
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
@@ -184,7 +210,7 @@ class ListarConselheiros(ListView):
 
 class AlterarConselheiro(UpdateView):
     form_class = AlterarConselheiroForm
-    template_name = 'planotrabalho/alterar_conselheiro.html'
+    template_name = 'planotrabalho/cadastrar_conselheiro.html'
 
     def get_queryset(self):
         pk = self.kwargs['pk']

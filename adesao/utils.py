@@ -62,7 +62,7 @@ def preenche_planilha(planilha):
     planilha.write(0, 18, "Telefone")
     planilha.write(0, 19, "Email Prefeito")
     planilha.write(0, 20, "Email do Cadastrador")
-    planilha.write(0, 21, "Email do Responsável")
+    planilha.write(0, 21, "Email do Gestor de Cultura")
     planilha.write(0, 22, "Localização do processo")
     planilha.write(0, 23, "Última atualização")
 
@@ -116,10 +116,10 @@ def preenche_planilha(planilha):
         else:
             email_cadastrador = "Não cadastrado"
 
-        if sistema.responsavel:
-            email_responsavel = sistema.responsavel.email_institucional
+        if sistema.gestor_cultura:
+            email_gestor_cultura = sistema.gestor_cultura.email_institucional
         else:
-            email_responsavel = "Não cadastrado"
+            email_gestor_cultura = "Não cadastrado"
 
         local = sistema.localizacao
 
@@ -144,7 +144,7 @@ def preenche_planilha(planilha):
         planilha.write(i, 18, telefone)
         planilha.write(i, 19, email_gestor)
         planilha.write(i, 20, email_cadastrador)
-        planilha.write(i, 21, email_responsavel)
+        planilha.write(i, 21, email_gestor_cultura)
         planilha.write(i, 22, local)
         planilha.write(i, 23, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
 

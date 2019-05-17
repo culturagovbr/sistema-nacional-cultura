@@ -29,6 +29,15 @@ LISTA_SITUACAO_ARQUIVO = (
     (6, "Arquivo incorreto"),
 )
 
+LISTA_PERFIS_ORGAO_GESTOR = (
+    (0, "Secretaria exclusiva de cultura"),
+    (1, "Secretaria em conjunto com outras políticas"),
+    (2, "Órgão da administração indireta"),
+    (3, "Setor subordinado à chefia do Executivo"),
+    (4, "Setor subordinado à outra secretaria"),
+    (5, "Não possui estrutura"),
+)
+
 
 def upload_to_componente(instance, filename):
     name = ''
@@ -124,6 +133,11 @@ class Componente(ArquivoComponente2):
     def get_absolute_url(self):
         url = reverse_lazy("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
         return url
+
+
+class OrgaoGestor2(Componente):
+    perfil = models.IntegerField(
+        choices=LISTA_PERFIS_ORGAO_GESTOR, null=True, blank=True)
 
 
 class FundoDeCultura(Componente):
