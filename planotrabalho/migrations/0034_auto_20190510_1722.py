@@ -6,7 +6,7 @@ from planotrabalho.models import Componente
 def mudar_situacao_componetes (apps, schema_editor):
 
     for trocaSituacao in Componente.objects.exclude(arquivo=None).filter(situacao=0):
-        trocaSituacao = 1
+        trocaSituacao.tipo = 1
         trocaSituacao.save()
 
 class Migration(migrations.Migration):
