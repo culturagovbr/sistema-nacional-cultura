@@ -19,7 +19,7 @@
     </li>
     <li>
         Situação:
-        <a class="link-plain" href="#">{{ request.session.sistema_situacao }}</a>
+        <a class="link-plain" href="{{ request.session.sistema_cultura_selecionado.link_publicacao_acordo }}">{{ request.session.sistema_situacao }}</a>
 
     </li>
     {% if request.session.sistema_cultura_selecionado.link_publicacao_acordo %}
