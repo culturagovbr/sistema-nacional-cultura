@@ -213,7 +213,6 @@ class CriarConselhoForm(ModelForm):
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_arquivo(self):
-        print(self.cleaned_data['arquivo'])
         if self.data['possui_ata'] == 'True' and not self.cleaned_data['arquivo']:   
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data['possui_ata'] == 'False':
