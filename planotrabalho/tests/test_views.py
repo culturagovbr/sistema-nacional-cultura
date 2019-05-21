@@ -177,7 +177,9 @@ def test_cadastrar_componente_tipo_conselho(client, login):
                                       'data_publicacao': '28/06/2018',
                                       'arquivo_lei': arquivo_lei,
                                       'data_publicacao_lei': '29/06/2018',
-                                      'possui_ata': True})
+                                      'possui_ata': True,
+                                      'paritario': True,
+                                      'exclusivo_cultura': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
@@ -384,7 +386,9 @@ def test_alterar_conselho_cultura(client, login):
                                       "data_publicacao": "25/06/2018",
                                       "arquivo_lei": arquivo_lei,
                                       "data_publicacao_lei": "26/06/2018",
-                                      'possui_ata': True})
+                                      'possui_ata': True,
+                                      'exclusivo_cultura': True,
+                                      'paritario': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)

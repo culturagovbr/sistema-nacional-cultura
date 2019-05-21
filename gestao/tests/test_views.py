@@ -884,7 +884,7 @@ def test_inserir_documentos_conselho_cultural(client, sistema_cultura, login_sta
 
     client.post(url, data={"mesma_lei": False, "arquivo": arquivo, "data_publicacao": "28/06/2018",
         "arquivo_lei": arquivo_lei, "data_publicacao_lei": "08/03/2019",
-        "possui_ata": True})
+        "possui_ata": True, 'paritario': True, 'exclusivo_cultura': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)

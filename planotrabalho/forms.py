@@ -192,6 +192,18 @@ class CriarConselhoForm(ModelForm):
         self.tipo_componente = kwargs.pop('tipo')
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
 
+    def clean_paritario(self):
+        if not self.cleaned_data['paritario']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['paritario']
+
+    def clean_exclusivo_cultura(self):
+        if not self.cleaned_data['exclusivo_cultura']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['exclusivo_cultura']
+
     def clean_arquivo_lei(self):
         if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo_lei']:
             raise forms.ValidationError("Este campo é obrigatório")
