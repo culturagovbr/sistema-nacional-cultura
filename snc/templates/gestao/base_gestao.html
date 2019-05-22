@@ -1,324 +1,285 @@
 <!DOCTYPE html>
+
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Sistema Nacional de Cultura</title>
-
-
-    {% load static %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-
-    <link href="{% static 'css/material-dashboard.css' %}" rel="stylesheet">
+  <title>Sistema Nacional de Cultura</title>
 
 
-    <!-- Bootstrap Core CSS -->
-    <!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"> -->
-    <!-- <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"> -->
+  {% load static %}
 
-    <!-- MetisMenu CSS -->
-    <!-- <link href="{% static 'css/metisMenu.min.css' %}" rel="stylesheet"> -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}" />
 
-    <!-- DataTables CSS -->
-    <!-- <link href="{% static 'css/dataTables.bootstrap.css' %}" rel="stylesheet"> -->
-    <!-- <link href="{% static 'css/dataTables.responsive.css' %}" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css"> -->
+  <link href="{% static 'css/material-dashboard.css' %}" rel="stylesheet">
 
-    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <!-- <link href="{% static 'css/dashboard.css' %}" rel="stylesheet"> -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/material-icons.css' %}" />
 
-    <!-- Custom Fonts -->
+  <link href="{% static 'css/font-awesome.min.css' %}?v=2.1.0" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/perfect-scrollbar-1.4.0.css' %}" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
-    <link href="{% static 'css/font-awesome.min.css' %}?v=2.1.0" rel="stylesheet" type="text/css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.4.0/css/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
-
-    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
-    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" type="text/css">
-
-    <link rel="stylesheet" type="text/css" href="https://pastebin.com/raw/9YHCBPiY">
-
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"> -->
-
-
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" type="text/css">
 
 </head>
 
-<!-- <body class="dark-edition"> -->
+
 <body class="">
-    <div class="wrapper ">
-        <div class="sidebar" data-color="green" data-background-color="black" data-image="{% static 'img/marca-dagua.png' %}">
-          <!--
-            Tip 1: You can change the color of the sidebar using: data-color="blue | azure | green | orange | danger"
+  <div class="wrapper ">
+    <div class="sidebar" data-color="green" data-background-color="black" data-image="{% static 'img/marca-dagua.png' %}">
+      <div class="logo">
+        <a href="/" class="simple-text logo-normal">
+          SNC
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
 
-            Tip 2: you can also add an image using data-image tag
-        -->
-          <div class="logo">
-            <a href="/" class="simple-text logo-normal">
-              SNC
+          <li class="nav-item" id="menu-inicio">
+            <a class="nav-link" href="{% url 'gestao:dashboard' %}">
+              <i class="material-icons">dashboard</i>
+              <p>Inicio</p>
             </a>
-          </div>
-          <div class="sidebar-wrapper">
-            <ul class="nav">
+          </li>
 
-              <li class="nav-item" id="menu-inicio">
-                <a class="nav-link" href="{% url 'gestao:dashboard' %}">
-                  <i class="material-icons">dashboard</i>
-                  <p>Inicio</p>
+          <li class="nav-item" id="menu-usuarios">
+            <a class="nav-link" href="{% url 'gestao:usuarios' %}">
+              <i class="material-icons">person</i>
+              <p>Usuarios</p>
+            </a>
+          </li>
+
+          <li class="nav-item" id="menu-ente">
+            <a class="nav-link" href="{% url 'gestao:acompanhar_adesao' %}">
+              <i class="material-icons">place</i>
+              <p>Ente Federado</p>
+            </a>
+          </li>
+
+          <li class="nav-item" id="menu-prazo">
+            <a class="nav-link" href="{% url 'gestao:acompanhar_prazo' %}">
+              <i class="material-icons">hourglass_full</i>
+              <p>Prazos</p>
+            </a>
+          </li>
+
+          <li class="nav-item" id="menu-plano">
+            <a class="nav-link" href="{% url 'gestao:plano_trabalho' %}">
+              <i class="material-icons">location_ons</i>
+              <p>Plano de Trabalho</p>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+            aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+            <form class="navbar-form" action="/gestao/entes" method="get">
+              <div class="input-group no-border">
+                <input type="text" value="" class="form-control" name="q" placeholder="Pesquisar ente">
+                <button type="submit" class="btn btn-default btn-round btn-just-icon">
+                  <i class="material-icons">search</i>
+                  <div class="ripple-container"></div>
+                </button>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown" title="Exportar">
+                <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons">save_alt</i>
+                  <p class="d-lg-none d-md-block">
+                    Exportar Planilha
+                  </p>
                 </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'exportar_xls' %}">XLS</a>
+                  <a class="dropdown-item" href="{% url 'exportar_ods' %}">ODS</a>
+                </div>
               </li>
-
-              <li class="nav-item" id="menu-usuarios">
-                <a class="nav-link" href="{% url 'gestao:usuarios' %}">
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <span>
+                    {{ request.user.usuario.nome_usuario |truncatewords:2 |slice:"-4" }}&nbsp;&nbsp;
+                  </span>
                   <i class="material-icons">person</i>
-                  <p>Usuarios</p>
                 </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'mudar_senha_gestao' %}">Alterar Senha</a>
+                  <a class="dropdown-item" href="{% url 'adesao:logout' %}">Sair</a>
+                </div>
               </li>
-
-              <li class="nav-item" id="menu-ente" >
-                  <a class="nav-link" href="{% url 'gestao:acompanhar_adesao' %}">
-                    <i class="material-icons">place</i>
-                    <p>Ente Federado</p>
-                  </a>
-                </li>
-
-              <li class="nav-item" id="menu-prazo">
-                <a class="nav-link" href="{% url 'gestao:acompanhar_prazo' %}">
-                  <i class="material-icons">hourglass_full</i>
-                  <p>Prazos</p>
-                </a>
-              </li>
-
-              <li class="nav-item" id="menu-plano" >
-                <a class="nav-link" href="{% url 'gestao:plano_trabalho' %}">
-                  <i class="material-icons">location_ons</i>
-                  <p>Plano de Trabalho</p>
-                </a>
-              </li>
-
-              <!-- <li class="nav-item" id="menu-documentacao" >
-                <a class="nav-link" href="{% url 'gestao:listar_componentes' %}">
-                  <i class="material-icons">backup</i>
-                  <p>Inserir Documentos</p>
-                </a>
-              </li> -->
-
             </ul>
           </div>
         </div>
-        <div class="main-panel">
-          <!-- Navbar -->
-          <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
-            <div class="container-fluid">
-              <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon icon-bar"></span>
-                <span class="navbar-toggler-icon icon-bar"></span>
-                <span class="navbar-toggler-icon icon-bar"></span>
-              </button>
-              <div class="collapse navbar-collapse justify-content-end">
-                <form class="navbar-form" action="/gestao/entes" method="get">
-                  <div class="input-group no-border">
-                    <input type="text" value="" class="form-control" name="q" placeholder="Pesquisar ente">
-                    <button type="submit" class="btn btn-default btn-round btn-just-icon">
-                      <i class="material-icons">search</i>
-                      <div class="ripple-container"></div>
-                    </button>
-                  </div>
-                </form>
-                <ul class="navbar-nav">
-                  <li class="nav-item dropdown" title="Exportar">
-                    <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="material-icons">save_alt</i>
-                      <p class="d-lg-none d-md-block">
-                        Exportar Planilha
-                      </p>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="{% url 'exportar_xls' %}">XLS</a>
-                      <a class="dropdown-item" href="{% url 'exportar_ods' %}">ODS</a>
-                    </div>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span>
-                        {{ request.user.usuario.nome_usuario |truncatewords:2 |slice:"-4" }}&nbsp;&nbsp;
-                      </span>
-                      <i class="material-icons">person</i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="{% url 'mudar_senha_gestao' %}">Alterar Senha</a>
-                      <a class="dropdown-item" href="{% url 'adesao:logout' %}">Sair</a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="container-fluid">
+          <div id="errors">
+            {% for field in form %}
+            <div class="errors-field">
+              <div class="label-tag">{{ field.label_tag }}</div>
+              {{field.errors}}
             </div>
-          </nav>
-          <!-- End Navbar -->
-          <div class="content">
-            <div class="container-fluid">
-              <div id="errors">
-                  {% for field in form %}
-                    <div class="errors-field">
-                        <div class="label-tag">{{ field.label_tag }}</div>
-                        {{field.errors}}
-                    </div>
-                  {% endfor %}
-                  {% for field in form_gestor %}
-                    <div class="errors-field">
-                        <div class="label-tag">{{ field.label_tag }}</div>
-                        {{field.errors}}
-                    </div>
-                  {% endfor %}
-                  {% for field in form_sede %}
-                    <div class="errors-field">
-                        <div class="label-tag">{{ field.label_tag }}</div>
-                        {{field.errors}}
-                    </div>
-                  {% endfor %}
-              </div>
-                {% block content %}
-                {% endblock content %}
+            {% endfor %}
+            {% for field in form_gestor %}
+            <div class="errors-field">
+              <div class="label-tag">{{ field.label_tag }}</div>
+              {{field.errors}}
             </div>
+            {% endfor %}
+            {% for field in form_sede %}
+            <div class="errors-field">
+              <div class="label-tag">{{ field.label_tag }}</div>
+              {{field.errors}}
+            </div>
+            {% endfor %}
           </div>
-          <footer class="footer">
-            <div class="container-fluid">
-              <nav class="float-left">
-                <ul>
-                  <li>
-                    <a href="#">
-                      Link 1
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      Link 2
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      Link 3
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-              <div class="copyright float-right" id="date">
-                 <i class="material-icons">favorite</i>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </div>
-            </div>
-          </footer>
-          <script>
-            const x = new Date().getFullYear();
-            let date = document.getElementById('date');
-            date.innerHTML = '&copy; ' + x + date.innerHTML;
-          </script>
+          {% block content %}
+          {% endblock content %}
+        </div>
       </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="http://portalsnc.cultura.gov.br">
+                  Portal SNC
+                </a>
+              </li>
+              <li>
+                <a href="http://ver.snc.cultura.gov.br">
+                  VerSNC
+                </a>
+              </li>
+              <li>
+                <a href="http://snc.cultura.gov.br/adesao/consultar/municipio">
+                  Consulta Pública
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright float-right" id="date">
+            <i class="material-icons">favorite</i>
+            Ministério da Cidadania - Secretaria Especial da Cultura
+          </div>
+        </div>
+      </footer>
+      <script>
+        const x = new Date().getFullYear();
+        let date = document.getElementById('date');
+        date.innerHTML = '&copy; ' + x + date.innerHTML;
+      </script>
     </div>
+  </div>
 
-    <script src="{% static 'js/jquery.min.js'%}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap-material-design.min.js' %}"></script>
-    <script src="{% static 'js/chartist.min.js' %}"></script>
-    <script src="https://demos.creative-tim.com/material-dashboard-dark/assets/js/plugins/bootstrap-notify.js"></script>
-    <script src="{% static 'js/material-dashboard.min.js' %}?v=2.1.0"></script>
-    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
-
-
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-
-    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/gijgo@1.9.11/js/messages/messages.pt-br.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js" type="text/javascript"></script>
-    <script src="https://pastebin.com/raw/z7fsJ8UX" type="text/javascript"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js" type="text/javascript"></script> -->
-    <script src="https://pastebin.com/raw/qj6RxwEn" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.9/js/bootstrap-select.min.js"></script>
+  <script src="{% static 'js/jquery.min.js'%}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap-material-design.min.js' %}"></script>
+  <script src="{% static 'js/chartist.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap-notify.js' %}"></script>
+  <script src="{% static 'js/material-dashboard.min.js' %}?v=2.1.0"></script>
+  <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
 
+  <script src="{% static 'js/jquery.dataTables-1.10.19.min.js' %}"></script>
+  <script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
 
+  <script src="{% static 'js/gijgo-1.9.11.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/messages.pt-br.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/dataTables.buttons-1.5.6.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/buttons.print-1.5.6.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/x-editable-1.5.3.min.js' %}" type="text/javascript"></script>
+  <!-- <script src="https://pastebin.com/raw/qj6RxwEn" type="text/javascript"></script> -->
+  <script src="{% static 'js/buttons.flash-1.5.6.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jszip-3.1.3.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/pdfmake-0.1.53.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/vfs_fonts-0.1.53.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/buttons.html5-1.3.3.min.js' %}" type="text/javascript"></script>
+  <!-- <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js" type="text/javascript"></script> -->
+  <script src="{% static 'js/bootstrap-select-1.13.9.min.js' %}"></script>
 
+  <script type="text/javascript">
+    $(document).ready(function () {
 
+      $('.errors-field').each((index, element) => {
 
+        let field_name = '';
+        let field_error = '';
+        let field = $(element).children().text();
 
+        field = field.split(":");
+        field_name = field[0];
+        field_error = field[1];
 
-    <script type="text/javascript">
-      $(document).ready(function(){
+        if (field_error.length > 0) {
+          let error_message = '<b>' + field_name + '</b> -  ' + field_error;
 
-        $('.errors-field').each((index, element) => {
-
-          let field_name = '';
-          let field_error = '';
-          let field = $(element).children().text();
-
-          field = field.split(":");
-          field_name = field[0];
-          field_error = field[1];
-
-          if (field_error.length > 0) {
-            let error_message = '<b>' + field_name + '</b> -  ' + field_error;
-
-            $.notify(
-              {
-                icon: "error",
-                message: error_message,
-              },
-              {
-                type: "danger"
-              }
-            );
-          }
-        });
-
-        let menu_target_active = $('menu').data('target');
-        $('#menu-'+ menu_target_active).addClass('active')
-
-        {% verbatim %}
-
-        $('.cnpj').mask('00.000.000/0000-00');
-        $('.cep').mask('00000-000');
-        $('.telefone').mask('(00)00000-0000');
-        $('.cpf').mask('000.000.000-00');
-
-        $("form").submit(function(){
-          $('.cnpj').unmask();
-          $('.cep').unmask();
-          $('.telefone').unmask();
-          $('.cpf').unmask();
-        });
-
-        {% endverbatim %}
-
-        md.initDashboardPageCharts();
-
-        $('.date').each(function() {
-          $(this).datepicker({
-            showButtonPanel: true,
-           locale: "pt-br"
-          });
-        });
-
+          $.notify(
+            {
+              icon: "error",
+              message: error_message,
+            },
+            {
+              type: "danger"
+            }
+          );
+        }
       });
-    </script>
-    {% block js %}
-    {% endblock js%}
+
+      let menu_target_active = $('menu').data('target');
+      $('#menu-' + menu_target_active).addClass('active')
+
+      {% verbatim %}
+
+      $('.cnpj').mask('00.000.000/0000-00');
+      $('.cep').mask('00000-000');
+      $('.telefone').mask('(00)00000-0000');
+      $('.cpf').mask('000.000.000-00');
+
+      $("form").submit(function () {
+        $('.cnpj').unmask();
+        $('.cep').unmask();
+        $('.telefone').unmask();
+        $('.cpf').unmask();
+      });
+
+      {% endverbatim %}
+
+      md.initDashboardPageCharts();
+
+      $('.date').each(function () {
+        $(this).datepicker({
+          showButtonPanel: true,
+          locale: "pt-br"
+        });
+      });
+
+    });
+  </script>
+  {% block js %}
+  {% endblock js%}
 
 </body>
 
