@@ -49,7 +49,7 @@ from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
 from gestao.utils import empty_to_none, get_uf_by_mun_cod
 
-from .models import DiligenciaSimples
+from .models import DiligenciaSimples, Contato
 
 from .forms import DiligenciaComponenteForm
 from .forms import DiligenciaGeralForm
@@ -57,6 +57,7 @@ from .forms import AlterarDocumentosEnteFederadoForm
 from .forms import AlterarUsuarioForm
 from .forms import AlterarComponenteForm
 from .forms import AlterarDadosEnte
+from .forms import CriarContatoForm
 
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
@@ -399,6 +400,23 @@ class AlterarDocumentosEnteFederado(UpdateView):
     def get_success_url(self):
         messages.success(self.request, 'Ente Federado alterado com sucesso')
         return reverse_lazy('gestao:inserir_entefederado')
+
+
+class CriarContato(CreateView):
+    model = Contato
+    form_class = CriarContatoForm
+    template_name = "criar_contato.html"
+
+    def get_form_kwargs(self):
+        kwargs = super(CriarContato, self).get_form_kwargs()
+        kwargs['sistema'] = SistemaCultura.objects.get(pk=self.kwargs['pk'])
+        return kwargs
+
+    def get_success_url(self):
+        sistema = SistemaCultura.objects.get(pk=self.kwargs['pk'])
+        return reverse_lazy('gestao:detalhar', kwargs={
+            'cod_ibge': sistema.ente_federado.cod_ibge
+            })
 
 
 class InserirComponente(CreateView):

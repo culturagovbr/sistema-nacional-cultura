@@ -477,6 +477,14 @@ class SistemaCultura(models.Model):
                 diligencias_componentes.append(componente)
         return diligencias_componentes
 
+    def atualiza_relacoes_reversas(self, anterior):
+        for field in anterior._meta.get_fields():
+            if field.auto_created and not field.concrete:
+                objetos = getattr(anterior, field.name)
+                for objeto in objetos.all():
+                    objeto.sistema_cultura = self
+                    objeto.save()
+
     def historico_cadastradores(self):
         sistemas = SistemaCultura.historico.ente(self.ente_federado.cod_ibge)
         sistema_base = sistemas.first()
@@ -556,4 +564,7 @@ class SistemaCultura(models.Model):
                 self.alterado_em = timezone.now()
                 self.alterado_por = get_current_user()
 
-        super().save(*args, **kwargs)
+                super().save(*args, **kwargs)
+                self.atualiza_relacoes_reversas(anterior)
+        else:
+            super().save(*args, **kwargs)

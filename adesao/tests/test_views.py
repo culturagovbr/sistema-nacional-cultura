@@ -651,3 +651,22 @@ def test_alterar_sistema_cultura(login, client):
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
+
+
+def test_atualizacao_relacoes_reversas(login, client):
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login,
+        ente_federado__cod_ibge=205631)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    mommy.make("Contato", sistema_cultura=sistema_cultura, _quantity=5)
+
+    contatos = sistema_cultura.contatos
+
+    sistema_cultura.estado_processo = 6
+    sistema_cultura.save()
+
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=205631)
+
+    assert sistema_cultura_atualizado.contatos == contatos
