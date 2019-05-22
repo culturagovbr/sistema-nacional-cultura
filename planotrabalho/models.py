@@ -30,12 +30,13 @@ LISTA_SITUACAO_ARQUIVO = (
 )
 
 LISTA_PERFIS_ORGAO_GESTOR = (
-    (0, "Secretaria exclusiva de cultura"),
-    (1, "Secretaria em conjunto com outras políticas"),
-    (2, "Órgão da administração indireta"),
-    (3, "Setor subordinado à chefia do Executivo"),
-    (4, "Setor subordinado à outra secretaria"),
-    (5, "Não possui estrutura"),
+    (0, "Não possui estrutura"),
+    (1, "Órgão da administração indireta"),
+    (2, "Secretaria em conjunto com outras políticas"),
+    (3, "Secretaria exclusiva de cultura"),
+    (4, "Setor subordinado à chefia do Executivo"),
+    (5, "Setor subordinado à outra secretaria"),
+    
 )
 
 
