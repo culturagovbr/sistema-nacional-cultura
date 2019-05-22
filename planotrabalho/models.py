@@ -167,6 +167,8 @@ class ConselhoDeCultura(Componente):
         blank=True,
         null=True,
         related_name='conselhos')
+    exclusivo_cultura = models.BooleanField(blank=True, default=False)
+    paritario = models.BooleanField(blank=True, default=False)
 
 
 class PlanoTrabalho(models.Model):

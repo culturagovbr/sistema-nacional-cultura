@@ -7,45 +7,93 @@
   <h3>
     <strong>Estruturação dos Componentes</strong>
   </h3>
+
+  <div class="form-group">
+    <label for="{{ form.mesma_lei.id_for_label }}">
+      É a mesma lei do sistema municipal de cultura?</br>
+    </label>
+    {% for radio in form.mesma_lei %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.mesma_lei.errors }}
+  </div>
+
   <h5>
     <strong>2.2 Instalação do Conselho de Política Cultural</strong>
   </h5>
 
-  <div class="form-group">
-    <label for="{{ form.data_publicacao_lei.id_for_label }}">
-      Data de Publicação da Lei do Conselho de Cultura
-    </label>
-    {% render_field form.data_publicacao_lei class="form-control date half-width" %}
-    {{ form.data_publicacao_lei.errors }}
+  <div id="lei_data_form">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao_lei.id_for_label }}">
+        Data de Publicação da Lei do Conselho de Cultura
+      </label>
+      {% render_field form.data_publicacao_lei class="form-control date half-width" %}
+      {{ form.data_publicacao_lei.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo_lei.id_for_label }}">
+        Lei de criação do Conselho Estadual/Municipal de Cultura
+      </label>
+      <p>{% render_field form.arquivo_lei %}</p>
+      {{ form.arquivo_lei.errors }}
+    </div>
   </div>
 
   <div class="form-group">
-    <label for="{{ form.arquivo_lei.id_for_label }}">
-      Lei de criação do Conselho Estadual/Municipal de Cultura
+    <label for="{{ form.possui_ata.id_for_label }}">
+      Possui alguma ata da última reunião do conselho?</br>
     </label>
-    <p>{% render_field form.arquivo_lei %}</p>
-    {{ form.arquivo_lei.errors }}
+    {% for radio in form.possui_ata %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.possui_ata.errors }}
+  </div>
+
+  <div id="ata_form">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao.id_for_label }}">
+        Data de Assinatura da Ata da última reunião
+      </label>
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+      {{ form.data_publicacao.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo.id_for_label }}">
+        Ata da última reunião realizada pelo conselho
+      </label>
+      <p>{% render_field form.arquivo %}</p>
+      {{ form.arquivo.errors }}
+    </div>
   </div>
 
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}">
-      Data de Assinatura da Ata da última reunião
+    <label for="{{ form.exclusivo_cultura.id_for_label }}">
+      O conselho é exclusivo de cultura?</br>
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
-    {{ form.data_publicacao.errors }}
+    {% for radio in form.exclusivo_cultura %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.exclusivo_cultura.errors }}
   </div>
 
   <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">
-      Ata da última reunião realizada pelo conselho
+    <label for="{{ form.paritario.id_for_label }}">
+      O conselho é paritário ou a sociedade civil possui mais assentos no conselho de cultura?</br>
     </label>
-    <p>{% render_field form.arquivo %}</p>
-    {{ form.arquivo.errors }}
+    {% for radio in form.paritario %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.paritario.errors }}
   </div>
 
-  <label for={{ form.data_final_instalacao_conselho.id_for_label }} class="col-sm-12">
-    Para adicionar um novo conselheiro <a href="{% url 'planotrabalho:listar_conselheiros' %}" >clique aqui</a>
-  </label>
+
+  {% if request.session.sistema_cultura_selecionado.conselho %}
+    <label for={{ form.data_final_instalacao_conselho.id_for_label }} class="col-sm-12">
+      Para adicionar um novo conselheiro <a href="{% url 'planotrabalho:listar_conselheiros' %}" >clique aqui</a>
+    </label>
+  {% endif %}
   </br>
 
   <div class="alert alert-info" role="alert">
@@ -56,7 +104,7 @@
     - Convocar os Conselheiros eleitos e realizar reunião de instalação e posse;<br>
     - Aprovar o regimento Interno do Conselho;<br>
      <strong>Observação:&nbsp</strong><br>
-    - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a>
+    - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a><br>
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
@@ -64,6 +112,41 @@
 </form>
 </div>
 <script type="text/javascript">
+  $(document).ready(function(){
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    if($('#id_possui_ata_1').is(":checked")){
+      $('#ata_form').css('display', 'none');
+    }
+    if($('#id_possui_ata_0').is(":checked")){
+      $('#ata_form').css('display', 'block');
+    }
+
+    $('input[name=possui_ata]').change(function() { 
+      if(this.value=='False') {
+        $('#ata_form').fadeOut();
+      }
+      else {
+        $('#ata_form').fadeIn();
+      }
+    })
+  });
+
   input = $('.actions:first').clone();
   $(".segmento").change(function(){
     if ($(this).val() === '21'){
@@ -94,43 +177,5 @@
       $('.actions:last').remove();
   });
 
-  $.ajax({
-    type: "GET",
-    url: "/planotrabalho/conselheiros",
-    cache: false,
-    data: {
-      'id': {{object.id}},
-    },
-    success: function(data){
-      data['conselheiros'].forEach(function(val, index, array){
-        input
-        .clone()
-        .attr('id', 'conselheiro_' + $('.actions').length)
-        .insertAfter($('.actions:last'))
-        .children('[name=conselheiro]')
-        .attr('value', val[0])
-        .parent()
-        .children('[name=email]')
-        .attr('value', val[1])
-        .parent()
-        .children('[name=segmento]');
-        options = $('#conselheiro_'+(index+1))
-        .children('[name=segmento]');
-        if (options.find('option[value="'+val[2]+'"]').length){
-          options.val(val[2]).attr("selected", true);
-        }else {
-          options.val("Outros").attr("selected", true);
-          options.parent().children('[name=outros_segmento]').val(val[2]).fadeIn();
-        }
-      });
-      $(".segmento").off('change').change(function(){
-        if ($(this).val() === 'Outros'){
-          $(this).parent().children('[name=outros_segmento]').fadeIn();
-        }else {
-          $(this).parent().children('[name=outros_segmento]').fadeOut();
-        }
-      });
-    },
-  });
 </script>
 {% endblock content %}

@@ -169,8 +169,8 @@ class AlterarFundoCultura(UpdateView):
 
 class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
-    form_class = AlterarConselhoForm
-    template_name = 'planotrabalho/cadastrar_conselho.html'
+    form_class = CriarConselhoForm
+    template_name = 'planotrabalho/alterar_conselho.html'
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
@@ -181,8 +181,19 @@ class AlterarConselhoCultura(UpdateView):
         kwargs['logged_user'] = self.request.user
 
         if self.object.lei:
-            kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
-                'data_publicacao_lei': self.object.lei.data_publicacao}
+            kwargs['initial']['arquivo_lei'] = self.object.lei.arquivo
+            kwargs['initial']['data_publicacao_lei'] = self.object.lei.data_publicacao
+
+            if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.lei.arquivo:
+                kwargs['initial']['mesma_lei'] = True
+            else:
+                kwargs['initial']['mesma_lei'] = False
+
+        if self.object.arquivo:
+            kwargs['initial']['possui_ata'] = True
+        else:
+            kwargs['initial']['possui_ata'] = False
+
         return kwargs
 
     def get_success_url(self):

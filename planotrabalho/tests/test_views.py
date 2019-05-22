@@ -200,10 +200,14 @@ def test_cadastrar_componente_tipo_conselho(client, login):
     arquivo_lei = SimpleUploadedFile(
         "lei.txt", b"file_content", content_type="text/plain"
     )
-    response = client.post(url, data={"arquivo": arquivo_ata,
+    response = client.post(url, data={'mesma_lei': False,
+                                      'arquivo': arquivo_ata,
                                       'data_publicacao': '28/06/2018',
                                       'arquivo_lei': arquivo_lei,
-                                      'data_publicacao_lei': '29/06/2018'})
+                                      'data_publicacao_lei': '29/06/2018',
+                                      'possui_ata': True,
+                                      'paritario': True,
+                                      'exclusivo_cultura': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
@@ -213,6 +217,37 @@ def test_cadastrar_componente_tipo_conselho(client, login):
     assert arquivo_lei.name.split(".")[0] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
     assert sistema_atualizado.conselho.data_publicacao == datetime.date(2018, 6, 28)
     assert sistema_atualizado.conselho.lei.data_publicacao == datetime.date(2018, 6, 29)
+    assert sistema_atualizado.conselho.tipo == 3
+
+
+def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
+
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
+        cadastrador=login)
+    legislacao = SimpleUploadedFile(
+        "legislacao.txt", b"file_content", content_type="text/plain"
+    )
+    sistema_cultura.legislacao.arquivo = legislacao
+    sistema_cultura.legislacao.save()
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "conselho"})
+
+    response = client.post(url, data={'mesma_lei': True,
+                                      'possui_ata': False,
+                                      'paritario': True,
+                                      'exclusivo_cultura': True})
+
+    sistema_atualizado = SistemaCultura.sistema.get(
+        ente_federado__nome=sistema_cultura.ente_federado.nome)
+
+    assert response.status_code == 302
+    assert sistema_atualizado.legislacao.arquivo.name.split("/")[-1] in sistema_atualizado.conselho.lei.arquivo.name.split("/")[-1]
+    assert sistema_atualizado.legislacao.data_publicacao == sistema_atualizado.conselho.lei.data_publicacao
+    assert sistema_atualizado.conselho.paritario 
+    assert sistema_atualizado.conselho.exclusivo_cultura
     assert sistema_atualizado.conselho.tipo == 3
 
 
@@ -374,10 +409,14 @@ def test_alterar_conselho_cultura(client, login):
     arquivo_ata = SimpleUploadedFile(
         "novo_ata.txt", b"file_content", content_type="text/plain"
     )
-    response = client.post(url, data={"arquivo": arquivo_ata,
+    response = client.post(url, data={"mesma_lei": False,
+                                      "arquivo": arquivo_ata,
                                       "data_publicacao": "25/06/2018",
                                       "arquivo_lei": arquivo_lei,
-                                      "data_publicacao_lei": "26/06/2018"})
+                                      "data_publicacao_lei": "26/06/2018",
+                                      'possui_ata': True,
+                                      'exclusivo_cultura': True,
+                                      'paritario': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
