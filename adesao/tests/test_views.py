@@ -519,7 +519,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
@@ -573,7 +573,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
