@@ -662,6 +662,7 @@ def test_atualizacao_relacoes_reversas(login, client):
 
     mommy.make("Contato", sistema_cultura=sistema_cultura, _quantity=5)
 
+    sistema_antigo = SistemaCultura.sistema.get(ente_federado__cod_ibge=205631)
     contatos = sistema_cultura.contatos
 
     sistema_cultura.estado_processo = 6
@@ -669,4 +670,5 @@ def test_atualizacao_relacoes_reversas(login, client):
 
     sistema_cultura_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=205631)
 
+    assert not sistema_antigo.contatos.all()
     assert sistema_cultura_atualizado.contatos == contatos
