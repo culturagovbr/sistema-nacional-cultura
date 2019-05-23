@@ -148,6 +148,16 @@
   animation-fill-mode:  forwards;
 }
 
+.nd5{
+  background: #e53a36;
+  background-size: 100%;
+  right: 40px;
+  bottom: 360px;
+  animation-delay: 0.06s;
+  animation: bounce-out-nds 0.1s linear;
+  animation-fill-mode:  forwards;
+}
+
 @keyframes bounce-nds{
     from {opacity: 0;}
     to {opacity: 1; transform: scale(1);}

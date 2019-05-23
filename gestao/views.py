@@ -252,6 +252,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['historico'] = context['object'].historico_cadastradores()[:10]
+        context['historico_contatos'] = context['object'].contatos.all()
 
         sistema = self.get_queryset().get(id=self.object.id)
         context['componentes_restantes'] = []
