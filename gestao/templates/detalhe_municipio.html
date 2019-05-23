@@ -390,10 +390,13 @@
 
 <div id="container-floating">
     {% if ente.estado_processo == '6' %}
-    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
+    <div class="nd5 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
       <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
     </div>
     {% endif %}
+    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Registrar Contato" rel="tooltip">
+      <div class="material-icons float-options" onclick="location.href='{% url 'gestao:criar_contato' pk=ente.id %}'">phone</div>
+    </div>
     <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
         <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
     </div>
@@ -409,29 +412,57 @@
     </div>
 </div>
 
-{% if historico %}
 <div class="row">
-      <div class="col-md-6 col-md-5 col-xl-6">
-          <div class="card card-info">
-            <div class="card-header card-header-primary" >
-              <h4 class="card-title">Histórico de cadastradores</h4>
-            </div>
-            <div class="card-body">
-              {% for sistema in historico %}
-              <div class="row">
-                  <div class="col-md-6">
-                      <b>Usuário:</b> {% if sistema.cadastrador.nome_usuario %} {{sistema.cadastrador.nome_usuario}} {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <b>E-mail:</b> {% if sistema.cadastrador.user.email %} {{sistema.cadastrador.user.email}} {% endif %}
-                    </div>
-              </div>
-              {% endfor %}
-            </div>
+  {% if historico %}
+    <div class="col-md-6 col-md-5 col-xl-6">
+        <div class="card card-info">
+          <div class="card-header card-header-primary" >
+            <h4 class="card-title">Histórico de cadastradores</h4>
           </div>
+          <div class="card-body">
+            {% for sistema in historico %}
+            <div class="row">
+                <div class="col-md-6">
+                    <b>Usuário:</b> {% if sistema.cadastrador.nome_usuario %} {{sistema.cadastrador.nome_usuario}} {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                      <b>E-mail:</b> {% if sistema.cadastrador.user.email %} {{sistema.cadastrador.user.email}} {% endif %}
+                  </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+  {% endif %}
+
+  {% if historico_contatos %}
+    <div class="col-md-6 col-md-5 col-xl-6">
+      <div class="card card-info">
+        <div class="card-header card-header-primary" >
+          <h4 class="card-title">Registro de contatos</h4>
+        </div>
+        <div class="card-body">
+          {% for contato in historico_contatos %}
+          <div class="row">
+              <div class="col-md-6">
+                  <b>Contatado:</b> {{contato.contatado}}
+                </div>
+                <div class="col-md-6">
+                  <b>Contatante:</b> {{contato.contatante}}
+                </div>
+                <div class="col-md-6">
+                  <b>Data do contato:</b> {{contato.data}}
+                </div>
+                <div class="col-md-6">
+                  <b>O que foi discutido:</b> {{contato.discussao}}
+                </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
+    </div>
+  {% endif %}
 </div>
-{% endif %}
 
 {% include "cadastrador.html" %}
 {% include "alterar_adesao.html" %}

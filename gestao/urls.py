@@ -121,6 +121,10 @@ urlpatterns = [
         staff_member_required(views.DiligenciaGeralDetailView.as_view()),
         name="diligencia_geral"),
 
+    path("<int:pk>/contato",
+        staff_member_required(views.CriarContato.as_view()),
+        name="criar_contato"),
+
     path("ajax/consultar_cpf",
             staff_member_required(views.ajax_consulta_cpf),
             name="ajax-consulta-cpf"),

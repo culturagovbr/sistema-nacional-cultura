@@ -1999,3 +1999,17 @@ def test_alteracao_diligencia(client, login_staff):
     assert sistema_cultura.legislacao.situacao == 4
     assert sistema_cultura.legislacao.diligencia.texto_diligencia == texto_diligencia
     assert len(sistema_cultura.legislacao.diligencia.history.all()) == 2
+
+
+def test_registro_contato(client, login_staff):
+    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456)
+    url = reverse('gestao:criar_contato', kwargs={"pk": sistema_cultura.id})
+
+    response = client.post(url, {"contatado": "Nome Teste", "data": "28/06/2018", "discussao": "teste"})
+
+    contato = sistema_cultura.contatos.first()
+
+    assert contato.contatado == "Nome Teste"
+    assert contato.data == datetime.date(2018, 6, 28)
+    assert contato.discussao == "teste"
+    assert contato.contatante == login_staff

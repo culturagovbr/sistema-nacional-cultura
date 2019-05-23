@@ -11,7 +11,7 @@ from snc.widgets import FileUploadWidget
 
 from adesao.models import Usuario
 from adesao.models import LISTA_ESTADOS_PROCESSO
-from adesao.models import SistemaCultura, Gestor
+from adesao.models import SistemaCultura, Gestor, Usuario
 
 
 from planotrabalho.models import CriacaoSistema, FundoCultura, Componente
@@ -20,6 +20,7 @@ from planotrabalho.models import SituacoesArquivoPlano
 from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
 from gestao.models import Diligencia, DiligenciaSimples, LISTA_SITUACAO_ARQUIVO
+from gestao.models import Contato
 
 from .utils import enviar_email_alteracao_situacao
 
@@ -217,3 +218,21 @@ class AlterarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
+
+
+class CriarContatoForm(ModelForm):
+
+    def __init__(self, sistema, *args, **kwargs):
+        super(CriarContatoForm, self).__init__(*args, **kwargs)
+        self.sistema = sistema
+
+    def save(self, commit=True, *args, **kwargs):
+        contato = super(CriarContatoForm, self).save(commit=False)
+        contato.sistema_cultura = self.sistema
+        contato.save()
+
+        return contato
+
+    class Meta:
+        model = Contato
+        fields = ('contatado', 'data', 'discussao',)

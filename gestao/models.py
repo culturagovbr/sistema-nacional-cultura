@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from simple_history.models import HistoricalRecords
+from adesao.middleware import get_current_user
 
 TIPOS_DILIGENCIA = (
     ('geral', 'Geral'),
@@ -54,3 +55,15 @@ class DiligenciaSimples(models.Model):
     data_criacao = models.DateField(default=datetime.date.today)
     usuario = models.ForeignKey('adesao.Usuario', on_delete=models.CASCADE)
     history = HistoricalRecords(bases=[ArquivoHistoricalDiligenciaSimples, ])
+
+
+class Contato(models.Model):
+    contatado = models.CharField(max_length=100)
+    contatante = models.ForeignKey("adesao.Usuario", on_delete=models.CASCADE, related_name="contatos")
+    data = models.DateField()
+    discussao = models.TextField()
+    sistema_cultura = models.ForeignKey("adesao.SistemaCultura", on_delete=models.CASCADE, related_name="contatos")
+
+    def save(self, *args, **kwargs):
+        self.contatante = get_current_user()
+        super().save(*args, **kwargs)
