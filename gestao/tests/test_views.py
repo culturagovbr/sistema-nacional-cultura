@@ -654,6 +654,8 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
 def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para orgão gestor na
     tela de gestão salva no field arquivo """
+    
+    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -667,6 +669,7 @@ def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     orgao_gestor = Componente.objects.last()
     name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
     situacao = orgao_gestor.situacao
+    
 
     assert name == arquivo.name
     assert situacao == 1
