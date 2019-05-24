@@ -84,6 +84,7 @@ class CadastrarComponente(CreateView):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
+        kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
@@ -107,6 +108,7 @@ class AlterarComponente(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
+        kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
@@ -124,6 +126,7 @@ class AlterarOrgaoGestor(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'orgao_gestor'
+        kwargs['logged_user'] = self.request.user
 
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
             kwargs['initial']['perfil'] = sistema.orgao_gestor.perfil
@@ -145,6 +148,7 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+        kwargs['logged_user'] = self.request.user
 
         if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
             kwargs['initial']['mesma_lei'] = True
@@ -174,6 +178,7 @@ class AlterarConselhoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'conselho'
+        kwargs['logged_user'] = self.request.user
 
         if self.object.lei:
             kwargs['initial']['arquivo_lei'] = self.object.lei.arquivo

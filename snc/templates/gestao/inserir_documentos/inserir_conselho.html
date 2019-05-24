@@ -1,74 +1,53 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class="panel panel-default">
-  <div class="panel-heading">
-    Inserir arquivos do conselho cultural no cadastro
-  </div>
-  <div class="panel-body">
-    <form class="form-horizontal" method="post" id="form" enctype=multipart/form-data>{% csrf_token %} <div>
-      <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Anexo da Ata</label>
 
-        <div class="col-sm-7">
-          {% render_field form.arquivo %}
+<div class="row">
+  <div class="col-md-4">
+      <div class="card card-default">
+          <div class="card-header card-plain card-header-primary">
+              <h4 class="card-title">Componente</h4>
+              <p class="card-category">Inserir arquivos do conselho cultural no cadastro</p>
+          </div>
+          <div class="card-body">
+              <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
+                <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
+                    <div class="col-sm-12">
+                      {% render_field form.arquivo %}
+                    </div>
+                  </div>
 
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.arquivo.errors }}</span>
-          <span class="help-block">{{ form.non_field_errors }}</span>
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      {% render_field form.data_publicacao class="date" %}
+                    </div>
+                  </div>
 
-        </div>
-      </div>
+                  <div class="form-group">
+                    <label class="col-sm-12 control-label">Anexo da Lei</label>
 
-      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Ata</label>
+                    <div class="col-sm-12">
+                      {% render_field form.arquivo_lei %}
 
-        <div class="col-sm-7">
-          {% render_field form.data_publicacao class="date" %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">
-            <span class="help-block">{{ form.data_publicacao.errors }}</span>
-            <span class="help-block">{{ form.non_field_errors }}</span>
-          </span>
-        </div>
-      </div>
+                    </div>
+                  </div>
 
-      <div class="form-group {% if form.arquivo_lei.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Anexo da Lei</label>
+                  <div class="form-group">
+                    <label class="col-sm-12 control-label">Data de publicação da Lei</label>
 
-        <div class="col-sm-7">
-          {% render_field form.arquivo_lei %}
+                    <div class="col-sm-12">
+                      {% render_field form.data_publicacao_lei class="date" %}
+                    </div>
+                  </div>
 
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.arquivo_lei.errors }}</span>
-          <span class="help-block">{{ form.non_field_errors }}</span>
-
-        </div>
-      </div>
-
-      <div class="form-group {% if form.data_publicacao_lei.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
-
-        <div class="col-sm-7">
-          {% render_field form.data_publicacao_lei class="date" %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">
-            <span class="help-block">{{ form.data_publicacao_lei.errors }}</span>
-            <span class="help-block">{{ form.non_field_errors }}</span>
-          </span>
-        </div>
+                  <div class="form-group">
+                      <div>
+                          <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+                          <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                      </div>
+                  </div>
+              </form>
+          </div>
       </div>
   </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-11">
-      <a class="btn btn-default" href="{% url 'gestao:listar_documentos' template='listar_conselho' %}">Cancelar</a>
-      <button type="submit" class="btn btn-primary">Salvar</button>
-    </div>
-  </div>
-  </form>
 </div>
-</div>
+
 {% endblock content %}

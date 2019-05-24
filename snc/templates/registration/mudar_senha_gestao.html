@@ -3,11 +3,11 @@
 
 {% block content %}
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class=" card  ">
+    <div class=" card-header">
       Alterar senha
     </div>
-    <div class="panel-body">
+    <div class=" card-body">
   <form class="form-horizontal" method="post">{% csrf_token %}
         <div class="form-group">
           <label for="{{ form.old_password.id_for_label }}" class="col-sm-3 control-label">Senha antiga:</label>

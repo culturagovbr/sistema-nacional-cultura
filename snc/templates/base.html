@@ -16,6 +16,8 @@
   <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css" />
   <link href="{% static 'css/leaflet.css' %}" rel="stylesheet" type="text/css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css" rel="stylesheet" type="text/css" />
+
   <script src="{% static 'js/jquery.min.js' %}"></script>
 </head>
 
@@ -275,6 +277,26 @@
             <a name="acontent" id="acontent"></a>
 
             <div id="main-content" class="">
+                <div id="errors" style="display: none;">
+                    {% for field in form %}
+                      <div class="errors-field">
+                          <div class="label-tag">{{ field.label_tag }}</div>
+                          {{field.errors}}
+                      </div>
+                    {% endfor %}
+                    {% for field in form_gestor %}
+                      <div class="errors-field">
+                          <div class="label-tag">{{ field.label_tag }}</div>
+                          {{field.errors}}
+                      </div>
+                    {% endfor %}
+                    {% for field in form_sede %}
+                      <div class="errors-field">
+                          <div class="label-tag">{{ field.label_tag }}</div>
+                          {{field.errors}}
+                      </div>
+                    {% endfor %}
+                </div>
 
               <div id="content">{% block content %}{% endblock content %}</div>
             </div>
@@ -331,7 +353,7 @@
       </div>
       <div id="extra-footer">
         <p>
-          Secretaria Especial da Cultura / Ministério da Cidadaniaa -
+          Secretaria Especial da Cultura / Ministério da Cidadania -
           <a href="#">MinC - 2018</a>
         </p>
       </div>
@@ -343,8 +365,60 @@
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'js/datepicker-pt-BR.js' %}"></script>
     <script src="{% static 'js/leaflet.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
+
+        $('.errors-field').each((index, element) => {
+          let field_name = '';
+          let field_error = '';
+          let field_id = '';
+          let field = $(element).children().text();
+
+          field = field.split(":");
+          field_name = field[0];
+          field_error = field[1];
+
+          if (field_error.length > 0) {
+            field_id = $(element).children()[0].firstChild.htmlFor;
+
+            let input = $(`#${field_id}`);
+
+            input.closest('.form-group').addClass('has-error')
+            if(input.attr('type') === 'file'){
+              input.closest('span').after(`
+                  <ul class="errorlist">
+                    <li class="help-block">
+                      ${field_error}
+                    </li>
+                  </ul>
+              `);
+            } else {
+              input.after(`
+                <span class="help-block">
+                  <ul class="errorlist">
+                    <li>
+                      ${field_error}
+                    </li>
+                  </ul>
+                </span>
+              `);
+            }
+
+
+
+            let error_message = '<b>' + field_name + '</b> -  ' + field_error;
+            $.toast({
+              heading: 'Erro',
+              text: error_message,
+              icon: 'error',
+              loader: true,
+              loaderBg: '#F1C41D',
+              position: 'top-right'
+            })
+          }
+        });
+
         $('#ente_select').change(function(){
           var ente_select = document.getElementById("ente_select");
           var value = ente_select.options[ente_select.selectedIndex].value;
@@ -354,10 +428,10 @@
         });
         $("body").prepend('<div id="overlay" style="height: 100%; width: 100%; opacity: 0.3; z-index: 100; position: fixed; background: url({% static "img/spinner.gif"%}) no-repeat center center; background-color: gray; display: none;"></div>');
 
-        $(".date").datepicker({
-          showButtonPanel: true,
-          regional: "pt-BR"
-        });
+        // $(".date").datepicker({
+        //   showButton card: true,
+        //   regional: "pt-BR"
+        // });
 
         $('#id_confirmar_email').bind("cut copy paste", function(e) {
           e.preventDefault();

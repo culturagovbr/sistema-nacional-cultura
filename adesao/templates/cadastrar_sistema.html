@@ -9,14 +9,11 @@
 
 <form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
 	{% if not form_sistema.instance.ente_federado %}
-		<div class="form-group {% if form_sistema.ente_federado.errors %} has-error {% endif %}">
+		<div class="form-group">
 		    <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município)</label>
 
 		    <div class="col-sm-2">
 		        {% render_field form_sistema.ente_federado class="form-control" %}
-		        {% if form_sistema.ente_federado.errors %}
-		          <span class="help-block">{{ form_sistema.ente_federado.errors }}</span>
-		        {% endif %}
 		    </div>
 		</div>
 	{% else %}

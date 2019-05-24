@@ -69,7 +69,7 @@ def home(request):
     request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
     if request.user.is_staff:
-        return redirect("gestao:acompanhar_adesao")
+        return redirect("gestao:dashboard")
 
     if sistemas_cultura.count() == 1:
         atualiza_session(sistemas_cultura[0], request)
@@ -345,11 +345,11 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
             context['form_sede'] = CadastrarSede()
-            context['form_gestor'] = CadastrarGestor()
+            context['form_gestor'] = CadastrarGestor(logged_user=self.request.user)
         return context
 
     def templated_email_get_recipients(self, form):
@@ -404,11 +404,11 @@ class AlterarSistemaCultura(UpdateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES, instance=self.object)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES, instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor, logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
             context['form_sede'] = CadastrarSede(instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor)
+            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor, logged_user=self.request.user)
 
         return context
 

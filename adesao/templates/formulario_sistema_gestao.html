@@ -1,0 +1,137 @@
+{% load widget_tweaks %}
+{{form.media}}
+<div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Nome do Gestor (Prefeito ou Governador)</label>
+        {% render_field form_gestor.nome class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label>CPF do Gestor (Prefeito ou Governador)</label>
+        {% render_field form_gestor.cpf class="form-control cpf" %}
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label>RG do Gestor (Prefeito ou Governador)</label>
+        {% render_field form_gestor.rg class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-1">
+      <div class="form-group">
+        <label>Órgão Expeditor</label>
+        {% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-1">
+      <div class="form-group">
+        <label>UF</label>
+        {% render_field form_gestor.estado_expeditor class="form-control" %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-md-5">
+      <div class="form-group">
+        <label>E-mail Institucional</label>
+        {% render_field form_gestor.email_institucional class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label>CNPJ do Ente Federado (Estado ou Município)</label>
+        {% render_field form_sede.cnpj class="form-control cnpj" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>CEP</label>
+        {% render_field form_sede.cep class="form-control cep" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Complemento</label>
+        {% render_field form_sede.complemento class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Bairro</label>
+        {% render_field form_sede.bairro class="form-control" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Endereço Eletrônico (Agenda Digital)</label>
+        {% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Telefone Institucional</label>
+        {% render_field form_sede.telefone_um class="form-control telefone" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Telefone Institucional</label>
+        {% render_field form_sede.telefone_dois class="form-control telefone" %}
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>Telefone Institucional</label>
+        {% render_field form_sede.telefone_tres class="form-control telefone" %}
+      </div>
+    </div>
+
+  </div>
+
+  {% if request.user.is_staff %}
+  <div class="row">
+      <div class="col-md-12">
+        <div class="form-check">
+            <label class="form-check-label">
+                {% render_field form_sistema.conferencia_nacional class="form-check-input" type="checkbox" %}
+                <span class="form-check-sign">
+                    <span class="check"></span>
+                </span>
+                Participou da Conferência Nacional
+            </label>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-12">
+    <div class="form-group">
+      <label>Endereço Institucional</label>
+      <div class="form-group">
+      {% render_field form_sede.endereco class="form-control" %}
+
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+  {% if form_gestor.termo_posse %}
+  <div class="col-md-3">
+    {{form_gestor.termo_posse}}
+  </div>
+  {% endif %}
+  {% if form_gestor.rg_copia %}
+  <div class="col-md-3">
+    {{form_gestor.rg_copia }}
+  </div>
+  {% endif %}
+  {% if form_gestor.cpf_copia %}
+  <div class="col-md-3">
+    {{form_gestor.cpf_copia}}
+  </div>
+  {% endif %}
+</div>

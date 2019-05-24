@@ -17,9 +17,10 @@
 	}
 </style>
 
-<div id="painel-diligencia" class="row panel panel-default">
-	<div class="panel-body">
+<div id="painel-diligencia" class="row card">
+	<div class="card-body">
 		{% if componente == None  %}
+
 			<h2>Informações sobre o Plano Trabalho</h2>
 			<br>
 			<p><b>Ente Federado:</b> {{ ente_federado }}</p>
@@ -91,8 +92,8 @@
 <br>
 
 {% if historico_diligencias %}
-	<div class="row panel panel-info">
-		<div class="panel-heading">
+	<div class="row  card  card-info">
+		<div class=" card-header">
 			Histórico de Diligências
 		</div>
 

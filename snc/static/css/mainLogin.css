@@ -4,7 +4,7 @@
    Font-face local para fonte "Open Sans"
    ========================================================================== */
 
-@font-face {
+   @font-face {
     font-weight: normal;
     font-style: normal;
     font-family: "open_sanslight";
@@ -80,16 +80,16 @@
    ========================================================================== */
 
 body {
-    /* background-color: #fff; */ 
+    /* background-color: #fff; */
     color: #000000;
     font-size: 62.5%;
-    font-family: "open_sansregular", Arial, Helvetica, sans-serif;	
+    font-family: "open_sansregular", Arial, Helvetica, sans-serif;
 	margin: 0;
-	padding: 0;	
+	padding: 0;
 	line-height: 20px;
 	color: #83adff;
 	-webkit-font-smoothing: subpixel-antialiased;
-	-webkit-text-size-adjust: 100%;	
+	-webkit-text-size-adjust: 100%;
 	cursor:default;
     background-image:url(../img/fundo2.fw.png);
 	background-repeat: no-repeat;
@@ -1315,7 +1315,7 @@ dl.portlet ol li { list-style: decimal outside; }
     border: 3px solid #003C9D;
     border-radius: 5px;
     background: #0F4098 !important;
-	
+
 }
 
 

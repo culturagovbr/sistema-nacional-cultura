@@ -8,32 +8,33 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action={% url 'gestao:alterar_cadastrador' object.ente_federado.cod_ibge %}>
-					<div class="form-group">
-						<label for="nome-atual" class="col-form-label">Nome:</label>
-						<input type="text" class="form-control" id="nome-atual" disabled>
-					</div>
-					<div class="form-group">
-						<label for="cpf-atual" class="col-form-label">CPF:</label>
-						<input type="text" class="form-control" id="cpf-atual" disabled>
-					</div>
-					<hr>
-					<div class="form-group">
-						<label for="nome-novo" class="col-form-label">Novo Cadastrador:</label>
-						<input type="text" class="form-control" id="nome-novo">
-					</div>
-					<div id="cpf_form" class="form-group">
-						{% csrf_token %}
-						<label for="id_cpf_usuario" class="control-label">CPF:</label>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Procurar pelo CPF" id="id_cpf_usuario" name="cpf_cadastrador"/>
-							<div class="input-group-btn">
-								<button class="btn btn-primary" type="button" id="search_cpf" onclick="search()">
-									<span class="glyphicon glyphicon-search"></span>
-								</button>
+				<form method="POST" autocomplete="off" action={% url 'gestao:alterar_cadastrador' object.ente_federado.cod_ibge %}>
+					<div class="card-body">
+							<div class="form-group">
+								<label for="nome-atual">Nome</label>
+								<input type="text" class="form-control" id="nome-atual" disabled>
 							</div>
-						</div>
-						<span id="error_field" class="help-block"></span>
+							<div class="form-group">
+								<label for="cpf-atual">CPF</label>
+								<input type="text" class="form-control" id="cpf-atual" disabled>
+							</div>
+							<div class="form-group">
+								<label for="nome-novo" class="col-form-label">Novo Cadastrador</label>
+								<input type="text" class="form-control" id="nome-novo" disabled>
+							</div>
+							<div id="cpf_form" class="form-group">
+								{% csrf_token %}
+								<div class="form-group form-file-upload form-file-multiple">
+									<div class="input-group">
+										<input type="text" class="form-control" placeholder="Procurar pelo CPF" id="id_cpf_usuario" name="cpf_cadastrador"/>
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-fab btn-round btn-info" id="search_cpf" onclick="search()">
+												<i class="material-icons">search</i>
+											</button>
+										</span>
+									</div>
+								</div>
+							</div>
 					</div>
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -45,42 +46,3 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-	$('#cadastradorModal').on('show.bs.modal', function (event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		var nome_atual = button.data('cadastrador-nome')
-		var cpf_atual = button.data('cadastrador-cpf')
-
-		$('#nome-atual').val(nome_atual)
-		$('#cpf-atual').val(cpf_atual)
-	})
-
-	var search = function(){
-		$url = "{% url 'gestao:ajax-consulta-cpf' %}"
-		csrf_token = "{{ csrf_token }}"
-		cpf = $('#id_cpf_usuario').val()
-
-		$.ajax({
-			type: "POST",
-			url: $url,
-			data: {
-				cpf: cpf,
-				csrfmiddlewaretoken: csrf_token
-			},
-			dataType: 'json',
-			cache: false,
-			success: function(response){
-				if (response){
-					$('#nome-novo').val(response.data.nome)
-					$('#error_field').hide();
-					$('#cpf_form').removeClass("has-error")
-				}
-			},
-			error: function(error){
-				$('#cpf_form').addClass("has-error")
-				$('#error_field').text(error.responseJSON.message);
-				$('#error_field').show();
-			},
-		})
-	}
-</script>

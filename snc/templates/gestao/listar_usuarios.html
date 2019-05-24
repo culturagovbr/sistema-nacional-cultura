@@ -1,151 +1,325 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
 {% include 'messages.html' %}
+<style>
+.editable-input, .form-inline .form-control {
+  width: 100%;
+}
+.editable-error-block{
+  display: none !important;
+}
+.focus-expandable{
+  border: 2px solid black;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3);
+}
+</style>
+<menu data-target="usuarios" ></menu>
 <div class="row">
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        Usuários com acesso ao sistema
-      </div>
-      <!-- /.panel-heading -->
-      <div class="panel-body">
-        <form method="get" action="">
-          <div class="input-group custom-search-form col-lg-3">
-              <input type="text" name="q" class="form-control" placeholder="CPF ou e-mail">
-              <span class="input-group-btn">
-                  <button class="btn btn-default" type="submit">
-                      <i class="fa fa-search"></i>
-                  </button>
-              </span>
-          </div>
-        </form>
-        <div class="dataTable_wrapper">
-          <table class="table table-striped table-bordered table-hover dt-responsive" id="dataTables-example">
-            <thead>
-              <tr>
-                <th>CPF</th>
-                <th>Nome Completo</th>
-                <th>E-mail</th>
-                <th>Ativo</th>
-                <th>Administrador</th>
-                <th>Salvar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for usuario in object_list %}
-                <tr class="odd gradeX">
-                    <!--<td><center><a href="{% url 'gestao:detalhar' usuario.id %}"><i class="fa fa-file"></i></a></center></td>-->
-                    <td>{{ usuario.user.username }}</td>
-                    <td>{{ usuario.nome_usuario }}</td>
-                    <form name="form" action="{% url 'gestao:alterar_usuario' usuario.user.id %}" method="post">
-                        {% csrf_token %}
-                        <td><input type="text" class="form-control" name="email" value="{{ usuario.user.email }}"></input></td>
-                        {% if usuario.user.is_active %}
-                        <td><input type="checkbox" name="is_active"checked></input></td>
-                        {% else %}
-                        <td><input type="checkbox" name="is_active"></input></td>
-                        {% endif %}
-                        {% if usuario.user.is_staff %}
-                        <td><input type="checkbox" name="is_staff"checked></input></td>
-                        {% else %}
-                        <td><input type="checkbox" name="is_staff"></input></td>
-                        {% endif %}
-                        <td><button type="submit" class="btn btn-primary" title="Salvar Mudanças" ><i class="fa fa-check"></i></button></td>
-                    </form>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% if is_paginated %}
-          <div class="dataTables_paginate paging_simple_numbers">
-            <ul class="pagination">
-              {% if page_obj.has_previous %}
-              <li>
-                <a class="paginate_button previous" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
-              </li>
-              {% endif %}
-              <li>
-                <a>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
-              </li>
-              {% if page_obj.has_next %}
-              <li>
-                <a class="paginate_button next" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
-              </li>
-              {% endif %}
-            </ul>
-          </div>
-          {% endif %}
+    <div class="col-lg-12">
+      <div class="card card-default">
+        <div class="card-header card-plain card-header-primary">
+            <h4 class="card-title">Usuarios</h4>
+            <p class="card-category">Gerenciar acessos ao sistema</p>
         </div>
-        <!-- /.table-responsive -->
+        <div class="card-body table-responsive">
+            <table id="tabela-ente" class="datatable table table-hover">
+                <thead class="text-primary">
+                    <tr>
+                      <th>CPF</th>
+                      <th>Nome Completo</th>
+                      <th>E-mail</th>
+                      <th>Último acesso</th>
+                      <th>Situação</th>
+                      <th>Perfil</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+            </table>
+        </div>
       </div>
-      <!-- /.panel-body -->
     </div>
-    <!-- /.panel -->
-  </div>
-  <!-- /.col-lg-12 -->
 </div>
+
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
-  $(document).ready(function(){
-    $("[id^='select_situacao']").change(function(e){
-      index = $(this).parent().parent().index();
-      if($(this).val()==="2"){
-        $("input[id$='_"+index+"'], textarea[id$='_"+index+"']").each(function(){
-          if(!$(this).hasClass('hide')){
-            $(this).addClass('hide');
-            $(this).fadeIn();
-          }
-        });
-        if($("#localizacao_"+index).hasClass('hide')){
-          $("#localizacao_"+index).removeClass('hide');
-          $("#localizacao_"+index).fadeIn();
-        }
+(function ($) {
+    var errorOld = $.fn.editableform.error;
+    $.fn.editableform.defaults.error = function(response, newValue) {
+      if(response.status == 500){
+        let response_message = response.responseJSON.error.message;
+        $.notify(
+          {
+            icon: "error",
+            message: response_message,
+          },
+          {type: "danger"}
+        );
       }
-      else if($(this).val()==="3"){
-        $("input[id$='_"+index+"'], textarea[id$='_"+index+"']").each(function(){
-          if(!$(this).hasClass('hide')){
-            $(this).addClass('hide');
-            $(this).fadeIn();
+    }
+})(jQuery);
+
+$(document).ready(function(){
+  csrf_token = '{{ csrf_token }}';
+  alterar_usuario_url = '/gestao/alterar/usuario/'
+
+  $.ajaxSetup({
+    data: {csrfmiddlewaretoken: csrf_token},
+  });
+
+  var tabela = $('#tabela-ente').DataTable({
+    order: [1, 'asc'],
+    language:{
+            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+          },
+    columns: [
+        {
+          data: null,
+          name: "user__username",
+          render: (data) => data[1],
+        },
+        {
+          data: null,
+          name: "nome_usuario",
+          render: (data) => data[2],
+        },
+        {
+          data: null,
+          name: "user__email",
+          render: (data) => `
+              <a
+              href="#"
+              class="user__email"
+              data-name="email"
+              data-type="text"
+              data-pk="${data[0]}"
+              data-url="${alterar_usuario_url}${data[0]}"
+              data-title="Alterar E-mail">
+                ${data[3]} <i class="fa fa-edit"></i>
+              </a>`
+        },
+        {
+          data: null,
+          name: "user__last_login",
+          render: (data) => {
+            if (!data[4].length){
+              return 'Nunca entrou'
+            }
+            return formatarData(data[4])
           }
-        });
-        if($("#justificativa_"+index).hasClass('hide')){
-          $("#justificativa_"+index).removeClass('hide');
-          $("#justificativa_"+index).fadeIn();
+        },
+        {
+          data: null,
+          name: "user__is_active",
+          render: (data) =>`
+              <a
+              href="#"
+              class="user__is_active"
+              data-name="is_active"
+              data-pk="${data[0]}"
+              data-url="${alterar_usuario_url}${data[0]}"
+              data-value="${data[5] == 'Ativo' ? 0 : 1}"
+              data-title="Alterar Situação">
+                ${data[5]}
+              </a>`
+        },
+        {
+          data: null,
+          name: "user__is_staff",
+          render: (data) => `
+              <a
+              href="#"
+              class="user__is_staff"
+              data-name="is_staff"
+              data-pk="${data[0]}"
+              data-url="${alterar_usuario_url}${data[0]}"
+              data-value="${data[6] == 'Administrador' ? 0 : 1}"
+              data-title="Alterar Perfil">
+                ${data[6]} <i class="fa fa-edit"></i>
+              </a>`
+        },
+        {
+          data: null,
+          className: "text-center",
+          name: "user__is_staff",
+          render: (data) => '<i class="material-icons expandable-icon">expand_more</i>'
+        },
+    ],
+    searching: true,
+    processing: true,
+    serverSide: true,
+    stateSave: true,
+    ajax: {
+      url: "{% url 'gestao:ajax_usuarios' %}",
+      type: "POST",
+    },
+  });
+
+  $('#tabela-ente').on('draw.dt', function () {
+    $('.user__email').editable({
+      validate: function(value){
+        if($.trim(value) == ''){
+          $.notify(
+          {
+            icon: "error",
+            message: 'Não é possível salvar o campo email vazio.',
+          },
+          {type: "danger"}
+        );
         }
-      }
-      else if($(this).val()==="4"){
-        $("input[id$='_"+index+"'], textarea[id$='_"+index+"']").each(function(){
-          if(!$(this).hasClass('hide')){
-            $(this).addClass('hide');
-            $(this).fadeIn();
-          }
-        });
-        if($("#num_processo_"+index).hasClass('hide')){
-          $("#num_processo_"+index).removeClass('hide');
-          $("#num_processo_"+index).fadeIn();
+        else {
+          $.notify(
+          {
+            icon: "check_circle",
+            message: 'E-mail alterado com sucesso!',
+          },
+          {type: "success"}
+        );
         }
+      },
+      display: function(value) {
+        $(this).html(`${value} <i class="fa fa-edit"></i>`);
+      },
+
+    });
+
+    $('.user__is_active').editable({
+      type: 'select',
+      title: 'Selecione',
+      source: [
+        {value: 1, text: 'Ativo'},
+        {value: 0, text: 'Inativo'},
+      ],
+      display: function(value, source) {
+        $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
+      },
+      success: function(response, newValue) {
+        $.notify(
+          {
+            icon: "check_circle",
+            message: 'Alterado com sucesso!',
+          },
+          {type: "success"}
+        );
       }
-      else if($(this).val()==="6"){
-        $("input[id$='_"+index+"'], textarea[id$='_"+index+"']").each(function(){
-          if(!$(this).hasClass('hide')){
-            $(this).addClass('hide');
-            $(this).fadeIn();
-          }
-        });
-        if($("#data_acordo_"+index).hasClass('hide')){
-          $("#data_acordo_"+index).removeClass('hide');
-          $("#data_acordo_"+index).fadeIn();
-        }
-      }
-      else {
-        $("input[id$='_"+index+"'], textarea[id$='_"+index+"']").each(function(){
-          if(!$(this).hasClass('hide')){
-            $(this).addClass('hide');
-            $(this).fadeIn();
-          }
-        });
+    });
+
+    $('.user__is_staff').editable({
+      type: 'select',
+      source: [
+        {value: 1, text: 'Administrador'},
+        {value: 0, text: 'Cadastrador'},
+      ],
+      display: function(value, source) {
+        $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
+      },
+      success: function(response, newValue) {
+        $.notify(
+          {
+            icon: "check_circle",
+            message: 'Alterado com sucesso!',
+          },
+          {type: "success"}
+        );
       }
     });
   });
+
+  var diasSemLogar = function (data_cadastro){
+    if(!data_cadastro) return '-'
+    var data_cadastro = new Date(data_cadastro);
+    var hoje = new Date();
+    var um_dia = 86400000;
+    dias_sem_logar_timestamp = hoje.getTime() - data_cadastro.getTime();
+    dias_sem_logar = parseInt(dias_sem_logar_timestamp/um_dia);
+    return dias_sem_logar
+  }
+
+  var formatarData = function(data) {
+    var data = new Date(data);
+    return data.toLocaleDateString('pt-BR')
+  }
+
+  var formatar = function (data) {
+    var linhas_entes = ''
+    var link_pagina_ente = ''
+
+    let entes_usuario = data[7]
+
+    entes_usuario.forEach((ente, chave) => {
+      let ente_cod_ibge = ente[0]
+      let ente_nome =  ente[1]
+
+      link_pagina_ente = `
+        <a href="/gestao/ente/${ente_cod_ibge}">
+          ${ente_nome}
+          <i class="material-icons expandable-icon">call_made</i>
+        </a>
+      `
+
+      if(!chave){
+        linhas_entes += `
+          <tr>
+            <td style="font-weight: bold;">Ente Federado:</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+          `
+      }else{
+        linhas_entes += `
+          <tr>
+            <td>&nbsp;</td>
+            <td>${link_pagina_ente}</td>
+          </tr>
+        `
+      }
+    })
+
+    if(!entes_usuario.length) linhas_entes = `
+        <tr>
+          <td style="font-weight: bold;">Ente Federado:</td>
+          <td> - </td>
+        </tr>`
+
+    return `
+      <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+          <tbody>
+              ${linhas_entes}
+              <tr>
+                  <td style="font-weight: bold;">Data cadastro:</td>
+                  <td>${formatarData(data[8])}</td>
+              </tr>
+              <tr>
+                  <td style="font-weight: bold;">Dias sem logar:</td>
+                  <td>${diasSemLogar(data[4])}</td>
+              </tr>
+          </tbody>
+      </table>`;
+  }
+
+  $("#tabela-ente tbody").on('click', 'td', function () {
+        var tr = $(this).closest("tr[role='row']");
+        var row = tabela.row( tr );
+        var expandable_icon = tr.find('.expandable-icon');
+        var clicked_contains_editable = $(this).children().hasClass('editable');
+
+        if(!tr.length || clicked_contains_editable){
+          return;
+        }
+
+        expandable_icon.css({'transform': 'rotate(-180deg)'});
+
+        if ( row.child.isShown() ) {
+            row.child.hide();
+            expandable_icon.css({'transform': 'rotate(0deg)'});
+            tr.removeClass('shown');
+        }
+        else {
+            row.child( formatar(row.data()) ).show();
+            tr.addClass('shown');
+            row.child().children(":first").addClass('focus-expandable')
+        }
+  });
+
+});
 </script>
 {% endblock js%}

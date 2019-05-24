@@ -17,6 +17,9 @@ from .utils import add_anos
 from adesao.models import SistemaCultura
 from gestao.forms import content_types
 
+from snc.widgets import FileUploadWidget
+
+
 SETORIAIS = (
     ('0', '-- Selecione um Segmento --'),
     ('1', 'Arquitetura e Urbanismo'),
@@ -58,7 +61,13 @@ class CriarComponenteForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
         super(CriarComponenteForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Componente'
+            })
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
@@ -96,10 +105,23 @@ class CriarFundoForm(CriarComponenteForm):
     comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
     data_publicacao = forms.DateField(required=False)
-    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
+
+    def __init__(self, *args, **kwargs):
+        logged_user = kwargs['logged_user']
+        super(CriarFundoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Anexo da Lei'
+            })
+            self.fields['comprovante'].widget = FileUploadWidget(attrs={
+                'label': 'Comprovante do CNPJ'
+            })
+
     def clean_arquivo(self):
         if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
@@ -117,11 +139,11 @@ class CriarFundoForm(CriarComponenteForm):
             try:
                 if self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
-            except ValueError:    
+            except ValueError:
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_cnpj(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['cnpj']:   
+        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['cnpj']:
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['cnpj']:
             self.cleaned_data['cnpj'] = None
@@ -129,7 +151,7 @@ class CriarFundoForm(CriarComponenteForm):
         return self.cleaned_data['cnpj']
 
     def clean_comprovante(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['comprovante']:   
+        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['comprovante']:
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['comprovante']:
             self.cleaned_data['comprovante'] = None
@@ -153,7 +175,7 @@ class CriarFundoForm(CriarComponenteForm):
         else:
             componente.arquivo = self.cleaned_data['arquivo']
             componente.data_publicacao = self.cleaned_data['data_publicacao']
-            
+
         componente.cnpj = self.cleaned_data['cnpj']
         componente.save()
 
@@ -168,10 +190,10 @@ class CriarFundoForm(CriarComponenteForm):
         else:
             componente.comprovante_cnpj = None
             componente.save()
-        
+
         sistema_cultura = getattr(componente, self.tipo_componente)
         sistema_cultura.add(self.sistema)
-        
+
     class Meta:
         model = FundoDeCultura
         fields = ('cnpj', 'arquivo', 'data_publicacao')
@@ -198,7 +220,17 @@ class CriarConselhoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
+
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Componente'
+            })
+            self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Lei'
+            })
 
     def clean_paritario(self):
         if not self.cleaned_data['paritario']:
@@ -305,7 +337,16 @@ class AlterarConselhoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
         super(AlterarConselhoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Componente'
+            })
+            self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Lei'
+            })
 
     def save(self, commit=True, *args, **kwargs):
         conselho = super(AlterarConselhoForm, self).save(commit=False)
