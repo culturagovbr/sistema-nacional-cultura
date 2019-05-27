@@ -662,7 +662,7 @@ def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
         "componente": "orgao_gestor"})
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",'perfil':0})
 
     orgao_gestor = Componente.objects.last()
     name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
