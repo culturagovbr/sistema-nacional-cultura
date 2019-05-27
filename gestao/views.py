@@ -906,22 +906,28 @@ class DataTablePlanoTrabalho(BaseDatatableView):
 
         if componente == 'conselho':
             sistemas = sistemas.filter((Q(conselho__lei__situacao=1)
-                & ~Q(conselho__lei__arquivo=None)) |
-                (Q(conselho__situacao=1) & ~Q(conselho__arquivo=None)))
+                & ~Q(conselho__lei__arquivo='')) |
+                (Q(conselho__situacao=1) & ~Q(conselho__arquivo='')))
         else:
             kwargs = {'{0}__situacao'.format(componente): 1}
             sistemas = sistemas.filter(**kwargs)
-            kwargs = {'{0}__arquivo'.format(componente): None}
+            kwargs = {'{0}__arquivo'.format(componente): ''}
             sistemas = sistemas.exclude(**kwargs)
 
         return sistemas
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
+        componente = self.request.POST.get('componente', None)
+
+        where = Q(ente_federado__nome__unaccent__icontains=search)
+        where |= Q(sede__cnpj__contains=search)
+
+        if componente == 'fundo_cultura':
+            where |= Q(fundo_cultura__cnpj__contains=search)
 
         if search:
-            return qs.filter(Q(ente_federado__nome__unaccent__icontains=search) |
-                Q(sede__cnpj__contains=search))
+            qs = qs.filter(where)
 
         return qs
 
@@ -933,16 +939,25 @@ class DataTablePlanoTrabalho(BaseDatatableView):
                 item.id,
                 item.ente_federado.__str__(),
                 escape(item.sede.cnpj) if item.sede else '',
-                getattr(item, componente).arquivo.url,
+                getattr(item, componente).arquivo.url if getattr(item, componente).arquivo else '',
                 componente,
             ]
+            if (componente == 'fundo_cultura'):
+                json_response[2] = [
+                    escape(item.sede.cnpj) if item.sede else '',
+                    escape(item.fundo_cultura.cnpj) if item.fundo_cultura.cnpj else '',
+                ]
+                if getattr(item.fundo_cultura, 'comprovante_cnpj', None):
+                    json_response.append(
+                        item.fundo_cultura.comprovante_cnpj.arquivo.url
+                    )
 
-            json_data.append(json_response)
-
-            if getattr(item, 'lei', None):
+            if getattr(getattr(item, componente), 'lei', None):
                 json_response.append(
                     getattr(item, componente).lei.arquivo.url
                 )
+
+            json_data.append(json_response)
 
         return json_data
 
