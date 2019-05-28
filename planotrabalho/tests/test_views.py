@@ -16,7 +16,7 @@ from model_mommy import mommy
 def test_cadastrar_componente_tipo_legislacao(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -41,7 +41,7 @@ def test_cadastrar_componente_tipo_legislacao(client, login):
 def test_cadastrar_componente_tipo_orgao_gestor(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -68,7 +68,7 @@ def test_cadastrar_componente_tipo_orgao_gestor(client, login):
 def test_alterar_orgao_gestor(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'orgao_gestor', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -94,7 +94,7 @@ def test_alterar_orgao_gestor(client, login):
 def test_cadastrar_componente_tipo_fundo_cultura(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -126,7 +126,7 @@ def test_cadastrar_componente_tipo_fundo_cultura(client, login):
 def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_sem_cnpj(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     legislacao = SimpleUploadedFile(
         "legislacao.txt", b"file_content", content_type="text/plain"
     )
@@ -153,7 +153,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_sem_cnpj(client
 def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     legislacao = SimpleUploadedFile(
         "legislacao_teste.txt", b"file_content", content_type="text/plain"
     )
@@ -187,7 +187,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client
 def test_cadastrar_componente_tipo_conselho(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -223,7 +223,7 @@ def test_cadastrar_componente_tipo_conselho(client, login):
 def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     legislacao = SimpleUploadedFile(
         "legislacao.txt", b"file_content", content_type="text/plain"
     )
@@ -254,7 +254,7 @@ def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
 def test_cadastrar_componente_tipo_plano(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -279,7 +279,7 @@ def test_cadastrar_componente_tipo_plano(client, login):
 def test_alterar_componente(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'legislacao', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -310,7 +310,7 @@ def test_alterar_componente(client, login):
 def test_alterar_fundo_cultura(client, login):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'fundo_cultura', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -353,7 +353,7 @@ def test_alterar_fundo_cultura_remove_cnpj(client, login):
     )
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'fundo_cultura', 'sede', 'gestor'],
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     sistema_cultura.fundo_cultura.cnpj = "56.385.239/0001-81"
     sistema_cultura.fundo_cultura.comprovante_cnpj = mommy.make("ArquivoComponente2")
     sistema_cultura.fundo_cultura.save()
@@ -393,7 +393,7 @@ def test_alterar_conselho_cultura(client, login):
 
     componente = mommy.make("ConselhoDeCultura", tipo=3, _fill_optional=True)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
-        cadastrador=login, conselho=componente)
+        cadastrador=login, conselho=componente, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -437,7 +437,7 @@ def test_alterar_conselho_cultura(client, login):
 def teste_criar_conselheiro(client, login):
 
     sistema = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'conselho', 'sede', 'gestor'], 
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -457,7 +457,7 @@ def teste_criar_conselheiro(client, login):
 def teste_alterar_conselheiro(client, login):
 
     sistema = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'conselho', 'sede', 'gestor'], 
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     conselheiro = mommy.make("Conselheiro", conselho=sistema.conselho)
 
     url = reverse("adesao:home")
@@ -478,7 +478,7 @@ def teste_alterar_conselheiro(client, login):
 def teste_remover_conselheiro(client, login):
 
     sistema = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'conselho', 'sede', 'gestor'], 
-        cadastrador=login)
+        cadastrador=login, ente_federado__cod_ibge=123456)
     conselheiro = mommy.make("Conselheiro", conselho=sistema.conselho)
 
     url = reverse("adesao:home")
