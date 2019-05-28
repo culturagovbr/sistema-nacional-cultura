@@ -89,11 +89,11 @@
 </ul>
 <div style="float:right;">
   {% if page_obj.has_previous %}
-    <a class="paginate_button previous" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
+    <a class="page-link previous" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
   {% endif %}
     <a>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
   {% if page_obj.has_next %}
-    <a class="paginate_button next" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
+    <a class="page-link next" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
   {% endif %}
 </div>
 {% endblock content %}

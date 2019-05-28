@@ -2,7 +2,7 @@
    Cabeçalho do portal
    ========================================================================== */
 
-#header {
+   #header {
     padding: 14px 0 0 0;
     background-color: #1659bf;
     color: #fff;
@@ -571,8 +571,8 @@ ul.input-list li {
   border-radius: 5px;
   color: white;
   font-weight: normal;
-  
-  
+
+
 }
 
 .button_usuario {
@@ -601,9 +601,9 @@ ul.input-list li {
  height: 15px;
  vertical-align: middle;
  }
- 
- 
- 
+
+
+
  .form-control {
   display: block;
   width: 100%;
@@ -670,9 +670,9 @@ button, input, select, textarea {
     position: relative; /* For the submit button positioning */
 
     /* Styles */
-    box-shadow: 
-        0 0 1px rgba(0, 0, 0, 0.3), 
-        0 3px 7px rgba(0, 0, 0, 0.3), 
+    box-shadow:
+        0 0 1px rgba(0, 0, 0, 0.3),
+        0 3px 7px rgba(0, 0, 0, 0.3),
         inset 0 1px rgba(255,255,255,1),
         inset 0 -3px 2px rgba(0,0,0,0.25);
     border-radius: 5px;
@@ -725,7 +725,7 @@ button, input, select, textarea {
 
     /* Styles */
     border: none; /* Remove the default border */
-    box-shadow: 
+    box-shadow:
         inset 0 0 5px rgba(0,0,0,0.1),
         inset 0 3px 2px rgba(0,0,0,0.1);
     border-radius: 3px;
@@ -771,7 +771,7 @@ button, input, select, textarea {
     /* Styles */
     background: #ffffff;
     border-radius: 50%;
-    box-shadow: 
+    box-shadow:
         0 0 2px rgba(0,0,0,0.1),
         0 3px 2px rgba(0,0,0,0.1),
         inset 0 -3px 2px rgba(0,0,0,0.2);
@@ -788,7 +788,7 @@ button, input, select, textarea {
 
     /* Styles */
     background: #ffffff;
-    
+
     /* Other masks trick */
     box-shadow: 0 62px white, -32px 31px white;
 }
@@ -814,7 +814,7 @@ button, input, select, textarea {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#52cfeb), to(#42A2BC));
     background: -webkit-linear-gradient(#52cfeb, #42A2BC);
     background: linear-gradient(#52cfeb, #42A2BC);
-    box-shadow: 
+    box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.3),
         0 1px 2px rgba(0,0,0,0.35),
         inset 0 3px 2px rgba(255,255,255,0.2),
@@ -835,7 +835,7 @@ button, input, select, textarea {
 
 .form-1 button:active {
     background: #42A2BC;
-    box-shadow: 
+    box-shadow:
         inset 0 0 5px rgba(0,0,0,0.3),
         inset 0 3px 4px rgba(0,0,0,0.3);
 }
@@ -856,9 +856,9 @@ button, input, select, textarea {
     border-radius: 4px;
     color: #7e7975;
     box-shadow:
-        0 2px 2px rgba(0,0,0,0.2),        
-        0 1px 5px rgba(0,0,0,0.2),        
-        0 0 0 12px rgba(255,255,255,0.4); 
+        0 2px 2px rgba(0,0,0,0.2),
+        0 1px 5px rgba(0,0,0,0.2),
+        0 0 0 12px rgba(255,255,255,0.4);
 }
 
 .form-2 h1 {
@@ -867,7 +867,7 @@ button, input, select, textarea {
     color: #bdb5aa;
     /* padding-bottom: 8px;
     border-bottom: 1px solid #EBE6E2;
-    text-shadow: 0 2px 0 rgba(255,255,255,0.8); 
+    text-shadow: 0 2px 0 rgba(255,255,255,0.8);
     box-shadow: 0 1px 0 rgba(255,255,255,0.8); */
 }
 
@@ -1003,8 +1003,8 @@ button, input, select, textarea {
 
 .form-2 input[type=submit]:hover,
 .form-2 .log-twitter:hover {
-    box-shadow: 
-        inset 0 1px rgba(255,255,255,0.3), 
+    box-shadow:
+        inset 0 1px rgba(255,255,255,0.3),
         inset 0 20px 40px rgba(255,255,255,0.15);
 }
 
@@ -1023,7 +1023,7 @@ button, input, select, textarea {
 }
 
 .form-2 p:last-of-type {
-    clear: both;    
+    clear: both;
 }
 
 .form-2 .opt {
@@ -1057,11 +1057,11 @@ button, input, select, textarea {
     overflow: hidden;
 
     /* Styles */
-    background: #111; 
+    background: #111;
     border-radius: 0.4em;
     border: 1px solid #191919;
-    box-shadow: 
-        inset 0 0 2px 1px rgba(255,255,255,0.08), 
+    box-shadow:
+        inset 0 0 2px 1px rgba(255,255,255,0.08),
         0 16px 10px -8px rgba(0, 0, 0, 0.6);
 }
 
@@ -1098,7 +1098,7 @@ button, input, select, textarea {
     background: -o-linear-gradient(#1f2124, #27292c);
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#1f2124), to(#27292c));
     background: -webkit-linear-gradient(#1f2124, #27292c);
-    background: linear-gradient(#1f2124, #27292c);    
+    background: linear-gradient(#1f2124, #27292c);
     border: 1px solid #000;
     box-shadow:
         0 1px 0 rgba(255,255,255,0.1);
@@ -1117,7 +1117,7 @@ button, input, select, textarea {
     background: #27292c;
 }
 
-.form-3 input[type=text]:focus, 
+.form-3 input[type=text]:focus,
 .form-3 input[type=password]:focus {
     box-shadow: inset 0 0 2px #000;
     background: #494d54;
@@ -1151,7 +1151,7 @@ button, input, select, textarea {
     /* Width and position */
     width: 100%;
     padding: 8px 5px;
-  
+
     /* Styles */
     border: 1px solid #0273dd; /* Fallback */
     border: 1px solid rgba(0,0,0,0.4);
@@ -1161,7 +1161,7 @@ button, input, select, textarea {
     border-radius: 3px;
     background: #38a6f0;
     cursor:pointer;
-  
+
     /* Font styles */
     font-family: 'Ubuntu', 'Lato', sans-serif;
     color: white;
@@ -1170,11 +1170,11 @@ button, input, select, textarea {
     text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
 }
 
-.form-3 input[type=submit]:hover { 
+.form-3 input[type=submit]:hover {
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
-.form-3 input[type=submit]:active { 
+.form-3 input[type=submit]:active {
     background: #287db5;
     box-shadow: inset 0 0 3px rgba(0,0,0,0.6);
     border-color: #000; /* Fallback */
@@ -1211,7 +1211,7 @@ button, input, select, textarea {
     position: absolute;
     left: 34%;
     top: -7px;
-    
+
     /* Styles */
     border-radius: 50%;
     box-shadow: 0 0 6px 4px #fff;
@@ -1276,8 +1276,8 @@ button, input, select, textarea {
     border: 1px solid rgba(78,48,67, 0.8);
     background: rgba(0,0,0,0.15);
     border-radius: 2px;
-    box-shadow: 
-        0 1px 0 rgba(255,255,255,0.2), 
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.2),
         inset 0 1px 1px rgba(0,0,0,0.1);
     -webkit-transition: all 0.3s ease-out;
     -moz-transition: all 0.3s ease-out;
@@ -1316,8 +1316,8 @@ button, input, select, textarea {
 .form-4 input[type=text]:focus,
 .form-4 input[type=password]:focus,
 .form-4 input[type=submit]:focus {
-    box-shadow: 
-        0 1px 0 rgba(255,255,255,0.2), 
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.2),
         inset 0 1px 1px rgba(0,0,0,0.1),
         0 0 0 3px rgba(255,255,255,0.15);
     outline: none;
@@ -1333,7 +1333,7 @@ button, input, select, textarea {
     /* Size and position */
     width: 100%;
     padding: 8px 5px;
-    
+
     /* Styles */
     background: #634056;
     background: -moz-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
@@ -1341,7 +1341,7 @@ button, input, select, textarea {
     background: -o-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
     background: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(99,64,86,0.5)), to(rgba(76,49,65,0.7)));
     background: -webkit-linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
-    background: linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));    
+    background: linear-gradient(rgba(99,64,86,0.5), rgba(76,49,65,0.7));
     border-radius: 5px;
     border: 1px solid #4e3043;
     box-shadow: inset 0 1px rgba(255,255,255,0.4), 0 2px 1px rgba(0,0,0,0.1);
@@ -1361,8 +1361,8 @@ button, input, select, textarea {
 }
 
 .form-4 input[type=submit]:hover {
-    box-shadow: 
-        inset 0 1px rgba(255,255,255,0.2), 
+    box-shadow:
+        inset 0 1px rgba(255,255,255,0.2),
         inset 0 20px 30px rgba(99,64,86,0.5);
 }
 
@@ -1417,7 +1417,7 @@ button, input, select, textarea {
     border: none; /* Remove the default border */
     background: white; /* Fallback */
     background: rgba(255,255,255,0.2);
-    box-shadow: 
+    box-shadow:
         inset 0 0 10px rgba(255,255,255,0.5);
 
     /* Font styles */
@@ -1425,7 +1425,7 @@ button, input, select, textarea {
     text-indent: 10px;
     color: #ee4c8d;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    font-size: 20px;       
+    font-size: 20px;
 }
 
 .form-5 input[type=text] {
@@ -1488,11 +1488,11 @@ button, input, select, textarea {
 
     border-radius: 0 5px 5px 0;
     box-shadow:
-        inset 0 0 4px rgba(255, 255, 255, 0.7), 
+        inset 0 0 4px rgba(255, 255, 255, 0.7),
         inset 0 0 0 1px rgba(0, 0, 0, 0.2);
     border: none;
     border-left: 1px solid silver;
-    cursor: pointer;  
+    cursor: pointer;
     line-height: 102px; /* Same as height */
 }
 
@@ -1519,9 +1519,9 @@ button, input, select, textarea {
 .form-5 button span {
     display: block;
 
-    /* Font styles */ 
+    /* Font styles */
     color: #8d1645;
-    font-family: 'Montserrat', Arial, sans-serif; 
+    font-family: 'Montserrat', Arial, sans-serif;
     font-size: 20px;
     text-shadow: 0 1px 0 rgba(255,255,255,0.4);
 
@@ -1577,7 +1577,7 @@ button, input, select, textarea {
     -moz-transition: none;
     -ms-transition: none;
     -o-transition: none;
-    transition: none; 
+    transition: none;
 }
 
 .form-5 button:active span {

@@ -186,7 +186,7 @@ def test_template_em_esqueceu_senha(client):
 def test_consultar_informações_municipios(client):
 
     municipio = mommy.make(
-        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Brasília", 
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Brasília",
         estado_processo='6'
     )
 
@@ -200,7 +200,7 @@ def test_consultar_informações_municipios(client):
 def test_consultar_informações_estados(client):
 
     estado = mommy.make(
-        "SistemaCultura", ente_federado__cod_ibge=12, ente_federado__nome="Acre", 
+        "SistemaCultura", ente_federado__cod_ibge=12, ente_federado__nome="Acre",
         estado_processo='6'
     )
 
@@ -323,7 +323,7 @@ def test_cadastrar_funcionario_dados_invalidos(login, client):
     )
 
     assert response.status_code == 200
-    
+
 
 def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
@@ -375,7 +375,7 @@ def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura)
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
-    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id, 
+    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id,
         "ente_federado__nome": sistema_salvo.ente_federado.nome}
 
 
@@ -386,7 +386,7 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
     sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
         'sede', 'gestor'], cadastrador=login)
 
     url = reverse("adesao:home")
@@ -433,7 +433,7 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
     assert login.sistema_cultura.count() == 2
-    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id, 
+    assert client.session['sistemas'][-1] == {"id": sistema_salvo.id,
         "ente_federado__nome": sistema_salvo.ente_federado.nome}
 
 
@@ -519,7 +519,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
@@ -541,7 +541,7 @@ Seu prazo para o envio é de até 60 dias corridos.
         == "Sistema Nacional de Cultura - Solicitação de Adesão ao SNC"
     )
     assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
-    assert mail.outbox[0].to == [login.user.email, login.email_pessoal, 
+    assert mail.outbox[0].to == [login.user.email, login.email_pessoal,
         sistema_cultura_atualizado.gestor.email_institucional,
         sistema_cultura_atualizado.gestor.email_pessoal]
     assert mail.outbox[0].body == texto
@@ -573,7 +573,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
@@ -651,3 +651,24 @@ def test_alterar_sistema_cultura(login, client):
     assert sistema_salvo.gestor == gestor_salvo
     assert sistema_salvo.sede == sede_salva
     assert sistema_salvo.cadastrador == login
+
+
+def test_atualizacao_relacoes_reversas(login, client):
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login,
+        ente_federado__cod_ibge=205631)
+
+    url = reverse("adesao:home")
+    client.get(url)
+
+    mommy.make("Contato", sistema_cultura=sistema_cultura, _quantity=5)
+
+    sistema_antigo = SistemaCultura.sistema.get(ente_federado__cod_ibge=205631)
+    contatos = sistema_cultura.contatos
+
+    sistema_cultura.estado_processo = 6
+    sistema_cultura.save()
+
+    sistema_cultura_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=205631)
+
+    assert not sistema_antigo.contatos.all()
+    assert sistema_cultura_atualizado.contatos == contatos

@@ -1,4 +1,5 @@
 import pytest
+import datetime
 
 from django.template import Context
 from django.template import Engine
@@ -64,7 +65,7 @@ def test_retorno_do_botao_cancelar_de_diligencia(client, template, context, sist
     rendered_template = template.render(context)
 
     url = reverse('gestao:detalhar', kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
-    html = "<a href=\"{url}\" class=\"btn btn-danger\">Cancelar</a>".format(url=url)
+    html = "<a href=\"{url}\" class=\"btn btn-secondary pull-right\">Cancelar</a>".format(url=url)
 
     assert html in rendered_template
 
@@ -75,7 +76,7 @@ def test_botao_acao_enviar_diligencia_template(template, client, context, sistem
     context['sistema_cultura'] = sistema_cultura
     rendered_template = template.render(context)
 
-    assert "<input class=\"btn btn-primary\" type=\"submit\"></input>" in rendered_template
+    assert "<button class=\"btn btn-primary pull-right\" type=\"submit\">Enviar</button>" in rendered_template
 
 
 def test_gestao_template(template, client, context, sistema_cultura):
@@ -90,12 +91,11 @@ def test_gestao_template(template, client, context, sistema_cultura):
 def test_informacoes_arquivo_enviado(template, client, context, sistema_cultura):
     """Testa se o template exibe as informações do arquivo enviado"""
 
-    context['ente_federado'] = 'Pará'
     context['sistema_cultura'] = sistema_cultura
 
     rendered_template = template.render(context)
 
-    assert context['ente_federado'] in rendered_template
+    assert context['sistema_cultura'].ente_federado.nome in rendered_template
 
 
 def test_opcoes_de_classificacao_da_diligencia(template, client, context, login, sistema_cultura):
@@ -121,6 +121,10 @@ def test_opcoes_de_classificacao_da_diligencia(template, client, context, login,
 def test_opcoes_em_um_dropdown(template, client, context, login, sistema_cultura):
     """Testa se as Classificações(Motivo) estão presentes dentro de um dropdown."""
     opcoes = [
+            {"description": "Em preenchimento", "value": "0"},
+            {"description": "Avaliando anexo", "value": "1"},
+            {"description": "Conclu[ida", "value": "2"},
+            {"description": "Arquivo aprovado com ressalvas", "value": "3"},
             {"description": "Arquivo danificado", "value": "4"},
             {"description": "Arquivo incompleto", "value": "5"},
             {"description": "Arquivo incorreto", "value": "6"}
@@ -133,7 +137,7 @@ def test_opcoes_em_um_dropdown(template, client, context, login, sistema_cultura
     context['componente'] = mommy.make("Componente")
     rendered_template = template.render(context)
 
-    assert "<select name=\"classificacao_arquivo\" id=\"id_classificacao_arquivo\">" in rendered_template
+    assert "<select name=\"classificacao_arquivo\" class=\"form-control form-control-sm\" id=\"id_classificacao_arquivo\">" in rendered_template
     for opcao in opcoes:
         assert "<option value=\"{value}\">{description}</option>".format(value=opcao['value'], description=opcao['description'])
     assert "</select>" in rendered_template
@@ -168,25 +172,27 @@ def test_informacoes_do_historico_de_diligecias_do_componente(template, client, 
 def test_formatacao_individual_das_diligencias_no_historico(template, client, context, sistema_cultura):
     """Testa a formatacao de cada uma das diligências dentro do bloco de Histórico de Diligências."""
 
-    diligencias = [
-        {"usuario": {"nome_usuario": "Jaozin Silva" }, "data_criacao": "10/08/2018",
-            "texto_diligencia": "Arquivo danificado, corrompido"},
+    sistema_cultura.legislacao.arquivo = SimpleUploadedFile(
+        "componente.txt", b"file_content", content_type="text/plain"
+    )
+    sistema_cultura.legislacao.save()
+    sistema_cultura.legislacao.refresh_from_db()
+    sistema_cultura.legislacao.diligencia = mommy.make("DiligenciaSimples", 
+        texto_diligencia="Arquivo com informações incorretas", data_criacao=datetime.date(2018, 6, 25))
 
-        {"usuario": {"nome_usuario": "Pedrin Silva" }, "data_criacao": "10/08/2018",
-            "texto_diligencia": "Arquivo incompleto, informações faltando"},
 
-        {"usuario": {"nome_usuario": "Luizin Silva" }, "data_criacao": "10/08/2018",
-            "texto_diligencia": "Arquivo com informações incorretas"}
-    ]
-
-    context['historico_diligencias'] = diligencias
+    context['historico_diligencias_componentes'] = [sistema_cultura.legislacao]
     context['sistema_cultura'] = sistema_cultura
+    context['componente'] = sistema_cultura.legislacao
     rendered_template = template.render(context)
-    for diligencia in diligencias:
 
-        assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Usuário:</b> {nome}</li>".format(nome=diligencia['usuario']["nome_usuario"]) in rendered_template
-        assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Data:</b> {data}</li>".format(data=diligencia['data_criacao']) in rendered_template
-        assert "<li class=\"list-group-item\" style=\"border: 1px solid #b3b5b6\"><b>Resumo:</b> {resumo}</li>".format(resumo=diligencia["texto_diligencia"]) in rendered_template
+    diligencia = sistema_cultura.legislacao.diligencia
+
+    assert "<li class=\"list-group-item\"><b>Componente:</b> {componente}</li>".format(componente='Lei Sistema') in rendered_template
+    assert "<li class=\"list-group-item\"><b>Usuário:</b> {nome}</li>".format(nome=diligencia.usuario.nome_usuario) in rendered_template
+    assert "<li class=\"list-group-item\"><b>Data:</b> 25 de Junho de 2018</li>" in rendered_template
+    assert "<li class=\"list-group-item\"><b>Resumo:</b> {resumo}</li>".format(resumo=diligencia.texto_diligencia) in rendered_template
+    assert "<li class=\"list-group-item\"><b>Motivo:</b> {motivo}</li>".format(motivo=diligencia.get_classificacao_arquivo_display()) in rendered_template
 
 
 def test_renderizacao_js_form_diligencia(template, client, context, sistema_cultura, login):
@@ -253,7 +259,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, s
     request = client.get(f"/gestao/ente/{sistema_cultura.ente_federado.cod_ibge}")
 
     for componente in componentes:
-        assert '<a href=\"/gestao/{}/diligencia/{}/arquivo/{}">'.format(sistema_cultura.id, componente, diligencia.id) in request.rendered_content
+        assert '<a class=\"btn btn-info btn-sm\" href=\"/gestao/{}/diligencia/{}/arquivo/{}">'.format(sistema_cultura.id, componente, diligencia.id) in request.rendered_content
 
 
 def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura):
@@ -273,18 +279,4 @@ def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura)
     request = client.get('/gestao/{}/diligencia/{}/{}'.format(
         sistema_cultura.id, "orgao_gestor", "arquivo"))
 
-    assert "<h2>Informações sobre o Arquivo Enviado</h2>" in request.rendered_content
-    assert "<b>Download do arquivo</b>" in request.rendered_content
-
-
-def test_informacoes_diligencia_geral(client, login_staff, sistema_cultura):
-    """
-    Testa se linha de informações sobre o Plano Trabalho é renderizada,
-    visto que só deve ser renderizada quando a diligência é geral.
-    """
-
-    url = reverse('gestao:diligencia_geral_adicionar', kwargs={"pk": sistema_cultura.id})
-    request = client.get(url)
-
-
-    assert "<h2>Informações sobre o Plano Trabalho</h2>" in request.rendered_content
+    assert "<a class=\"btn btn-sm btn-primary\" href=\"{arquivo}\">".format(arquivo=orgao_gestor.arquivo.url) in request.rendered_content

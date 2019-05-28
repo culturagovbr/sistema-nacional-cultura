@@ -84,6 +84,7 @@ class CadastrarComponente(CreateView):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
+        kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
@@ -107,6 +108,7 @@ class AlterarComponente(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
+        kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
@@ -124,9 +126,10 @@ class AlterarOrgaoGestor(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'orgao_gestor'
+        kwargs['logged_user'] = self.request.user
 
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
-            kwargs['initial']['perfil'] = sistema.orgao_gestor.perfil
+            kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
 
         return kwargs
 
@@ -145,6 +148,7 @@ class AlterarFundoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
+        kwargs['logged_user'] = self.request.user
 
         if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
             kwargs['initial']['mesma_lei'] = True
@@ -165,8 +169,8 @@ class AlterarFundoCultura(UpdateView):
 
 class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
-    form_class = AlterarConselhoForm
-    template_name = 'planotrabalho/cadastrar_conselho.html'
+    form_class = CriarConselhoForm
+    template_name = 'planotrabalho/alterar_conselho.html'
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
@@ -174,9 +178,22 @@ class AlterarConselhoCultura(UpdateView):
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'conselho'
+        kwargs['logged_user'] = self.request.user
+
         if self.object.lei:
-            kwargs['initial'] = {'arquivo_lei': self.object.lei.arquivo,
-                'data_publicacao_lei': self.object.lei.data_publicacao}
+            kwargs['initial']['arquivo_lei'] = self.object.lei.arquivo
+            kwargs['initial']['data_publicacao_lei'] = self.object.lei.data_publicacao
+
+            if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.lei.arquivo:
+                kwargs['initial']['mesma_lei'] = True
+            else:
+                kwargs['initial']['mesma_lei'] = False
+
+        if self.object.arquivo:
+            kwargs['initial']['possui_ata'] = True
+        else:
+            kwargs['initial']['possui_ata'] = False
+
         return kwargs
 
     def get_success_url(self):

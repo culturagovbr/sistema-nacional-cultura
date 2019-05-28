@@ -605,25 +605,41 @@ def test_criacao_diligencia_exclusiva_para_gestor(client, url, plano_trabalho, l
     assert url_redirect[0] == url_login
 
 
-def test_listar_documentos(client, plano_trabalho, login_staff):
-    """ Testa funcionalidade de listagem de entes federados para alterar seus documentos
-    na tela de gestão """
+def test_datatable_listar_documentos(client, login_staff, sistema_cultura):
 
-    templates = [
-        "listar_legislacao",
-        "listar_orgao_gestor",
-        "listar_fundo_cultura",
-        "listar_conselho",
-        "listar_plano",
-    ]
+    url = reverse("gestao:ajax_docs_componentes")
 
-    for template in templates:
+    response = client.get(
+        url,
+        data={"componente": "legislacao"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+    )
 
-        url = reverse("gestao:listar_documentos", kwargs={"template": template})
-        response = client.get(url)
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema_cultura.id, sistema_cultura.ente_federado.__str__(), 
+        sistema_cultura.sede.cnpj, '']
 
-        for sistema in response.context_data["object_list"]:
-            assert sistema.estado_processo == 6
+
+def test_datatable_listar_documentos_busca(client, login_staff, sistema_cultura):
+
+    sistema = mommy.make("SistemaCultura", ente_federado__nome='Abaetetuba',
+        estado_processo='6', ente_federado__cod_ibge=123456)
+
+    url = reverse("gestao:ajax_docs_componentes")
+
+    response = client.post(
+        url,
+        data={"componente": "legislacao", "search[value]": "abaetetuba"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+    )
+
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', '']
 
 
 def test_alterar_documentos_orgao_gestor(client, login_staff):
@@ -632,6 +648,7 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
 
     orgao_gestor = mommy.make("OrgaoGestor2", tipo=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        ente_federado__cod_ibge=123456,
         orgao_gestor=orgao_gestor)
 
     arquivo = SimpleUploadedFile(
@@ -664,7 +681,7 @@ def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
         "componente": "orgao_gestor"})
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",'perfil':0})
 
     orgao_gestor = Componente.objects.last()
     name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
@@ -681,6 +698,7 @@ def test_alterar_documentos_legislacao(client, login_staff):
 
     legislacao = mommy.make("Componente", tipo=0)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        ente_federado__cod_ibge=123456,
         legislacao=legislacao)
 
     arquivo = SimpleUploadedFile(
@@ -759,7 +777,7 @@ def test_alterar_documentos_fundo_cultura(client, login_staff):
 
     fundo = mommy.make("FundoDeCultura", tipo=2)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
-        fundo_cultura=fundo)
+        fundo_cultura=fundo, ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "fundo_cultura_alterar.txt", b"file_content", content_type="text/plain"
@@ -819,6 +837,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
 
     plano = mommy.make("Componente", tipo=4)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
+        ente_federado__cod_ibge=123456,
         plano=plano)
 
     arquivo = SimpleUploadedFile(
@@ -845,7 +864,7 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
 
     conselho = mommy.make("ConselhoDeCultura", tipo=3)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
-        conselho=conselho)
+        conselho=conselho, ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "ata_conselho_cultural.txt", b"file_content", content_type="text/plain"
@@ -885,8 +904,9 @@ def test_inserir_documentos_conselho_cultural(client, sistema_cultura, login_sta
     url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
         "componente": "conselho"})
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
-        "arquivo_lei": arquivo_lei, "data_publicacao_lei": "08/03/2019"})
+    client.post(url, data={"mesma_lei": False, "arquivo": arquivo, "data_publicacao": "28/06/2018",
+        "arquivo_lei": arquivo_lei, "data_publicacao_lei": "08/03/2019",
+        "possui_ata": True, 'paritario': True, 'exclusivo_cultura': True})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
@@ -1476,10 +1496,7 @@ def test_ajax_cadastrador_sem_requisicao_ajax(client, login_staff):
     assert response.status_code == 400
 
 
-def test_pesquisa_por_ente_federado_com_arquivo_lei_sistema(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado
-    que tenha o arquivo Lei Sistema aguardando análise
-    """
+def test_datatable_plano_trabalho_legislacao(client, login_staff):
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -1496,34 +1513,42 @@ def test_pesquisa_por_ente_federado_com_arquivo_lei_sistema(client, login_staff)
     sistema.legislacao.arquivo = arquivo
     sistema.legislacao.save()
 
-    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"legislacao"}) + "?q=Abaete&anexo=arquivo"
-    response = client.get(url)
+    url = reverse("gestao:ajax_plano_trabalho")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.post(
+        url,
+        data={"componente": "legislacao", "search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
-def test_permitir_busca_sem_acento_na_barra_de_pesquisa(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de Municipio e Estado.
-    """
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', sistema.legislacao.arquivo.url, 'legislacao']
+
+
+def test_datatable_entes_busca(client, login_staff):
 
     ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=12345)
-    sistema = mommy.make("SistemaCultura", ente_federado=ente)
+    sistema = mommy.make("SistemaCultura", ente_federado=ente, estado_processo='6')
 
-    url = reverse("gestao:acompanhar_adesao") + "?ente_federado=Abaete"
-    response = client.get(url)
+    url = reverse("gestao:ajax_entes")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.get(
+        url,
+        data={"search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [str(sistema.id), sistema.ente_federado.__str__(), 
+        '', 'Publicado no DOU', str(sistema.ente_federado.cod_ibge), '', '']
 
-def test_pesquisa_por_ente_federado_com_arquivo_plano_cultura(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado
-    que tenha o arquivo Plano Cultura aguardando análise
-    """
+
+def test_datatable_plano_trabalho_plano(client, login_staff):
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -1540,48 +1565,54 @@ def test_pesquisa_por_ente_federado_com_arquivo_plano_cultura(client, login_staf
     sistema.plano.arquivo = arquivo
     sistema.plano.save()
 
-    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"plano"}) + "?q=Abaete&anexo=arquivo"
-    response = client.get(url)
+    url = reverse("gestao:ajax_plano_trabalho")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.post(
+        url,
+        data={"componente": "plano", "search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', sistema.plano.arquivo.url, 'plano']
 
-def test_pesquisa_por_ente_federado_com_arquivo_fundo_cultura(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado
-    que tenha o arquivo Fundo Cultura aguardando análise
-    """
+
+def test_datatable_plano_trabalho_fundo_cultura(client, login_staff):
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
     )
 
     sistema = mommy.make(
-        "SistemaCultura", ente_federado__cod_ibge=12346, ente_federado__nome="Abaeté",
+        "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté",
         estado_processo='6', _fill_optional='fundo_cultura'
     )
 
     sistema.fundo_cultura.situacao = 1
-    sistema.fundo_cultura.tipo = 2
+    sistema.fundo_cultura.tipo = 4
     sistema.fundo_cultura.data_envio = datetime.date(2018, 1, 1)
     sistema.fundo_cultura.arquivo = arquivo
     sistema.fundo_cultura.save()
 
-    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"fundo_cultura"}) + "?q=Abaete&anexo=arquivo"
-    response = client.get(url)
+    url = reverse("gestao:ajax_plano_trabalho")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.post(
+        url,
+        data={"componente": "fundo_cultura", "search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', sistema.fundo_cultura.arquivo.url, 'fundo_cultura']
 
-def test_pesquisa_por_ente_federado_com_arquivo_orgao_gestor(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado
-    que tenha o arquivo Orgão Gestor aguardando análise
-    """
+
+def test_datatable_plano_trabalho_orgao_gestor(client, login_staff):
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -1593,24 +1624,27 @@ def test_pesquisa_por_ente_federado_com_arquivo_orgao_gestor(client, login_staff
     )
 
     sistema.orgao_gestor.situacao = 1
-    sistema.orgao_gestor.tipo = 1
+    sistema.orgao_gestor.tipo = 4
     sistema.orgao_gestor.data_envio = datetime.date(2018, 1, 1)
     sistema.orgao_gestor.arquivo = arquivo
     sistema.orgao_gestor.save()
 
-    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"orgao_gestor"}) + "?q=Abaete&anexo=arquivo"
-    response = client.get(url)
+    url = reverse("gestao:ajax_plano_trabalho")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.post(
+        url,
+        data={"componente": "orgao_gestor", "search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', sistema.orgao_gestor.arquivo.url, 'orgao_gestor']
 
-def test_pesquisa_por_ente_federado_com_arquivo_conselho_cultural(client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado
-    que tenha o arquivo Conselho Cultural aguardando análise
-    """
+
+def test_datatable_plano_trabalho_conselho_cultural(client, login_staff):
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -1627,128 +1661,19 @@ def test_pesquisa_por_ente_federado_com_arquivo_conselho_cultural(client, login_
     sistema.conselho.arquivo = arquivo
     sistema.conselho.save()
 
-    url = reverse("gestao:acompanhar_componente", kwargs={"componente":"conselho"}) + "?q=Abaete&anexo=arquivo"
-    response = client.get(url)
+    url = reverse("gestao:ajax_plano_trabalho")
 
-    assert response.context_data["object_list"][0] == sistema
-    assert (
-        response.context_data["object_list"][0].ente_federado.nome == "Abaeté"
+    response = client.post(
+        url,
+        data={"componente": "conselho", "search[value]": "abaete"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
     )
 
-
-def test_pesquisa_por_ente_federado_inserir_documentos_listar_sistemas(
-    client, login_staff
-):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela
-    de listar documentos de sistemas de Cultura
-    """
-
-    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
-    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6,
-        ente_federado=ente)
-
-    url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_legislacao"})
-        + "?q=Abaete"
-    )
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
-
-
-def test_pesquisa_por_ente_federado_inserir_documentos_listar_orgaos(
-    client, login_staff
-):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela
-    de listar documentos de Ogãos
-    """
-
-    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
-    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6,
-        ente_federado=ente)
-
-    url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_orgao_gestor"})
-        + "?q=Abaete"
-    )
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
-
-
-def test_pesquisa_por_ente_federado_inserir_documentos_listar_conselhos(
-    client, login_staff
-):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de Conselhos
-    """
-
-    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
-    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6,
-        ente_federado=ente)
-
-    url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_conselho"})
-        + "?q=Abaete"
-    )
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
-
-
-def test_pesquisa_por_ente_federado_inserir_documentos_listar_fundos(
-    client, login_staff
-):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de fundos
-    """
-
-    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
-    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6,
-        ente_federado=ente)
-
-    url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_fundo_cultura"})
-        + "?q=Abaete"
-    )
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
-
-
-def test_pesquisa_por_ente_federado_inserir_documentos_listar_planos(
-    client, login_staff):
-    """ Testa a pesquisa pelo nome (sem acento) de um Ente Federado na tela de listar documentos de planos de Cultura
-    """
-
-    ente = mommy.make("EnteFederado", nome="Abaeté", cod_ibge=123456)
-    sistema_cultura = mommy.make("SistemaCultura", estado_processo=6,
-        ente_federado=ente)
-
-    url = (
-        reverse("gestao:listar_documentos", kwargs={"template": "listar_plano"})
-        + "?q=Abaete"
-    )
-    response = client.get(url)
-
-    assert response.context_data["object_list"][0].ente_federado == sistema_cultura.ente_federado
-
-
-def test_adicionar_prazo_permanecendo_na_mesma_pagina_apos_redirect(
-    client, login_staff
-):
-    """ Testa se ao adicionar prazo a um Ente Federado, a tela permanecerá na mesma página (verificação pela url) """
-
-    sistemas = mommy.make("SistemaCultura", estado_processo=6,
-        data_publicacao_acordo=datetime.date(2018, 1, 1), _quantity=15)
-
-    page = 2
-
-    url = reverse(
-        "gestao:aditivar_prazo", kwargs={"id": str(sistemas[14].id), "page": str(page)}
-    )
-    request = client.post(url)
-
-    assert request.url == "/gestao/acompanhar/prazo/?page={}".format(page)
-    assert request.status_code == 302
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', sistema.conselho.arquivo.url, 'conselho']
 
 
 def test_verificacao_se_prazo_foi_alterado(client, login_staff):
@@ -1758,27 +1683,34 @@ def test_verificacao_se_prazo_foi_alterado(client, login_staff):
     sistema = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456, estado_processo=6,
         data_publicacao_acordo=datetime.date(2018, 1, 1), prazo=prazo)
 
-    url = reverse("gestao:aditivar_prazo", kwargs={"id": str(sistema.id), "page": "1"})
-    request = client.post(url)
+    url = reverse("gestao:aditivar_prazo")
+    request = client.post(url, data={"id": sistema.id})
 
     sistema = SistemaCultura.sistema.get(ente_federado__cod_ibge=123456)
     assert sistema.prazo == prazo + 2
     assert sistema.alterado_por == login_staff
 
 
-def test_pesquisa_de_ente_federado_sem_acento_tela_adicionar_prazo(client, login_staff):
-    """ Testa a pesquisa por nome do ente federado (sem acento) - Deve retornar o nome
-    com o acento normalmente """
+def test_datatable_adicionar_prazo_busca_sem_acento(client, login_staff):
 
     sistema = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
         ente_federado__nome='Acrelândia', estado_processo=6,
         data_publicacao_acordo=datetime.date(2018, 1, 1))
 
-    url = reverse("gestao:acompanhar_prazo") + "?ente_federado=Acrelandia"
-    response = client.get(url)
+    url = reverse("gestao:ajax_prazo")
 
-    assert response.context_data["object_list"][0].ente_federado == sistema.ente_federado
+    response = client.post(
+        url,
+        data={"search[value]": "acrelandia"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+    )
 
+    resultado = response.json()["data"]
+    assert response.status_code == 200
+    assert len(resultado) == 1
+    assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
+        '', '01/01/2018', str(sistema.prazo)]
+        
 
 def test_historico_diligencias_componentes(client, login_staff):
     sistema_cultura = mommy.make(
@@ -1829,25 +1761,27 @@ def test_links_para_componentes(client, login_staff):
     url = reverse("gestao:detalhar", kwargs={"cod_ibge": sistema.ente_federado.cod_ibge})
     response = client.get(url)
 
-    assert "<a href=\"/media/" + sistema.legislacao.arquivo.name + "\">Download</a>" in response.rendered_content
-    assert "<a href=\"/media/" + sistema.orgao_gestor.arquivo.name + "\">Download</a>" in response.rendered_content
-    assert "<a href=\"/media/" + sistema.fundo_cultura.arquivo.name + "\">Download</a>" in response.rendered_content
-    assert "<a href=\"/media/" + sistema.conselho.arquivo.name + "\">Download</a>" in response.rendered_content
-    assert "<a href=\"/media/" + sistema.plano.arquivo.name + "\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.legislacao.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.orgao_gestor.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.fundo_cultura.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.conselho.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.plano.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
 
 
 def test_ente_federado_nao_encontrado(client, login_staff):
-    """ Testa se pesquisa retorna um ente federado.
+    """ Testa se pesquisa retorna não retorna um ente federado.
     """
 
     sistema = mommy.make(
         "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="abaete",
     )
 
-    url = reverse("gestao:acompanhar_adesao") + "?ente_federado=aaaa"
-    response = client.get(url)
+    url = reverse("gestao:ajax_entes")
+    response = client.post(url,
+        data={"search[value]": "aaaa"},
+        HTTP_X_REQUESTED_WITH="XMLHttpRequest")
 
-    assert len(response.context_data["object_list"]) == 0
+    assert len(response.json()["data"]) == 0
 
 
 def test_historico_cadastradores(client, login_staff):
@@ -1869,50 +1803,6 @@ def test_historico_cadastradores(client, login_staff):
 
     assert response.context["historico"][0].cadastrador == cadastrador_novo
     assert response.context["historico"][1].cadastrador == cadastrador_antigo
-
-
-def test_links_download_plano_trabalho(client, login_staff):
-
-    sistema = mommy.make(
-        "SistemaCultura", ente_federado__cod_ibge=123456, estado_processo=6,
-        _fill_optional=['legislacao', 'orgao_gestor', 'plano', 'fundo_cultura', 'conselho']
-    )
-
-    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
-
-    sistema.legislacao.tipo = 0
-    sistema.legislacao.arquivo = arquivo
-    sistema.legislacao.situacao = 1
-    sistema.legislacao.save()
-
-    sistema.orgao_gestor.tipo = 1
-    sistema.orgao_gestor.arquivo = arquivo
-    sistema.orgao_gestor.situacao = 1
-    sistema.orgao_gestor.save()
-
-    sistema.fundo_cultura.tipo = 2
-    sistema.fundo_cultura.arquivo = arquivo
-    sistema.fundo_cultura.situacao = 1
-    sistema.fundo_cultura.save()
-
-    sistema.conselho.tipo = 3
-    sistema.conselho.arquivo = arquivo
-    sistema.conselho.situacao = 1
-    sistema.conselho.save()
-
-    sistema.plano.tipo = 4
-    sistema.plano.arquivo = arquivo
-    sistema.plano.situacao = 1
-    sistema.plano.save()
-
-    componentes = ["legislacao", "orgao_gestor", "fundo_cultura", "conselho", "plano"]
-
-    for nome_componente in componentes:
-        url = reverse("gestao:acompanhar_componente", kwargs={"componente": nome_componente})
-        response = client.get(url + '?anexo=arquivo')
-
-        componente = getattr(sistema, nome_componente)
-        assert "<a href=\"/media/" + componente.arquivo.name + "\">Download</a>" in response.rendered_content
 
 
 def test_listar_documentos_ente_federado(client, login_staff):
@@ -2112,3 +2002,17 @@ def test_alteracao_diligencia(client, login_staff):
     assert sistema_cultura.legislacao.situacao == 4
     assert sistema_cultura.legislacao.diligencia.texto_diligencia == texto_diligencia
     assert len(sistema_cultura.legislacao.diligencia.history.all()) == 2
+
+
+def test_registro_contato(client, login_staff):
+    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456)
+    url = reverse('gestao:criar_contato', kwargs={"pk": sistema_cultura.id})
+
+    response = client.post(url, {"contatado": "Nome Teste", "data": "28/06/2018", "discussao": "teste"})
+
+    contato = sistema_cultura.contatos.first()
+
+    assert contato.contatado == "Nome Teste"
+    assert contato.data == datetime.date(2018, 6, 28)
+    assert contato.discussao == "teste"
+    assert contato.contatante == login_staff

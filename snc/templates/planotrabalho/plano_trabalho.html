@@ -52,8 +52,8 @@
         <p>
           b) Conselho de Política Cultural
         </p>
-        {% if sistema.conselho.situacao != 2 %}
-          {% if sistema.conselho.situacao == 1 %}
+        {% if sistema.conselho.lei.situacao != 2 %}
+          {% if sistema.conselho.lei.situacao == 1 %}
             <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Aguarda Análise</a>
           {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
             <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>

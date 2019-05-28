@@ -1,0 +1,133 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<menu data-target="documentacao" ></menu>
+<div class="row">
+    <div class="col-lg-12  col-md-12">
+        <div class="card">
+        <div class="card-header card-header-tabs card-header-primary">
+            <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <span class="nav-tabs-title">Componentes:</span>
+                <ul class="nav nav-tabs" data-tabs="tabs">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#sistema" data-toggle="tab">
+                    Sistema de Cultura
+                    <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#orgao" data-toggle="tab">
+                    Órgão Gestor
+                    <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#conselho" data-toggle="tab">
+                        Conselho Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#fundo" data-toggle="tab">
+                        Fundo de Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#plano" data-toggle="tab">
+                        Plano de Cultura
+                        <div class="ripple-container"></div>
+                    </a>
+                </li>
+
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content">
+            <div class="tab-pane active" id="sistema">
+                {% include "gestao/inserir_documentos/listar_legislacao.html" %}
+            </div>
+            <div class="tab-pane" id="orgao">
+                {% include "gestao/inserir_documentos/listar_orgao_gestor.html" %}
+            </div>
+            <div class="tab-pane" id="conselho">
+                {% include "gestao/inserir_documentos/listar_conselho.html" %}
+            </div>
+            <div class="tab-pane" id="fundo">
+                {% include "gestao/inserir_documentos/listar_fundo_cultura.html" %}
+            </div>
+            <div class="tab-pane" id="plano">
+                {% include "gestao/inserir_documentos/listar_plano.html" %}
+            </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  csrf_token = '{{ csrf_token }}';
+  var tabela = $('#tabela-docs').DataTable({
+    order: [1, 'asc'],
+    language:{
+            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+          },
+    columns: [
+        {
+          data: null,
+          name: "ente_federado",
+          render: (data) => data[1],
+        },
+        {
+          data: null,
+          name: "sede__cnpj",
+          render: (data) => data[2],
+        },
+        {
+          data: null,
+          //TODO abstrair pra todos os componentes
+          //TODO colocar if para só mostrar se tiver dado
+          name: "legislacao__arquivo__url",
+          orderable: false,
+          render: (data) => {
+              if(!(data[3].length > 0)) return ''
+           return `
+                <a href="${data[3]}">
+                    Download
+                </a>`
+          }
+        },
+        {
+          data: null,
+          name: "link",
+          orderable: false,
+          //TODO colocar link pro upload de arquivo
+          render: (data) => `
+            <a href="">
+                Upload
+            </a>`
+        },
+    ],
+    searching: true,
+    processing: true,
+    serverSide: true,
+    stateSave: true,
+    ajax: {
+      url: "{% url 'gestao:ajax_docs_componentes' %}",
+      data: {
+        csrfmiddlewaretoken: csrf_token,
+      },
+      type: "POST",
+    },
+  });
+</script>
+{% endblock js%}
