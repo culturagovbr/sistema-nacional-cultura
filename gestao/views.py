@@ -629,7 +629,7 @@ class DiligenciaComponenteView(CreateView):
             context['arquivo'] = getattr(componente, self.kwargs['arquivo'])
         context['ente_federado'] = ente_federado
         context['sistema_cultura'] = self.get_sistema_cultura()
-        context['data_envio'] = "--/--/----"
+        context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
         context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'],
             arquivo=self.kwargs['arquivo'])
