@@ -129,7 +129,7 @@ def test_save_cadastrar_sede_dados_validos(client, login, sistema_cultura):
     """ Testa se a função is_valid retorna verdadeiro para a criação de uma sede com
     dados validos"""
 
-    data = {'cnpj': '93.308.686/0001-63',
+    data = {'cnpj': '28.134.084/0001-75',
             'endereco': 'endereco',
             'complemento': 'complemento',
             'cep': '72430101',

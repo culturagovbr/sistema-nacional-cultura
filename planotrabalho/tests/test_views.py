@@ -110,7 +110,7 @@ def test_cadastrar_componente_tipo_fundo_cultura(client, login):
     response = client.post(url, data={"arquivo": arquivo,
                                       "data_publicacao": '28/06/2018',
                                       "possui_cnpj": 'True',
-                                      "cnpj": '75.336.659/0001-12',
+                                      "cnpj": '28.134.084/0001-75',
                                       'mesma_lei': 'False',
                                       "comprovante": cnpj})
 
@@ -169,7 +169,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client
         "cnpj.txt", b"file_content", content_type="text/plain"
     )
     response = client.post(url, data={"possui_cnpj": 'True',
-                                      "cnpj": '75.336.659/0001-12',
+                                      "cnpj": '28.134.084/0001-75',
                                       "comprovante": cnpj,
                                       'mesma_lei': 'True'})
 
@@ -180,7 +180,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client
     assert sistema_atualizado.legislacao.arquivo.name.split("/")[-1] in sistema_atualizado.fundo_cultura.arquivo.name.split("/")[-1]
     assert sistema_atualizado.legislacao.data_publicacao == sistema_atualizado.fundo_cultura.data_publicacao
     assert cnpj.name.split(".")[0] in sistema_atualizado.fundo_cultura.comprovante_cnpj.arquivo.name.split("/")[-1]
-    assert sistema_atualizado.fundo_cultura.cnpj == '75.336.659/0001-12'
+    assert sistema_atualizado.fundo_cultura.cnpj == '28.134.084/0001-75'
     assert sistema_atualizado.fundo_cultura.tipo == 2
 
 
@@ -327,7 +327,7 @@ def test_alterar_fundo_cultura(client, login):
                                       "possui_cnpj": "Sim",
                                       "arquivo": arquivo,
                                       "data_publicacao": "25/06/2018",
-                                      "cnpj": "56.385.239/0001-81"})
+                                      "cnpj": "28.134.084/0001-75"})
 
     sistema_atualizado = SistemaCultura.sistema.get(
         ente_federado__nome=sistema_cultura.ente_federado.nome)
@@ -340,7 +340,7 @@ def test_alterar_fundo_cultura(client, login):
     assert response.status_code == 302
     assert arquivo.name.split(".")[0] in sistema_atualizado.fundo_cultura.arquivo.name.split("/")[-1]
     assert sistema_atualizado.fundo_cultura.data_publicacao == datetime.date(2018, 6, 25)
-    assert sistema_atualizado.fundo_cultura.cnpj == "56.385.239/0001-81"
+    assert sistema_atualizado.fundo_cultura.cnpj == "28.134.084/0001-75"
     assert sistema_atualizado.fundo_cultura.tipo == 2
 
 
@@ -370,7 +370,7 @@ def test_alterar_fundo_cultura_remove_cnpj(client, login):
                                       "possui_cnpj": "False",
                                       "arquivo": arquivo,
                                       "data_publicacao": "25/06/2018",
-                                      "cnpj": "56.385.239/0001-81",
+                                      "cnpj": "28.134.084/0001-75",
                                       "comprovante": comprovante})
 
     sistema_atualizado = SistemaCultura.sistema.get(

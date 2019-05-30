@@ -1837,7 +1837,7 @@ def test_alterar_dados_sistema_cultura(client, login_staff):
 
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", email_institucional="email@email.com")
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
     rg_copia = SimpleUploadedFile("rg_copia_sistema.txt", b"file_content", content_type="text/plain")
     termo_posse = SimpleUploadedFile("termo_posse_sistema.txt", b"file_content", content_type="text/plain")

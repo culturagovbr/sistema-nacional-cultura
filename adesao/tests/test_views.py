@@ -95,7 +95,7 @@ def test_envio_email_em_nova_adesao(client):
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", email_pessoal="email@pes.com",
         tipo_funcionario=2)
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
     url = reverse("adesao:cadastrar_sistema")
@@ -329,7 +329,7 @@ def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura)
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
     url = reverse("adesao:home")
@@ -383,7 +383,7 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
@@ -603,7 +603,7 @@ def test_alterar_sistema_cultura(login, client):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login)
