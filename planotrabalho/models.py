@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
@@ -18,6 +19,27 @@ LISTA_TIPOS_COMPONENTES = (
     (2, 'Fundo Cultura'),
     (3, 'Conselho Cultural'),
     (4, 'Plano Cultura'),
+)
+
+LISTA_PERIODICIDADE = (
+    (0, 'Anual (1 ano)'),
+    (1, 'Bienal (2 anos)'),
+    (2, 'Trienal (3 anos)'),
+    (3, 'Quadrienal (4 anos)'),
+    (4, 'Quinquenal (5 anos)'),
+    (5, 'Hexanual (6 anos)'),
+    (6, 'Decenal (10 anos)'),
+    (7, 'Outra'),
+)
+
+LISTA_CURSOS = (
+    (0, 'Oficina'),
+    (1, 'Palestra'),
+    (2, 'Seminário'),
+    (3, 'Pós-Graduação'),
+    (4, 'Especialização'),
+    (5, 'Aperfeiçoamento'),
+    (6, 'Extensão'),
 )
 
 LISTA_SITUACAO_ARQUIVO = (
@@ -170,6 +192,41 @@ class ConselhoDeCultura(Componente):
         related_name='conselhos')
     exclusivo_cultura = models.BooleanField(blank=True, default=False)
     paritario = models.BooleanField(blank=True, default=False)
+
+
+class PlanoDeCultura(Componente):
+    metas = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='metas_plano')
+    anexo = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='anexo_plano')
+    exclusivo_cultura = models.BooleanField(blank=True, default=False)
+    ultimo_ano_vigencia = models.IntegerField(blank=True)
+    decenal = models.BooleanField(blank=True, default=False)
+    periodicidade = models.CharField(blank=True, null=True, max_length=100)
+    local_monitoramento = models.CharField(
+        max_length=100,
+        verbose_name='Local de Monitoramente',
+        blank=True,
+        null=True)
+    ano_curso = models.IntegerField(blank=True, null=True)
+    tipo_curso = models.IntegerField(
+        "Tipo do Curso",
+        choices=LISTA_CURSOS,
+        blank=True,
+        null=True
+    )
+    esfera_federacao_curso = JSONField()
+    tipo_oficina = JSONField()
+    perfil_participante = JSONField()
+
 
 
 class PlanoTrabalho(models.Model):
