@@ -1,73 +1,73 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
-<menu data-target="plano" ></menu>
+<menu data-target="plano"></menu>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-        <div class="card-header card-header-tabs card-header-primary">
-            <div class="nav-tabs-navigation">
-            <div class="nav-tabs-wrapper">
-                <span class="nav-tabs-title">Componentes:</span>
-                <ul class="nav nav-tabs" data-tabs="tabs">
+            <div class="card-header card-header-tabs card-header-primary">
+                <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                        <span class="nav-tabs-title">Componentes:</span>
+                        <ul class="nav nav-tabs" data-tabs="tabs">
 
-                <li class="nav-item">
-                    <a class="nav-link active" href="#sistema_tab" data-toggle="tab">
-                    Sistema de Cultura
-                    <div class="ripple-container"></div>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#sistema_tab" data-toggle="tab">
+                                    Sistema de Cultura
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#orgao_tab" data-toggle="tab">
-                    Órgão Gestor
-                    <div class="ripple-container"></div>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#orgao_tab" data-toggle="tab">
+                                    Órgão Gestor
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#conselho_tab" data-toggle="tab">
-                        Conselho Cultura
-                        <div class="ripple-container"></div>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#conselho_tab" data-toggle="tab">
+                                    Conselho Cultura
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#fundo_tab" data-toggle="tab">
-                        Fundo de Cultura
-                        <div class="ripple-container"></div>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#fundo_tab" data-toggle="tab">
+                                    Fundo de Cultura
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#plano_tab" data-toggle="tab">
-                        Plano de Cultura
-                        <div class="ripple-container"></div>
-                    </a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#plano_tab" data-toggle="tab">
+                                    Plano de Cultura
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
 
-                </ul>
+                        </ul>
+                    </div>
+                </div>
             </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="sistema_tab">
+                        {% include "gestao/planotrabalho/acompanhar_legislacao.html" %}
+                    </div>
+                    <div class="tab-pane" id="orgao_tab">
+                        {% include "gestao/planotrabalho/acompanhar_orgao_gestor.html" %}
+                    </div>
+                    <div class="tab-pane" id="conselho_tab">
+                        {% include "gestao/planotrabalho/acompanhar_conselho.html" %}
+                    </div>
+                    <div class="tab-pane" id="fundo_tab">
+                        {% include "gestao/planotrabalho/acompanhar_fundo_cultura.html" %}
+                    </div>
+                    <div class="tab-pane" id="plano_tab">
+                        {% include "gestao/planotrabalho/acompanhar_plano.html" %}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="tab-content">
-            <div class="tab-pane active" id="sistema_tab">
-                {% include "gestao/planotrabalho/acompanhar_legislacao.html" %}
-            </div>
-            <div class="tab-pane" id="orgao_tab">
-                {% include "gestao/planotrabalho/acompanhar_orgao_gestor.html" %}
-            </div>
-            <div class="tab-pane" id="conselho_tab">
-                {% include "gestao/planotrabalho/acompanhar_conselho.html" %}
-            </div>
-            <div class="tab-pane" id="fundo_tab">
-                {% include "gestao/planotrabalho/acompanhar_fundo_cultura.html" %}
-            </div>
-            <div class="tab-pane" id="plano_tab">
-                {% include "gestao/planotrabalho/acompanhar_plano.html" %}
-            </div>
-            </div>
-        </div>
 
         </div>
     </div>
@@ -77,7 +77,7 @@
 <script type="text/javascript">
     var csrf_token = '{{ csrf_token }}';
     var tabelas = {}
-    $('.datatable').each(function(index){
+    $('.datatable').each(function (index) {
         let componente = this.id;
         var colunas = [];
 
