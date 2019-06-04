@@ -9,9 +9,11 @@ from snc.forms import RestrictedFileField
 
 from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
 from .models import FundoCultura, Componente
-from .models import FundoDeCultura, PlanoCultura, ConselhoDeCultura
+from .models import FundoDeCultura, PlanoDeCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
-from .models import LISTA_PERFIS_ORGAO_GESTOR
+from .models import LISTA_PERFIS_ORGAO_GESTOR, LISTA_PERIODICIDADE
+from .models import LISTA_ESFERAS_FEDERACAO, LISTA_CURSOS
+from .models import LISTA_PERFIL_PARTICIPANTE_CURSOS
 from .models import ArquivoComponente2
 from .models import OrgaoGestor2
 from .utils import add_anos
@@ -100,6 +102,45 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao',)
+
+
+class CriarPlanoForm(CriarComponenteForm):
+
+    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    possui_anexo = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    anexo_na_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    anexo_lei = RestrictedFileField(
+        required=False,
+        content_types=content_types,
+        max_upload_size=52428800)
+    periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
+    possui_metas = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    metas_na_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    arquivo_metas = RestrictedFileField(
+        required=False,
+        content_types=content_types,
+        max_upload_size=52428800)
+    monitorado = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    participou_curso = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    esfera_federacao_curso = forms.MultipleChoiceField(choices=LISTA_ESFERAS_FEDERACAO,
+        widget=forms.CheckboxSelectMultiple)
+    tipo_curso = forms.MultipleChoiceField(choices=LISTA_CURSOS,
+        widget=forms.CheckboxSelectMultiple)
+    perfil_participante = forms.MultipleChoiceField(choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
+        widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = PlanoDeCultura
+        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade',
+            'local_monitoramento', 'ano_inicio_curso', 'ano_termino_curso', 'tipo_curso',
+            'esfera_federacao_curso', 'tipo_oficina', 'perfil_participante')
 
 
 class CriarFundoForm(CriarComponenteForm):

@@ -42,6 +42,12 @@ LISTA_CURSOS = (
     (6, 'Extensão'),
 )
 
+LISTA_PERFIL_PARTICIPANTE_CURSOS = (
+    (0, 'Gestor Público'),
+    (1, 'Conselheiro de Cultura'),
+    (2, 'Sociedade Civil'),
+)
+
 LISTA_SITUACAO_ARQUIVO = (
     (0, "Em preenchimento"),
     (1, "Avaliando anexo"),
@@ -59,7 +65,12 @@ LISTA_PERFIS_ORGAO_GESTOR = (
     (3, "Secretaria exclusiva de cultura"),
     (4, "Setor subordinado à chefia do Executivo"),
     (5, "Setor subordinado à outra secretaria"),
-    
+)
+
+LISTA_ESFERAS_FEDERACAO = (
+    (0, "Nacional"),
+    (1, "Estadual ou Distrital"),
+    (2, "Municipal"),
 )
 
 
@@ -209,14 +220,14 @@ class PlanoDeCultura(Componente):
         related_name='anexo_plano')
     exclusivo_cultura = models.BooleanField(blank=True, default=False)
     ultimo_ano_vigencia = models.IntegerField(blank=True)
-    decenal = models.BooleanField(blank=True, default=False)
     periodicidade = models.CharField(blank=True, null=True, max_length=100)
     local_monitoramento = models.CharField(
         max_length=100,
-        verbose_name='Local de Monitoramente',
+        verbose_name='Local de Monitoramento',
         blank=True,
         null=True)
-    ano_curso = models.IntegerField(blank=True, null=True)
+    ano_inicio_curso = models.IntegerField(blank=True, null=True)
+    ano_termino_curso = models.IntegerField(blank=True, null=True)
     tipo_curso = models.IntegerField(
         "Tipo do Curso",
         choices=LISTA_CURSOS,

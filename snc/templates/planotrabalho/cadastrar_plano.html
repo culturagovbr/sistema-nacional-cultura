@@ -8,31 +8,161 @@
     <strong>Elaboração do Plano de Cultura</strong>
   </h3>
 
-  <h5>
-    <strong>Lei de criação do Plano de Cultura (com as metas)</strong>
-  </h5>
-
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}">
-      Data de Publicação da Lei do Plano de Cultura
+    <label for="{{ form.exclusivo_cultura.id_for_label }}">
+      O plano é exclusivo de cultura?</br>
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
-    {{ form.data_publicacao.errors }}
+    {% for radio in form.exclusivo_cultura %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.exclusivo_cultura.errors }}
   </div>
 
   <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">
-      Publicação da Lei no Diário Oficial
+    <label for="{{ form.possui_anexo.id_for_label }}">
+      A lei possui anexo?</br>
     </label>
-    {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-    {% if view.kwargs.sistema.plano.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
+    {% for radio in form.possui_anexo %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.possui_anexo.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.anexo_na_lei.id_for_label }}">
+      O anexo já consta no mesmo arquivo da lei?</br>
+    </label>
+    {% for radio in form.anexo_na_lei %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.anexo_na_lei.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.anexo_lei.id_for_label }}">
+      Arquivo de anexo da lei
+    </label>
+    {% render_field form.anexo_lei %}
+    {{ form.anexo_lei.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.ultimo_ano_vigencia.id_for_label }}">
+      Qual o último ano de vigência do Plano de Cultura?
+    </label>
+    {% render_field form.ultimo_ano_vigencia class="form-control" %}
+    {% if form.ultimo_ano_vigencia.errors %} 
+      <span class="help-block">{{ form.ultimo_ano_vigencia.errors }}</span>
     {% endif %}
-    {% else %}
-    <p>{% render_field form.arquivo %}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.periodicidade.id_for_label }}">
+      Qual a periodicidade do plano?
+    </label>
+    {% render_field form.periodicidade class="form-control" %}
+    {% if form.periodicidade.errors %} 
+      <span class="help-block">{{ form.periodicidade.errors }}</span>
     {% endif %}
-    {{ form.arquivo.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.possui_metas.id_for_label }}">
+      Possui metas?</br>
+    </label>
+    {% for radio in form.possui_metas %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.possui_metas.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.metas_na_lei.id_for_label }}">
+      As metas estão descritas no mesmo dogumento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
+    </label>
+    {% for radio in form.metas_na_lei %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.metas_na_lei.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.arquivo_metas.id_for_label }}">
+      Arquivo com as metas
+    </label>
+    {% render_field form.arquivo_metas %}
+    {{ form.arquivo_metas.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.monitorado.id_for_label }}">
+      O plano é monitorado?</br>
+    </label>
+    {% for radio in form.monitorado %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.monitorado.errors }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.local_monitoramento.id_for_label }}">
+      Indique o local onde o resultado do monitoramento pode ser visualizado
+    </label>
+    {% render_field form.local_monitoramento class="form-control" %}
+    {% if form.local_monitoramento.errors %} 
+      <span class="help-block">{{ form.local_monitoramento.errors }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.participou_curso.id_for_label }}">
+      Para a construção do Plano de Cultura, o ente federado participou de algum Programa de Formação de Gestores e Conselheiros Culturais?</br>
+    </label>
+    {% for radio in form.participou_curso %}
+      {{ radio }}</br>
+    {% endfor %}
+    {{ form.participou_curso.errors }}
+  </div>
+
+   <div class="form-group">
+    <label for="{{ form.ano_inicio_curso.id_for_label }}">
+      Indique o ano de início do curso
+    </label>
+    {% render_field form.ano_inicio_curso class="form-control" %}
+    {% if form.ano_inicio_curso.errors %} 
+      <span class="help-block">{{ form.ano_inicio_curso.errors }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.ano_termino_curso.id_for_label }}">
+      Indique o ano de término do curso
+    </label>
+    {% render_field form.ano_termino_curso class="form-control" %}
+    {% if form.ano_termino_curso.errors %} 
+      <span class="help-block">{{ form.ano_termino_curso.errors }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.esfera_federacao_curso.id_for_label }}">
+      Indique por qual esfera da federação foi ofertado o curso?</br>
+    </label>
+    {% render_field form.esfera_federacao_curso %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.tipo_curso.id_for_label }}">
+      Indique o tipo do curso?</br>
+    </label>
+    {% render_field form.tipo_curso %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.perfil_participante.id_for_label }}">
+      Qual o perfil do participante?</br>
+    </label>
+    {% render_field form.perfil_participante %}
   </div>
 
   <div class="alert alert-info" role="alert">
@@ -66,4 +196,40 @@
   <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    $('input[name=mesma_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    if($('#id_possui_ata_1').is(":checked")){
+      $('#ata_form').css('display', 'none');
+    }
+    if($('#id_possui_ata_0').is(":checked")){
+      $('#ata_form').css('display', 'block');
+    }
+
+    $('input[name=possui_ata]').change(function() { 
+      if(this.value=='False') {
+        $('#ata_form').fadeOut();
+      }
+      else {
+        $('#ata_form').fadeIn();
+      }
+    })
+  });
+</script>
 {% endblock content %}

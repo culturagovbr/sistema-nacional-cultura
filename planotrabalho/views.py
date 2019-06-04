@@ -24,6 +24,7 @@ from adesao.models import SistemaCultura
 
 from .forms import CriarComponenteForm
 from .forms import CriarFundoForm
+from .forms import CriarPlanoForm
 from .forms import CriarConselhoForm
 from .forms import AlterarConselhoForm
 from .forms import DesabilitarConselheiroForm
@@ -75,6 +76,8 @@ class CadastrarComponente(CreateView):
             form_class = CriarConselhoForm
         elif self.kwargs['tipo'] == 'orgao_gestor':
             form_class = CriarOrgaoGestorForm
+        elif self.kwargs['tipo'] == 'plano':
+            form_class = CriarPlanoForm
         else:
             form_class = CriarComponenteForm
 
