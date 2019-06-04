@@ -18,6 +18,24 @@
     {{ form.exclusivo_cultura.errors }}
   </div>
 
+  <div id="lei_form">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao.id_for_label }}">
+        Data de Publicação da Lei do Plano de Cultura
+      </label>
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+      {{ form.data_publicacao.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo.id_for_label }}">
+        Publicação da Lei no Diário Oficial
+      </label>
+      <p>{% render_field form.arquivo %}</p>
+      {{ form.arquivo.errors }}
+    </div>
+  </div>
+
   <div class="form-group">
     <label for="{{ form.possui_anexo.id_for_label }}">
       A lei possui anexo?</br>
@@ -28,7 +46,7 @@
     {{ form.possui_anexo.errors }}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="anexo_na_lei">
     <label for="{{ form.anexo_na_lei.id_for_label }}">
       O anexo já consta no mesmo arquivo da lei?</br>
     </label>
@@ -38,7 +56,7 @@
     {{ form.anexo_na_lei.errors }}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="anexo" style="display: none">
     <label for="{{ form.anexo_lei.id_for_label }}">
       Arquivo de anexo da lei
     </label>
@@ -76,9 +94,9 @@
     {{ form.possui_metas.errors }}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="metas_na_lei" style="display: none">
     <label for="{{ form.metas_na_lei.id_for_label }}">
-      As metas estão descritas no mesmo dogumento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
+      As metas estão descritas no mesmo documento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
     </label>
     {% for radio in form.metas_na_lei %}
       {{ radio }}</br>
@@ -86,7 +104,7 @@
     {{ form.metas_na_lei.errors }}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="metas" style="display: none">
     <label for="{{ form.arquivo_metas.id_for_label }}">
       Arquivo com as metas
     </label>
@@ -104,7 +122,7 @@
     {{ form.monitorado.errors }}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="monitoramento" style="display: none">
     <label for="{{ form.local_monitoramento.id_for_label }}">
       Indique o local onde o resultado do monitoramento pode ser visualizado
     </label>
@@ -124,7 +142,7 @@
     {{ form.participou_curso.errors }}
   </div>
 
-   <div class="form-group">
+   <div class="form-group" id="ano_inicio" style="display: none">
     <label for="{{ form.ano_inicio_curso.id_for_label }}">
       Indique o ano de início do curso
     </label>
@@ -134,7 +152,7 @@
     {% endif %}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="ano_termino" style="display: none">
     <label for="{{ form.ano_termino_curso.id_for_label }}">
       Indique o ano de término do curso
     </label>
@@ -144,21 +162,21 @@
     {% endif %}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="esfera_federacao" style="display: none">
     <label for="{{ form.esfera_federacao_curso.id_for_label }}">
       Indique por qual esfera da federação foi ofertado o curso?</br>
     </label>
     {% render_field form.esfera_federacao_curso %}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="tipo_curso" style="display: none">
     <label for="{{ form.tipo_curso.id_for_label }}">
       Indique o tipo do curso?</br>
     </label>
     {% render_field form.tipo_curso %}
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="perfil_participante" style="display: none">
     <label for="{{ form.perfil_participante.id_for_label }}">
       Qual o perfil do participante?</br>
     </label>
@@ -199,37 +217,118 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
-    if($('#id_mesma_lei_1').is(":checked")){
-      $('#lei_data_form').css('display', 'block');
+    if($('#id_possui_anexo_0').is(":checked")){
+      $('#anexo_na_lei').css('display', 'block');
     }
-    if($('#id_mesma_lei_0').is(":checked")){
-      $('#lei_data_form').css('display', 'none');
+    if($('#id_possui_anexo_1').is(":checked")){
+      $('#anexo_na_lei').css('display', 'none');
     }
 
-    $('input[name=mesma_lei]').change(function() { 
+    $('input[name=possui_anexo]').change(function() { 
       if(this.value=='False') {
-        $('#lei_data_form').fadeIn();
+        $('#anexo_na_lei').fadeOut();
       }
       else {
-        $('#lei_data_form').fadeOut();
+        $('#anexo_na_lei').fadeIn();
       }
     })
 
-    if($('#id_possui_ata_1').is(":checked")){
-      $('#ata_form').css('display', 'none');
+    if($('#id_anexo_na_lei_0').is(":checked")){
+      $('#anexo').css('display', 'block');
     }
-    if($('#id_possui_ata_0').is(":checked")){
-      $('#ata_form').css('display', 'block');
+    if($('#id_anexo_na_lei_1').is(":checked")){
+      $('#anexo').css('display', 'none');
     }
 
-    $('input[name=possui_ata]').change(function() { 
+    $('input[name=anexo_na_lei]').change(function() { 
       if(this.value=='False') {
-        $('#ata_form').fadeOut();
+        $('#anexo').fadeOut();
       }
       else {
-        $('#ata_form').fadeIn();
+        $('#anexo').fadeIn();
       }
     })
+
+    if($('#id_possui_metas_0').is(":checked")){
+      $('#metas_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_metas_1').is(":checked")){
+      $('#metas_na_lei').css('display', 'none');
+    }
+
+    $('input[name=possui_metas]').change(function() { 
+      if(this.value=='False') {
+        $('#metas_na_lei').fadeOut();
+      }
+      else {
+        $('#metas_na_lei').fadeIn();
+      }
+    })
+
+    if($('#id_metas_na_lei_0').is(":checked")){
+      $('#metas').css('display', 'block');
+    }
+    if($('#id_possui_metas_1').is(":checked")){
+      $('#metas').css('display', 'none');
+    }
+
+    $('input[name=metas_na_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#metas').fadeOut();
+      }
+      else {
+        $('#metas').fadeIn();
+      }
+    })
+
+    if($('#id_monitorado_0').is(":checked")){
+      $('#monitoramento').css('display', 'block');
+    }
+    if($('#id_monitorado_1').is(":checked")){
+      $('#monitoramento').css('display', 'none');
+    }
+
+    $('input[name=monitorado]').change(function() { 
+      if(this.value=='False') {
+        $('#monitoramento').fadeOut();
+      }
+      else {
+        $('#monitoramento').fadeIn();
+      }
+    })
+
+    if($('#id_participou_curso_0').is(":checked")){
+      $('#ano_inicio').css('display', 'block');
+      $('#ano_termino').css('display', 'block');
+      $('#esfera_federacao').css('display', 'block');
+      $('#tipo_curso').css('display', 'block');
+      $('#perfil_participante').css('display', 'block');
+    }
+    if($('#id_participou_curso_1').is(":checked")){
+      $('#ano_inicio').css('display', 'none');
+      $('#ano_termino').css('display', 'none');
+      $('#esfera_federacao').css('display', 'none');
+      $('#tipo_curso').css('display', 'none');
+      $('#perfil_participante').css('display', 'none');
+    }
+
+    $('input[name=participou_curso]').change(function() { 
+      if(this.value=='False') {
+        $('#ano_inicio').fadeOut();
+        $('#ano_termino').fadeOut();
+        $('#esfera_federacao').fadeOut();
+        $('#tipo_curso').fadeOut();
+        $('#perfil_participante').fadeOut();
+      }
+      else {
+        $('#ano_inicio').fadeIn();
+        $('#ano_termino').fadeIn();
+        $('#esfera_federacao').fadeIn();
+        $('#tipo_curso').fadeIn();
+        $('#perfil_participante').fadeIn();
+      }
+    })
+
   });
 </script>
 {% endblock content %}
