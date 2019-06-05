@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
+from adesao.models import *
 
 from simple_history.models import HistoricalRecords
 
@@ -30,12 +31,13 @@ LISTA_SITUACAO_ARQUIVO = (
 )
 
 LISTA_PERFIS_ORGAO_GESTOR = (
-    (0, "Secretaria exclusiva de cultura"),
-    (1, "Secretaria em conjunto com outras políticas"),
-    (2, "Órgão da administração indireta"),
-    (3, "Setor subordinado à chefia do Executivo"),
-    (4, "Setor subordinado à outra secretaria"),
-    (5, "Não possui estrutura"),
+    (0, "Não possui estrutura"),
+    (1, "Órgão da administração indireta"),
+    (2, "Secretaria em conjunto com outras políticas"),
+    (3, "Secretaria exclusiva de cultura"),
+    (4, "Setor subordinado à chefia do Executivo"),
+    (5, "Setor subordinado à outra secretaria"),
+    
 )
 
 
@@ -51,7 +53,7 @@ def upload_to_componente(instance, filename):
             componente=componente,
             new_name=new_name,
             ext=ext)
-    except:
+    except Exception:
         plano_id = instance.planotrabalho.id
         name = "sem_ente_federado/{plano_id}/docs/{componente}/{new_name}.{ext}".format(
                 plano_id=plano_id,
@@ -134,6 +136,10 @@ class Componente(ArquivoComponente2):
         url = reverse_lazy("gestao:detalhar", kwargs={"pk": self.sistema_cultura.pk})
         return url
 
+    @property
+    def nome_componente(self):
+        return LISTA_TIPOS_COMPONENTES[self.tipo][1]
+
 
 class OrgaoGestor2(Componente):
     perfil = models.IntegerField(
@@ -162,6 +168,8 @@ class ConselhoDeCultura(Componente):
         blank=True,
         null=True,
         related_name='conselhos')
+    exclusivo_cultura = models.BooleanField(blank=True, default=False)
+    paritario = models.BooleanField(blank=True, default=False)
 
 
 class PlanoTrabalho(models.Model):

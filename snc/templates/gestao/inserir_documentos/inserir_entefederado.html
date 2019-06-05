@@ -3,12 +3,12 @@
 
 <div class="row">
   <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class=" card  ">
+      <div class=" card-header">
         Municípios que concluíram o preenchimento dos dados
       </div>
-      <!-- /.panel-heading -->
-      <div class="panel-body">
+      <!-- /. card-header -->
+      <div class=" card-body">
         <form method="get" action="">
           <div class="input-group custom-search-form col-lg-3">
               <input type="text" name="ente_federado" class="form-control" placeholder="Município ou Estado">
@@ -78,16 +78,16 @@
           <div class="dataTables_paginate paging_simple_numbers">
             <ul class="pagination">
               {% if page_obj.has_previous %}
-              <li>
-                <a class="paginate_button previous" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
+              <li class="page-item">
+                <a class="previous page-link" href="?{% url_replace 'page' page_obj.previous_page_number %}">Anterior</a>
               </li>
               {% endif %}
-              <li>
-                <a>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
+              <li class="page-item">
+                <a class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
               </li>
               {% if page_obj.has_next %}
-              <li>
-                <a class="paginate_button next" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
+              <li class="page-item">
+                <a class="next page page-link" href="?{% url_replace 'page' page_obj.next_page_number %}">Próximo</a>
               </li>
               {% endif %}
             </ul>
@@ -96,9 +96,9 @@
         </div>
         <!-- /.table-responsive -->
       </div>
-      <!-- /.panel-body -->
+      <!-- /. card-body -->
     </div>
-    <!-- /.panel -->
+    <!-- /. card -->
   </div>
   <!-- /.col-lg-12 -->
 </div>

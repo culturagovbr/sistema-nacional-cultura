@@ -1,0 +1,38 @@
+{% extends "gestao/base_gestao.html" %}
+{% load gestao_tags %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header card-header-primary">
+      <h4 class="card-title">Registrar Contato</h4>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal" method="post">{% csrf_token %}
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Com quem você fez contato?</label>
+            {% render_field form.contatado class="form-control" %}
+          </div>
+
+          <div class="form-group">
+            <label>Qual foi a data do contato?</label>
+            {% render_field form.data class="form-control date" %}
+          </div>
+
+          <div class="form-group">
+            <label>O que foi discutido?</label>
+            {% render_field form.discussao class="form-control" %}
+
+            <div class="form-group">
+              <div class="col-sm-offset-3 col-sm-10"></div>
+              <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+              <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

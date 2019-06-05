@@ -1,39 +1,36 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class=" card  ">
+  <div class=" card-header">
     Inserir ato normativo do orgão gestor no cadastro
   </div>
-  <div class="panel-body">
+  <div class=" card-body">
     <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %} <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
       <label class="col-sm-3 control-label">Anexo</label>
-
-      <div class="col-sm-7">
-        {% render_field form.arquivo %}
+        <div class="col-sm-7">
+          {% render_field form.arquivo %}
+        </div>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">{{ form.arquivo.errors}}</span>
+        </div>
       </div>
-      <div class="col-sm-offset-3 col-sm-9">
-        <span class="help-block">{{ form.arquivo.errors}}</span>
+      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
+        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
+
+        <div class="col-sm-7">
+          {% render_field form.data_publicacao class="date" %}
+        </div>
+        <div class="col-sm-offset-3 col-sm-9">
+          <span class="help-block">{{ form.data_publicacao.errors }}</span>
+        </div>
       </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-11">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-    <label class="col-sm-3 control-label">Data de publicação da Lei</label>
-
-    <div class="col-sm-7">
-      {% render_field form.data_publicacao class="date" %}
-    </div>
-    <div class="col-sm-offset-3 col-sm-9">
-      <span class="help-block">{{ form.data_publicacao.errors }}</span>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-11">
-      <a class="btn btn-default" href="{% url 'gestao:listar_documentos' template='listar_orgao_gestor' %}">Cancelar</a>
-      <button type="submit" class="btn btn-primary">Salvar</button>
-
-
-    </div>
-  </div>
-  </form>
 </div>
-</div>
+
 {% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card card-default">
+            <div class="card-header card-plain card-header-primary">
+                <h4 class="card-title">Componente</h4>
+                <p class="card-category">Inserir componente do plano de trabalho</p>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% render_field form.data_publicacao class="date" %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% render_field form.arquivo %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+                            <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js%}
+
+{% endblock js%}

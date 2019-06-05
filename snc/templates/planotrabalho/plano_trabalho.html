@@ -11,16 +11,12 @@
   <p style="text-align: justify;">
     OBS: Conforme Acordo de Cooperação Federativa assinado, o ente federado compromete-se a cumprir com o Plano de Trabalho em até dois anos contados da data de publicação do referido Acordo no Diário Oficial da União (DOU). Caso o prazo não seja cumprido, é necessário que o ente federado envie um Oficio assinado pelo Governador – Estado ou Prefeito – Município, solicitando prorrogação por mais dois anos para o e-mail <strong>snc@cultura.gov.br</strong>. Vide tutorial <a href="http://portalsnc.cultura.gov.br/wp-content/uploads/sites/32/2019/02/MODELO-DE-OF%C3%8DCIO-PARA-PRORROGA%C3%87%C3%83O-DE-PRAZO-DO-PLANO-DE-TRABALHO-2019.pdf">“Ofício de Prazo do Plano de Trabalho”</a>
   </p>
-  <hr />
 
   <ul class="list-group">
 
     <li class="list-group-item">
       <p>
-        <strong>I. Institucionalização do Sistema Estadual/Municipal de Cultura</strong>
-      </p>
-      <p>
-        Lei de Criação do Sistema de Cultura
+        <strong>I. Lei de Criação do Sistema de Cultura</strong>
       </p>
       {% if sistema.legislacao.situacao != 2 %}
         {% if sistema.legislacao.situacao == 1 %}
@@ -32,63 +28,60 @@
       <br />
       <br />
     </li>
-    <hr /><br />
     <li class="list-group-item">
       <p>
-        <strong>II. Estruturação dos Componentes</strong>
+        <strong>II. Órgão Gestor</strong>
       </p>
-
-        <p>
-          a) Órgão Gestor
-        </p>
-        {% if sistema.orgao_gestor.situacao != 2 %}
-          {% if sistema.orgao_gestor.situacao == 1 %}
-            <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}">Aguarda Análise</a>
-          {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-            <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}" />Enviar Comprovação</a>
-          {% endif %}
+      {% if sistema.orgao_gestor.situacao != 2 %}
+        {% if sistema.orgao_gestor.situacao == 1 %}
+          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}">Aguarda Análise</a>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}" />Enviar Comprovação</a>
         {% endif %}
-        <br />
-        <p>
-          b) Conselho de Política Cultural
-        </p>
-        {% if sistema.conselho.situacao != 2 %}
-          {% if sistema.conselho.situacao == 1 %}
-            <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Aguarda Análise</a>
-          {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-            <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
-          {% endif %}
-        {% endif %}
-        <br />
-        <p>
-          c) Fundo de Cultura
-        </p>
-        {% if sistema.fundo_cultura.situacao != 2 %}
-          {% if sistema.fundo_cultura.situacao == 1 %}
-            <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}">Aguarda Análise</a>
-          {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-            <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}" >Enviar Comprovação</a>
-          {% endif %}
-        {% endif %}
-
-        <br />
-        <br />
+      {% endif %}
+      <br />
+      <br />
     </li>
-    <hr /><br />
     <li class="list-group-item">
-        <p>
-          <strong>III. Elaboração do Plano de Cultura</strong>
-        </p>
-        <p>
-          Plano de Cultura
-        </p>
-        {% if sistema.plano.situacao != 2 %}
-          {% if sistema.plano.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}">Aguarda Análise</a>
-          {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}" >Enviar Comprovação</a>
-          {% endif %}
+      <p>
+        <strong>III. Conselho de Política Cultural</strong>
+      </p>
+      {% if sistema.conselho.lei.situacao != 2 %}
+        {% if sistema.conselho.lei.situacao == 1 %}
+          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Aguarda Análise</a>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
         {% endif %}
+      {% endif %}
+      <br />
+      <br />
+    </li>
+    <li class="list-group-item">
+      <p>
+        <strong>IV. Fundo de Cultura</strong>
+      </p>
+      {% if sistema.fundo_cultura.situacao != 2 %}
+        {% if sistema.fundo_cultura.situacao == 1 %}
+          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}">Aguarda Análise</a>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}" >Enviar Comprovação</a>
+        {% endif %}
+      {% endif %}
+
+      <br />
+      <br />
+    </li>
+    <li class="list-group-item">
+      <p>
+        <strong>V. Plano de Cultura</strong>
+      </p>
+      {% if sistema.plano.situacao != 2 %}
+        {% if sistema.plano.situacao == 1 %}
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}">Aguarda Análise</a>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}" >Enviar Comprovação</a>
+        {% endif %}
+      {% endif %}
     </li>
 
   </ul>

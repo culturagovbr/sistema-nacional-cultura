@@ -1,22 +1,22 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %} {{form.media}}
 {% include 'messages.html' %}
 
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class=" card  ">
+  <div class=" card-header">
     Alteração de cadastrador do ente federado
   </div>
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#conteudo-default" id="municipio-tab">Município</a></li>
-    <li><a data-toggle="tab" href="#conteudo-default" id="estado-tab">Estado</a></li>
+    <li class="nav-item active"><a class="nav-link active" data-toggle="tab" href="#conteudo-default" id="municipio-tab">Município</a></li>
+    <li class="nav-item"><a class="nav-link"data-toggle="tab" href="#conteudo-default" id="estado-tab">Estado</a></li>
   </ul>
 
   <div class="tab-content">
-    <div id="conteudo-default" class="tab-pane fade in active">
-      <div class="panel-body">
+    <div id="conteudo-default" class="tab-pane fade-in active">
+      <div class=" card-body">
         <form action="{% url 'gestao:alterar_cadastrador' %}" class="form-horizontal" method="post">{% csrf_token %}
 
-          <div class="form-group">
-            <label for="{{ form.estado.id_for_label }}" class="col-sm-3 control-label">UF</label>
+          <div class="form-group row">
+            <label for="{{ form.estado.id_for_label }}" class="col-sm-3 control-label text-right"><b>UF</b></label>
             <div class="col-sm-1">
               {% render_field form.estado class="form-control" id="estado_id" %}
             </div>
@@ -25,17 +25,16 @@
             </div>
           </div>
 
-          <div class="form-group" id="municipio-field">
-            <label for="{{ form.municipio.id_for_label }}" class="col-sm-3 control-label">Município</label>
+          <div class="form-group row" id="municipio-field">
+            <label for="{{ form.municipio.id_for_label }}" class="col-sm-3 control-label text-right"><b>Município</b></label>
 
             <div class="col-sm-4">
               {% render_field form.municipio class="form-control" id="municipio_id"%} {{ form.municipio.errors }}
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="{{ form.data_publicacao_acordo.id_for_label }}" class="col-sm-3 control-label">Data de publicação
-              do Acordo</label>
+          <div class="form-group row">
+            <label for="{{ form.data_publicacao_acordo.id_for_label }}" class="col-sm-3 control-label text-right"><b>Data de publicação do Acordo</b></label>
 
             <div class="col-sm-4">
               {% render_field form.data_publicacao_acordo class="form-control date" %} {{ form.data_publicacao_acordo.errors }}
@@ -43,15 +42,15 @@
           </div>
 
 
-          <div class="form-group">
-            <label class="col-sm-3 control-label">CPF atual do Cadastrador</label>
+          <div class="form-group row">
+            <label class="col-sm-3 control-label text-right"><b>CPF atual do Cadastrador</b></label>
             <div class="col-sm-4">
               <input disabled="true" id="cpf_usuario" value=""></input>
             </div>
           </div>
 
-          <div class="form-group {% if form.cpf_usuario.errors %} has-error {% endif %}">
-            <label for="{{ form.cpf_usuario.id_for_label }}" class="col-sm-3 control-label">CPF do Novo Cadastrador</label>
+          <div class="form-group row {% if form.cpf_usuario.errors %} has-error {% endif %}">
+            <label for="{{ form.cpf_usuario.id_for_label }}" class="col-sm-3 control-label text-right"><b>CPF do Novo Cadastrador</b></label>
 
             <div class="col-sm-4 ">
               {% render_field form.cpf_usuario class="form-control cpf" %} <span class="help-block">{{ form.cpf_usuario.errors }} {{ form.non_field_errors }}</span>
@@ -59,9 +58,9 @@
           </div>
 
 
-          <div class="form-group">
+          <div class="form-group row text-center">
             <div class="col-sm-offset-3 col-sm-10">
-              <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
+              <a class="btn btn-default border" href="{% url 'adesao:home' %}">Cancelar</a>
               <button type="submit" class="btn btn-primary">Salvar</button>
             </div>
           </div>

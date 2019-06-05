@@ -2,6 +2,7 @@ from threading import Thread
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from adesao.models import UFS
 
 
 def enviar_email_alteracao_situacao(usuario, historico=None):
@@ -51,3 +52,7 @@ def empty_to_none(value):
     if not value:
         return None
     return value
+
+
+def get_uf_by_mun_cod(municipio_cod):
+    return UFS[int((str(municipio_cod))[:2])]
