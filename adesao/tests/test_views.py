@@ -214,7 +214,7 @@ def test_consultar_informações_estados(client):
 def test_cadastrar_funcionario_tipo_gestor_cultura(login, client):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'gestor', 'sede'], cadastrador=login)
+        'gestor', 'sede'], cadastrador=login, ente_federado__cod_ibge=123456)
 
     funcionario = Funcionario(cpf="381.390.630-29", rg="48.464.068-9",
         orgao_expeditor_rg="SSP", estado_expeditor=29,
@@ -265,7 +265,7 @@ def test_alterar_funcionario_tipo_secretario(login, client):
 
     gestor_cultura = mommy.make("Funcionario", tipo_funcionario=0)
     sistema_cultura = mommy.make("SistemaCultura", gestor_cultura=gestor_cultura,
-        _fill_optional=['ente_federado', 'sede', 'gestor'])
+        _fill_optional=['ente_federado', 'sede', 'gestor'], ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:alterar_funcionario",
         kwargs={"pk": sistema_cultura.gestor_cultura.id})
@@ -387,7 +387,7 @@ def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, clie
         cep="72430101", bairro="bairro", telefone_um="123456")
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado',
-        'sede', 'gestor'], cadastrador=login)
+        'sede', 'gestor'], cadastrador=login, ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)
@@ -448,7 +448,8 @@ def test_session_user_sem_sistema_cultura(login, client):
 def test_session_user_com_um_sistema_cultura(login, client):
 
     sistema = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'secretario', 'responsavel',
-        'gestor', 'sede'], gestor__tipo_funcionario=0, cadastrador=login)
+        'gestor', 'sede'], gestor__tipo_funcionario=0, cadastrador=login,
+        ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     response = client.get(url)
@@ -467,9 +468,9 @@ def test_session_user_com_um_sistema_cultura(login, client):
 def test_session_user_com_mais_de_um_sistema_cultura(login, client):
 
     sistema_1 = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'secretario', 'responsavel'],
-        ente_federado__nome='Acre', cadastrador=login)
+        ente_federado__nome='Acre', ente_federado__cod_ibge=12345, cadastrador=login)
     sistema_2 = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'secretario', 'responsavel'],
-       ente_federado__nome='Brasília', cadastrador=login)
+       ente_federado__nome='Brasília', ente_federado__cod_ibge=12346, cadastrador=login)
 
     url = reverse("adesao:home")
     response = client.get(url)
@@ -519,7 +520,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
@@ -573,7 +574,7 @@ Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
 SDC / Secretaria Especial da Cultura / Ministério da Cidadania
-SCS Q. 09, Lote C, Bloco B, 9º andar
+SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
 E-mail: snc@cultura.gov.br
@@ -606,7 +607,8 @@ def test_alterar_sistema_cultura(login, client):
     sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
 
-    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login)
+    sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado'], cadastrador=login,
+        ente_federado__cod_ibge=123456)
 
     url = reverse("adesao:home")
     client.get(url)

@@ -129,7 +129,7 @@ class AlterarOrgaoGestor(UpdateView):
         kwargs['logged_user'] = self.request.user
 
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
-            kwargs['initial']['perfil'] = sistema.orgao_gestor.perfil
+            kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
 
         return kwargs
 
