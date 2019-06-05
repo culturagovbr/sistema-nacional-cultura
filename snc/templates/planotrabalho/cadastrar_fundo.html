@@ -95,10 +95,18 @@
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
-
-  <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
+<body>
+  <button class="btn btn-success" onclick="minhaFunçao()">Salvar</button>
+  <script>
+    function minhaFunçao() {
+      var r = confirm("Deseja mesmo alterar o arquivo?");
+      if (r == true) {
+        $("#orgaoGestor").submit();
+      }
+    }
+  </script>
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
