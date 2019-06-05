@@ -17,7 +17,7 @@ before_script:
     - ./cc-test-reporter before-build
 
 script:
-    - pipenv run pytest --cov=.
+    - find . -iname 'test*.py' -exec pytest {} \;.
 
 after_script:
     - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
