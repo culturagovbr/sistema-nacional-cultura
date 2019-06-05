@@ -1588,11 +1588,12 @@ def test_datatable_plano_trabalho_fundo_cultura(client, login_staff):
 
     sistema = mommy.make(
         "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté",
-        estado_processo='6', _fill_optional='fundo_cultura'
+        estado_processo='6', _fill_optional='fundo_cultura', sede__cnpj="68.502.470/0001-97"
     )
 
     sistema.fundo_cultura.situacao = 1
     sistema.fundo_cultura.tipo = 4
+    sistema.fundo_cultura.cnpj = "28.134.084/0001-75"
     sistema.fundo_cultura.data_envio = datetime.date(2018, 1, 1)
     sistema.fundo_cultura.arquivo = arquivo
     sistema.fundo_cultura.save()
@@ -1609,7 +1610,8 @@ def test_datatable_plano_trabalho_fundo_cultura(client, login_staff):
     assert response.status_code == 200
     assert len(resultado) == 1
     assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
-        '', sistema.fundo_cultura.arquivo.url, 'fundo_cultura']
+        ['68.502.470/0001-97', '28.134.084/0001-75'], sistema.fundo_cultura.arquivo.url,
+        'fundo_cultura']
 
 
 def test_datatable_plano_trabalho_orgao_gestor(client, login_staff):
