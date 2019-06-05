@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" enctype="multipart/form-data">
+<form method="post" id="leiSistema" enctype="multipart/form-data">
   {% csrf_token %}
 
   <p>
@@ -47,14 +47,17 @@
 
 </form>
 </div>
+
 <body>
   <button class="btn btn-success" onclick="minhaFunçao()">Salvar</button>
   <script>
     function minhaFunçao() {
       var r = confirm("Deseja mesmo alterar o arquivo?");
       if (r == true) {
-        $("#orgaoGestor").submit();
+        $("#leiSistema").submit();
       }
     }
   </script>
+</body>
+
 {% endblock content %}

@@ -2,7 +2,7 @@
 {% block content %}
 {% load widget_tweaks %}
 <div class="container">
-<form method="post" enctype="multipart/form-data">
+<form method="post" id="planoCultura" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Elaboração do Plano de Cultura</strong>
@@ -65,14 +65,18 @@
 
 </form>
 </div>
+
 <body>
   <button class="btn btn-success" onclick="minhaFunçao()">Salvar</button>
   <script>
     function minhaFunçao() {
       var r = confirm("Deseja mesmo alterar o arquivo?");
       if (r == true) {
-        $("#orgaoGestor").submit();
+        $("#planoCultura").submit();
       }
+
     }
   </script>
+</body>
+
 {% endblock content %}
