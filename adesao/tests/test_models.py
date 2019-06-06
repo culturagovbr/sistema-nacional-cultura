@@ -60,7 +60,7 @@ def test_timezone_now_data_criacao_SistemaCultura():
         timezone.now().replace(second=0, microsecond=0)
 
 
-def test_SistemaCultura_save_cria_nova_instancia():
+def test_SistemaCultura_save_cria_nova_instancia(login):
     """
     SistemaCultura deve sempre retornar uma nova instancia quando da tentativa
     de salvar os dados de uma instancia existente.
@@ -79,7 +79,7 @@ def test_SistemaCultura_save_cria_nova_instancia():
     [sistema.delete() for sistema in SistemaCultura.objects.all()]
 
 
-def test_alterar_cadastrador_SistemaCultura():
+def test_alterar_cadastrador_SistemaCultura(login):
     """ Testa se ao alterar cadastrador um novo sistema cultura é 
     criado corretamente"""
 
@@ -133,7 +133,7 @@ def test_retorna_ativo_SistemaCultura_filtrado_por_ente():
     SistemaCultura.objects.all().delete()
 
 
-def test_alterar_cadastrador_sistema_cultura_sem_cadastrador():
+def test_alterar_cadastrador_sistema_cultura_sem_cadastrador(login):
     """ Testa alterar o cadastrador de um sistema cultura que não possui um
     cadastrador """
     sistema = mommy.make('SistemaCultura')
@@ -211,21 +211,8 @@ def test_por_municipio_SistemaCultura_uf():
     assert sistemas_cidade.first() == sistema
 
 
-def test_alterar_cadastrador_sistema_cultura_sem_cadastrador():
-    """ Testa alterar o cadastrador de um sistema cultura que não possui um
-    cadastrador """
-    sistema = mommy.make('SistemaCultura')
-    cadastrador = mommy.make('Usuario')
-
-    sistema.cadastrador = cadastrador
-    sistema.save()
-    sistema.refresh_from_db()
-
-    assert sistema.cadastrador == cadastrador
-
-
 @pytest.mark.parametrize('tipo', range(5))
-def test_criar_componente_lei_sistema(tipo):
+def test_criar_componente_lei_sistema(tipo, login):
     """ Testa criar um novo componente Legislacao para um SistemaCultura """
     
     SistemaCultura.objects.all().delete()
