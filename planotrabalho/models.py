@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
@@ -112,11 +112,17 @@ def upload_to(instance, filename):
 
     conselho = instance.conselhos.all().first()
     comprovante_cnpj = instance.comprovantes.all().first()
+    metas = instance.metas_plano.all().first()
+    anexo = instance.anexo_plano.all().first()
 
     if conselho:
         nome_componente = componentes.get(conselho.tipo)
     elif comprovante_cnpj:
         nome_componente = componentes.get(comprovante_cnpj.tipo)
+    elif metas:
+        nome_componente = componentes.get(metas.tipo)
+    elif anexo:
+        nome_componente = componentes.get(anexo.tipo)
     else:
         nome_componente = componentes.get(instance.tipo)
 
@@ -234,9 +240,11 @@ class PlanoDeCultura(Componente):
         blank=True,
         null=True
     )
-    esfera_federacao_curso = JSONField()
-    tipo_oficina = JSONField()
-    perfil_participante = JSONField()
+    esfera_federacao_curso = ArrayField(models.IntegerField(), size=3, blank=True,
+        null=True)
+    tipo_oficina = ArrayField(models.IntegerField(), size=7, blank=True, null=True)
+    perfil_participante = ArrayField(models.IntegerField(), size=3, blank=True,
+        null=True)
 
 
 

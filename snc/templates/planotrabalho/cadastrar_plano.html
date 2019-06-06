@@ -15,7 +15,6 @@
     {% for radio in form.exclusivo_cultura %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.exclusivo_cultura.errors }}
   </div>
 
   <div id="lei_form">
@@ -24,7 +23,6 @@
         Data de Publicação da Lei do Plano de Cultura
       </label>
       {% render_field form.data_publicacao class="form-control date half-width" %}
-      {{ form.data_publicacao.errors }}
     </div>
 
     <div class="form-group">
@@ -32,7 +30,6 @@
         Publicação da Lei no Diário Oficial
       </label>
       <p>{% render_field form.arquivo %}</p>
-      {{ form.arquivo.errors }}
     </div>
   </div>
 
@@ -43,7 +40,6 @@
     {% for radio in form.possui_anexo %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.possui_anexo.errors }}
   </div>
 
   <div class="form-group" id="anexo_na_lei">
@@ -53,7 +49,6 @@
     {% for radio in form.anexo_na_lei %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.anexo_na_lei.errors }}
   </div>
 
   <div class="form-group" id="anexo" style="display: none">
@@ -69,9 +64,6 @@
       Qual o último ano de vigência do Plano de Cultura?
     </label>
     {% render_field form.ultimo_ano_vigencia class="form-control" %}
-    {% if form.ultimo_ano_vigencia.errors %} 
-      <span class="help-block">{{ form.ultimo_ano_vigencia.errors }}</span>
-    {% endif %}
   </div>
 
   <div class="form-group">
@@ -79,9 +71,6 @@
       Qual a periodicidade do plano?
     </label>
     {% render_field form.periodicidade class="form-control" %}
-    {% if form.periodicidade.errors %} 
-      <span class="help-block">{{ form.periodicidade.errors }}</span>
-    {% endif %}
   </div>
 
   <div class="form-group">
@@ -91,7 +80,6 @@
     {% for radio in form.possui_metas %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.possui_metas.errors }}
   </div>
 
   <div class="form-group" id="metas_na_lei" style="display: none">
@@ -101,7 +89,6 @@
     {% for radio in form.metas_na_lei %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.metas_na_lei.errors }}
   </div>
 
   <div class="form-group" id="metas" style="display: none">
@@ -109,7 +96,6 @@
       Arquivo com as metas
     </label>
     {% render_field form.arquivo_metas %}
-    {{ form.arquivo_metas.errors }}
   </div>
 
   <div class="form-group">
@@ -119,7 +105,6 @@
     {% for radio in form.monitorado %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.monitorado.errors }}
   </div>
 
   <div class="form-group" id="monitoramento" style="display: none">
@@ -127,9 +112,6 @@
       Indique o local onde o resultado do monitoramento pode ser visualizado
     </label>
     {% render_field form.local_monitoramento class="form-control" %}
-    {% if form.local_monitoramento.errors %} 
-      <span class="help-block">{{ form.local_monitoramento.errors }}</span>
-    {% endif %}
   </div>
 
   <div class="form-group">
@@ -139,7 +121,6 @@
     {% for radio in form.participou_curso %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.participou_curso.errors }}
   </div>
 
    <div class="form-group" id="ano_inicio" style="display: none">
@@ -147,9 +128,6 @@
       Indique o ano de início do curso
     </label>
     {% render_field form.ano_inicio_curso class="form-control" %}
-    {% if form.ano_inicio_curso.errors %} 
-      <span class="help-block">{{ form.ano_inicio_curso.errors }}</span>
-    {% endif %}
   </div>
 
   <div class="form-group" id="ano_termino" style="display: none">
@@ -157,9 +135,6 @@
       Indique o ano de término do curso
     </label>
     {% render_field form.ano_termino_curso class="form-control" %}
-    {% if form.ano_termino_curso.errors %} 
-      <span class="help-block">{{ form.ano_termino_curso.errors }}</span>
-    {% endif %}
   </div>
 
   <div class="form-group" id="esfera_federacao" style="display: none">
@@ -169,11 +144,11 @@
     {% render_field form.esfera_federacao_curso %}
   </div>
 
-  <div class="form-group" id="tipo_curso" style="display: none">
-    <label for="{{ form.tipo_curso.id_for_label }}">
+  <div class="form-group" id="tipo_oficina" style="display: none">
+    <label for="{{ form.tipo_oficina.id_for_label }}">
       Indique o tipo do curso?</br>
     </label>
-    {% render_field form.tipo_curso %}
+    {% render_field form.tipo_oficina %}
   </div>
 
   <div class="form-group" id="perfil_participante" style="display: none">
@@ -234,18 +209,18 @@
     })
 
     if($('#id_anexo_na_lei_0').is(":checked")){
-      $('#anexo').css('display', 'block');
+      $('#anexo').css('display', 'none');
     }
     if($('#id_anexo_na_lei_1').is(":checked")){
-      $('#anexo').css('display', 'none');
+      $('#anexo').css('display', 'block');
     }
 
     $('input[name=anexo_na_lei]').change(function() { 
       if(this.value=='False') {
-        $('#anexo').fadeOut();
+        $('#anexo').fadeIn();
       }
       else {
-        $('#anexo').fadeIn();
+        $('#anexo').fadeOut();
       }
     })
 
@@ -266,18 +241,18 @@
     })
 
     if($('#id_metas_na_lei_0').is(":checked")){
-      $('#metas').css('display', 'block');
+      $('#metas').css('display', 'none');
     }
     if($('#id_possui_metas_1').is(":checked")){
-      $('#metas').css('display', 'none');
+      $('#metas').css('display', 'block');
     }
 
     $('input[name=metas_na_lei]').change(function() { 
       if(this.value=='False') {
-        $('#metas').fadeOut();
+        $('#metas').fadeIn();
       }
       else {
-        $('#metas').fadeIn();
+        $('#metas').fadeOut();
       }
     })
 
@@ -301,14 +276,14 @@
       $('#ano_inicio').css('display', 'block');
       $('#ano_termino').css('display', 'block');
       $('#esfera_federacao').css('display', 'block');
-      $('#tipo_curso').css('display', 'block');
+      $('#tipo_oficina').css('display', 'block');
       $('#perfil_participante').css('display', 'block');
     }
     if($('#id_participou_curso_1').is(":checked")){
       $('#ano_inicio').css('display', 'none');
       $('#ano_termino').css('display', 'none');
       $('#esfera_federacao').css('display', 'none');
-      $('#tipo_curso').css('display', 'none');
+      $('#tipo_oficina').css('display', 'none');
       $('#perfil_participante').css('display', 'none');
     }
 
@@ -317,14 +292,14 @@
         $('#ano_inicio').fadeOut();
         $('#ano_termino').fadeOut();
         $('#esfera_federacao').fadeOut();
-        $('#tipo_curso').fadeOut();
+        $('#tipo_oficina').fadeOut();
         $('#perfil_participante').fadeOut();
       }
       else {
         $('#ano_inicio').fadeIn();
         $('#ano_termino').fadeIn();
         $('#esfera_federacao').fadeIn();
-        $('#tipo_curso').fadeIn();
+        $('#tipo_oficina').fadeIn();
         $('#perfil_participante').fadeIn();
       }
     })

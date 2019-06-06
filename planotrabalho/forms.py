@@ -129,12 +129,67 @@ class CriarPlanoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
     participou_curso = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    esfera_federacao_curso = forms.MultipleChoiceField(choices=LISTA_ESFERAS_FEDERACAO,
+    esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
         widget=forms.CheckboxSelectMultiple)
-    tipo_curso = forms.MultipleChoiceField(choices=LISTA_CURSOS,
+    tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
         widget=forms.CheckboxSelectMultiple)
-    perfil_participante = forms.MultipleChoiceField(choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
+    perfil_participante = forms.MultipleChoiceField(required=False, choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
         widget=forms.CheckboxSelectMultiple)
+
+    def __init__(self, *args, **kwargs):
+        self.sistema = kwargs.pop('sistema')
+        logged_user = kwargs.pop('logged_user')
+
+        super(CriarPlanoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo Lei'
+            })
+            self.fields['anexo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo de Anexo da Lei'
+            })
+            self.fields['arquivo_metas'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo com as metas'
+           })
+
+    def save(self, commit=True, *args, **kwargs):
+        plano = super(CriarPlanoForm, self).save(commit=False)
+        plano.tipo = self.componentes.get(self.tipo_componente)
+
+        if 'arquivo' in self.changed_data:
+            plano.situacao = 1
+            plano.arquivo = None
+            plano.save()
+            plano.arquivo = self.cleaned_data['arquivo']
+            plano.data_publicacao = self.cleaned_data['data_publicacao']
+
+        if self.cleaned_data['possui_anexo'] and not self.cleaned_data['anexo_na_lei']:
+            plano.anexo = ArquivoComponente2()
+            plano.anexo.situacao = 1
+            plano.anexo.save()
+            plano.anexo.anexo_plano.add(plano)
+            plano.anexo.arquivo = self.cleaned_data['anexo_lei']
+            plano.anexo.save()
+
+        if self.cleaned_data['possui_metas'] and not self.cleaned_data['metas_na_lei']:
+            plano.metas = ArquivoComponente2()
+            plano.metas.situacao = 1
+            plano.metas.save()
+            plano.metas.metas_plano.add(plano)
+            plano.metas.arquivo = self.cleaned_data['arquivo_metas']
+            plano.metas.save()
+
+        if self.cleaned_data['participou_curso']:
+            print(self.cleaned_data['esfera_federacao_curso'])
+            print(self.cleaned_data['tipo_curso'])
+            print(self.cleaned_data['perfil_participante'])
+
+        plano.save()
+        sistema_cultura = plano.plano
+        sistema_cultura.add(self.sistema)
+
+        return plano
 
     class Meta:
         model = PlanoDeCultura
