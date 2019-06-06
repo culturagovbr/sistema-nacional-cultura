@@ -9,6 +9,7 @@ from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
 from .models import FundoCultura, Componente
 from .models import FundoDeCultura, PlanoCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
+from .models import LISTA_PERFIS_ORGAO_GESTOR
 from .models import ArquivoComponente2
 from .models import OrgaoGestor2
 from .utils import add_anos
@@ -92,6 +93,7 @@ class CriarComponenteForm(ModelForm):
 
 
 class CriarOrgaoGestorForm(CriarComponenteForm):
+    perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
 
     class Meta:
         model = OrgaoGestor2

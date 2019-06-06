@@ -671,6 +671,8 @@ def test_alterar_documentos_orgao_gestor(client, login_staff):
 def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de inserir documento para orgão gestor na
     tela de gestão salva no field arquivo """
+    
+    sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456)
 
     arquivo = SimpleUploadedFile(
         "orgao.txt", b"file_content", content_type="text/plain"
@@ -679,11 +681,12 @@ def test_inserir_documentos_orgao_gestor(client, sistema_cultura, login_staff):
     url = reverse("gestao:inserir_componente", kwargs={"pk": sistema_cultura.id,
         "componente": "orgao_gestor"})
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",'perfil':0})
 
     orgao_gestor = Componente.objects.last()
     name = orgao_gestor.arquivo.name.split(str(orgao_gestor.id)+"/")[1]
     situacao = orgao_gestor.situacao
+    
 
     assert name == arquivo.name
     assert situacao == 1
@@ -1585,11 +1588,12 @@ def test_datatable_plano_trabalho_fundo_cultura(client, login_staff):
 
     sistema = mommy.make(
         "SistemaCultura", ente_federado__cod_ibge=123456, ente_federado__nome="Abaeté",
-        estado_processo='6', _fill_optional='fundo_cultura'
+        estado_processo='6', _fill_optional='fundo_cultura', sede__cnpj="68.502.470/0001-97"
     )
 
     sistema.fundo_cultura.situacao = 1
     sistema.fundo_cultura.tipo = 4
+    sistema.fundo_cultura.cnpj = "28.134.084/0001-75"
     sistema.fundo_cultura.data_envio = datetime.date(2018, 1, 1)
     sistema.fundo_cultura.arquivo = arquivo
     sistema.fundo_cultura.save()
@@ -1606,7 +1610,8 @@ def test_datatable_plano_trabalho_fundo_cultura(client, login_staff):
     assert response.status_code == 200
     assert len(resultado) == 1
     assert resultado[0] == [sistema.id, sistema.ente_federado.__str__(), 
-        '', sistema.fundo_cultura.arquivo.url, 'fundo_cultura']
+        ['68.502.470/0001-97', '28.134.084/0001-75'], sistema.fundo_cultura.arquivo.url,
+        'fundo_cultura']
 
 
 def test_datatable_plano_trabalho_orgao_gestor(client, login_staff):
