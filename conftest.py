@@ -3,6 +3,7 @@ from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from model_mommy import mommy
 
@@ -94,7 +95,9 @@ def login(client):
                          _fill_optional=['secretario', 'responsavel',
                                          'data_publicacao_acordo'])
 
-    login = client.login(username=user.username, password='123456')
+    url = reverse("adesao:login")
+    response = client.post(url, data={"username": user.username, 
+        "password": '123456'})
 
     yield usuario
 
