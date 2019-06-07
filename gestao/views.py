@@ -93,17 +93,17 @@ def ajax_consulta_entes(request):
             data={"message": "Esta não é uma requisição AJAX"}, status=400)
 
     queryset = SistemaCultura.sistema.filter(
-            ente_federado__isnull=False).filter(
-                Q(ente_federado__latitude__isnull=False) &
-                Q(ente_federado__longitude__isnull=False)
-        ).values(
+        ente_federado__isnull=False).filter(
+        Q(ente_federado__latitude__isnull=False) &
+        Q(ente_federado__longitude__isnull=False)
+    ).values(
             'id',
             'estado_processo',
             'ente_federado__nome',
             'ente_federado__cod_ibge',
             'ente_federado__longitude',
             'ente_federado__latitude',
-        )
+    )
 
     sistemaList = [{
         'id': ente['id'],
@@ -113,7 +113,7 @@ def ajax_consulta_entes(request):
         'cod_ibge': ente['ente_federado__cod_ibge'],
         'latitude': ente['ente_federado__latitude'],
         'longitude': ente['ente_federado__longitude'],
-        } for ente in queryset]
+    } for ente in queryset]
 
     entes = json.dumps(sistemaList, cls=DjangoJSONEncoder)
     return HttpResponse(entes, content_type='application/json')
@@ -173,7 +173,7 @@ def ajax_cadastrador_cpf(request):
                 'cpf': usuario.user.username,
                 'data_publicacao_acordo': usuario.data_publicacao_acordo,
                 'estado_processo': usuario.estado_processo
-                }
+            }
             return JsonResponse(status=200, data=data)
 
         except Municipio.DoesNotExist:
@@ -262,7 +262,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             2: "fundo_cultura",
             3: "conselho",
             4: "plano",
-            }
+        }
 
         for componente_id, componente_nome in componentes.items():
             componente_sistema = getattr(sistema, componente_nome, None)
@@ -417,7 +417,7 @@ class CriarContato(CreateView):
         sistema = SistemaCultura.objects.get(pk=self.kwargs['pk'])
         return reverse_lazy('gestao:detalhar', kwargs={
             'cod_ibge': sistema.ente_federado.cod_ibge
-            })
+        })
 
 
 class InserirComponente(CreateView):
@@ -458,7 +458,7 @@ class InserirComponente(CreateView):
         sistema = SistemaCultura.sistema.get(pk=pk)
         return reverse_lazy('gestao:detalhar', kwargs={
             'cod_ibge': sistema.ente_federado.cod_ibge
-            })
+        })
 
 
 class AlterarComponente(UpdateView):
@@ -551,7 +551,6 @@ class AlterarFundoCultura(UpdateView):
 
         return kwargs
 
-
     def get_success_url(self):
         kwgs = {'fundo_cultura': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -632,7 +631,7 @@ class DiligenciaComponenteView(CreateView):
         context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
         context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'],
-            arquivo=self.kwargs['arquivo'])
+                                                                                                              arquivo=self.kwargs['arquivo'])
         return context
 
     def form_invalid(self, form):
@@ -686,7 +685,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     def templated_email_get_recipients(self, form):
         recipient_list = [self.get_sistema_cultura().cadastrador.user.email,
-            self.get_sistema_cultura().cadastrador.email_pessoal]
+                          self.get_sistema_cultura().cadastrador.email_pessoal]
 
         if self.get_sistema_cultura().gestor:
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
@@ -721,10 +720,10 @@ class DataTableEntes(BaseDatatableView):
     max_display_length = 150
 
     def get_initial_queryset(self):
-        sistema = SistemaCultura.objects.distinct('ente_federado__cod_ibge').order_by(
-            'ente_federado__cod_ibge').filter(
-                ente_federado__isnull=False
-            ).values_list('id', flat=True)
+        sistema = SistemaCultura.sistema.values_list('id', flat=True)
+
+        return SistemaCultura.objects.filter(id__in=sistema).filter(
+            ente_federado__isnull=False)
 
         return SistemaCultura.objects.filter(id__in=sistema)
 
@@ -796,7 +795,8 @@ class DataTableEntes(BaseDatatableView):
                 escape(
                     item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
-                escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")) if item.data_publicacao_acordo else '',
+                escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")
+                       ) if item.data_publicacao_acordo else '',
             ])
         return json_data
 
@@ -830,7 +830,8 @@ class DataTablePrazo(BaseDatatableView):
                 item.id,
                 escape(item.ente_federado),
                 escape(item.sede.cnpj) if item.sede else '',
-                item.data_publicacao_acordo.strftime("%d/%m/%Y") if item.data_publicacao_acordo else '',
+                item.data_publicacao_acordo.strftime(
+                    "%d/%m/%Y") if item.data_publicacao_acordo else '',
                 escape(item.prazo),
             ])
         return json_data
@@ -906,8 +907,8 @@ class DataTablePlanoTrabalho(BaseDatatableView):
 
         if componente == 'conselho':
             sistemas = sistemas.filter((Q(conselho__lei__situacao=1)
-                & ~Q(conselho__lei__arquivo='')) |
-                (Q(conselho__situacao=1) & ~Q(conselho__arquivo='')))
+                                        & ~Q(conselho__lei__arquivo='')) |
+                                       (Q(conselho__situacao=1) & ~Q(conselho__arquivo='')))
         else:
             kwargs = {'{0}__situacao'.format(componente): 1}
             sistemas = sistemas.filter(**kwargs)
@@ -939,7 +940,8 @@ class DataTablePlanoTrabalho(BaseDatatableView):
                 item.id,
                 item.ente_federado.__str__(),
                 escape(item.sede.cnpj) if item.sede else '',
-                getattr(item, componente).arquivo.url if getattr(item, componente).arquivo else '',
+                getattr(item, componente).arquivo.url if getattr(
+                    item, componente).arquivo else '',
                 componente,
             ]
             if (componente == 'fundo_cultura'):
