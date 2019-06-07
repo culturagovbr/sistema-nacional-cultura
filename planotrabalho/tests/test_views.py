@@ -91,7 +91,7 @@ def test_alterar_orgao_gestor(client, login):
     assert sistema_atualizado.orgao_gestor.tipo == 1
 
 
-def test_cadastrar_componente_tipo_fundo_cultura(client, login):
+def test_cadastrar_componente_tipo_fundo_cultura(client, login, cnpj):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor'],
         cadastrador=login, ente_federado__cod_ibge=123456)
@@ -150,7 +150,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_sem_cnpj(client
     assert sistema_atualizado.fundo_cultura.tipo == 2
 
 
-def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client, login):
+def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client, login, cnpj):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'sede', 'gestor', 'legislacao'],
         cadastrador=login, ente_federado__cod_ibge=123456)
@@ -307,7 +307,7 @@ def test_alterar_componente(client, login):
     assert sistema_atualizado.legislacao.tipo == 0
 
 
-def test_alterar_fundo_cultura(client, login):
+def test_alterar_fundo_cultura(client, login, cnpj):
 
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional=['ente_federado', 'fundo_cultura', 'sede', 'gestor'],
         cadastrador=login, ente_federado__cod_ibge=123456)
@@ -344,7 +344,7 @@ def test_alterar_fundo_cultura(client, login):
     assert sistema_atualizado.fundo_cultura.tipo == 2
 
 
-def test_alterar_fundo_cultura_remove_cnpj(client, login):
+def test_alterar_fundo_cultura_remove_cnpj(client, login, cnpj):
     arquivo = SimpleUploadedFile(
         "novo.txt", b"file_content", content_type="text/plain"
     )

@@ -1,4 +1,6 @@
 import pytest
+import re
+
 from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -12,6 +14,13 @@ from model_mommy.recipe import Recipe
 from planotrabalho.models import SituacoesArquivoPlano
 from adesao.models import EnteFederado
 from adesao.models import Usuario
+
+from snc import settings
+
+@pytest.fixture(scope='function')
+def cnpj(requests_mock):
+    matcher = re.compile(settings.RECEITA_URL + '\d{14}$')
+    requests_mock.get(matcher, json={"status": "OK"})
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -185,7 +194,8 @@ def plano_trabalho(login):
 @pytest.fixture(scope='function')
 def sistema_cultura():
 
-    ente_federado = mommy.make("EnteFederado", cod_ibge=111, _fill_optional=True, nome="Bahia")
+    ente_federado = mommy.make("EnteFederado", cod_ibge=111, _fill_optional=True, nome="Bahia",
+        cnpj="28.134.084/0001-75")
 
     conselho = mommy.make("ConselhoDeCultura", tipo=3, _fill_optional=True)
 

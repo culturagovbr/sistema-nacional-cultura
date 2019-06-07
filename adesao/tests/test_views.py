@@ -82,7 +82,7 @@ Secretaria Especial da Cultura / Ministério da Cidadania
     assert mail.outbox[0].body == texto
 
 
-def test_envio_email_em_nova_adesao(client):
+def test_envio_email_em_nova_adesao(client, cnpj):
     user = User.objects.create(username="teste", email="email@email.com")
     user.set_password("123456")
     user.save()
@@ -325,7 +325,7 @@ def test_cadastrar_funcionario_dados_invalidos(login, client):
     assert response.status_code == 200
 
 
-def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura):
+def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura, cnpj):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
@@ -379,7 +379,7 @@ def test_cadastrar_sistema_cultura_dados_validos(login, client, sistema_cultura)
         "ente_federado__nome": sistema_salvo.ente_federado.nome}
 
 
-def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, client):
+def test_cadastrar_sistema_cultura_com_cadastrador_ja_possui_sistema(login, client, cnpj):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)
@@ -600,7 +600,7 @@ Seu prazo para o envio é de até 60 dias corridos.
     assert mail.outbox[0].body == texto
 
 
-def test_alterar_sistema_cultura(login, client):
+def test_alterar_sistema_cultura(login, client, cnpj):
     ente_federado = mommy.make("EnteFederado", cod_ibge=20563)
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", telefone_um="123456", email_institucional="email@email.com", tipo_funcionario=2)

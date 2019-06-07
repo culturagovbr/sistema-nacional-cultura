@@ -316,7 +316,7 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-RECEITA_URL = env("RECEITA_URL", default='')
+RECEITA_URL = env("RECEITA_URL", default='http://sistemasweb.cultura.gov.br/minc-pessoa/servicos/pessoa_juridica/consultar/')
 RECEITA_USER = env("RECEITA_USER", default='')
 RECEITA_PASSWORD = env("RECEITA_PASSWORD", default='')
 
