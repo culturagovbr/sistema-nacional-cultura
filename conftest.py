@@ -194,8 +194,7 @@ def plano_trabalho(login):
 @pytest.fixture(scope='function')
 def sistema_cultura():
 
-    ente_federado = mommy.make("EnteFederado", cod_ibge=111, _fill_optional=True, nome="Bahia",
-        cnpj="28.134.084/0001-75")
+    ente_federado = mommy.make("EnteFederado", cod_ibge=111, _fill_optional=True, nome="Bahia")
 
     conselho = mommy.make("ConselhoDeCultura", tipo=3, _fill_optional=True)
 
@@ -204,6 +203,7 @@ def sistema_cultura():
     sistema_cultura = mommy.make(
             "SistemaCultura",
             estado_processo=6,
+            sede__cnpj="28.134.084/0001-75",
             ente_federado=ente_federado,
             conselho=conselho,
             _fill_optional=True
