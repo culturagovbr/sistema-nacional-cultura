@@ -13,6 +13,10 @@
             <div class="col-md-7">
               <p><strong>Localização:</strong> {{ente.ente_federado}}</p>
               <p><strong>CNPJ:</strong> {{ ente.sede.cnpj }}</p>
+              {% if informacao_cnpj %}
+                <p><strong>Natureza Jurídica:</strong> {{ informacao_cnpj.naturezaJuridica.dsNaturezaJuridica }}</p>
+                <p><strong>Razão Social:</strong> {{ informacao_cnpj.nmRazaoSocial }}</p>
+              {% endif %}
               <p><strong>Prefeito:</strong>
                   {% if ente.gestor.termo_posse %}
                   <a href="{% if ente.gestor.termo_posse %} {{ ente.gestor.termo_posse.url }} {% endif %}">{{ ente.gestor.nome }}</a>

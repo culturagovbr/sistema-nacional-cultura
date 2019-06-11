@@ -8,9 +8,9 @@ from django.template.defaultfilters import filesizeformat
 from django.forms import formset_factory
 
 from dal import autocomplete
-from localflavor.br.forms import BRCNPJField, BRCPFField
+from localflavor.br.forms import BRCPFField
 
-from snc.forms import RestrictedFileField
+from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import Usuario, Municipio, Responsavel
 from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor

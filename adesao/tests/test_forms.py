@@ -125,11 +125,11 @@ def test_save_cadastrar_gestor_cpf_invalido(client, login, sistema_cultura):
     assert not form.is_valid()
 
 
-def test_save_cadastrar_sede_dados_validos(client, login, sistema_cultura):
+def test_save_cadastrar_sede_dados_validos(client, login, sistema_cultura, cnpj):
     """ Testa se a função is_valid retorna verdadeiro para a criação de uma sede com
     dados validos"""
 
-    data = {'cnpj': '93.308.686/0001-63',
+    data = {'cnpj': '28.134.084/0001-75',
             'endereco': 'endereco',
             'complemento': 'complemento',
             'cep': '72430101',

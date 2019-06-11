@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.contrib.contenttypes.fields import GenericRelation
 
 from planotrabalho.models import PlanoTrabalho
+from planotrabalho.models import PlanoDeCultura
 from planotrabalho.models import Componente
 from planotrabalho.models import ConselhoDeCultura
 from planotrabalho.models import OrgaoGestor2

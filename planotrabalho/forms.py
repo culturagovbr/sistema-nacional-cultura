@@ -3,9 +3,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import FileInput
 
-from localflavor.br.forms import BRCNPJField
-
-from snc.forms import RestrictedFileField
+from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
 from .models import FundoCultura, Componente

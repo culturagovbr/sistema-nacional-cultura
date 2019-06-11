@@ -1,5 +1,7 @@
 from django import forms
 from django.template.defaultfilters import filesizeformat
+from localflavor.br.forms import BRCNPJField
+from snc.client import Client
 
 
 class RestrictedFileField(forms.FileField):
@@ -25,5 +27,19 @@ class RestrictedFileField(forms.FileField):
                     'Arquivos desse tipo não são aceitos.')
         except AttributeError:
             pass
+
+        return data
+
+
+class BRCNPJField(BRCNPJField):
+
+    def clean(self, data):
+        cnpj  = super(BRCNPJField, self).clean(data)
+
+        if data:
+            consulta = Client().consulta_cnpj(cnpj)
+
+            if not consulta:
+                raise forms.ValidationError('CNPJ Inválido')
 
         return data
