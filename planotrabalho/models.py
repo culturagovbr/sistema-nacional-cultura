@@ -240,10 +240,10 @@ class PlanoDeCultura(Componente):
         blank=True,
         null=True
     )
-    esfera_federacao_curso = ArrayField(models.IntegerField(), size=3, blank=True,
+    esfera_federacao_curso = ArrayField(models.CharField(max_length=1), size=3, blank=True,
         null=True)
-    tipo_oficina = ArrayField(models.IntegerField(), size=7, blank=True, null=True)
-    perfil_participante = ArrayField(models.IntegerField(), size=3, blank=True,
+    tipo_oficina = ArrayField(models.CharField(max_length=1), size=7, blank=True, null=True)
+    perfil_participante = ArrayField(models.CharField(max_length=1), size=3, blank=True,
         null=True)
 
 

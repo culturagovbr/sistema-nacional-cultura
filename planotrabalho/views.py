@@ -18,6 +18,7 @@ from .models import ConselhoCultural
 from .models import FundoCultura
 from .models import FundoDeCultura
 from .models import PlanoCultura
+from .models import PlanoDeCultura
 from .models import Componente
 from .models import ConselhoDeCultura
 from adesao.models import SistemaCultura
@@ -63,6 +64,8 @@ class CadastrarComponente(CreateView):
                 return redirect('planotrabalho:alterar_conselho', pk=componente.id)
             elif self.kwargs['tipo'] == 'orgao_gestor':
                 return redirect('planotrabalho:alterar_orgao', pk=componente.id)
+            elif self.kwargs['tipo'] == 'plano':
+                return redirect('planotrabalho:alterar_plano', pk=componente.id)
             else:
                 return redirect('planotrabalho:alterar_componente', pk=componente.id,
                     tipo=self.kwargs['tipo'])
@@ -112,6 +115,25 @@ class AlterarComponente(UpdateView):
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = self.kwargs['tipo']
         kwargs['logged_user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
+
+
+class AlterarPlanoCultura(UpdateView):
+    model = PlanoDeCultura
+    form_class = CriarPlanoForm
+    template_name = 'planotrabalho/cadastrar_plano.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
+        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'plano'
+        kwargs['logged_user'] = self.request.user
+
         return kwargs
 
     def get_success_url(self):

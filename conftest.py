@@ -135,7 +135,7 @@ def plano_trabalho(login):
     conselho_cultural = mommy.make('ConselhoCultural')
     conselho = mommy.make("ConselhoDeCultura", tipo=3)
     fundo_cultura = mommy.make('FundoCultura')
-    plano_cultura = mommy.make('PlanoCultura')
+    plano_cultura = mommy.make('PlanoDeCultura')
     lei_sistema = mommy.make('CriacaoSistema')
     orgao_gestor = mommy.make('OrgaoGestor')
     conselheiro = mommy.make('Conselheiro', conselho=conselho)

@@ -117,6 +117,7 @@ class CriarPlanoForm(CriarComponenteForm):
         content_types=content_types,
         max_upload_size=52428800)
     periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
+    ultimo_ano_vigencia = forms.IntegerField()
     possui_metas = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     metas_na_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
@@ -136,9 +137,10 @@ class CriarPlanoForm(CriarComponenteForm):
     perfil_participante = forms.MultipleChoiceField(required=False, choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
         widget=forms.CheckboxSelectMultiple)
 
+
     def __init__(self, *args, **kwargs):
-        self.sistema = kwargs.pop('sistema')
-        logged_user = kwargs.pop('logged_user')
+        self.sistema = kwargs['sistema']
+        logged_user = kwargs['logged_user']
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
 
@@ -152,6 +154,96 @@ class CriarPlanoForm(CriarComponenteForm):
             self.fields['arquivo_metas'].widget = FileUploadWidget(attrs={
                 'label': 'Arquivo com as metas'
            })
+
+    def clean_exclusivo_cultura(self):
+        if not self.cleaned_data['exclusivo_cultura']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['exclusivo_cultura']
+
+    def clean_possui_anexo(self):
+        if not self.cleaned_data['possui_anexo']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['possui_anexo']
+
+    def clean_anexo_na_lei(self):
+        if self.cleaned_data.get('possui_anexo', None) == 'True' and not self.cleaned_data['anexo_na_lei']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['anexo_na_lei']
+
+    def clean_anexo_lei(self):
+        if self.cleaned_data.get('possui_anexo', None) == 'True' and self.cleaned_data['anexo_na_lei'] == 'False' and not self.cleaned_data['anexo_lei']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['anexo_lei']
+
+    def clean_possui_metas(self):
+        if not self.cleaned_data.get('possui_metas', None):
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['possui_metas']
+
+    def clean_metas_na_lei(self):
+        if self.cleaned_data.get('possui_metas', None) == 'True' and not self.cleaned_data['metas_na_lei']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['metas_na_lei']
+
+    def clean_arquivo_metas(self):
+        if self.cleaned_data.get('possui_metas', None) == 'True' and self.cleaned_data['metas_na_lei']  == 'False' and not self.cleaned_data['arquivo_metas']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['arquivo_metas']
+
+    def clean_monitorado(self):
+        if not self.cleaned_data['monitorado']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['monitorado']
+
+    def clean_local_monitoramento(self):
+        if self.cleaned_data.get('monitorado', None) == 'True' and not self.cleaned_data['local_monitoramento']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['local_monitoramento']
+
+    def clean_participou_curso(self):
+        if not self.cleaned_data['participou_curso']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['participou_curso']
+
+    def clean_ano_inicio_curso(self):
+        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['ano_inicio_curso']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['ano_inicio_curso']
+
+    def clean_ano_termino_curso(self):
+        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['ano_termino_curso']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['ano_termino_curso']
+
+    def clean_esfera_federacao_curso(self):
+        if self.cleaned_data.get('esfera_federacao_curso', None) == 'True' and not self.cleaned_data['esfera_federacao_curso']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['esfera_federacao_curso']
+
+    def clean_atipo_oficina(self):
+        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['tipo_oficina']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['tipo_oficina']
+
+    def clean_perfil_participante(self):
+        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['perfil_participante']:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['perfil_participante']
 
     def save(self, commit=True, *args, **kwargs):
         plano = super(CriarPlanoForm, self).save(commit=False)
@@ -179,11 +271,6 @@ class CriarPlanoForm(CriarComponenteForm):
             plano.metas.metas_plano.add(plano)
             plano.metas.arquivo = self.cleaned_data['arquivo_metas']
             plano.metas.save()
-
-        if self.cleaned_data['participou_curso']:
-            print(self.cleaned_data['esfera_federacao_curso'])
-            print(self.cleaned_data['tipo_curso'])
-            print(self.cleaned_data['perfil_participante'])
 
         plano.save()
         sistema_cultura = plano.plano
@@ -221,19 +308,19 @@ class CriarFundoForm(CriarComponenteForm):
             })
 
     def clean_arquivo(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['data_publicacao']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['data_publicacao']
 
     def clean_mesma_lei(self):
-        if self.data['mesma_lei'] == 'True':
+        if self.data.get('mesma_lei', None) == 'True':
             try:
                 if self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
@@ -241,17 +328,17 @@ class CriarFundoForm(CriarComponenteForm):
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_cnpj(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['cnpj']:
+        if self.data.get('possui_cnpj', None) == 'True' and not self.cleaned_data['cnpj']:
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['cnpj']:
+        elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['cnpj']:
             self.cleaned_data['cnpj'] = None
 
         return self.cleaned_data['cnpj']
 
     def clean_comprovante(self):
-        if self.data['possui_cnpj'] == 'True' and not self.cleaned_data['comprovante']:
+        if self.data.get('possui_cnpj', None) == 'True' and not self.cleaned_data['comprovante']:
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_cnpj'] == 'False' and self.cleaned_data['comprovante']:
+        elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['comprovante']:
             self.cleaned_data['comprovante'] = None
 
         return self.cleaned_data['comprovante']
@@ -343,19 +430,19 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['exclusivo_cultura']
 
     def clean_arquivo_lei(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['arquivo_lei']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo_lei']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo_lei']
 
     def clean_data_publicacao_lei(self):
-        if self.data['mesma_lei'] == 'False' and not self.cleaned_data['data_publicacao_lei']:
+        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao_lei']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['data_publicacao_lei']
 
     def clean_mesma_lei(self):
-        if self.data['mesma_lei'] == 'True':
+        if self.data.get('mesma_lei', None) == 'True':
             try:
                 if self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
@@ -363,17 +450,17 @@ class CriarConselhoForm(ModelForm):
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
 
     def clean_arquivo(self):
-        if self.data['possui_ata'] == 'True' and not self.cleaned_data['arquivo']:   
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['arquivo']:   
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_ata'] == 'False':
+        elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['arquivo'] = None
 
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data['possui_ata'] == 'True' and not self.cleaned_data['data_publicacao']:   
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:   
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data['possui_ata'] == 'False':
+        elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
 
         return self.cleaned_data['data_publicacao']
