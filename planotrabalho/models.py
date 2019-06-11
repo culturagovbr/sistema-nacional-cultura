@@ -225,7 +225,7 @@ class PlanoDeCultura(Componente):
         null=True,
         related_name='anexo_plano')
     exclusivo_cultura = models.BooleanField(blank=True, default=False)
-    ultimo_ano_vigencia = models.IntegerField(blank=True)
+    ultimo_ano_vigencia = models.IntegerField(blank=True, null=True)
     periodicidade = models.CharField(blank=True, null=True, max_length=100)
     local_monitoramento = models.CharField(
         max_length=100,

@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('data_publicacao', models.DateField(blank=True, null=True, verbose_name='Data de Publicação do Arquivo do Componente')),
                 ('tipo', models.IntegerField(choices=[(0, 'Lei Sistema'), (1, 'Órgão Gestor'), (2, 'Fundo Cultura'), (3, 'Conselho Cultural'), (4, 'Plano Cultura')], default=0)),
                 ('exclusivo_cultura', models.BooleanField(default=False)),
-                ('ultimo_ano_vigencia', models.IntegerField(blank=True)),
+                ('ultimo_ano_vigencia', models.IntegerField(blank=True, null=True)),
                 ('decenal', models.BooleanField(default=False)),
                 ('periodicidade', models.CharField(blank=True, max_length=100, null=True)),
                 ('local_monitoramento', models.CharField(blank=True, max_length=100, null=True, verbose_name='Local de Monitoramente')),
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('componente_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='planotrabalho.Componente')),
                 ('exclusivo_cultura', models.BooleanField(default=False)),
-                ('ultimo_ano_vigencia', models.IntegerField(blank=True)),
+                ('ultimo_ano_vigencia', models.IntegerField(blank=True, null=True)),
                 ('decenal', models.BooleanField(default=False)),
                 ('periodicidade', models.CharField(blank=True, max_length=100, null=True)),
                 ('local_monitoramento', models.CharField(blank=True, max_length=100, null=True, verbose_name='Local de Monitoramente')),
