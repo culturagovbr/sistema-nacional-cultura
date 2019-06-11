@@ -424,7 +424,7 @@ class SistemaCultura(models.Model):
     orgao_gestor = models.ForeignKey(OrgaoGestor2, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
     fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
     conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
-    plano = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="plano")
+    plano = models.ForeignKey(PlanoDeCultura, on_delete=models.SET_NULL, null=True, related_name="plano")
 
     gestor_cultura = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_gestor_cultura")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
