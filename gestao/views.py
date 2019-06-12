@@ -630,7 +630,7 @@ class DiligenciaComponenteView(CreateView):
         if self.kwargs['arquivo'] == 'arquivo':
             context['arquivo'] = componente.arquivo
         else:
-            context['arquivo'] = getattr(componente, self.kwargs['arquivo'])
+            context['arquivo'] = getattr(componente, self.kwargs['arquivo']).arquivo
         context['ente_federado'] = ente_federado
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = self.get_componente().data_envio
