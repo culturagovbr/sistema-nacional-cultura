@@ -380,13 +380,105 @@
                     </div>
                 </div>
                 {% endif %}
+
+
+                {% if ente.fundo_cultura.comprovante_cnpj.arquivo %}
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                  <div class="card card-stats">
+                    <div class="card-header card-header-danger card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">list_alt</i>
+                      </div>
+                      <p class="card-category">Fundo Cultural - Comprovante CNPJ</p>
+                      <h3 class="card-title">
+                        {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
+                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
+                          Avaliar
+                        </a>
+                        {% else %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+                        {% endif %}
+
+                        {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
+
+                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
+                          {% else %}
+                          <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+                          {% endif %}
+                            {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
+                          </a>
+                          {% else %}
+                          {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
+                        {% endif %}
+                      </h3>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <i class="material-icons">edit</i>
+                        <a href="{% url 'gestao:alterar_componente' 'fundo_cultura' ente.fundo_cultura.id %}" class="warning-link">Editar</a>
+                      </div>
+                      <div class="stats">
+                        <i class="material-icons">save_alt</i>
+                        <a href="{{ente.fundo_cultura.comprovante_cnpj.arquivo.url}}" class="warning-link">Download</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% if ente.conselho.lei.arquivo %}
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                  <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">list_alt</i>
+                      </div>
+                      <p class="card-category">Conselho Cultural - Lei</p>
+                      <h3 class="card-title">
+                        {% if ente.conselho.lei.situacao == 1 %}
+                        {% if ente.conselho.lei.diligencia %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='lei' pk=ente.conselho.lei.diligencia.id %}">
+                          Avaliar
+                        </a>
+                        {% else %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='lei' %}">Avaliar</a>
+                        {% endif %}
+
+                        {% elif ente.conselho.lei.situacao > 1 %}
+
+                        {% if ente.conselho.lei.diligencia %}
+                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='conselho' arquivo='lei' pk=ente.conselho.lei.diligencia.id %}">
+                          {% else %}
+                          <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='conselho' arquivo='lei' %}">
+                            {% endif %}
+                            {{ ente.conselho.lei.get_situacao_display }}
+                          </a>
+                          {% else %}
+                          {{ ente.conselho.lei.get_situacao_display }}
+                          {% endif %}
+                      </h3>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <i class="material-icons">edit</i>
+                        <a href="{% url 'gestao:alterar_componente' 'conselho' ente.conselho.id %}" class="warning-link">Editar</a>
+                      </div>
+                      <div class="stats">
+                        <i class="material-icons">save_alt</i>
+                        <a href="{{ente.conselho.lei.arquivo.url}}" class="warning-link">Download</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
             </div>
           </div>
       </div>
     </div>
 </div>
-{% endif %}
 
+{% endif %}
 
 <div id="container-floating">
     {% if ente.estado_processo == '6' %}
