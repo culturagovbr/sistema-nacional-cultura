@@ -460,7 +460,7 @@
                           </a>
                           {% else %}
                           {{ ente.conselho.lei.get_situacao_display }}
-                          {% endif %}
+                        {% endif %}
                       </h3>
                     </div>
                     <div class="card-footer">
@@ -693,6 +693,17 @@
         },
       })
     }
+
+    $('.btn.btn-info.btn-sm').each((key, element) => {
+      console.log(element.text.length)
+      situacao_componente = element.text.trim();
+      if (
+        situacao_componente === 'Concluída' ||
+        situacao_componente === 'Arquivo aprovado com ressalvas') {
+          console.log($(element))
+          $(element).addClass('btn-success');
+      }
+    });
 
 });
 </script>
