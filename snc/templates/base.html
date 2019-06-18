@@ -393,6 +393,16 @@
                     </li>
                   </ul>
               `);
+            } else if (input.attr('type') === 'radio'){
+              input.closest('.form-group').children().last().after(`
+                <span class="help-block">
+                  <ul class="errorlist">
+                    <li>
+                      ${field_error}
+                    </li>
+                  </ul>
+                </span>
+              `);
             } else {
               input.after(`
                 <span class="help-block">
