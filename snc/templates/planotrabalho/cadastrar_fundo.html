@@ -16,7 +16,6 @@
     {% for radio in form.mesma_lei %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.mesma_lei.errors }}
   </div>
 
   <h5>
@@ -29,7 +28,6 @@
         Data de Publicação da Lei do Fundo de Cultura
       </label>
       {% render_field form.data_publicacao class="form-control date half-width" %}
-      {{ form.data_publicacao.errors }}
     </div>
 
     <div class="form-group">
@@ -44,7 +42,6 @@
       {% else %}
         <p>{% render_field form.arquivo %}</p>
       {% endif %}
-      {{ form.arquivo.errors }}
     </div>
   </div>
 
@@ -55,7 +52,6 @@
     {% for radio in form.possui_cnpj %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.possui_cnpj.errors }}
   </div>
 
   <div id="cnpj_form">
@@ -64,9 +60,6 @@
         CNPJ
       </label>
       {% render_field form.cnpj class="form-control cnpj half-width" %}
-      {% if form.cnpj.errors %} 
-        <span class="help-block">{{ form.cnpj.errors }}</span>
-      {% endif %}
     </div>
 
     <div class="form-group">
@@ -81,7 +74,6 @@
       {% else %}
         <p>{% render_field form.comprovante %}</p>
       {% endif %}
-      {{ form.comprovante.errors }}
     </div>
   </div>
 

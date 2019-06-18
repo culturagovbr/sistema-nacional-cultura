@@ -17,7 +17,6 @@
       Data da Publicação do Ato Normativo relativo a criação do Órgão Gestor
     </label>
     {% render_field form.data_publicacao class="form-control date half-width" %}
-    {{ form.data_publicacao.errors }}
   </div>
 
   <div class="form-group">
@@ -32,7 +31,6 @@
     {% else %}
     <p>{% render_field form.arquivo %}</p>
     {% endif %}
-    {{ form.arquivo.errors }}
   </div>
 
   <div class="form-group">
@@ -40,7 +38,6 @@
       Qual o perfil do órgão gestor de cultura?
     </label>
     {% render_field form.perfil class="form-control date half-width" %}
-    {{ form.perfil.errors }}
   </div>
   </br>
 

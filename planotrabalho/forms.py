@@ -104,11 +104,11 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
 class CriarPlanoForm(CriarComponenteForm):
 
-    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    possui_anexo = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    anexo_na_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     anexo_lei = RestrictedFileField(
         required=False,
@@ -116,18 +116,22 @@ class CriarPlanoForm(CriarComponenteForm):
         max_upload_size=52428800)
     periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
     ultimo_ano_vigencia = forms.IntegerField()
-    possui_metas = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    possui_metas = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    metas_na_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    metas_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     arquivo_metas = RestrictedFileField(
         required=False,
         content_types=content_types,
         max_upload_size=52428800)
-    monitorado = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    monitorado = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    participou_curso = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    local_monitoramento = forms.CharField(required=False)
+    participou_curso = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
+    ano_inicio_curso = forms.IntegerField(required=False)
+    ano_termino_curso = forms.IntegerField(required=False)
+    local_monitoramento = forms.IntegerField(required=False)
     esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
         widget=forms.CheckboxSelectMultiple)
     tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
@@ -154,91 +158,91 @@ class CriarPlanoForm(CriarComponenteForm):
            })
 
     def clean_exclusivo_cultura(self):
-        if not self.cleaned_data['exclusivo_cultura']:
+        if self.cleaned_data['exclusivo_cultura'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['exclusivo_cultura']
 
     def clean_possui_anexo(self):
-        if not self.cleaned_data['possui_anexo']:
+        if self.cleaned_data['possui_anexo'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['possui_anexo']
 
     def clean_anexo_na_lei(self):
-        if self.cleaned_data.get('possui_anexo', None) == 'True' and not self.cleaned_data['anexo_na_lei']:
+        if self.cleaned_data.get('possui_anexo', None) and self.cleaned_data['anexo_na_lei'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['anexo_na_lei']
 
     def clean_anexo_lei(self):
-        if self.cleaned_data.get('possui_anexo', None) == 'True' and self.cleaned_data['anexo_na_lei'] == 'False' and not self.cleaned_data['anexo_lei']:
+        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and self.cleaned_data['anexo_lei'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['anexo_lei']
 
     def clean_possui_metas(self):
-        if not self.cleaned_data.get('possui_metas', None):
+        if self.cleaned_data.get('possui_metas', None) is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['possui_metas']
 
     def clean_metas_na_lei(self):
-        if self.cleaned_data.get('possui_metas', None) == 'True' and not self.cleaned_data['metas_na_lei']:
+        if self.cleaned_data.get('possui_metas', None) and self.cleaned_data['metas_na_lei'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['metas_na_lei']
 
     def clean_arquivo_metas(self):
-        if self.cleaned_data.get('possui_metas', None) == 'True' and self.cleaned_data['metas_na_lei']  == 'False' and not self.cleaned_data['arquivo_metas']:
+        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and self.cleaned_data['arquivo_metas'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo_metas']
 
     def clean_monitorado(self):
-        if not self.cleaned_data['monitorado']:
+        if self.cleaned_data['monitorado'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['monitorado']
 
     def clean_local_monitoramento(self):
-        if self.cleaned_data.get('monitorado', None) == 'True' and not self.cleaned_data['local_monitoramento']:
+        if self.cleaned_data.get('monitorado', None) and self.cleaned_data.get('local_monitoramento') == '':
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['local_monitoramento']
 
     def clean_participou_curso(self):
-        if not self.cleaned_data['participou_curso']:
+        if self.cleaned_data['participou_curso'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['participou_curso']
 
     def clean_ano_inicio_curso(self):
-        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['ano_inicio_curso']:
+        if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_inicio_curso'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['ano_inicio_curso']
 
     def clean_ano_termino_curso(self):
-        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['ano_termino_curso']:
+        if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_termino_curso'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['ano_termino_curso']
 
     def clean_esfera_federacao_curso(self):
-        if self.cleaned_data.get('esfera_federacao_curso', None) == 'True' and not self.cleaned_data['esfera_federacao_curso']:
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['esfera_federacao_curso']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['esfera_federacao_curso']
 
-    def clean_atipo_oficina(self):
-        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['tipo_oficina']:
+    def clean_tipo_oficina(self):
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['tipo_oficina']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['tipo_oficina']
 
     def clean_perfil_participante(self):
-        if self.cleaned_data.get('participou_curso', None) == 'True' and not self.cleaned_data['perfil_participante']:
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['perfil_participante']:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['perfil_participante']
@@ -278,9 +282,7 @@ class CriarPlanoForm(CriarComponenteForm):
 
     class Meta:
         model = PlanoDeCultura
-        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade',
-            'local_monitoramento', 'ano_inicio_curso', 'ano_termino_curso', 'tipo_curso',
-            'esfera_federacao_curso', 'tipo_oficina', 'perfil_participante')
+        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade')
 
 
 class CriarFundoForm(CriarComponenteForm):
@@ -288,9 +290,9 @@ class CriarFundoForm(CriarComponenteForm):
     comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
     data_publicacao = forms.DateField(required=False)
-    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    possui_cnpj = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+    possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
@@ -392,13 +394,13 @@ class CriarConselhoForm(ModelForm):
         required=False,
         content_types=content_types,
         max_upload_size=52428800)
-    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    possui_ata = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
-    paritario = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
                                                             (False, 'Não')]))
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
