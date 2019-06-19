@@ -737,6 +737,7 @@ class DataTableEntes(BaseDatatableView):
         custom_search = self.request.POST.get('columns[0][search][value]', None)
         componentes_search = self.request.POST.get('columns[1][search][value]', None)
         situacoes_search = self.request.POST.get('columns[2][search][value]', None)
+        tipo_ente_search = self.request.POST.get('columns[3][search][value]', None)
 
         if search:
             query = Q()
@@ -784,6 +785,12 @@ class DataTableEntes(BaseDatatableView):
         if situacoes_search:
             situacoes_search = situacoes_search.split(',')
             qs = qs.filter(estado_processo__in=situacoes_search)
+
+        if tipo_ente_search:
+            if tipo_ente_search == 'municipio':
+                qs = qs.filter(ente_federado__cod_ibge__gte=99)
+            elif tipo_ente_search == 'estado':
+                qs = qs.filter(ente_federado__cod_ibge__lte=99)
 
         return qs
 
