@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" id="fundoCultura" enctype="multipart/form-data">
+<form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -64,7 +64,7 @@
         CNPJ
       </label>
       {% render_field form.cnpj class="form-control cnpj half-width" %}
-      {% if form.cnpj.errors %} 
+      {% if form.cnpj.errors %}
         <span class="help-block">{{ form.cnpj.errors }}</span>
       {% endif %}
     </div>
@@ -98,18 +98,6 @@
 </form>
 </div>
 
-<body>
-  <button class="btn btn-success" onclick="minhaFunçao()">Salvar</button>
-  <script>
-    function minhaFunçao() {
-      var r = confirm("Deseja mesmo alterar o arquivo?");
-      if (r == true) {
-        $("#fundoCultura").submit();
-      }
-    }
-  </script>
-</body>
-
 {% endblock content %}
 {% block js%}
 <script type="text/javascript">
@@ -129,7 +117,7 @@
       $('#cnpj_form').css('display', 'none');
     }
 
-    $('input[name=mesma_lei]').change(function() { 
+    $('input[name=mesma_lei]').change(function() {
       if(this.value=='False') {
         $('#lei_data_form').fadeIn();
       }
@@ -138,7 +126,7 @@
       }
     })
 
-    $('input[name=possui_cnpj]').change(function() { 
+    $('input[name=possui_cnpj]').change(function() {
       if(this.value=='True') {
         $('#cnpj_form').fadeIn();
       }

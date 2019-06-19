@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" id="conselhoCultural" enctype="multipart/form-data">
+<form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -111,17 +111,6 @@
 </form>
 </div>
 
-<body>
-  <button class="btn btn-success" onclick="minhaFunçao()">Salvar</button>
-  <script>
-    function minhaFunçao() {
-      var r = confirm("Deseja mesmo alterar o arquivo?");
-      if (r == true) {
-        $("#conselhoCultural").submit();
-      }
-    }
-  </script>
-</body>
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -133,7 +122,7 @@
       $('#lei_data_form').css('display', 'none');
     }
 
-    $('input[name=mesma_lei]').change(function() { 
+    $('input[name=mesma_lei]').change(function() {
       if(this.value=='False') {
         $('#lei_data_form').fadeIn();
       }
@@ -149,7 +138,7 @@
       $('#ata_form').css('display', 'block');
     }
 
-    $('input[name=possui_ata]').change(function() { 
+    $('input[name=possui_ata]').change(function() {
       if(this.value=='False') {
         $('#ata_form').fadeOut();
       }
