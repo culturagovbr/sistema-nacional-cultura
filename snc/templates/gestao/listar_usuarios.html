@@ -118,7 +118,7 @@ $(document).ready(function(){
               data-name="is_active"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[5] == 'Ativo' ? 0 : 1}"
+              data-value="${data[5] == 'Ativo' ? 1 : 0}"
               data-title="Alterar Situação">
                 ${data[5]}
               </a>`
@@ -133,7 +133,7 @@ $(document).ready(function(){
               data-name="is_staff"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[6] == 'Administrador' ? 0 : 1}"
+              data-value="${data[6] == 'Administrador' ? 1 : 0}"
               data-title="Alterar Perfil">
                 ${data[6]} <i class="fa fa-edit"></i>
               </a>`
@@ -187,8 +187,8 @@ $(document).ready(function(){
       type: 'select',
       title: 'Selecione',
       source: [
+        { value: 0, text: 'Inativo' },
         {value: 1, text: 'Ativo'},
-        {value: 0, text: 'Inativo'},
       ],
       display: function(value, source) {
         $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
@@ -207,10 +207,12 @@ $(document).ready(function(){
     $('.user__is_staff').editable({
       type: 'select',
       source: [
+        { value: 0, text: 'Cadastrador' },
+
         {value: 1, text: 'Administrador'},
-        {value: 0, text: 'Cadastrador'},
       ],
       display: function(value, source) {
+        console.log(value,source)
         $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
       },
       success: function(response, newValue) {

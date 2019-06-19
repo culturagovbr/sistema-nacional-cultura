@@ -1226,7 +1226,6 @@ dl.portlet ul.navTreeLevel6 li a { padding: 0.55em 4.5em !important; }
 #content li,
 dl.portlet li {
     margin-bottom: 0.25em;
-    list-style: square outside;
     line-height: 1.5em !important;
 }
 

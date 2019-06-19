@@ -15,7 +15,6 @@
     {% for radio in form.mesma_lei %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.mesma_lei.errors }}
   </div>
 
   <h5>
@@ -28,7 +27,6 @@
         Data de Publicação da Lei do Conselho de Cultura
       </label>
       {% render_field form.data_publicacao_lei class="form-control date half-width" %}
-      {{ form.data_publicacao_lei.errors }}
     </div>
 
     <div class="form-group">
@@ -36,7 +34,6 @@
         Lei de criação do Conselho Estadual/Municipal de Cultura
       </label>
       <p>{% render_field form.arquivo_lei %}</p>
-      {{ form.arquivo_lei.errors }}
     </div>
   </div>
 
@@ -47,7 +44,6 @@
     {% for radio in form.possui_ata %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.possui_ata.errors }}
   </div>
 
   <div id="ata_form">
@@ -56,7 +52,6 @@
         Data de Assinatura da Ata da última reunião
       </label>
       {% render_field form.data_publicacao class="form-control date half-width" %}
-      {{ form.data_publicacao.errors }}
     </div>
 
     <div class="form-group">
@@ -64,7 +59,6 @@
         Ata da última reunião realizada pelo conselho
       </label>
       <p>{% render_field form.arquivo %}</p>
-      {{ form.arquivo.errors }}
     </div>
   </div>
 
@@ -75,7 +69,6 @@
     {% for radio in form.exclusivo_cultura %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.exclusivo_cultura.errors }}
   </div>
 
   <div class="form-group">
@@ -85,7 +78,6 @@
     {% for radio in form.paritario %}
       {{ radio }}</br>
     {% endfor %}
-    {{ form.paritario.errors }}
   </div>
 
 
