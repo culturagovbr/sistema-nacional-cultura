@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" enctype="multipart/form-data">
+<form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -100,9 +100,10 @@
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
-  <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
+
+
 <script type="text/javascript">
   $(document).ready(function(){
 
@@ -113,7 +114,7 @@
       $('#lei_data_form').css('display', 'none');
     }
 
-    $('input[name=mesma_lei]').change(function() { 
+    $('input[name=mesma_lei]').change(function() {
       if(this.value=='False') {
         $('#lei_data_form').fadeIn();
       }
@@ -129,7 +130,7 @@
       $('#ata_form').css('display', 'block');
     }
 
-    $('input[name=possui_ata]').change(function() { 
+    $('input[name=possui_ata]').change(function() {
       if(this.value=='False') {
         $('#ata_form').fadeOut();
       }
