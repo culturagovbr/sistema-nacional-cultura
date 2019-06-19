@@ -138,6 +138,11 @@ class AlterarOrgaoGestor(UpdateView):
 
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(AlterarOrgaoGestor, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
+
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
@@ -167,6 +172,11 @@ class AlterarFundoCultura(UpdateView):
             kwargs['initial']['possui_cnpj'] = False
 
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(AlterarFundoCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
@@ -200,6 +210,11 @@ class AlterarConselhoCultura(UpdateView):
             kwargs['initial']['possui_ata'] = False
 
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(AlterarConselhoCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
