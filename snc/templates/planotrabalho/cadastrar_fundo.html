@@ -78,7 +78,7 @@
       {% else %}
         <p>{% render_field form.comprovante %}</p>
       {% endif %}
-      {% if form.comprovante.errors %} 
+      {% if form.comprovante.errors %}
         <span class="help-block">{{ form.comprovante.errors }}</span>
       {% endif %}
     </div>
@@ -114,7 +114,7 @@
     }
 
     $('#botaoSalvarConfirmacao').on('click', () => {
-      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá ocasionar o retrocesso do seu processo.');
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
       if (confirmacao == true) {
         formularioComponente.submit();
       }
