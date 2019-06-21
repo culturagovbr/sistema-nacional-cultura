@@ -224,6 +224,8 @@ class PlanoDeCultura(Componente):
         blank=True,
         null=True,
         related_name='anexo_plano')
+    anexo_na_lei = models.BooleanField(blank=True, default=False)
+    metas_na_lei = models.BooleanField(blank=True, default=False)
     exclusivo_cultura = models.BooleanField(blank=True, default=False)
     ultimo_ano_vigencia = models.IntegerField(blank=True, null=True)
     periodicidade = models.CharField(blank=True, null=True, max_length=100)

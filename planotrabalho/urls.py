@@ -25,7 +25,7 @@ urlpatterns = [
         name='alterar_conselho'),
     path('componente/plano/<int:pk>',
         login_required(views.AlterarPlanoCultura.as_view()),
-        name='alterar_conselho'),
+        name='alterar_plano'),
     path('componente/<str:tipo>/<int:pk>',
         login_required(views.AlterarComponente.as_view()),
         name='alterar_componente'),

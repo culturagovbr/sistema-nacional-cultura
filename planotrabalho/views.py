@@ -134,6 +134,41 @@ class AlterarPlanoCultura(UpdateView):
         kwargs['tipo'] = 'plano'
         kwargs['logged_user'] = self.request.user
 
+        kwargs['initial']['local_monitoramento'] = self.object.local_monitoramento
+        kwargs['initial']['ano_inicio_curso'] = self.object.ano_inicio_curso
+        kwargs['initial']['ano_termino_curso'] = self.object.ano_termino_curso
+        kwargs['initial']['esfera_federacao_curso'] = self.object.esfera_federacao_curso
+        kwargs['initial']['tipo_oficina'] = self.object.tipo_oficina
+        kwargs['initial']['perfil_participante'] = self.object.perfil_participante
+        kwargs['initial']['anexo_na_lei'] = self.object.anexo_na_lei
+        kwargs['initial']['metas_na_lei'] = self.object.metas_na_lei
+
+        if self.object.anexo_na_lei:
+            kwargs['initial']['possui_anexo'] = True
+        elif not self.object.anexo_na_lei and self.object.anexo.arquivo:
+            kwargs['initial']['possui_anexo'] = True
+            kwargs['initial']['anexo_lei'] = self.object.anexo.arquivo
+        else:
+            kwargs['initial']['possui_anexo'] = False
+
+        if self.object.metas_na_lei:
+            kwargs['initial']['possui_metas'] = True
+        elif not self.object.metas_na_lei and self.object.metas.arquivo:
+            kwargs['initial']['possui_metas'] = True
+            kwargs['initial']['arquivo_metas'] = self.object.anexo.arquivo
+        else:
+            kwargs['initial']['possui_anexo'] = False
+
+        if self.object.local_monitoramento:
+            kwargs['initial']['monitorado'] = True
+        else:
+            kwargs['initial']['monitorado'] = False
+
+        if self.object.ano_inicio_curso:
+            kwargs['initial']['participou_curso'] = True
+        else:
+            kwargs['initial']['participou_curso'] = False
+
         return kwargs
 
     def get_success_url(self):

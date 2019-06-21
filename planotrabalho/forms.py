@@ -131,7 +131,6 @@ class CriarPlanoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
     ano_inicio_curso = forms.IntegerField(required=False)
     ano_termino_curso = forms.IntegerField(required=False)
-    local_monitoramento = forms.IntegerField(required=False)
     esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
         widget=forms.CheckboxSelectMultiple)
     tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
@@ -273,6 +272,14 @@ class CriarPlanoForm(CriarComponenteForm):
             plano.metas.metas_plano.add(plano)
             plano.metas.arquivo = self.cleaned_data['arquivo_metas']
             plano.metas.save()
+
+        plano.anexo_na_lei = self.cleaned_data['anexo_na_lei']
+        plano.local_monitoramento = self.cleaned_data['local_monitoramento']
+        plano.ano_inicio_curso = self.cleaned_data['ano_inicio_curso']
+        plano.ano_termino_curso = self.cleaned_data['ano_termino_curso']
+        plano.esfera_federacao_curso = self.cleaned_data['esfera_federacao_curso']
+        plano.tipo_oficina = self.cleaned_data['tipo_oficina']
+        plano.perfil_participante = self.cleaned_data['perfil_participante']
 
         plano.save()
         sistema_cultura = plano.plano
