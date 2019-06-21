@@ -289,7 +289,8 @@ class CriarPlanoForm(CriarComponenteForm):
 
     class Meta:
         model = PlanoDeCultura
-        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade')
+        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade',
+            'arquivo', 'data_publicacao')
 
 
 class CriarFundoForm(CriarComponenteForm):

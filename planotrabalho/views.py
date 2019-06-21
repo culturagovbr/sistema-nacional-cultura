@@ -155,9 +155,9 @@ class AlterarPlanoCultura(UpdateView):
             kwargs['initial']['possui_metas'] = True
         elif not self.object.metas_na_lei and self.object.metas.arquivo:
             kwargs['initial']['possui_metas'] = True
-            kwargs['initial']['arquivo_metas'] = self.object.anexo.arquivo
+            kwargs['initial']['arquivo_metas'] = self.object.metas.arquivo
         else:
-            kwargs['initial']['possui_anexo'] = False
+            kwargs['initial']['possui_metas'] = False
 
         if self.object.local_monitoramento:
             kwargs['initial']['monitorado'] = True
