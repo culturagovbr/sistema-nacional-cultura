@@ -217,13 +217,13 @@ class CriarConselhoForm(ModelForm):
         required=False,
         content_types=content_types,
         max_upload_size=52428800)
-    mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -234,10 +234,10 @@ class CriarConselhoForm(ModelForm):
 
         if logged_user.is_staff:
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Componente'
+                'label': 'Arquivo Lei'
             })
             self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Lei'
+                'label': 'Arquivo Ata'
             })
 
     def clean_paritario(self):
@@ -275,13 +275,13 @@ class CriarConselhoForm(ModelForm):
             try:
                 if self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
-            except (ValueError, AttributeError) as e:    
+            except (ValueError, AttributeError) as e:
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
         elif self.data.get('mesma_lei', None) is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
     def clean_arquivo(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['arquivo']:   
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['arquivo'] = None
@@ -289,7 +289,7 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:   
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
@@ -324,7 +324,7 @@ class CriarConselhoForm(ModelForm):
                 conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
 
             conselho.lei.save()
-        
+
         sistema_cultura = conselho.conselho
         sistema_cultura.add(self.sistema)
 
@@ -341,13 +341,13 @@ class AlterarConselhoForm(ModelForm):
     arquivo = RestrictedFileField(
         content_types=content_types,
         max_upload_size=52428800)
-    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    mesma_lei = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    possui_ata = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    possui_ata = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    exclusivo_cultura = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    paritario = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), 
+    paritario = forms.BooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
@@ -358,10 +358,10 @@ class AlterarConselhoForm(ModelForm):
 
         if logged_user.is_staff:
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Componente'
+                'label': 'Arquivo Lei'
             })
             self.fields['arquivo_lei'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Lei'
+                'label': 'Arquivo Ata'
             })
 
     def save(self, commit=True, *args, **kwargs):
