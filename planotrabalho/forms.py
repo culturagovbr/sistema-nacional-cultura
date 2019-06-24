@@ -106,6 +106,11 @@ class CriarPlanoForm(CriarComponenteForm):
 
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
+    arquivo = RestrictedFileField(
+        required=False,
+        content_types=content_types,
+        max_upload_size=52428800)
+
     possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
@@ -207,6 +212,8 @@ class CriarPlanoForm(CriarComponenteForm):
     def clean_local_monitoramento(self):
         if self.cleaned_data.get('monitorado', None) and self.cleaned_data.get('local_monitoramento') == '':
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('monitorado', None):
+            self.cleaned_data['local_monitoramento'] = None
 
         return self.cleaned_data['local_monitoramento']
 
@@ -219,30 +226,42 @@ class CriarPlanoForm(CriarComponenteForm):
     def clean_ano_inicio_curso(self):
         if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_inicio_curso'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['ano_inicio_curso'] = None
 
         return self.cleaned_data['ano_inicio_curso']
 
     def clean_ano_termino_curso(self):
         if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_termino_curso'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['ano_termino_curso'] = None
+        elif self.cleaned_data['ano_termino_curso'] <= self.cleaned_data['ano_inicio_curso']:
+            raise forms.ValidationError("O ano de término não pode ser menor ou igual ao ano de início")
 
         return self.cleaned_data['ano_termino_curso']
 
     def clean_esfera_federacao_curso(self):
         if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['esfera_federacao_curso']:
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['esfera_federacao_curso'] = None
 
         return self.cleaned_data['esfera_federacao_curso']
 
     def clean_tipo_oficina(self):
         if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['tipo_oficina']:
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['tipo_oficina'] = None
 
         return self.cleaned_data['tipo_oficina']
 
     def clean_perfil_participante(self):
         if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['perfil_participante']:
             raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['perfil_participante'] = None
 
         return self.cleaned_data['perfil_participante']
 
@@ -264,6 +283,11 @@ class CriarPlanoForm(CriarComponenteForm):
             plano.anexo.anexo_plano.add(plano)
             plano.anexo.arquivo = self.cleaned_data['anexo_lei']
             plano.anexo.save()
+        elif not self.cleaned_data['possui_anexo']:
+            plano.anexo = None
+            plano.anexo_na_lei = False
+        elif self.cleaned_data['possui_anexo'] and self.cleaned_data['anexo_na_lei']:
+            plano.anexo = None
 
         if self.cleaned_data['possui_metas'] and not self.cleaned_data['metas_na_lei']:
             plano.metas = ArquivoComponente2()
@@ -272,14 +296,21 @@ class CriarPlanoForm(CriarComponenteForm):
             plano.metas.metas_plano.add(plano)
             plano.metas.arquivo = self.cleaned_data['arquivo_metas']
             plano.metas.save()
+        elif not self.cleaned_data['possui_metas']:
+            plano.metas = None
+            plano.metas_na_lei = False
+        elif self.cleaned_data['possui_metas'] and self.cleaned_data['metas_na_lei']:
+            plano.metas = None
 
-        plano.anexo_na_lei = self.cleaned_data['anexo_na_lei']
-        plano.local_monitoramento = self.cleaned_data['local_monitoramento']
-        plano.ano_inicio_curso = self.cleaned_data['ano_inicio_curso']
-        plano.ano_termino_curso = self.cleaned_data['ano_termino_curso']
-        plano.esfera_federacao_curso = self.cleaned_data['esfera_federacao_curso']
-        plano.tipo_oficina = self.cleaned_data['tipo_oficina']
-        plano.perfil_participante = self.cleaned_data['perfil_participante']
+        if 'participou_curso' in self.changed_data:
+            plano.ano_inicio_curso = self.cleaned_data['ano_inicio_curso']
+            plano.ano_termino_curso = self.cleaned_data['ano_termino_curso']
+            plano.esfera_federacao_curso = self.cleaned_data['esfera_federacao_curso']
+            plano.tipo_oficina = self.cleaned_data['tipo_oficina']
+            plano.perfil_participante = self.cleaned_data['perfil_participante']
+
+        if 'monitorado' in self.changed_data:
+            plano.local_monitoramento = self.cleaned_data['local_monitoramento']
 
         plano.save()
         sistema_cultura = plano.plano
