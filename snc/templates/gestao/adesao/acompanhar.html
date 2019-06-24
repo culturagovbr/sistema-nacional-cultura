@@ -77,10 +77,10 @@ $(document).ready(function(){
         [10, 25, 50, 100, "Todos"]
     ],
     dom:
-      `<'row'<'col-md-auto col-lg-4 col-lg-custom'l>
+      `<'row'<'col-md-auto col-lg-3 col-lg-custom'l>
       <'col-md-2 col-lg-auto col-sm-auto'B>
       <'col-sm-auto col-md-auto'f>
-      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-componente.col-sm-auto col-md-auto"><"#filtro-situacao.col-sm-auto col-md-auto">>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-tipo-ente"><"#filtro-componente.col-sm-auto col-md-auto"><"#filtro-situacao.col-sm-auto col-md-auto">>
       <'row'<'col-sm-auto col-md-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
@@ -140,7 +140,7 @@ $(document).ready(function(){
           name: "gestor__nome",
           render: (data) => {
             if (data[5].length > 0){
-              return `<a href="${data[5]}">${data[2]}</a>`
+              return `<a href="${data[5]}" target="_blank">${data[2]}</a>`
             }
             return data[2]
           }
@@ -196,16 +196,29 @@ $(document).ready(function(){
         </select>
       `);
 
+       $('#filtro-tipo-ente').html(`
+        <select id="input-tipo-ente" class="form-control form-control-sm">
+          <option value="" selected>Todos</option>
+          <option value="estado" >Estados</option>
+          <option value="municipio" >Municípios</option>
+        </select>
+      `);
+
       $('#filtro-componente select, #filtro-situacao select').selectpicker();
 
-      $('#filtro-componente select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
+      $('#filtro-componente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
         tabela.columns(1).search(pesquisa_filtro).draw()
       });
 
-      $('#filtro-situacao select').on('changed.bs.select', function (e, componenteId, isSelected, previousValue) {
+      $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
         tabela.columns(2).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(3).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-estados').html(`

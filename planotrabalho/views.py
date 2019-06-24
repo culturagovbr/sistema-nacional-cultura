@@ -111,6 +111,11 @@ class AlterarComponente(UpdateView):
         kwargs['logged_user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(AlterarComponente, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
+
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
@@ -132,6 +137,11 @@ class AlterarOrgaoGestor(UpdateView):
             kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
 
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(AlterarOrgaoGestor, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
@@ -163,6 +173,11 @@ class AlterarFundoCultura(UpdateView):
 
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(AlterarFundoCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
+
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
@@ -170,7 +185,7 @@ class AlterarFundoCultura(UpdateView):
 class AlterarConselhoCultura(UpdateView):
     model = ConselhoDeCultura
     form_class = CriarConselhoForm
-    template_name = 'planotrabalho/alterar_conselho.html'
+    template_name = 'planotrabalho/cadastrar_conselho.html'
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
@@ -195,6 +210,11 @@ class AlterarConselhoCultura(UpdateView):
             kwargs['initial']['possui_ata'] = False
 
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(AlterarConselhoCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})

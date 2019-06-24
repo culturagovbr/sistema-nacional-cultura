@@ -208,7 +208,7 @@ def test_renderizacao_js_form_diligencia(template, client, context, sistema_cult
     assert "<script type=\"text/javascript\" src=\"/static/ckeditor/ckeditor/ckeditor.js\">" in rendered_template
 
 
-def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, sistema_cultura):
+def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, sistema_cultura, cnpj):
     """ Testa se há a opção de avaliar negativamente e positivamente um
     documento enviado do Plano Trabalho """
 

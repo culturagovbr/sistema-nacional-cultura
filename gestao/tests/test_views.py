@@ -532,7 +532,7 @@ def test_insere_sei(client, sistema_cultura, login_staff):
     assert sistema_atualizado.alterado_por == login_staff
 
 
-def test_retorno_200_para_detalhar_ente(client, sistema_cultura, login_staff):
+def test_retorno_200_para_detalhar_ente(client, sistema_cultura, login_staff, cnpj):
     """ Testa se página de detalhamento do ente retorna 200 """
 
     url = reverse("gestao:detalhar", kwargs={"cod_ibge": sistema_cultura.ente_federado.cod_ibge})
@@ -741,7 +741,7 @@ def test_inserir_documentos_legislacao(client, sistema_cultura, login_staff):
     assert situacao == 1
 
 
-def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
+def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff, cnpj):
     """ Testa se funcionalidade de inserir documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
 
@@ -771,7 +771,7 @@ def test_inserir_documentos_fundo_cultura(client, sistema_cultura, login_staff):
     assert novo_fundo.data_publicacao == datetime.date(2018, 6, 28)
 
 
-def test_alterar_documentos_fundo_cultura(client, login_staff):
+def test_alterar_documentos_fundo_cultura(client, login_staff, cnpj):
     """ Testa se funcionalidade de alterar documento para o fundo de cultura na
     tela de gestão salva no field arquivo """
 
@@ -1836,13 +1836,13 @@ def test_alterar_documentos_ente_federado(client, login_staff):
     assert sistema_atualizado.gestor.cpf_copia.name.split('/')[1] == cpf_copia.name
 
 
-def test_alterar_dados_sistema_cultura(client, login_staff):
+def test_alterar_dados_sistema_cultura(client, login_staff, cnpj):
     sistema_cultura = mommy.make("SistemaCultura", ente_federado__cod_ibge=123456,
         _fill_optional=['gestor', 'sede'])
 
     gestor = Gestor(cpf="590.328.900-26", rg="1234567", orgao_expeditor_rg="ssp", estado_expeditor=29,
         nome="nome", email_institucional="email@email.com")
-    sede = Sede(cnpj="70.658.964/0001-07", endereco="endereco", complemento="complemento",
+    sede = Sede(cnpj="28.134.084/0001-75", endereco="endereco", complemento="complemento",
         cep="72430101", bairro="bairro", telefone_um="123456")
     rg_copia = SimpleUploadedFile("rg_copia_sistema.txt", b"file_content", content_type="text/plain")
     termo_posse = SimpleUploadedFile("termo_posse_sistema.txt", b"file_content", content_type="text/plain")
