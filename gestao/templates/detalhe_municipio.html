@@ -13,17 +13,17 @@
             <div class="col-md-7">
               <p><strong>Localização:</strong> {{ente.ente_federado}}</p>
               <p><strong>CNPJ:</strong> {{ ente.sede.cnpj }}</p>
+              <p><strong>Prefeito:</strong>
+                {% if ente.gestor.termo_posse %}
+                <a href="{% if ente.gestor.termo_posse %} {{ ente.gestor.termo_posse.url }} {% endif %}">{{ ente.gestor.nome }}</a>
+                {% else %}
+                {{ ente.gestor.nome }}
+                {% endif %}
+              </p>
               {% if informacao_cnpj %}
                 <p><strong>Natureza Jurídica:</strong> {{ informacao_cnpj.naturezaJuridica.dsNaturezaJuridica }}</p>
                 <p><strong>Razão Social:</strong> {{ informacao_cnpj.nmRazaoSocial }}</p>
               {% endif %}
-              <p><strong>Prefeito:</strong>
-                  {% if ente.gestor.termo_posse %}
-                  <a href="{% if ente.gestor.termo_posse %} {{ ente.gestor.termo_posse.url }} {% endif %}">{{ ente.gestor.nome }}</a>
-                  {% else %}
-                  {{ ente.gestor.nome }}
-                  {% endif %}
-              </p>
               <p><strong>CPF:</strong>
                   {% if ente.gestor.cpf %}
                   <a href="{% if ente.gestor.cpf_copia %} {{ ente.gestor.cpf_copia.url }} {% endif %}">{{ ente.gestor.cpf }}</a>
@@ -39,13 +39,17 @@
                     {% endif %}
               </p>
               <p><strong> E-mail Institucional:</strong> {{ ente.gestor.email_institucional }}</p>
+              {% if ente.gestor_cultura.email_pessoal %}
+              <p><strong>E-mail Pessoal:</strong> {{ ente.gestor_cultura.email_pessoal }}</p>
+              {% endif %}
+              <p><strong>Telefone:</strong> {{ ente.sede.telefone_um }}</p>
+              <p><strong>Endereço:</strong> {{ ente.sede.endereco }}</p>
+              <p><strong>Complemento:</strong> {{ ente.sede.complemento }}</p>
+              <p><strong>Bairro:</strong> {{ ente.sede.bairro }}</p>
+              <p><strong>CEP</strong> {{ ente.sede.cep }}</p>
             </div>
 
             <div class="col-md-5">
-                <p><strong>Telefone:</strong> {{ ente.sede.telefone_um }}</p>
-                <p><strong>Endereço:</strong> {{ ente.sede.endereco }}</p>
-                <p><strong>Complemento:</strong> {{ ente.sede.complemento }}</p>
-                <p><strong>Bairro:</strong> {{ ente.sede.bairro }}</p>
                 {% if ente.processo_sei %}
                   <p>
                     <strong>Processo SEI:</strong>
@@ -74,21 +78,21 @@
                   </p>
                 {% endif %}
                 <p>
-                  <strong>Última atualização:</strong>
-                    {{ente.alterado_em}}
-                </p>
-                <p>
-                  <strong>Atualizado pelo usuário de CPF:</strong>
-                    {% if ente.alterado_por %}
-                      {{ente.alterado_por}}
-                    {% endif %}
-                </p>
-                <p>
                   <strong>Participou da Conferência Nacional:</strong>
                   {% if ente.conferencia_nacional %}
                   Sim
                   {% else %}
                   {{ente.data_publicacao_acordo|date:'d/m/Y'}}
+                  {% endif %}
+                </p>
+                <p>
+                  <strong>Última atualização:</strong>
+                  {{ente.alterado_em}}
+                </p>
+                <p>
+                  <strong>Atualizado pelo usuário de CPF:</strong>
+                  {% if ente.alterado_por %}
+                  {{ente.alterado_por}}
                   {% endif %}
                 </p>
           </div>
@@ -123,9 +127,6 @@
             <p><strong>Cargo:</strong> {{ ente.gestor_cultura.cargo }}</p>
             <p><strong>Instituição:</strong> {{ ente.gestor_cultura.instituicao }}</p>
             <p><strong>E-mail Institucional:</strong> {{ ente.gestor_cultura.email_institucional }}</p>
-            {% if ente.gestor_cultura.email_pessoal %}
-              <p><strong>E-mail Pessoal:</strong> {{ ente.gestor_cultura.email_pessoal }}</p>
-            {% endif %}
             <p><strong>Telefone:</strong> {{ ente.gestor_cultura.telefone_um }}</p>
           </div>
       </div>
