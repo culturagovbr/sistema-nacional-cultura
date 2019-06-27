@@ -5,7 +5,7 @@
       <div class="card card-default">
           <div class="card-header card-plain card-header-primary">
               <h4 class="card-title">Componente</h4>
-              <p class="card-category">Inserir arquivos do conselho cultural no cadastro</p>
+              <p class="card-category">Inserir arquivos do Conselho de Cultura</p>
           </div>
           <div class="card-body">
               <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
@@ -34,9 +34,9 @@
                 </div>
 
                 <div id="lei_data_form">
-                  <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
+                  <div class="form-group">
                     <div class="col-sm-12">
-                      {% render_field form.arquivo %}
+                      {% render_field form.arquivo_lei %}
                     </div>
                   </div>
 
@@ -44,7 +44,7 @@
                     <label class="col-sm-12 control-label">Data de publicação da Lei</label>
 
                     <div class="col-sm-12">
-                      {% render_field form.data_publicacao class="date" %}
+                      {% render_field form.data_publicacao_lei class="date" %}
                     </div>
                   </div>
                 </div>
@@ -76,7 +76,7 @@
                 <div id="ata_form">
                   <div class="form-group">
                     <div class="col-sm-12">
-                      {% render_field form.arquivo_lei %}
+                      {% render_field form.arquivo %}
 
                     </div>
                   </div>
@@ -85,7 +85,7 @@
                     <label class="col-sm-12 control-label">Data de publicação da Ata</label>
 
                     <div class="col-sm-12">
-                      {% render_field form.data_publicacao_lei class="date" %}
+                      {% render_field form.data_publicacao class="date" %}
                     </div>
                   </div>
                 </div>
@@ -155,11 +155,35 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
+    if('{{form.initial.mesma_lei}}' == 'True'){
+      $('#id_mesma_lei_0').attr('checked', true)
+    } else if('{{form.initial.mesma_lei}}' == 'False') {
+      $('#id_mesma_lei_1').attr('checked', true)
+    }
+
+    if ('{{form.initial.possui_ata}}' == 'True') {
+      $('#id_possui_ata_0').attr('checked', true)
+    } else if ('{{form.initial.possui_ata}}' == 'False'){
+      $('#id_possui_ata_1').attr('checked', true)
+    }
+
     if($('#id_mesma_lei_1').is(":checked")){
       $('#lei_data_form').css('display', 'block');
     }
     if($('#id_mesma_lei_0').is(":checked")){
       $('#lei_data_form').css('display', 'none');
+    }
+
+    if('{{form.initial.paritario}}' == 'True'){
+      $('#id_paritario_0').attr('checked', true)
+    } else if('{{form.initial.paritario}}' == 'False') {
+      $('#id_paritario_1').attr('checked', true)
+    }
+
+    if('{{form.initial.exclusivo_cultura}}' == 'True'){
+      $('#id_exclusivo_cultura_0').attr('checked', true)
+    } else if('{{form.initial.exclusivo_cultura}}' == 'False') {
+      $('#id_exclusivo_cultura_1').attr('checked', true)
     }
 
     $('input[name=mesma_lei]').change(function() {

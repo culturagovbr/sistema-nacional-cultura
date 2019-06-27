@@ -40,7 +40,7 @@
     <label for="{{ form.perfil.id_for_label }}">
       Qual o perfil do órgão gestor de cultura?
     </label>
-    {% render_field form.perfil class="form-control date half-width" %}
+    {% render_field form.perfil class="form-control" %}
     {{ form.perfil.errors }}
   </div>
   </br>
@@ -69,10 +69,6 @@
     if ($('#form-type').data('form-type') === 'True') {
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
-      `);
-    } else {
-      formularioComponente.after(`
-        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
       `);
     }
 
