@@ -43,9 +43,6 @@
       {% else %}
         <p>{% render_field form.arquivo %}</p>
       {% endif %}
-      {% if form.arquivo.errors %}
-        <span class="help-block">{{ form.arquivo.errors }}</span>
-      {% endif %}
     </div>
   </div>
 
@@ -77,9 +74,6 @@
         {% endif %}
       {% else %}
         <p>{% render_field form.comprovante %}</p>
-      {% endif %}
-      {% if form.comprovante.errors %}
-        <span class="help-block">{{ form.comprovante.errors }}</span>
       {% endif %}
     </div>
   </div>
