@@ -1,39 +1,420 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class=" card  ">
-  <div class=" card-header">
-    Inserir lei do plano de cultura no cadastro
-  </div>
-  <div class=" card-body">
-    <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-      <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
+<div class="row">
+  <div class="col-md-4">
+      <div class="card card-default">
+          <div class="card-header card-plain card-header-primary">
+              <h4 class="card-title">Componente</h4>
+              <p class="card-category">Inserir arquivos do Conselho de Cultura</p>
+          </div>
+          <div class="card-body">
+              <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
 
-        <label class="col-sm-3 control-label">Anexo</label>
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">O plano é exclusivo de cultura?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="exclusivo_cultura" id="id_exclusivo_cultura_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="exclusivo_cultura" id="id_exclusivo_cultura_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
-        <div class="col-sm-7">
-          {% render_field form.arquivo %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-         <span class="help-block"> {{ form.arquivo.errors }} </span>
-        </div>
+                <div id="lei_form">
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      {% render_field form.arquivo %}
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-12 control-label">Data de publicação da Lei</label>
+
+                    <div class="col-sm-12">
+                      {% render_field form.data_publicacao class="date" %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">A lei possui anexo?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_anexo" id="id_possui_anexo_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_anexo" id="id_possui_anexo_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" id="anexo_na_lei">
+                  <label class="col-sm-12 control-label">O anexo já consta no mesmo arquivo da lei?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="anexo_na_lei" id="id_anexo_na_lei_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_anexo" id="id_anexo_na_lei_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="anexo">
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      {% render_field form.anexo_lei %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Qual o último ano de vigência do Plano de Cultura?</label>
+                  <div class="col-sm-12">
+                    {% render_field form.ultimo_ano_vigencia class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Qual a periodicidade do plano?</label>
+                  <div class="col-sm-12">
+                    {% render_field form.periodicidade class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Possui metas?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_metas" id="id_possui_metas_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_metas" id="id_possui_metas_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" id="metas_na_lei">
+                  <label class="col-sm-12 control-label">O anexo já consta no mesmo arquivo da lei?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="metas_na_lei" id="id_metas_na_lei_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="metas_na_lei" id="id_metas_na_lei_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="metas">
+                  <div class="form-group">
+                    <div class="col-sm-12">
+                      {% render_field form.arquivo_metas %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">O plano é monitorado?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="monitorado" id="id_monitorado_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="monitorado" id="id_monitorado_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Indique o local onde o resultado do monitoramento pode ser visualizado</label>
+                  <div class="col-sm-12">
+                    {% render_field form.local_monitoramento class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Para a construção do Plano de Cultura, o ente federado participou de algum Programa de Formação de Gestores e Conselheiros Culturais?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="participou_curso" id="id_participou_curso_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="participou_curso" id="id_participou_curso_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" id="ano_inicio">
+                  <label class="col-sm-12 control-label">Indique o ano de início do curso/label>
+                  <div class="col-sm-12">
+                    {% render_field form.ano_inicio_curso class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group" id="ano_termino">
+                  <label class="col-sm-12 control-label">Indique o ano de término do curso</label>
+                  <div class="col-sm-12">
+                    {% render_field form.ano_termino_curso class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group" id="esfera_federacao">
+                  <label class="col-sm-12 control-label">Indique por qual esfera da federação foi ofertado o curso:</label>
+                  <div class="col-sm-12">
+                    {% render_field form.esfera_federacao class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group" id="tipo_oficina">
+                  <label class="col-sm-12 control-label">Indique o tipo do curso?</label>
+                  <div class="col-sm-12">
+                    {% render_field form.tipo_oficina class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group" id="perfil_participante">
+                  <label class="col-sm-12 control-label">Qual o perfil do participante?</label>
+                  <div class="col-sm-12">
+                    {% render_field form.perfil_participante class="form-control" %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+                        <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                    </div>
+                </div>
+              </form>
+          </div>
       </div>
-      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
-
-        <div class="col-sm-7">
-          {% render_field form.data_publicacao class="date" %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-         <span class="help-block"> {{ form.data_publicacao.errors }} </span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-11">
-          <button type="submit" class="btn btn-primary">Salvar</button>
-        </div>
-      </div>
-    </form>
   </div>
 </div>
-
 {% endblock content %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if('{{form.initial.possui_anexo}}' == 'True'){
+      $('#id_possui_anexo_0').attr('checked', true)
+    } else if('{{form.initial.possui_anexo}}' == 'False') {
+      $('#id_possui_anexo_1').attr('checked', true)
+    }
+
+    if('{{form.initial.possui_metas}}' == 'True'){
+      $('#id_possui_metas_0').attr('checked', true)
+    } else if('{{form.initial.possui_metas}}' == 'False') {
+      $('#id_possui_metas_1').attr('checked', true)
+    }
+
+    if('{{form.initial.monitorado}}' == 'True'){
+      $('#id_monitorado_0').attr('checked', true)
+    } else if('{{form.initial.monitorado}}' == 'False') {
+      $('#id_monitorado_1').attr('checked', true)
+    }
+
+    if('{{form.initial.possui_curso}}' == 'True'){
+      $('#id_possui_curso_0').attr('checked', true)
+    } else if('{{form.initial.possui_curso}}' == 'False') {
+      $('#id_possui_curso_1').attr('checked', true)
+    }
+
+    if($('#id_possui_anexo_0').is(":checked")){
+      $('#anexo_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_anexo_1').is(":checked")){
+      $('#anexo_na_lei').css('display', 'none');
+    }
+
+    $('input[name=possui_anexo]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo_na_lei').fadeOut();
+      }
+      else {
+        $('#anexo_na_lei').fadeIn();
+      }
+    })
+
+    if($('#id_anexo_na_lei_0').is(":checked")){
+      $('#anexo').css('display', 'none');
+    }
+    if($('#id_anexo_na_lei_1').is(":checked")){
+      $('#anexo').css('display', 'block');
+    }
+
+    $('input[name=anexo_na_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo').fadeIn();
+      }
+      else {
+        $('#anexo').fadeOut();
+      }
+    })
+
+    if($('#id_possui_metas_0').is(":checked")){
+      $('#metas_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_metas_1').is(":checked")){
+      $('#metas_na_lei').css('display', 'none');
+    }
+
+    $('input[name=possui_metas]').change(function() { 
+      if(this.value=='False') {
+        $('#metas_na_lei').fadeOut();
+      }
+      else {
+        $('#metas_na_lei').fadeIn();
+      }
+    })
+
+    if($('#id_metas_na_lei_0').is(":checked")){
+      $('#metas').css('display', 'none');
+    }
+    if($('#id_possui_metas_1').is(":checked")){
+      $('#metas').css('display', 'block');
+    }
+
+    $('input[name=metas_na_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#metas').fadeIn();
+      }
+      else {
+        $('#metas').fadeOut();
+      }
+    })
+
+    if($('#id_monitorado_0').is(":checked")){
+      $('#monitoramento').css('display', 'block');
+    }
+    if($('#id_monitorado_1').is(":checked")){
+      $('#monitoramento').css('display', 'none');
+    }
+
+    $('input[name=monitorado]').change(function() { 
+      if(this.value=='False') {
+        $('#monitoramento').fadeOut();
+      }
+      else {
+        $('#monitoramento').fadeIn();
+      }
+    })
+
+    if($('#id_participou_curso_0').is(":checked")){
+      $('#ano_inicio').css('display', 'block');
+      $('#ano_termino').css('display', 'block');
+      $('#esfera_federacao').css('display', 'block');
+      $('#tipo_oficina').css('display', 'block');
+      $('#perfil_participante').css('display', 'block');
+    }
+    if($('#id_participou_curso_1').is(":checked")){
+      $('#ano_inicio').css('display', 'none');
+      $('#ano_termino').css('display', 'none');
+      $('#esfera_federacao').css('display', 'none');
+      $('#tipo_oficina').css('display', 'none');
+      $('#perfil_participante').css('display', 'none');
+    }
+
+    $('input[name=participou_curso]').change(function() { 
+      if(this.value=='False') {
+        $('#ano_inicio').fadeOut();
+        $('#ano_termino').fadeOut();
+        $('#esfera_federacao').fadeOut();
+        $('#tipo_oficina').fadeOut();
+        $('#perfil_participante').fadeOut();
+      }
+      else {
+        $('#ano_inicio').fadeIn();
+        $('#ano_termino').fadeIn();
+        $('#esfera_federacao').fadeIn();
+        $('#tipo_oficina').fadeIn();
+        $('#perfil_participante').fadeIn();
+      }
+    })
+
+  });
+</script>
