@@ -435,7 +435,7 @@ class CriarContato(CreateView):
 class InserirComponente(CreateView):
     def get_template_names(self):
         componente = self.kwargs['componente']
-        if componente == 'fundo_cultura' or componente == 'conselho' or componente == 'orgao_gestor':
+        if componente == 'fundo_cultura' or componente == 'conselho' or componente == 'orgao_gestor' or componente == 'plano':
             return ['gestao/inserir_documentos/inserir_%s.html' % self.kwargs['componente']]
         return ['gestao/inserir_documentacao.html']
 
