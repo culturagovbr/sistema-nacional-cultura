@@ -190,28 +190,30 @@
 <script type="text/javascript">
   $(document).ready(function(){
 
-    if($('#id_possui_anexo_0').is(":checked")){
-      $('#anexo_na_lei').css('display', 'block');
-    }
-    if($('#id_possui_anexo_1').is(":checked")){
-      $('#anexo_na_lei').css('display', 'none');
-    }
-
-    $('input[name=possui_anexo]').change(function() { 
-      if(this.value=='False') {
-        $('#anexo_na_lei').fadeOut();
-      }
-      else {
-        $('#anexo_na_lei').fadeIn();
-      }
-    })
-
     if($('#id_anexo_na_lei_0').is(":checked")){
       $('#anexo').css('display', 'none');
     }
     if($('#id_anexo_na_lei_1').is(":checked")){
       $('#anexo').css('display', 'block');
     }
+
+    if($('#id_possui_anexo_0').is(":checked")){
+      $('#anexo_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_anexo_1').is(":checked")){
+      $('#anexo_na_lei').css('display', 'none');
+      $('#anexo').css('display', 'none');
+    }
+
+    $('input[name=possui_anexo]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo_na_lei').fadeOut();
+        $('#anexo').fadeOut();
+      }
+      else {
+        $('#anexo_na_lei').fadeIn();
+      }
+    })
 
     $('input[name=anexo_na_lei]').change(function() { 
       if(this.value=='False') {
@@ -227,23 +229,18 @@
     }
     if($('#id_possui_metas_1').is(":checked")){
       $('#metas_na_lei').css('display', 'none');
+      $('#metas').css('display', 'none');
     }
 
     $('input[name=possui_metas]').change(function() { 
       if(this.value=='False') {
         $('#metas_na_lei').fadeOut();
+        $('#metas').fadeOut();
       }
       else {
         $('#metas_na_lei').fadeIn();
       }
     })
-
-    if($('#id_metas_na_lei_0').is(":checked")){
-      $('#metas').css('display', 'none');
-    }
-    if($('#id_possui_metas_1').is(":checked")){
-      $('#metas').css('display', 'block');
-    }
 
     $('input[name=metas_na_lei]').change(function() { 
       if(this.value=='False') {
