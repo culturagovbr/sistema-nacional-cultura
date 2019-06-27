@@ -80,7 +80,10 @@ $(document).ready(function(){
       `<'row'<'col-md-auto col-lg-3 col-lg-custom'l>
       <'col-md-2 col-lg-auto col-sm-auto'B>
       <'col-sm-auto col-md-auto'f>
-      <'col-sm-auto col-md-auto'<"#filtro-estados">><"#filtro-tipo-ente"><"#filtro-componente.col-sm-auto col-md-auto"><"#filtro-situacao.col-sm-auto col-md-auto">>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">>
+      <"#filtro-tipo-ente">
+      <"#filtro-componente.col-sm-auto col-md-auto">
+      <"#filtro-situacao.col-sm-auto col-md-auto">>
       <'row'<'col-sm-auto col-md-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
@@ -243,13 +246,15 @@ $(document).ready(function(){
             estado_selecionado_id = option_selecionado.target.value
             tabela.columns(0).search(estado_selecionado_id).draw()
           });
+
+          var urlSearchParam = new URLSearchParams(window.location.search).get('q');
+          if (urlSearchParam) {
+            tabela.search(urlSearchParam).draw();
+          }
         }
       });
 
-      var urlSearchParam = new URLSearchParams(window.location.search).get('q');
-      if (urlSearchParam) {
-        tabela.search(urlSearchParam).draw();
-      }
+
 
     }
   });
