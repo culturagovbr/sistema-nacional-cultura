@@ -2,7 +2,8 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" enctype="multipart/form-data">
+<div id="form-type" data-form-type="{{is_edit}}"></div>
+<form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -37,7 +38,7 @@
     <label for="{{ form.perfil.id_for_label }}">
       Qual o perfil do órgão gestor de cultura?
     </label>
-    {% render_field form.perfil class="form-control date half-width" %}
+    {% render_field form.perfil class="form-control" %}
   </div>
   </br>
 
@@ -53,7 +54,33 @@
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
-  <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
+
 {% endblock content %}
+{% block js %}
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    var formularioComponente = $('form.componente-form');
+    if ($('#form-type').data('form-type') === 'True') {
+      formularioComponente.after(`
+        <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
+      `);
+    }
+
+    $('#botaoSalvarConfirmacao').on('click', () => {
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
+      if (confirmacao == true) {
+        formularioComponente.submit();
+      }
+    });
+
+    $('#botaoSalvar').on('click', () => {
+      formularioComponente.submit();
+    });
+
+  });
+</script>
+
+{% endblock js %}

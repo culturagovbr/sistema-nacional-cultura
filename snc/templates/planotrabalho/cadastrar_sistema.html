@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" enctype="multipart/form-data">
+<form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
 
   <p>
@@ -43,7 +43,6 @@
 
   </div>
 
-  <input type="submit" class="btn btn-success" value="Salvar" />
 </form>
 </div>
 {% endblock content %}

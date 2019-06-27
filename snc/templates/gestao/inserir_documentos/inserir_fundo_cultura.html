@@ -10,7 +10,7 @@
         <div class="card-body">
           <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
             <div class="form-group">
-              <label class="col-sm-12 control-label">Mesma Lei:</label>
+              <label class="col-sm-12 control-label">É a mesma lei do sistema de cultura?</label>
               <div class="col-sm-12">
                 <div class="form-check form-check-radio">
                   <label class="form-check-label">
@@ -40,14 +40,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-12 control-label">Data publicação</label>
+                <label class="col-sm-12 control-label">Data de publicação da lei</label>
                 <div class="col-md-12">
                   {% render_field form.data_publicacao class="date" %}
                 </div>
               </div>
             </div>
             <div class="form-group">
-              <label class="col-sm-12 control-label">Possui CNPJ:</label>
+              <label class="col-sm-12 control-label">Possui CNPJ?</label>
               <div class="col-sm-12">
                 <div class="form-check form-check-radio">
                   <label class="form-check-label">

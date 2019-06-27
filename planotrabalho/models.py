@@ -59,6 +59,7 @@ LISTA_SITUACAO_ARQUIVO = (
 )
 
 LISTA_PERFIS_ORGAO_GESTOR = (
+    ('', "Selecione um perfil"),
     (0, "Não possui estrutura"),
     (1, "Órgão da administração indireta"),
     (2, "Secretaria em conjunto com outras políticas"),
