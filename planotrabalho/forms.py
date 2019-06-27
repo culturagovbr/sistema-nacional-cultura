@@ -211,20 +211,22 @@ class CriarConselhoForm(ModelForm):
     arquivo_lei = RestrictedFileField(
         required=False,
         content_types=content_types,
-        max_upload_size=52428800)
-    data_publicacao_lei = forms.DateField(required=False)
+        max_upload_size=52428800,
+        label="Arquivo da Lei")
+    data_publicacao_lei = forms.DateField(required=False, label="Data de publicação da Lei")
     arquivo = RestrictedFileField(
         required=False,
         content_types=content_types,
-        max_upload_size=52428800)
+        max_upload_size=52428800,
+        label="Arquivo da Ata")
     mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                            (False, 'Não')]), label="Lei é a mesma do sistema")
     possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                            (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         self.tipo_componente = kwargs.pop('tipo')
