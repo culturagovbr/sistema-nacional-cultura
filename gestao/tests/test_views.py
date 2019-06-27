@@ -880,7 +880,9 @@ def test_alterar_documentos_conselho_cultural(client, login_staff):
 
     client.post(
         url,
-        data={"arquivo": arquivo, "data_publicacao": "28/06/2018", "arquivo_lei": lei, "data_publicacao_lei": "13/03/2019"}
+        data={"mesma_lei": False, "arquivo": arquivo, "data_publicacao": "28/06/2018", 
+            "arquivo_lei": lei, "data_publicacao_lei": "13/03/2019",
+            "paritario": False, "exclusivo_cultura": False, "possui_ata": True}
     )
 
     conselho.refresh_from_db()
