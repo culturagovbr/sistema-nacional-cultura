@@ -1,36 +1,55 @@
 {% extends "gestao/base_gestao.html" %} {% load widget_tweaks %} {% block content %}
-<div class=" card  ">
-  <div class=" card-header">
-    Inserir ato normativo do orgão gestor no cadastro
-  </div>
-  <div class=" card-body">
-    <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %} <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
-      <label class="col-sm-3 control-label">Anexo</label>
-        <div class="col-sm-7">
-          {% render_field form.arquivo %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.arquivo.errors}}</span>
-        </div>
+<div class="row">
+  {{form.media}}
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title">Normativo do Órgão Gestor de Cultura</h4>
+        <p class="card-category">Inserir normativo que cria o Órgão Gestor de Cultura</p>
       </div>
-      <div class="form-group {% if form.data_publicacao.errors %} has-error {% endif %}">
-        <label class="col-sm-3 control-label">Data de publicação da Lei</label>
+      <div class="card-body">
+        <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
 
-        <div class="col-sm-7">
-          {% render_field form.data_publicacao class="date" %}
-        </div>
-        <div class="col-sm-offset-3 col-sm-9">
-          <span class="help-block">{{ form.data_publicacao.errors }}</span>
-        </div>
-      </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+              {% render_field form.arquivo %}
+            </div>
+          </div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-11">
-          <button type="submit" class="btn btn-primary">Salvar</button>
-        </div>
+          <div class="row">
+            <div class="col-md-12">
+                <label>
+                    Data de Publicação da Lei
+                </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                {% render_field form.data_publicacao class="date" %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label>
+                  Qual o perfil do órgão gestor de cultura?
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                {% render_field form.perfil class="form-control" %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-11">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   </div>
 </div>
-
 {% endblock content %}
