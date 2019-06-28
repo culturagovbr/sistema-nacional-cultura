@@ -43,9 +43,6 @@
       {% else %}
         <p>{% render_field form.arquivo %}</p>
       {% endif %}
-      {% if form.arquivo.errors %}
-        <span class="help-block">{{ form.arquivo.errors }}</span>
-      {% endif %}
     </div>
   </div>
 
@@ -107,14 +104,10 @@
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
       `);
-    } else {
-      formularioComponente.after(`
-        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
-      `);
     }
 
     $('#botaoSalvarConfirmacao').on('click', () => {
-      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá ocasionar o retrocesso do seu processo.');
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
       if (confirmacao == true) {
         formularioComponente.submit();
       }
