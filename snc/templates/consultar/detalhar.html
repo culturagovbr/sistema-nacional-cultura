@@ -310,7 +310,7 @@
                         <div class="fundo_painel_agenda">
                             <div class="painel_agenda">
                                 <h1 class="texto_agenda">Agenda Cultural</h1>
-                                <h3 class="texto_agenda_data">Eventos</h3>   
+                                <h3 class="texto_agenda_data">Eventos</h3>
                             </div>
                         </div>
                     </a>
@@ -329,7 +329,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.legislacao.situacao == 2 or object.legislacao.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.legislacao.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.legislacao.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Lei do Sistema de Cultura
                             </a>
                             {% else %}
@@ -339,7 +339,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.orgao_gestor.situacao == 2 or object.orgao_gestor.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.orgao_gestor.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.orgao_gestor.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Relatório de Atividades do Órgão Gestor
                             </a>
                             {% else %}
@@ -349,7 +349,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.conselho.situacao == 2 or object.conselho.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Ata de Reunião de Criação do Conselho de Políticas Culturais
                             </a>
                             {% else %}
@@ -359,7 +359,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.conselho.lei.situacao == 2 or object.conselho.lei.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.conselho.lei.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.conselho.lei.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Lei de Regulamentação da Criação do Conselho de Políticas Culturais
                             </a>
                             {% else %}
@@ -369,7 +369,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.fundo_cultura.situacao == 2 or object.fundo_cultura.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.fundo_cultura.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.fundo_cultura.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Lei do Fundo de Cultura
                             </a>
                             {% else %}
@@ -379,7 +379,7 @@
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.plano.situacao == 2 or object.plano.situacao == 3 %}
                             <i class="fa fa-check"></i>
-                            <a href="{{ object.plano.arquivo.url }}" style="color:#ffffff">
+                            <a href="{{ object.plano.arquivo.url }}" style="color:#ffffff" target="_blank">
                                 Lei do Plano de Cultura
                             </a>
                             {% else %}

@@ -22,7 +22,7 @@
         <div class="dataTable_wrapper">
         {% if not object_list %}
           <p></p>
-          <p>Ente federado não encontrado</p>   
+          <p>Ente federado não encontrado</p>
         {% else %}
           <table class="table table-striped table-bordered table-hover dt-responsive" id="dataTables-example">
             <thead>
@@ -42,16 +42,16 @@
                   <td><center><a href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}"><i class="fa fa-file"></i></a></center></td>
                   <td>{{ sistema.ente_federado }}</td>
                   {% if sistema.gestor.termo_posse %}
-                  <td><a href="{{ sistema.gestor.termo_posse.url }}">{{ sistema.gestor.nome }}</a></td>
+                  <td><a href="{{ sistema.gestor.termo_posse.url }}" target="_blank">{{ sistema.gestor.nome }}</a></td>
                   {% else %}
                   <td>{{ sistema.gestor.nome }}</td>
                   {% endif %}
 
                   {% if sistema.gestor.rg_copia %}
                     {% if sistema.gestor.rg %}
-                      <td><a href="{{ sistema.gestor.rg_copia.url }}">{{ sistema.gestor.rg }}</a></td>
+                      <td><a href="{{ sistema.gestor.rg_copia.url }}" target="_blank">{{ sistema.gestor.rg }}</a></td>
                     {% else %}
-                      <td><a href="{{ sistema.gestor.rg_copia.url }}">Não informado</a></td>
+                      <td><a href="{{ sistema.gestor.rg_copia.url }}" target="_blank">Não informado</a></td>
                     {% endif %}
                   {% else %}
                     <td>{{ sistema.gestor.rg }}</td>
@@ -59,9 +59,9 @@
 
                   {% if sistema.gestor.cpf_copia %}
                     {% if sistema.gestor.cpf %}
-                      <td><a href="{{ sistema.gestor.cpf_copia.url }}">{{ sistema.gestor.cpf }}</a></td>
+                      <td><a href="{{ sistema.gestor.cpf_copia.url }}" target="_blank">{{ sistema.gestor.cpf }}</a></td>
                     {% else %}
-                      <td><a href="{{ sistema.gestor.cpf_copia.url }}">Não informado</a></td>
+                      <td><a href="{{ sistema.gestor.cpf_copia.url }}" target="_blank">Não informado</a></td>
                     {% endif %}
                   {% else %}
                     <td>{{ sistema.gestor.cpf }}</td>

@@ -19,7 +19,7 @@
   <div class="form-group">
     <label for="{{ form.arquivo.id_for_label }}">Lei do Sistema de Cultura</label>
     {% if form.arquivo.value %}
-    <p><a href="{{form.arquivo.value.url}}">Baixar arquivo atual</a></p>
+    <p><a href="{{form.arquivo.value.url}}" target="_blank">Baixar arquivo atual</a></p>
     {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao.id != 2 %}
     <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
