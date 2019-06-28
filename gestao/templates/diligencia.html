@@ -69,7 +69,7 @@
 							<tr>
 								<td>Anexo</td>
 								<td>
-									<a class="btn btn-sm btn-primary" href="{{ arquivo.url }}">
+									<a class="btn btn-sm btn-primary" href="{{ arquivo.url }}" target="_blank">
 										<i class="material-icons" style="color:white;">save_alt</i>
 									</a>
 								</td>
@@ -131,7 +131,7 @@
 										<li class="list-group-item"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
 										<li class="list-group-item"><b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe}}</li>
 										{% if diligencia_historica.arquivo_url %}
-											<li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}">Download do Arquivo</a></li>
+											<li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}" target="_blank">Download do Arquivo</a></li>
 										{% endif %}
 									</ul>
 								</div>
