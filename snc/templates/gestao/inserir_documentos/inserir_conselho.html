@@ -5,13 +5,38 @@
       <div class="card card-default">
           <div class="card-header card-plain card-header-primary">
               <h4 class="card-title">Componente</h4>
-              <p class="card-category">Inserir arquivos do conselho cultural no cadastro</p>
+              <p class="card-category">Inserir arquivos do Conselho de Cultura</p>
           </div>
           <div class="card-body">
               <form class="form-horizontal" method="post" enctype=multipart/form-data>{% csrf_token %}
-                <div class="form-group {% if form.arquivo.errors %} has-error {% endif %}">
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">É a mesma lei do sistema de cultura?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="mesma_lei" id="id_mesma_lei_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="lei_data_form">
+                  <div class="form-group">
                     <div class="col-sm-12">
-                      {% render_field form.arquivo %}
+                      {% render_field form.arquivo_lei %}
                     </div>
                   </div>
 
@@ -19,13 +44,39 @@
                     <label class="col-sm-12 control-label">Data de publicação da Lei</label>
 
                     <div class="col-sm-12">
-                      {% render_field form.data_publicacao class="date" %}
+                      {% render_field form.data_publicacao_lei class="date" %}
                     </div>
                   </div>
+                </div>
 
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">Possui alguma ata da última reunião do conselho?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_ata" id="id_possui_ata_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="possui_ata" id="id_possui_ata_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="ata_form">
                   <div class="form-group">
                     <div class="col-sm-12">
-                      {% render_field form.arquivo_lei %}
+                      {% render_field form.arquivo %}
 
                     </div>
                   </div>
@@ -34,16 +85,65 @@
                     <label class="col-sm-12 control-label">Data de publicação da Ata</label>
 
                     <div class="col-sm-12">
-                      {% render_field form.data_publicacao_lei class="date" %}
+                      {% render_field form.data_publicacao class="date" %}
                     </div>
                   </div>
+                </div>
 
-                  <div class="form-group">
-                      <div>
-                          <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-                          <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
-                      </div>
+                <div class="form-group">
+                  <label class="col-sm-12 control-label">O conselho é exclusivo de cultura?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="exclusivo_cultura" id="id_exclusivo_cultura_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="exclusivo_cultura" id="id_exclusivo_cultura_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-12 control-label"> O conselho é paritário?</label>
+                  <div class="col-sm-12">
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="paritario" id="id_paritario_0" value="True">
+                        Sim
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                    <div class="form-check form-check-radio">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="paritario" id="id_paritario_1" value="False">
+                        Não
+                        <span class="circle">
+                          <span class="check"></span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+                        <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                    </div>
+                </div>
               </form>
           </div>
       </div>
@@ -51,3 +151,65 @@
 </div>
 
 {% endblock content %}
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if('{{form.initial.mesma_lei}}' == 'True'){
+      $('#id_mesma_lei_0').attr('checked', true)
+    } else if('{{form.initial.mesma_lei}}' == 'False') {
+      $('#id_mesma_lei_1').attr('checked', true)
+    }
+
+    if ('{{form.initial.possui_ata}}' == 'True') {
+      $('#id_possui_ata_0').attr('checked', true)
+    } else if ('{{form.initial.possui_ata}}' == 'False'){
+      $('#id_possui_ata_1').attr('checked', true)
+    }
+
+    if($('#id_mesma_lei_1').is(":checked")){
+      $('#lei_data_form').css('display', 'block');
+    }
+    if($('#id_mesma_lei_0').is(":checked")){
+      $('#lei_data_form').css('display', 'none');
+    }
+
+    if('{{form.initial.paritario}}' == 'True'){
+      $('#id_paritario_0').attr('checked', true)
+    } else if('{{form.initial.paritario}}' == 'False') {
+      $('#id_paritario_1').attr('checked', true)
+    }
+
+    if('{{form.initial.exclusivo_cultura}}' == 'True'){
+      $('#id_exclusivo_cultura_0').attr('checked', true)
+    } else if('{{form.initial.exclusivo_cultura}}' == 'False') {
+      $('#id_exclusivo_cultura_1').attr('checked', true)
+    }
+
+    $('input[name=mesma_lei]').change(function() {
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      }
+      else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
+
+    if($('#id_possui_ata_1').is(":checked")){
+      $('#ata_form').css('display', 'none');
+    }
+    if($('#id_possui_ata_0').is(":checked")){
+      $('#ata_form').css('display', 'block');
+    }
+
+    $('input[name=possui_ata]').change(function() {
+      if(this.value=='False') {
+        $('#ata_form').fadeOut();
+      }
+      else {
+        $('#ata_form').fadeIn();
+      }
+    })
+  });
+</script>
+{% endblock js%}

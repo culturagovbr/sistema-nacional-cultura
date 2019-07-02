@@ -36,15 +36,12 @@
         Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
       </label>
       {% if form.arquivo.value %}
-        <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+        <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
         {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
         <p>Modificar: {% render_field form.arquivo %}</p>
         {% endif %}
       {% else %}
         <p>{% render_field form.arquivo %}</p>
-      {% endif %}
-      {% if form.arquivo.errors %}
-        <span class="help-block">{{ form.arquivo.errors }}</span>
       {% endif %}
     </div>
   </div>
@@ -71,7 +68,7 @@
         Comprovante do CNPJ
       </label>
       {% if form.comprovante.value %}
-        <p><a href="{{ form.comprovante.value.url }}">Baixar arquivo atual</a></p>
+        <p><a href="{{ form.comprovante.value.url }}" target="_blank">Baixar arquivo atual</a></p>
         {% if view.kwargs.sistema.fundo_cultura.situacao != 2 %}
           <p>Modificar: {% render_field form.comprovante %}</p>
         {% endif %}
@@ -106,10 +103,6 @@
     if ($('#form-type').data('form-type') === 'True') {
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
-      `);
-    } else {
-      formularioComponente.after(`
-        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
       `);
     }
 

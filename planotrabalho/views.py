@@ -25,7 +25,6 @@ from adesao.models import SistemaCultura
 from .forms import CriarComponenteForm
 from .forms import CriarFundoForm
 from .forms import CriarConselhoForm
-from .forms import AlterarConselhoForm
 from .forms import DesabilitarConselheiroForm
 from .forms import CriarConselheiroForm
 from .forms import AlterarConselheiroForm

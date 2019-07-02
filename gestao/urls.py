@@ -87,6 +87,9 @@ urlpatterns = [
     path("inserir-documentos/conselho/alterar/<int:pk>", staff_member_required(
         views.AlterarConselhoCultura.as_view(),
         login_url='adesao:login'), name='alterar_conselho'),
+    path("inserir-documentos/orgao/alterar/<int:pk>", staff_member_required(
+        views.AlterarOrgaoGestor.as_view(),
+        login_url='adesao:login'), name='alterar_orgao'),
     path("inserir-documentos/<str:componente>/alterar/<int:pk>", staff_member_required(
         views.AlterarComponente.as_view(),
         login_url='adesao:login'), name='alterar_componente'),
