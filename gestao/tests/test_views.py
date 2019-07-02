@@ -62,27 +62,6 @@ def test_url_diligencia_retorna_200(url, client, login_staff):
     assert request.status_code == 200
 
 
-def test_resolve_url_atraves_sua_view_name(url, client, plano_trabalho):
-    """Testa se o Django retorna a url através da sua view_name"""
-
-    resolved = resolve(
-        url.format(id=plano_trabalho.id, componente="plano_cultura", arquivo="arquivo")
-    )
-
-    assert resolved.url_name == "diligencia_componente"
-    assert resolved.kwargs["pk"] == plano_trabalho.id
-
-
-def test_recepcao_componente_na_url_diligencia(url, client, plano_trabalho):
-    """Testa se a url esta recebendo o componente correspondente a diligencia que sera escrita"""
-
-    resolved = resolve(
-        url.format(id=plano_trabalho.id, componente="lei_sistema", arquivo="arquivo")
-    )
-
-    assert resolved.kwargs["componente"] == "lei_sistema"
-
-
 def test_url_componente_retorna_200(url, client, login_staff):
     """Testa se a url retorna 200 ao acessar um componente"""
 
@@ -103,29 +82,6 @@ def test_url_componente_retorna_200(url, client, login_staff):
     )
 
     assert request.status_code == 200
-
-
-def test_url_retorna_404_caso_componente_nao_exista(
-    url, client, plano_trabalho, login_staff
-):
-    """Testa se a URL retorna 404 caso o componente não exista"""
-
-    request = client.get(
-        url.format(
-            id=plano_trabalho.id, componente="um_componente_qualquer", arquivo="arquivo"
-        )
-    )
-
-    assert request.status_code == 404
-
-
-def test_renderiza_template(url, client, plano_trabalho, login_staff):
-    """ Testa se o método da view renderiza um template"""
-
-    request = client.get(
-        url.format(id=plano_trabalho.id, componente="criacao_sistema", arquivo="arquivo")
-    )
-    assert request.content
 
 
 def test_renderiza_template_diligencia(url, client, login_staff):
@@ -403,17 +359,29 @@ def test_arquivo_enviado_pelo_componente(url, client, login_staff):
 
 
 def test_arquivo_enviado_salvo_no_diretorio_do_componente(
-    url, client, plano_trabalho, login
+    url, client, login
 ):
     """ Testa se o arquivo enviando pelo componente está sendo salvo no
-    diretório especifico dentro da pasta do ente federado."""
+    diretório especifico dentro da pasta do componente"""
 
-    arquivo = plano_trabalho.fundo_cultura.arquivo
+    conselho = mommy.make("ConselhoDeCultura", tipo=3, situacao=1)
+    sistema_cultura = mommy.make(
+        "SistemaCultura",
+        ente_federado__cod_ibge=123456,
+        _fill_optional=["cadastrador"],
+        conselho=conselho,
+    )
 
-    assert arquivo.url == "/media/{id}/docs/{componente}/{arquivo}".format(
-        id=login.municipio.id,
-        componente=plano_trabalho.fundo_cultura._meta.object_name.lower(),
-        arquivo=plano_trabalho.fundo_cultura.arquivo.name.split("/")[3],
+    arquivo = SimpleUploadedFile(
+        "conselho.txt", b"file_content", content_type="text/plain"
+    )
+    conselho.arquivo = arquivo
+    conselho.save()
+
+    assert sistema_cultura.conselho.arquivo.name == "docs/{componente}/{id}/{arquivo}".format(
+        componente="conselho",
+        id=conselho.id,
+        arquivo=arquivo.name,
     )
 
 
@@ -576,24 +544,12 @@ def test_retorno_do_form_da_diligencia(url, client, login_staff):
     assert classificacao.symmetric_difference(SITUACOES) == set()
 
 
-def usuario_id_retornado_pelo_context_diligencia(
-    url, client, plano_trabalho, login_staff
-):
-    """ Testa se o id do usuário enviado pelo context está correto """
-
-    request = client.get(
-        url.format(id=plano_trabalho.id, componente="orgao_gestor")
-    )
-
-    assert request.context["usuario_id"] == plano_trabalho.usuario.id
-
-
-def test_criacao_diligencia_exclusiva_para_gestor(client, url, plano_trabalho, login):
+def test_criacao_diligencia_exclusiva_para_gestor(client, url, sistema_cultura, login):
     """Testa se ao tentar acessar a url de criação da diligência o usuário
     que não é autorizado é redirecionado para a tela de login"""
 
     url_diligencia = url.format(
-        id=plano_trabalho.id, componente="orgao_gestor", arquivo="arquivo"
+        id=sistema_cultura.id, componente="conselho", arquivo="arquivo"
     )
 
     request = client.get(url_diligencia)
@@ -817,18 +773,46 @@ def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
         "plano_cultura.txt", b"file_content", content_type="text/plain"
     )
 
+    arquivo_anexo = SimpleUploadedFile(
+        "plano_cultura_anexo.txt", b"file_content", content_type="text/plain"
+    )
+
+    arquivo_metas = SimpleUploadedFile(
+        "plano_cultura_metas.txt", b"file_content", content_type="text/plain"
+    )
+
     url = reverse(
         "gestao:inserir_componente", kwargs={"pk": sistema_cultura.id, "componente": "plano"}
     )
 
-    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})
+    client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018", 
+        "exclusivo_cultura": False, "possui_anexo": True, "anexo_na_lei": False, 
+        "anexo_lei": arquivo_anexo, "ultimo_ano_vigencia": 2000, "periodicidade": 0, 
+        "monitorado": True, "local_monitoramento": "Teste", "possui_metas": True, 
+        "metas_na_lei": False, "arquivo_metas": arquivo_metas, "participou_curso": True,
+        "ano_inicio_curso": 2000, "ano_termino_curso": 2001, "esfera_federacao_curso": ['1'],
+        "tipo_oficina": ['1'], "perfil_participante": ['1']})
 
     plano = Componente.objects.last()
     name = plano.arquivo.name.split(str(plano.id)+"/")[1]
-    situacao = plano.situacao
+    nome_anexo = plano.anexo.arquivo.name.split(str(plano.id)+"/")[1]
+    nome_metas = plano.metas.arquivo.name.split(str(plano.id)+"/")[1]
 
     assert name == arquivo.name
-    assert situacao == 1
+    assert nome_anexo == arquivo_anexo.name
+    assert nome_metas == arquivo_metas.name
+    assert not plano.anexo_na_lei
+    assert plano.anexo.situacao == 1
+    assert plano.metas.situacao == 1
+    assert plano.local_monitoramento == "Teste"
+    assert plano.ano_inicio_curso == 2000
+    assert plano.ano_termino_curso == 2001
+    assert plano.esfera_federacao_curso == ['1']
+    assert plano.tipo_oficina == ['1']
+    assert plano.perfil_participante == ['1']
+    assert plano.data_publicacao == datetime.date(2018, 6, 28)
+    assert plano.tipo == 4 
+    assert plano.situacao == 1
 
 
 def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
@@ -994,7 +978,7 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
     orgao = mommy.make("OrgaoGestor2", tipo=1, situacao=2, _create_files=True)
     fundo = mommy.make("FundoDeCultura", tipo=2, situacao=3, _create_files=True)
     conselho = mommy.make("ConselhoDeCultura", tipo=3, situacao=4, _create_files=True)
-    plano = mommy.make("Componente", tipo=4, situacao=5, _create_files=True)
+    plano = mommy.make("PlanoDeCultura", tipo=4, situacao=5, _create_files=True)
 
     sistema_cultura = mommy.make(
         "SistemaCultura",
@@ -1026,7 +1010,7 @@ def test_situacoes_componentes_diligencia(url, client, login_staff):
     assert situacoes["plano"] == sistema_cultura.plano.get_situacao_display()
 
 
-def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
+def test_tipo_diligencia_componente(url, client, login_staff):
     """ Testa criação da diligência específica de um componente"""
 
     DiligenciaSimples.objects.all().delete()
@@ -1054,7 +1038,7 @@ def test_tipo_diligencia_componente(url, client, plano_trabalho, login_staff):
     assert DiligenciaSimples.objects.first() == sistema_cultura.orgao_gestor.diligencia
 
 
-def test_tipo_diligencia_sistema_com_fundo_igual(url, client, plano_trabalho, login_staff):
+def test_tipo_diligencia_sistema_com_fundo_igual(url, client, login_staff):
     """ Testa criação da diligência específica de um componente"""
 
     DiligenciaSimples.objects.all().delete()
@@ -1090,7 +1074,7 @@ def test_tipo_diligencia_sistema_com_fundo_igual(url, client, plano_trabalho, lo
     assert sistema_cultura.fundo_cultura.situacao == 4
 
 
-def test_tipo_diligencia_comprovante_cnpj(url, client, plano_trabalho, login_staff):
+def test_tipo_diligencia_comprovante_cnpj(url, client, login_staff):
     """ Testa criação da diligência específica de um componente"""
 
     DiligenciaSimples.objects.all().delete()
@@ -1139,7 +1123,7 @@ def test_envio_email_diligencia_geral(client, login_staff):
         sistema_cultura.gestor.email_institucional]
 
 
-def test_diligencia_geral_sem_componentes(url, client, plano_trabalho, login_staff):
+def test_diligencia_geral_sem_componentes(url, client, login_staff):
     """ Testa se ao fazer a diligência geral de um ente federado
     sem componentes retorne componente inexistente"""
 

@@ -476,6 +476,9 @@ class InserirComponente(CreateView):
             'cod_ibge': sistema.ente_federado.cod_ibge
         })
 
+    def form_invalid(self, form):
+        import ipdb; ipdb.set_trace()
+
 
 class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
