@@ -44,6 +44,7 @@ from adesao.models import LISTA_ESTADOS_PROCESSO
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
+from planotrabalho.models import PlanoDeCultura
 from planotrabalho.models import ConselhoDeCultura
 from planotrabalho.models import OrgaoGestor2
 from planotrabalho.models import LISTA_TIPOS_COMPONENTES
@@ -64,6 +65,7 @@ from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
 from planotrabalho.forms import CriarConselhoForm
 from planotrabalho.forms import CriarOrgaoGestorForm
+from planotrabalho.forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
 
@@ -460,6 +462,8 @@ class InserirComponente(CreateView):
             form_class = CriarOrgaoGestorForm
         elif self.kwargs['componente'] == 'conselho':
             form_class = CriarConselhoForm
+        elif self.kwargs['componente'] == 'plano':
+            form_class = CriarPlanoForm
         else:
             form_class = CriarComponenteForm
 
@@ -546,6 +550,65 @@ class AlterarConselhoCultura(UpdateView):
         return reverse_lazy(
             'gestao:detalhar',
             kwargs={'cod_ibge': ente_pk})
+
+
+class AlterarPlanoCultura(UpdateView):
+    model = PlanoDeCultura
+    form_class = CriarPlanoForm
+    template_name = 'gestao/inserir_documentos/inserir_plano.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
+        sistema_id = self.object.plano.last().id
+        self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['sistema'] = self.sistema
+        kwargs['tipo'] = 'plano'
+        kwargs['logged_user'] = self.request.user
+
+        kwargs['initial']['local_monitoramento'] = self.object.local_monitoramento
+        kwargs['initial']['ano_inicio_curso'] = self.object.ano_inicio_curso
+        kwargs['initial']['ano_termino_curso'] = self.object.ano_termino_curso
+        kwargs['initial']['esfera_federacao_curso'] = self.object.esfera_federacao_curso
+        kwargs['initial']['tipo_oficina'] = self.object.tipo_oficina
+        kwargs['initial']['perfil_participante'] = self.object.perfil_participante
+        kwargs['initial']['anexo_na_lei'] = self.object.anexo_na_lei
+        kwargs['initial']['metas_na_lei'] = self.object.metas_na_lei
+
+        if self.object.anexo_na_lei:
+            kwargs['initial']['possui_anexo'] = True
+        elif not self.object.anexo_na_lei and self.object.anexo and self.object.anexo.arquivo:
+            kwargs['initial']['possui_anexo'] = True
+            kwargs['initial']['anexo_lei'] = self.object.anexo.arquivo
+        else:
+            kwargs['initial']['possui_anexo'] = False
+
+        if self.object.metas_na_lei:
+            kwargs['initial']['possui_metas'] = True
+        elif not self.object.metas_na_lei and self.object.metas and self.object.metas.arquivo:
+            kwargs['initial']['possui_metas'] = True
+            kwargs['initial']['arquivo_metas'] = self.object.metas.arquivo
+        else:
+            kwargs['initial']['possui_metas'] = False
+
+        if self.object.local_monitoramento:
+            kwargs['initial']['monitorado'] = True
+        else:
+            kwargs['initial']['monitorado'] = False
+
+        if self.object.ano_inicio_curso:
+            kwargs['initial']['participou_curso'] = True
+        else:
+            kwargs['initial']['participou_curso'] = False
+
+        return kwargs
+
+    def get_success_url(self):
+        kwgs = {'plano': self.kwargs.get('pk')}
+        ente_pk = SistemaCultura.sistema.get(
+            **kwgs).ente_federado.cod_ibge
+        return reverse_lazy(
+            'gestao:detalhar',
+            kwargs={'cod_ibge': 2703403})
 
 
 class AlterarFundoCultura(UpdateView):

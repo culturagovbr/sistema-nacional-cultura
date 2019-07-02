@@ -41,10 +41,13 @@
                   </div>
 
                   <div class="form-group">
-                    <label class="col-sm-12 control-label">Data de publicação da Lei</label>
-
-                    <div class="col-sm-12">
-                      {% render_field form.data_publicacao class="date" %}
+                    <div class="col-md-12">
+                        <label>
+                            Data de Publicação da Lei
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        {% render_field form.data_publicacao class="date" %}
                     </div>
                   </div>
                 </div>
@@ -87,7 +90,7 @@
                     </div>
                     <div class="form-check form-check-radio">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="possui_anexo" id="id_anexo_na_lei_1" value="False">
+                        <input class="form-check-input" type="radio" name="anexo_na_lei" id="id_anexo_na_lei_1" value="False">
                         Não
                         <span class="circle">
                           <span class="check"></span>
@@ -199,10 +202,16 @@
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="col-sm-12 control-label">Indique o local onde o resultado do monitoramento pode ser visualizado</label>
-                  <div class="col-sm-12">
-                    {% render_field form.local_monitoramento %}
+                <div id="monitoramento">
+                  <div class="form-group">
+                    <div class="col-md-12">
+                        <label>
+                            Indique o local onde o resultado do monitoramento pode ser visualizado
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        {% render_field form.local_monitoramento class="form-control" %}
+                    </div>
                   </div>
                 </div>
 
@@ -247,21 +256,21 @@
                 <div class="form-group" id="esfera_federacao">
                   <label class="col-sm-12 control-label">Indique por qual esfera da federação foi ofertado o curso:</label>
                   <div class="col-sm-12">
-                    {% render_field form.esfera_federacao class="form-control" %}
+                    {% render_field form.esfera_federacao_curso %}
                   </div>
                 </div>
 
                 <div class="form-group" id="tipo_oficina">
                   <label class="col-sm-12 control-label">Indique o tipo do curso?</label>
                   <div class="col-sm-12">
-                    {% render_field form.tipo_oficina class="form-control" %}
+                    {% render_field form.tipo_oficina %}
                   </div>
                 </div>
 
                 <div class="form-group" id="perfil_participante">
                   <label class="col-sm-12 control-label">Qual o perfil do participante?</label>
                   <div class="col-sm-12">
-                    {% render_field form.perfil_participante class="form-control" %}
+                    {% render_field form.perfil_participante %}
                   </div>
                 </div>
 
@@ -277,6 +286,7 @@
   </div>
 </div>
 {% endblock content %}
+{% block js %}
 <script type="text/javascript">
   $(document).ready(function(){
 
@@ -304,28 +314,30 @@
       $('#id_possui_curso_1').attr('checked', true)
     }
 
-    if($('#id_possui_anexo_0').is(":checked")){
-      $('#anexo_na_lei').css('display', 'block');
-    }
-    if($('#id_possui_anexo_1').is(":checked")){
-      $('#anexo_na_lei').css('display', 'none');
-    }
-
-    $('input[name=possui_anexo]').change(function() { 
-      if(this.value=='False') {
-        $('#anexo_na_lei').fadeOut();
-      }
-      else {
-        $('#anexo_na_lei').fadeIn();
-      }
-    })
-
     if($('#id_anexo_na_lei_0').is(":checked")){
       $('#anexo').css('display', 'none');
     }
     if($('#id_anexo_na_lei_1').is(":checked")){
       $('#anexo').css('display', 'block');
     }
+
+    if($('#id_possui_anexo_0').is(":checked")){
+      $('#anexo_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_anexo_1').is(":checked")){
+      $('#anexo_na_lei').css('display', 'none');
+      $('#anexo').css('display', 'none');
+    }
+
+    $('input[name=possui_anexo]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo_na_lei').fadeOut();
+        $('#anexo').fadeOut();
+      }
+      else {
+        $('#anexo_na_lei').fadeIn();
+      }
+    })
 
     $('input[name=anexo_na_lei]').change(function() { 
       if(this.value=='False') {
@@ -341,23 +353,18 @@
     }
     if($('#id_possui_metas_1').is(":checked")){
       $('#metas_na_lei').css('display', 'none');
+      $('#metas').css('display', 'none');
     }
 
     $('input[name=possui_metas]').change(function() { 
       if(this.value=='False') {
         $('#metas_na_lei').fadeOut();
+        $('#metas').fadeOut();
       }
       else {
         $('#metas_na_lei').fadeIn();
       }
     })
-
-    if($('#id_metas_na_lei_0').is(":checked")){
-      $('#metas').css('display', 'none');
-    }
-    if($('#id_possui_metas_1').is(":checked")){
-      $('#metas').css('display', 'block');
-    }
 
     $('input[name=metas_na_lei]').change(function() { 
       if(this.value=='False') {
@@ -418,3 +425,4 @@
 
   });
 </script>
+{% endblock js%}
