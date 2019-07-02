@@ -1765,11 +1765,11 @@ def test_links_para_componentes(client, login_staff):
     url = reverse("gestao:detalhar", kwargs={"cod_ibge": sistema.ente_federado.cod_ibge})
     response = client.get(url)
 
-    assert "<a href=\"" + sistema.legislacao.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
-    assert "<a href=\"" + sistema.orgao_gestor.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
-    assert "<a href=\"" + sistema.fundo_cultura.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
-    assert "<a href=\"" + sistema.conselho.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
-    assert "<a href=\"" + sistema.plano.arquivo.url + "\" class=\"warning-link\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.legislacao.arquivo.url + "\" class=\"warning-link\" target=\"_blank\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.orgao_gestor.arquivo.url + "\" class=\"warning-link\" target=\"_blank\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.fundo_cultura.arquivo.url + "\" class=\"warning-link\" target=\"_blank\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.conselho.arquivo.url + "\" class=\"warning-link\" target=\"_blank\">Download</a>" in response.rendered_content
+    assert "<a href=\"" + sistema.plano.arquivo.url + "\" class=\"warning-link\" target=\"_blank\">Download</a>" in response.rendered_content
 
 
 def test_ente_federado_nao_encontrado(client, login_staff):
