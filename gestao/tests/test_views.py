@@ -21,7 +21,7 @@ from adesao.models import Funcionario
 from planotrabalho.models import OrgaoGestor
 from planotrabalho.models import CriacaoSistema
 from planotrabalho.models import FundoCultura
-from planotrabalho.models import PlanoCultura
+from planotrabalho.models import PlanoDeCultura
 from planotrabalho.models import ConselhoCultural
 from planotrabalho.models import SituacoesArquivoPlano
 from planotrabalho.models import Componente
@@ -793,10 +793,11 @@ def test_inserir_documentos_plano_cultura(client, sistema_cultura, login_staff):
         "ano_inicio_curso": 2000, "ano_termino_curso": 2001, "esfera_federacao_curso": ['1'],
         "tipo_oficina": ['1'], "perfil_participante": ['1']})
 
-    plano = Componente.objects.last()
+    plano = SistemaCultura.sistema.get(
+        ente_federado__cod_ibge=sistema_cultura.ente_federado.cod_ibge).plano
     name = plano.arquivo.name.split(str(plano.id)+"/")[1]
-    nome_anexo = plano.anexo.arquivo.name.split(str(plano.id)+"/")[1]
-    nome_metas = plano.metas.arquivo.name.split(str(plano.id)+"/")[1]
+    nome_anexo = plano.anexo.arquivo.name.split(str(plano.anexo.id)+"/")[1]
+    nome_metas = plano.metas.arquivo.name.split(str(plano.metas.id)+"/")[1]
 
     assert name == arquivo.name
     assert nome_anexo == arquivo_anexo.name
@@ -819,7 +820,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     """ Testa se funcionalidade de alterar documento para plano de cultura na
     tela de gestão salva no field arquivo """
 
-    plano = mommy.make("Componente", tipo=4)
+    plano = mommy.make("PlanoDeCultura", tipo=4)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
         ente_federado__cod_ibge=123456,
         plano=plano)
@@ -829,7 +830,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     )
 
     url = reverse(
-        "gestao:alterar_componente", kwargs={"pk": sistema_cultura.plano.id, "componente": "plano"}
+        "gestao:alterar_plano", kwargs={"pk": sistema_cultura.plano.id}
     )
 
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018"})

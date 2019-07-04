@@ -137,61 +137,6 @@ def login_staff(client):
 
 
 @pytest.fixture(scope='function')
-def plano_trabalho(login):
-    """
-    Cria um plano de trabalho associado a um usuário comum.
-    """
-
-    usuario = login
-    situacao = SituacoesArquivoPlano.objects.first()
-    conselho_cultural = mommy.make('ConselhoCultural')
-    conselho = mommy.make("ConselhoDeCultura", tipo=3)
-    fundo_cultura = mommy.make('FundoCultura')
-    plano_cultura = mommy.make('PlanoDeCultura')
-    lei_sistema = mommy.make('CriacaoSistema')
-    orgao_gestor = mommy.make('OrgaoGestor')
-    conselheiro = mommy.make('Conselheiro', conselho=conselho)
-    plano_trabalho = mommy.make('PlanoTrabalho',
-                                conselho_cultural=conselho_cultural,
-                                fundo_cultura=fundo_cultura,
-                                criacao_sistema=lei_sistema,
-                                orgao_gestor=orgao_gestor,
-                                plano_cultura=plano_cultura)
-    ente_federado = mommy.make('Municipio', _fill_optional=['cidade'])
-
-    usuario.municipio = ente_federado
-    usuario.plano_trabalho = plano_trabalho
-    usuario.data_publicacao_acordo = date.today()
-    usuario.save()
-
-    componentes = (
-        'fundo_cultura',
-        'plano_cultura',
-        'criacao_sistema',
-        'orgao_gestor',
-        'conselho_cultural'
-        )
-
-    arquivo = SimpleUploadedFile("lei.txt", b"file_content", content_type="text/plain")
-    for componente in componentes:
-        comp = getattr(plano_trabalho, componente)
-        comp.arquivo = arquivo
-        comp.situacao = SituacoesArquivoPlano.objects.get(pk=1)
-        comp.save()
-
-    yield plano_trabalho
-
-    plano_trabalho.delete()
-    conselho_cultural.delete()
-    fundo_cultura.delete()
-    plano_cultura.delete()
-    lei_sistema.delete()
-    orgao_gestor.delete()
-    conselheiro.delete()
-    ente_federado.delete()
-
-
-@pytest.fixture(scope='function')
 def sistema_cultura():
 
     ente_federado = mommy.make("EnteFederado", cod_ibge=111, _fill_optional=True, nome="Bahia")

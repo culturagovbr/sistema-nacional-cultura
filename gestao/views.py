@@ -476,9 +476,6 @@ class InserirComponente(CreateView):
             'cod_ibge': sistema.ente_federado.cod_ibge
         })
 
-    def form_invalid(self, form):
-        import ipdb; ipdb.set_trace()
-
 
 class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
@@ -611,7 +608,7 @@ class AlterarPlanoCultura(UpdateView):
             **kwgs).ente_federado.cod_ibge
         return reverse_lazy(
             'gestao:detalhar',
-            kwargs={'cod_ibge': 2703403})
+            kwargs={'cod_ibge': ente_pk})
 
 
 class AlterarFundoCultura(UpdateView):

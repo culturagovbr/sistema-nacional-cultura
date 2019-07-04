@@ -111,7 +111,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         fields = ('perfil', 'arquivo', 'data_publicacao',)
 
 
-class CriarPlanoForm(CriarComponenteForm):
+class CriarPlanoForm(ModelForm):
 
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
@@ -154,8 +154,9 @@ class CriarPlanoForm(CriarComponenteForm):
 
 
     def __init__(self, *args, **kwargs):
-        self.sistema = kwargs['sistema']
-        logged_user = kwargs['logged_user']
+        self.sistema = kwargs.pop('sistema')
+        self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
 
@@ -276,7 +277,8 @@ class CriarPlanoForm(CriarComponenteForm):
 
     def save(self, commit=True, *args, **kwargs):
         plano = super(CriarPlanoForm, self).save(commit=False)
-        plano.tipo = self.componentes.get(self.tipo_componente)
+        TIPO_PLANO = 4
+        plano.tipo = TIPO_PLANO
 
         if 'arquivo' in self.changed_data:
             plano.situacao = 1
