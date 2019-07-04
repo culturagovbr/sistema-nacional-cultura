@@ -24,6 +24,8 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
           <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='legislacao' %}">Enviar Comprovação</a>
         {% endif %}
+      {% else %}
+        <strong class="componente-concluido">{{ sistema.legislacao.get_situacao_display }}</strong>
       {% endif %}
       <br />
       <br />
@@ -38,6 +40,8 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
           <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}" />Enviar Comprovação</a>
         {% endif %}
+      {% else %}
+        <strong class="componente-concluido">{{ sistema.orgao_gestor.get_situacao_display }}</strong>
       {% endif %}
       <br />
       <br />
@@ -52,6 +56,8 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
           <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
         {% endif %}
+      {% else %}
+        <strong class="componente-concluido">{{ sistema.conselho.lei.get_situacao_display }}</strong>
       {% endif %}
       <br />
       <br />
@@ -66,8 +72,9 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
           <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}" >Enviar Comprovação</a>
         {% endif %}
+      {% else %}
+        <strong class="componente-concluido">{{ sistema.fundo_cultura.get_situacao_display }}</strong>
       {% endif %}
-
       <br />
       <br />
     </li>
@@ -81,6 +88,8 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
         <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}" >Enviar Comprovação</a>
         {% endif %}
+      {% else %}
+        <strong class="componente-concluido">{{ sistema.plano.get_situacao_display }}</strong>
       {% endif %}
     </li>
 
