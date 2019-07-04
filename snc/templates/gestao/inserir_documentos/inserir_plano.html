@@ -277,7 +277,7 @@
                 <div class="form-group">
                     <div>
                         <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-                        <a class="btn btn-secondary pull-right" href="{% url 'gestao:detalhar' cod_ibge=sistema.ente_federado.cod_ibge %}">Cancelar</a>
+                        <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
                     </div>
                 </div>
               </form>
@@ -289,6 +289,18 @@
 {% block js %}
 <script type="text/javascript">
   $(document).ready(function(){
+
+    if('{{form.initial.exclusivo_cultura}}' == 'True'){
+      $('#id_exclusivo_cultura_0').attr('checked', true)
+    } else if('{{form.initial.exclusivo_cultura}}' == 'False') {
+      $('#id_exclusivo_cultura_1').attr('checked', true)
+    }
+
+    if('{{form.initial.participou_curso}}' == 'True'){
+      $('#id_participou_curso_0').attr('checked', true)
+    } else if('{{form.initial.participou_curso}}' == 'False') {
+      $('#id_participou_curso_1').attr('checked', true)
+    }
 
     if('{{form.initial.possui_anexo}}' == 'True'){
       $('#id_possui_anexo_0').attr('checked', true)
