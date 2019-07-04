@@ -132,7 +132,7 @@ class AlterarPlanoCultura(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
-        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        sistema_id = self.object.plano.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'plano'
@@ -186,7 +186,7 @@ class AlterarOrgaoGestor(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AlterarOrgaoGestor, self).get_form_kwargs()
-        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        sistema_id = self.object.orgao_gestor.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'orgao_gestor'
@@ -213,7 +213,7 @@ class AlterarFundoCultura(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
-        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        sistema_id = self.object.fundo_cultura.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'fundo_cultura'
@@ -248,7 +248,7 @@ class AlterarConselhoCultura(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
-        sistema_id = self.request.session['sistema_cultura_selecionado']['id']
+        sistema_id = self.object.conselho.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['tipo'] = 'conselho'

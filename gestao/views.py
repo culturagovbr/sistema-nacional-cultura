@@ -49,6 +49,11 @@ from planotrabalho.models import ConselhoDeCultura
 from planotrabalho.models import OrgaoGestor2
 from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
+from planotrabalho.views import AlterarPlanoCultura
+from planotrabalho.views import AlterarOrgaoGestor
+from planotrabalho.views import AlterarFundoCultura
+from planotrabalho.views import AlterarConselhoCultura
+
 from gestao.utils import empty_to_none, get_uf_by_mun_cod
 
 from .models import DiligenciaSimples, Contato
@@ -506,7 +511,7 @@ class AlterarComponente(UpdateView):
             kwargs={'cod_ibge': ente_pk})
 
 
-class AlterarConselhoCultura(UpdateView):
+class AlterarConselhoCultura(AlterarConselhoCultura):
     form_class = CriarConselhoForm
     model = ConselhoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_conselho.html'
@@ -519,30 +524,6 @@ class AlterarConselhoCultura(UpdateView):
             **kwgs)
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
-        sistema_id = self.object.conselho.last().id
-        self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['sistema'] = self.sistema
-        kwargs['tipo'] = 'conselho'
-        kwargs['logged_user'] = self.request.user
-
-        if self.object.lei:
-            kwargs['initial']['arquivo_lei'] = self.object.lei.arquivo
-            kwargs['initial']['data_publicacao_lei'] = self.object.lei.data_publicacao
-
-            if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.lei.arquivo:
-                kwargs['initial']['mesma_lei'] = True
-            else:
-                kwargs['initial']['mesma_lei'] = False
-
-        if self.object.arquivo:
-            kwargs['initial']['possui_ata'] = True
-        else:
-            kwargs['initial']['possui_ata'] = False
-
-        return kwargs
-
     def get_success_url(self):
         kwgs = {'conselho': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -552,55 +533,10 @@ class AlterarConselhoCultura(UpdateView):
             kwargs={'cod_ibge': ente_pk})
 
 
-class AlterarPlanoCultura(UpdateView):
+class AlterarPlanoCultura(AlterarPlanoCultura):
     model = PlanoDeCultura
     form_class = CriarPlanoForm
     template_name = 'gestao/inserir_documentos/inserir_plano.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
-        sistema_id = self.object.plano.last().id
-        self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['sistema'] = self.sistema
-        kwargs['tipo'] = 'plano'
-        kwargs['logged_user'] = self.request.user
-
-        kwargs['initial']['local_monitoramento'] = self.object.local_monitoramento
-        kwargs['initial']['ano_inicio_curso'] = self.object.ano_inicio_curso
-        kwargs['initial']['ano_termino_curso'] = self.object.ano_termino_curso
-        kwargs['initial']['esfera_federacao_curso'] = self.object.esfera_federacao_curso
-        kwargs['initial']['tipo_oficina'] = self.object.tipo_oficina
-        kwargs['initial']['perfil_participante'] = self.object.perfil_participante
-        kwargs['initial']['anexo_na_lei'] = self.object.anexo_na_lei
-        kwargs['initial']['metas_na_lei'] = self.object.metas_na_lei
-
-        if self.object.anexo_na_lei:
-            kwargs['initial']['possui_anexo'] = True
-        elif not self.object.anexo_na_lei and self.object.anexo and self.object.anexo.arquivo:
-            kwargs['initial']['possui_anexo'] = True
-            kwargs['initial']['anexo_lei'] = self.object.anexo.arquivo
-        else:
-            kwargs['initial']['possui_anexo'] = False
-
-        if self.object.metas_na_lei:
-            kwargs['initial']['possui_metas'] = True
-        elif not self.object.metas_na_lei and self.object.metas and self.object.metas.arquivo:
-            kwargs['initial']['possui_metas'] = True
-            kwargs['initial']['arquivo_metas'] = self.object.metas.arquivo
-        else:
-            kwargs['initial']['possui_metas'] = False
-
-        if self.object.local_monitoramento:
-            kwargs['initial']['monitorado'] = True
-        else:
-            kwargs['initial']['monitorado'] = False
-
-        if self.object.ano_inicio_curso:
-            kwargs['initial']['participou_curso'] = True
-        else:
-            kwargs['initial']['participou_curso'] = False
-
-        return kwargs
 
     def get_success_url(self):
         kwgs = {'plano': self.kwargs.get('pk')}
@@ -611,31 +547,10 @@ class AlterarPlanoCultura(UpdateView):
             kwargs={'cod_ibge': ente_pk})
 
 
-class AlterarFundoCultura(UpdateView):
+class AlterarFundoCultura(AlterarFundoCultura):
     form_class = CriarFundoForm
     model = FundoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_fundo_cultura.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
-        sistema_id = self.object.fundo_cultura.last().id
-        self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['sistema'] = self.sistema
-        kwargs['tipo'] = 'fundo_cultura'
-        kwargs['logged_user'] = self.request.user
-
-        if self.sistema.legislacao and self.sistema.legislacao.arquivo == self.object.arquivo:
-            kwargs['initial']['mesma_lei'] = True
-        else:
-            kwargs['initial']['mesma_lei'] = False
-
-        if self.object.comprovante_cnpj:
-            kwargs['initial']['possui_cnpj'] = True
-            kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
-        else:
-            kwargs['initial']['possui_cnpj'] = False
-
-        return kwargs
 
     def get_success_url(self):
         kwgs = {'fundo_cultura': self.kwargs.get('pk')}
@@ -646,23 +561,10 @@ class AlterarFundoCultura(UpdateView):
             kwargs={'cod_ibge': ente_pk})
 
 
-class AlterarOrgaoGestor(UpdateView):
+class AlterarOrgaoGestor(AlterarOrgaoGestor):
     form_class = CriarOrgaoGestorForm
     model = OrgaoGestor2
     template_name = 'gestao/inserir_documentos/inserir_orgao_gestor.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(AlterarOrgaoGestor, self).get_form_kwargs()
-        sistema_id = self.object.orgao_gestor.last().id
-        self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['sistema'] = self.sistema
-        kwargs['tipo'] = 'orgao_gestor'
-        kwargs['logged_user'] = self.request.user
-
-        if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
-            kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
-
-        return kwargs
 
     def get_success_url(self):
         kwgs = {'orgao_gestor': self.kwargs.get('pk')}
