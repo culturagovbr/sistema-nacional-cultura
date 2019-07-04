@@ -821,8 +821,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     tela de gestão salva no field arquivo """
 
     plano = mommy.make("PlanoDeCultura", tipo=4, exclusivo_cultura=False, 
-        ultimo_ano_vigencia=1900, periodicidade=1, 
-        local_monitoramento="Teste")
+        ultimo_ano_vigencia=1900, periodicidade=1)
     sistema_cultura = mommy.make("SistemaCultura", _fill_optional='ente_federado',
         ente_federado__cod_ibge=123456,
         plano=plano)
@@ -838,7 +837,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
             "exclusivo_cultura": True, "ultimo_ano_vigencia": 2000,
             "possui_anexo": False, "possui_metas": False, "participou_curso": False,
-            "periodicidade": 2, "local_monitoramento": "Local", "monitorado": True})
+            "periodicidade": 2})
 
     plano.refresh_from_db()
     name = plano.arquivo.name.split(str(plano.id)+"/")[1]
@@ -848,7 +847,6 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     assert plano.exclusivo_cultura
     assert plano.ultimo_ano_vigencia == 2000
     assert plano.periodicidade == '2'
-    assert plano.local_monitoramento == "Local"
 
 
 def test_alterar_documentos_conselho_cultural(client, login_staff):

@@ -162,7 +162,7 @@ class CriarPlanoForm(ModelForm):
 
         if logged_user.is_staff:
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Arquivo Lei'
+                'label': 'Lei do Plano de Cultura'
             })
             self.fields['anexo_lei'].widget = FileUploadWidget(attrs={
                 'label': 'Arquivo de Anexo da Lei'
