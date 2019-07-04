@@ -837,7 +837,7 @@ def test_alterar_documentos_plano_cultura(client, sistema_cultura, login_staff):
     client.post(url, data={"arquivo": arquivo, "data_publicacao": "28/06/2018",
             "exclusivo_cultura": True, "ultimo_ano_vigencia": 2000,
             "possui_anexo": False, "possui_metas": False, "participou_curso": False,
-            "periodicidade": 2})
+            "periodicidade": 2, "monitorado": False})
 
     plano.refresh_from_db()
     name = plano.arquivo.name.split(str(plano.id)+"/")[1]
