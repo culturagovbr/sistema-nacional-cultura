@@ -115,29 +115,19 @@ class CriarPlanoForm(ModelForm):
 
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    arquivo = RestrictedFileField(
-        required=False,
-        content_types=content_types,
-        max_upload_size=52428800)
-
+    arquivo = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
     possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    anexo_lei = RestrictedFileField(
-        required=False,
-        content_types=content_types,
-        max_upload_size=52428800)
+    anexo_lei = forms.FileField(required=False, widget=FileInput, label="Arquivo de Anexo")
     periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
     ultimo_ano_vigencia = forms.IntegerField()
     possui_metas = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     metas_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    arquivo_metas = RestrictedFileField(
-        required=False,
-        content_types=content_types,
-        max_upload_size=52428800)
+    arquivo_metas = forms.FileField(required=False, widget=FileInput, label="Arquivo com as metas")
     monitorado = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     local_monitoramento = forms.CharField(required=False)

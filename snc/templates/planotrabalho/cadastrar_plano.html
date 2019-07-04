@@ -29,7 +29,14 @@
       <label for="{{ form.arquivo.id_for_label }}">
         Publicação da Lei no Diário Oficial
       </label>
-      <p>{% render_field form.arquivo %}</p>
+      {% if form.arquivo.value %}
+        <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+        {% if view.kwargs.sistema.plano.situacao != 2 %}
+          <p>Modificar: {% render_field form.arquivo %}</p>
+        {% endif %}
+      {% else %}
+        <p>{% render_field form.arquivo %}</p>
+      {% endif %}
     </div>
   </div>
 
@@ -55,7 +62,14 @@
     <label for="{{ form.anexo_lei.id_for_label }}">
       Arquivo de anexo da lei
     </label>
-    {% render_field form.anexo_lei %}
+    {% if form.anexo_lei.value %}
+      <p><a href="{{ form.anexo_lei.value.url }}">Baixar arquivo atual</a></p>
+      {% if view.kwargs.sistema.plano.anexo.situacao != 2 %}
+        <p>Modificar: {% render_field form.anexo_lei %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% render_field form.anexo_lei %}</p>
+    {% endif %}
   </div>
 
   <div class="form-group">
@@ -94,7 +108,14 @@
     <label for="{{ form.arquivo_metas.id_for_label }}">
       Arquivo com as metas
     </label>
-    {% render_field form.arquivo_metas %}
+    {% if form.arquivo_metas.value %}
+      <p><a href="{{ form.arquivo_metas.value.url }}">Baixar arquivo atual</a></p>
+      {% if view.kwargs.sistema.plano.metas.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo_metas %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% render_field form.arquivo_metas %}</p>
+    {% endif %}
   </div>
 
   <div class="form-group">

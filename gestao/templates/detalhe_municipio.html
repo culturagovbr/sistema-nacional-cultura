@@ -24,16 +24,23 @@
                 <p><strong>Natureza Jurídica:</strong> {{ informacao_cnpj.naturezaJuridica.dsNaturezaJuridica }}</p>
                 <p><strong>Razão Social:</strong> {{ informacao_cnpj.nmRazaoSocial }}</p>
               {% endif %}
+              <p><strong>Prefeito:</strong>
+                  {% if ente.gestor.termo_posse %}
+                  <a href="{% if ente.gestor.termo_posse %} {{ ente.gestor.termo_posse.url }} {% endif %}" target="_blank">{{ ente.gestor.nome }}</a>
+                  {% else %}
+                  {{ ente.gestor.nome }}
+                  {% endif %}
+              </p>
               <p><strong>CPF:</strong>
                   {% if ente.gestor.cpf %}
-                  <a href="{% if ente.gestor.cpf_copia %} {{ ente.gestor.cpf_copia.url }} {% endif %}">{{ ente.gestor.cpf }}</a>
+                  <a href="{% if ente.gestor.cpf_copia %} {{ ente.gestor.cpf_copia.url }} {% endif %}" target="_blank">{{ ente.gestor.cpf }}</a>
                   {% else %}
                   {{ ente.gestor.cpf }}
                   {% endif %}
               </p>
               <p><strong>RG:</strong>
                     {% if ente.gestor.rg %}
-                    <a href="{% if ente.gestor.rg_copia %} {{ ente.gestor.rg_copia.url }} {% endif %}">{{ ente.gestor.rg }}</a>
+                    <a href="{% if ente.gestor.rg_copia %} {{ ente.gestor.rg_copia.url }} {% endif %}" target="_blank">{{ ente.gestor.rg }}</a>
                     {% else %}
                     {{ ente.gestor.rg }}
                     {% endif %}
@@ -46,7 +53,8 @@
               <p><strong>Endereço:</strong> {{ ente.sede.endereco }}</p>
               <p><strong>Complemento:</strong> {{ ente.sede.complemento }}</p>
               <p><strong>Bairro:</strong> {{ ente.sede.bairro }}</p>
-              <p><strong>CEP</strong> {{ ente.sede.cep }}</p>
+              <p><strong>CEP:</strong> {{ ente.sede.cep }}</p>
+              <p><strong>Sítio Institucional:</strong> {{ ente.sede.endereco_eletronico }}</p>
             </div>
 
             <div class="col-md-5">
@@ -199,7 +207,7 @@
                         </div>
                         <div class="stats">
                           <i class="material-icons">save_alt</i>
-                          <a href="{{ente.legislacao.arquivo.url}}" class="warning-link">Download</a>
+                          <a href="{{ente.legislacao.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                         </div>
                       </div>
                     </div>
@@ -244,7 +252,7 @@
                       </div>
                       <div class="stats">
                         <i class="material-icons">save_alt</i>
-                        <a href="{{ente.orgao_gestor.arquivo.url}}" class="warning-link">Download</a>
+                        <a href="{{ente.orgao_gestor.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                       </div>
                     </div>
                   </div>
@@ -289,7 +297,7 @@
                       </div>
                       <div class="stats">
                         <i class="material-icons">save_alt</i>
-                        <a href="{{ente.fundo_cultura.arquivo.url}}" class="warning-link">Download</a>
+                        <a href="{{ente.fundo_cultura.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                       </div>
                     </div>
                   </div>
@@ -334,7 +342,7 @@
                         </div>
                         <div class="stats">
                           <i class="material-icons">save_alt</i>
-                          <a href="{{ente.plano.arquivo.url}}" class="warning-link">Download</a>
+                          <a href="{{ente.plano.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                         </div>
                       </div>
                     </div>
@@ -471,7 +479,7 @@
                         </div>
                         <div class="stats">
                           <i class="material-icons">save_alt</i>
-                          <a href="{{ente.conselho.arquivo.url}}" class="warning-link">Download</a>
+                          <a href="{{ente.conselho.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                         </div>
                       </div>
                     </div>
@@ -489,24 +497,24 @@
                       <p class="card-category">Fundo Cultural - Comprovante CNPJ</p>
                       <h3 class="card-title">
                         {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
-                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
-                          Avaliar
-                        </a>
-                        {% else %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
-                        {% endif %}
+                          {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
+                              Avaliar
+                            </a>
+                          {% else %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+                          {% endif %}
 
                         {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
 
-                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
+                          {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
                           {% else %}
-                          <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
                           {% endif %}
-                            {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
+                          {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
                           </a>
-                          {% else %}
+                        {% else %}
                           {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
                         {% endif %}
                       </h3>
@@ -518,7 +526,7 @@
                       </div>
                       <div class="stats">
                         <i class="material-icons">save_alt</i>
-                        <a href="{{ente.fundo_cultura.comprovante_cnpj.arquivo.url}}" class="warning-link">Download</a>
+                        <a href="{{ente.fundo_cultura.comprovante_cnpj.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                       </div>
                     </div>
                   </div>
@@ -563,7 +571,7 @@
                       </div>
                       <div class="stats">
                         <i class="material-icons">save_alt</i>
-                        <a href="{{ente.conselho.lei.arquivo.url}}" class="warning-link">Download</a>
+                        <a href="{{ente.conselho.lei.arquivo.url}}" class="warning-link" target="_blank">Download</a>
                       </div>
                     </div>
                   </div>

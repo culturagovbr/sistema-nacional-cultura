@@ -279,4 +279,4 @@ def test_informacoes_diligencia_componente(client, login_staff, sistema_cultura)
     request = client.get('/gestao/{}/diligencia/{}/{}'.format(
         sistema_cultura.id, "orgao_gestor", "arquivo"))
 
-    assert "<a class=\"btn btn-sm btn-primary\" href=\"{arquivo}\">".format(arquivo=orgao_gestor.arquivo.url) in request.rendered_content
+    assert "<a class=\"btn btn-sm btn-primary\" href=\"{arquivo}\" target=\"_blank\">".format(arquivo=orgao_gestor.arquivo.url) in request.rendered_content
