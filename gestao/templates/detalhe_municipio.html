@@ -405,24 +405,24 @@
                       <p class="card-category">Fundo Cultural - Comprovante CNPJ</p>
                       <h3 class="card-title">
                         {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
-                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
-                          Avaliar
-                        </a>
-                        {% else %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
-                        {% endif %}
+                          {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
+                              Avaliar
+                            </a>
+                          {% else %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">Avaliar</a>
+                          {% endif %}
 
                         {% elif ente.fundo_cultura.comprovante_cnpj.situacao > 1 %}
 
-                        {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
-                        <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.componente_cnpj.diligencia.id %}">
+                          {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' pk=ente.fundo_cultura.comprovante_cnpj.diligencia.id %}">
                           {% else %}
-                          <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
+                            <a class="btn btn-info btn-sm" href="{% url 'gestao:diligencia_componente' pk=ente.id componente='fundo_cultura' arquivo='comprovante_cnpj' %}">
                           {% endif %}
-                            {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
+                          {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
                           </a>
-                          {% else %}
+                        {% else %}
                           {{ ente.fundo_cultura.comprovante_cnpj.get_situacao_display }}
                         {% endif %}
                       </h3>
