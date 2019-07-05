@@ -2,6 +2,7 @@
 {% block content %}
 {% load widget_tweaks %}
 <div class="container">
+<div id="form-type" data-form-type="{{is_edit}}"></div>
 <form method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
@@ -210,6 +211,23 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
+    var formularioComponente = $('form.componente-form');
+    if ($('#form-type').data('form-type') === 'True') {
+      formularioComponente.after(`
+        <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
+      `);
+    }
+
+    $('#botaoSalvarConfirmacao').on('click', () => {
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
+      if (confirmacao == true) {
+        formularioComponente.submit();
+      }
+    });
+
+    $('#botaoSalvar').on('click', () => {
+      formularioComponente.submit();
+    });
 
     if($('#id_anexo_na_lei_0').is(":checked")){
       $('#anexo').css('display', 'none');

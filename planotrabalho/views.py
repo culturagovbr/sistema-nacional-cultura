@@ -175,6 +175,11 @@ class AlterarPlanoCultura(UpdateView):
 
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(AlterarPlanoCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
+
     def get_success_url(self):
         return reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id})
 
