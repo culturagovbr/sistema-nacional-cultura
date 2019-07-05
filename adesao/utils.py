@@ -33,7 +33,12 @@ def verificar_anexo(sistema, componente):
     try:
         componente = getattr(sistema, componente)
         if componente:
-            return componente.get_situacao_display()
+            situacao = componente.get_situacao_display()
+            SITUACAO_CONCLUIDA = "Concluída"
+            if situacao == "Arquivo aprovado com ressalvas":
+                return SITUACAO_CONCLUIDA
+            else:
+                return situacao
         else:
             return 'Não Possui'
     except (AttributeError, ObjectDoesNotExist) as exceptions:
