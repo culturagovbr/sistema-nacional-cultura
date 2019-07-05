@@ -383,6 +383,7 @@
             field_id = $(element).children()[0].firstChild.htmlFor;
 
             let input = $(`#${field_id}`);
+            console.log(input)
 
             input.closest('.form-group').addClass('has-error')
             if(input.attr('type') === 'file'){
