@@ -253,7 +253,7 @@ def test_cadastrar_funcionario_tipo_gestor_cultura(login, client):
     assert funcionario_salvo.tipo_funcionario == 0
     session = {}
     session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura_atualizado,
-        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo', 'data_publicacao_retificacao'])
     session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura_atualizado.alterado_em.strftime(
         "%d/%m/%Y às %H:%M:%S")
     session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura_atualizado.alterado_por.user.username
@@ -460,7 +460,7 @@ def test_session_user_com_um_sistema_cultura(login, client):
     assert client.session['sistema_ente'] == model_to_dict(sistema.ente_federado, fields=['nome', 'cod_ibge'])
     session = {}
     session['sistema_cultura_selecionado'] = model_to_dict(sistema,
-        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo', 'data_publicacao_retificacao'])
     session['sistema_cultura_selecionado']['alterado_em'] = sistema.alterado_em.strftime(
         "%d/%m/%Y às %H:%M:%S")
     assert client.session['sistema_cultura_selecionado'] == session['sistema_cultura_selecionado']
@@ -531,7 +531,7 @@ Seu prazo para o envio é de até 60 dias corridos.
     assert sistema_cultura_atualizado.estado_processo == '1'
     session = {}
     session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura_atualizado,
-        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo', 'data_publicacao_retificacao'])
     session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura_atualizado.alterado_em.strftime(
         "%d/%m/%Y às %H:%M:%S")
     session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura_atualizado.alterado_por.user.username
@@ -585,7 +585,7 @@ Seu prazo para o envio é de até 60 dias corridos.
     assert sistema_cultura_atualizado.estado_processo == '1'
     session = {}
     session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura_atualizado,
-        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo'])
+        exclude=['data_criacao', 'alterado_em', 'data_publicacao_acordo', 'data_publicacao_retificacao'])
     session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura_atualizado.alterado_em.strftime(
         "%d/%m/%Y às %H:%M:%S")
     session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura_atualizado.alterado_por.user.username
