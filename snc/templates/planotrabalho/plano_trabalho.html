@@ -25,7 +25,7 @@
           <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='legislacao' %}">Enviar Comprovação</a>
         {% endif %}
       {% else %}
-        <strong class="componente-concluido">{{ sistema.legislacao.get_situacao_display }}</strong>
+        <strong>Lei {{ sistema.legislacao.get_situacao_display }}</strong>
       {% endif %}
       <br />
       <br />
@@ -50,14 +50,15 @@
       <p>
         <strong>III. Conselho de Política Cultural</strong>
       </p>
-      {% if sistema.conselho.lei.situacao != 2 %}
-        {% if sistema.conselho.lei.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.conselho.arquivo and not sistema.conselho.lei %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
       {% else %}
-        <strong class="componente-concluido">{{ sistema.conselho.lei.get_situacao_display }}</strong>
+        <strong>Situação da Lei: </strong>{{ sistema.conselho.lei.get_situacao_display|default:"Não enviado" }}</br>
+        <strong>Situação da Ata: </strong>{{ sistema.conselho.get_situacao_display|default:"Não enviado"}}</br>
+        {% if sistema.conselho.lei.situacao != 2 or sistema.conselho.situacao != 2 %}
+          </br>
+          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Editar Componente</a>
+        {% endif %}
       {% endif %}
       <br />
       <br />
