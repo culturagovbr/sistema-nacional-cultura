@@ -161,7 +161,7 @@ def preenche_planilha(planilha):
 
 def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura, exclude=['data_criacao', 'alterado_em',
-        'data_publicacao_acordo'])
+        'data_publicacao_acordo', 'data_publicacao_retificacao'])
     request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime("%d/%m/%Y às %H:%M:%S")
 
     if sistema_cultura.alterado_por:
