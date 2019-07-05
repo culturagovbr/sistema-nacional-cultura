@@ -7,6 +7,8 @@ from adesao.models import SistemaCultura
 from django.core.exceptions import ObjectDoesNotExist
 from templated_email import send_templated_mail
 
+from planotrabalho.models import LISTA_SITUACAO_ARQUIVO
+
 
 def limpar_mascara(mascara):
     return ''.join(re.findall('\d+', mascara))
@@ -34,9 +36,8 @@ def verificar_anexo(sistema, componente):
         componente = getattr(sistema, componente)
         if componente:
             situacao = componente.get_situacao_display()
-            SITUACAO_CONCLUIDA = "Concluída"
-            if situacao == "Arquivo aprovado com ressalvas":
-                return SITUACAO_CONCLUIDA
+            if situacao == LISTA_SITUACAO_ARQUIVO[3][1]:
+                return LISTA_SITUACAO_ARQUIVO[2][1]
             
             return situacao
         else:
