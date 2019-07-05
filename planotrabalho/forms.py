@@ -18,6 +18,8 @@ from .utils import add_anos
 from adesao.models import SistemaCultura
 from gestao.forms import content_types
 
+from adesao.utils import limpar_mascara
+
 from snc.widgets import FileUploadWidget
 
 
@@ -380,6 +382,10 @@ class CriarFundoForm(CriarComponenteForm):
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['cnpj']:
             self.cleaned_data['cnpj'] = None
+        elif self.sistema.sede and self.cleaned_data['cnpj']:
+            if limpar_mascara(self.sistema.sede.cnpj) == limpar_mascara(self.cleaned_data['cnpj']):
+                raise forms.ValidationError(
+                    "CNPJ já cadastrado no ente, insira um CNPJ exclusivo do fundo de cultura")
 
         return self.cleaned_data['cnpj']
 
