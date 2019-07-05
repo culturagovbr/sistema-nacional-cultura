@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.fields import GenericRelation
@@ -18,6 +19,33 @@ LISTA_TIPOS_COMPONENTES = (
     (2, 'Fundo Cultura'),
     (3, 'Conselho Cultural'),
     (4, 'Plano Cultura'),
+)
+
+LISTA_PERIODICIDADE = (
+    (0, 'Anual (1 ano)'),
+    (1, 'Bienal (2 anos)'),
+    (2, 'Trienal (3 anos)'),
+    (3, 'Quadrienal (4 anos)'),
+    (4, 'Quinquenal (5 anos)'),
+    (5, 'Hexanual (6 anos)'),
+    (6, 'Decenal (10 anos)'),
+    (7, 'Outra'),
+)
+
+LISTA_CURSOS = (
+    (0, 'Oficina'),
+    (1, 'Palestra'),
+    (2, 'Seminário'),
+    (3, 'Pós-Graduação'),
+    (4, 'Especialização'),
+    (5, 'Aperfeiçoamento'),
+    (6, 'Extensão'),
+)
+
+LISTA_PERFIL_PARTICIPANTE_CURSOS = (
+    (0, 'Gestor Público'),
+    (1, 'Conselheiro de Cultura'),
+    (2, 'Sociedade Civil'),
 )
 
 LISTA_SITUACAO_ARQUIVO = (
@@ -38,7 +66,12 @@ LISTA_PERFIS_ORGAO_GESTOR = (
     (3, "Secretaria exclusiva de cultura"),
     (4, "Setor subordinado à chefia do Executivo"),
     (5, "Setor subordinado à outra secretaria"),
-    
+)
+
+LISTA_ESFERAS_FEDERACAO = (
+    (0, "Nacional"),
+    (1, "Estadual ou Distrital"),
+    (2, "Municipal"),
 )
 
 
@@ -80,11 +113,17 @@ def upload_to(instance, filename):
 
     conselho = instance.conselhos.all().first()
     comprovante_cnpj = instance.comprovantes.all().first()
+    metas = instance.metas_plano.all().first()
+    anexo = instance.anexo_plano.all().first()
 
     if conselho:
         nome_componente = componentes.get(conselho.tipo)
     elif comprovante_cnpj:
         nome_componente = componentes.get(comprovante_cnpj.tipo)
+    elif metas:
+        nome_componente = componentes.get(metas.tipo)
+    elif anexo:
+        nome_componente = componentes.get(anexo.tipo)
     else:
         nome_componente = componentes.get(instance.tipo)
 
@@ -171,6 +210,45 @@ class ConselhoDeCultura(Componente):
         related_name='conselhos')
     exclusivo_cultura = models.BooleanField(blank=True, default=False)
     paritario = models.BooleanField(blank=True, default=False)
+
+
+class PlanoDeCultura(Componente):
+    metas = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='metas_plano')
+    anexo = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='anexo_plano')
+    anexo_na_lei = models.BooleanField(blank=True, default=False)
+    metas_na_lei = models.BooleanField(blank=True, default=False)
+    exclusivo_cultura = models.BooleanField(blank=True, default=False)
+    ultimo_ano_vigencia = models.IntegerField(blank=True, null=True)
+    periodicidade = models.CharField(blank=True, null=True, max_length=100)
+    local_monitoramento = models.CharField(
+        max_length=100,
+        verbose_name='Local de Monitoramento',
+        blank=True,
+        null=True)
+    ano_inicio_curso = models.IntegerField(blank=True, null=True)
+    ano_termino_curso = models.IntegerField(blank=True, null=True)
+    tipo_curso = models.IntegerField(
+        "Tipo do Curso",
+        choices=LISTA_CURSOS,
+        blank=True,
+        null=True
+    )
+    esfera_federacao_curso = ArrayField(models.CharField(max_length=1), size=3, blank=True,
+        null=True)
+    tipo_oficina = ArrayField(models.CharField(max_length=1), size=7, blank=True, null=True)
+    perfil_participante = ArrayField(models.CharField(max_length=1), size=3, blank=True,
+        null=True)
+
 
 
 class PlanoTrabalho(models.Model):

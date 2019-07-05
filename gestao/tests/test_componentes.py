@@ -226,7 +226,7 @@ def test_opcoes_de_avaliacao_documentos_plano_de_trabalho(client, login_staff, s
     orgao_gestor = mommy.make("OrgaoGestor2", tipo=1, situacao=1)
     fundo = mommy.make("FundoDeCultura", tipo=2, situacao=1)
     conselho = mommy.make("ConselhoDeCultura", tipo=3, situacao=1)
-    plano = mommy.make("Componente", tipo=4, situacao=1)
+    plano = mommy.make("PlanoDeCultura", tipo=4, situacao=1)
 
     sistema_cultura.legislacao = legislacao
     sistema_cultura.orgao_gestor = orgao_gestor
