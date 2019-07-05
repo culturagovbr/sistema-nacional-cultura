@@ -30,7 +30,7 @@
             {% if request.session.sistema_ente.cod_ibge > 100 %}
             MUNICÍPIO DE
             {% else %}
-            GOVERNO DO
+            GOVERNO DO ESTADO DE
             {% endif %}
              {{ request.session.sistema_ente.nome|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
           </strong>
@@ -48,7 +48,7 @@
           {% if request.session.sistema_ente.cod_ibge > 100 %}
           <strong>MUNICÍPIO DE </strong>
           {% else %}
-          <strong>GOVERNO DO </strong>
+          <strong>GOVERNO DO ESTADO DE</strong>
           {% endif %}
           <strong>{{ request.session.sistema_ente.nome|upper }}</strong>,
           CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por <strong>{{ request.session.sistema_gestor.nome }}</strong>,
@@ -67,7 +67,7 @@
       <strong>CLÁUSULA PRIMEIRA - DO OBJETO</strong>
       <p>
         <br/> O presente Acordo de Cooperação Federativa tem por objeto estabelecer as condições e orientar a instrumentalização necessária para o desenvolvimento do Sistema Nacional de Cultura - SNC com implementação coordenada e/ou conjunta de programas,
-        projetos e ações, no âmbito da competência do Município.
+        projetos e ações, no âmbito da competência do {% if request.session.sistema_ente.cod_ibge > 100 %}Município{% else %}Estado{% endif %}.
       </p>
     </div>
     <div class="row">
@@ -208,7 +208,7 @@
         <br/>São obrigações dos partícipes:
       </p>
       <p>
-        <strong><u><br/>I - Ao MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA -incumbe:</u></strong>
+        <strong><u><br/>I - Ao MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA - incumbe:</u></strong>
         <p>
           <br/>a) Coordenar e desenvolver o Sistema Nacional de Cultura - SNC;
         </p>
@@ -260,9 +260,10 @@
         </p>
       </p>
       <p>
-        <strong><u><br/>II - AO MUNICÍPIO incumbe:</u></strong>
+        <strong><u><br/>II - AO {% if request.session.sistema_ente.cod_ibge > 100 %}MUNICÍPIO{% else %}ESTADO{% endif %} incumbe:</u></strong>
         <p>
-          <br/>a) Criar, coordenar e desenvolver o Sistema Municipal de Cultura - SNC;
+          <br/>a) Criar, coordenar e desenvolver o Sistema {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal de Cultura - SNC{% else %}
+          Estadual de Cultura;;
         </p>
         <p>
           b) Integrar-se ao Sistema Nacional de Cultura;
@@ -271,27 +272,43 @@
           c) Criar condições de natureza legal, administrativa, participativa e orçamentária para sua integração ao Sistema Nacional de Cultura;
         </p>
         <p>
-          d) Integrar-se ao Sistema Estadual de Cultura;
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+            d) Integrar-se ao Sistema Estadual de Cultura;
+          {% else %}
+            d) Criar e implementar a Comissão Intergestores Bipartite para operacionalização do Sistema Estadual de Cultura;
+          {% endif %}
         </p>
-          e) Apoiar a criação e implementação da Comissão Intergestores Bipartite para operacionalização do Sistema Estadual de Cultura;
-        </p>
-        <p>
-          f) Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano Municipal de Cultura;
-        </p>
-        <p>
-          g) Criar e implantar ou reestruturar o Conselho Municipal de Política Cultural, garantindo o funcionamento e a composição de, no mínimo, 50% de representantes da Sociedade Civil, eleitos democraticamente;
-        </p>
-        <p>
-          h) Fomentar a participação social por meio da criação de Fóruns Municipais de Cultura;
-        </p>
-        <p>
-          i) Criar e implantar, manter ou reestruturar o Sistema Municipal de Financiamento à Cultura, em especial o Fundo Municipal de Cultura, garantindo recursos para o seu funcionamento;
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+            e) Apoiar a criação e implementação da Comissão Intergestores Bipartite para operacionalização do Sistema Estadual de Cultura;
+          {% else %}
+            d) Apoiar a criação, a implementação e o desenvolvimento dos Sistemas Municipais de Cultura;
+          {% endif %}
         </p>
         <p>
-          j) Realizar as Conferências Municipais de Cultura, previamente às Conferências Estaduais e Nacionais, seguindo o calendário estabelecido pelo Ministério da Cidadania - Secretaria Especial da Cultura ;
+          f) Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal{% else %}Estadual{% endif %} de Cultura;
         </p>
         <p>
-          k) Apoiar a realização e participar das Conferências Estaduais e Nacionais de Cultura;
+          g) Criar e implantar ou reestruturar o Conselho {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal{% else %}Estadual{% endif %} de Política Cultural, garantindo o funcionamento e a composição de, no mínimo, 50% de representantes da Sociedade Civil, eleitos democraticamente;
+        </p>
+        <p>
+          h) Fomentar a participação social por meio da criação de Fóruns {% if request.session.sistema_ente.cod_ibge > 100 %}Municipais{% else %}Estaduais{% endif %} de Cultura;
+        </p>
+        <p>
+          i) Criar e implantar, manter ou reestruturar o Sistema {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal{% else %}Estadual{% endif %} de Financiamento à Cultura, em especial o Fundo {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal{% else %}Estadual{% endif %} de Cultura, garantindo recursos para o seu funcionamento;
+        </p>
+        <p>
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+            j) Realizar as Conferências Municipais de Cultura, previamente às Conferências Estaduais e Nacionais, seguindo o calendário estabelecido pelo Ministério da Cidadania – Secretaria Especial da Cultura;
+          {% else %}
+            j) Apoiar a realização das Conferências Municipais de Cultura relativas ao Estado, e realizar as Conferências Estaduais de Cultura, previamente às Conferências Nacionais de Cultura, seguindo o calendário estabelecido pelo Ministério da Cidadania – Secretaria Especial da Cultura;
+          {% endif %}
+        </p>
+        <p>
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+            k) Apoiar a realização e participar das Conferências Estaduais e Nacionais de Cultura;
+          {% else %}
+            k) Apoiar a realização e participar das Conferências Nacionais de Culturais;
+          {% endif %}
         </p>
         <p>
           l) Compartilhar recursos para a execução de programas, de projetos e de ações culturais no âmbito do SNC;
@@ -300,7 +317,11 @@
           m) Compartilhar informações por meio do Sistema Nacional de Informações e Indicadores Culturais disponibilizado pela União;
         </p>
         <p>
-          n) Apoiar e participar do Programa Estadual de Formação na Área da Cultura;
+          {% if request.session.sistema_ente.cod_ibge > 100 %}
+            n) Apoiar e participar do Programa Estadual de Formação na Área da Cultura;
+          {% else %}
+            n) Criar e implementar o Programa Estadual de Formação na Área da Cultura, articulado com o Programa Nacional de Formação na Área da Cultura;
+          {% endif %}
         </p>
         <p>
           o) Implantar e regulamentar as normas específicas locais dos sistemas setoriais de cultura;
