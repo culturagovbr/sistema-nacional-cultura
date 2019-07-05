@@ -4,7 +4,7 @@ from planotrabalho.forms import CriarFundoForm
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-def test_criar_fundo_form_cnpj_igual_sede(client, login, sistema_cultura):
+def test_criar_fundo_form_cnpj_igual_sede(client, login, sistema_cultura, cnpj):
     """Testa se dá erro ao cadastrar fundo de cultura com 
     o mesmo CNPJ cadastrado no ente"""
 
