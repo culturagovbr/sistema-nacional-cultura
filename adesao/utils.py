@@ -37,8 +37,8 @@ def verificar_anexo(sistema, componente):
             SITUACAO_CONCLUIDA = "Concluída"
             if situacao == "Arquivo aprovado com ressalvas":
                 return SITUACAO_CONCLUIDA
-            else:
-                return situacao
+            
+            return situacao
         else:
             return 'Não Possui'
     except (AttributeError, ObjectDoesNotExist) as exceptions:
