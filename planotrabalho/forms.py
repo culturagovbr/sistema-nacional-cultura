@@ -100,6 +100,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
 
     def __init__(self, *args, **kwargs):
+        kwargs['tipo'] = 'orgao_gestor'
         logged_user = kwargs['logged_user']
         super(CriarOrgaoGestorForm, self).__init__(*args, **kwargs)
 
@@ -147,7 +148,6 @@ class CriarPlanoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
@@ -402,7 +402,7 @@ class CriarFundoForm(CriarComponenteForm):
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
-        componente.tipo = self.componentes.get(self.tipo_componente)
+        componente.tipo = self.componentes.get('fundo_cultura')
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
@@ -432,7 +432,7 @@ class CriarFundoForm(CriarComponenteForm):
             componente.comprovante_cnpj = None
             componente.save()
 
-        sistema_cultura = getattr(componente, self.tipo_componente)
+        sistema_cultura = getattr(componente, 'fundo_cultura')
         sistema_cultura.add(self.sistema)
 
     class Meta:
@@ -454,7 +454,6 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
