@@ -280,12 +280,13 @@ class CriarPlanoForm(ModelForm):
             plano.data_publicacao = self.cleaned_data['data_publicacao']
 
         if self.cleaned_data['possui_anexo'] and not self.cleaned_data['anexo_na_lei']:
-            plano.anexo = ArquivoComponente2()
-            plano.anexo.situacao = 1
-            plano.anexo.save()
-            plano.anexo.anexo_plano.add(plano)
-            plano.anexo.arquivo = self.cleaned_data['anexo_lei']
-            plano.anexo.save()
+            if 'anexo_lei' in self.changed_data:
+                plano.anexo = ArquivoComponente2()
+                plano.anexo.situacao = 1
+                plano.anexo.save()
+                plano.anexo.anexo_plano.add(plano)
+                plano.anexo.arquivo = self.cleaned_data['anexo_lei']
+                plano.anexo.save()
         elif not self.cleaned_data['possui_anexo']:
             plano.anexo = None
             plano.anexo_na_lei = False
@@ -293,12 +294,13 @@ class CriarPlanoForm(ModelForm):
             plano.anexo = None
 
         if self.cleaned_data['possui_metas'] and not self.cleaned_data['metas_na_lei']:
-            plano.metas = ArquivoComponente2()
-            plano.metas.situacao = 1
-            plano.metas.save()
-            plano.metas.metas_plano.add(plano)
-            plano.metas.arquivo = self.cleaned_data['arquivo_metas']
-            plano.metas.save()
+            if 'arquivo_metas' in self.changed_data:
+                plano.metas = ArquivoComponente2()
+                plano.metas.situacao = 1
+                plano.metas.save()
+                plano.metas.metas_plano.add(plano)
+                plano.metas.arquivo = self.cleaned_data['arquivo_metas']
+                plano.metas.save()
         elif not self.cleaned_data['possui_metas']:
             plano.metas = None
             plano.metas_na_lei = False

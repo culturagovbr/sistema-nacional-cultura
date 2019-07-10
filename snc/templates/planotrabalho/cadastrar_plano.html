@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 <div class="container">
 <div id="form-type" data-form-type="{{is_edit}}"></div>
-<form method="post" class="componente-form" enctype="multipart/form-data">
+<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Elaboração do Plano de Cultura</strong>
@@ -23,7 +23,7 @@
       <label for="{{ form.data_publicacao.id_for_label }}">
         Data de Publicação da Lei do Plano de Cultura
       </label>
-      {% render_field form.data_publicacao class="form-control date half-width" %}
+      {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
     </div>
 
     <div class="form-group">
@@ -32,7 +32,7 @@
       </label>
       {% if form.arquivo.value %}
         <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-        {% if view.kwargs.sistema.plano.situacao != 2 %}
+        {% if form.sistema.plano.situacao != 2 %}
           <p>Modificar: {% render_field form.arquivo %}</p>
         {% endif %}
       {% else %}
@@ -45,18 +45,22 @@
     <label for="{{ form.possui_anexo.id_for_label }}">
       A lei possui anexo?</br>
     </label>
-    {% for radio in form.possui_anexo %}
-      {{ radio }}</br>
-    {% endfor %}
+    {% if form.sistema.plano.anexo.situacao != 2 %}
+      {% render_field form.possui_anexo class="radio" %}
+    {% else %}
+      {% render_field form.possui_anexo disabled="disabled" class="radio" %}
+    {% endif %}
   </div>
 
   <div class="form-group" id="anexo_na_lei">
     <label for="{{ form.anexo_na_lei.id_for_label }}">
       O anexo já consta no mesmo arquivo da lei?</br>
     </label>
-    {% for radio in form.anexo_na_lei %}
-      {{ radio }}</br>
-    {% endfor %}
+    {% if form.sistema.plano.anexo.situacao != 2 %}
+      {% render_field form.anexo_na_lei class="radio" %}
+    {% else %}
+      {% render_field form.anexo_na_lei disabled="disabled" class="radio" %}
+    {% endif %}
   </div>
 
   <div class="form-group" id="anexo" style="display: none">
@@ -65,7 +69,7 @@
     </label>
     {% if form.anexo_lei.value %}
       <p><a href="{{ form.anexo_lei.value.url }}">Baixar arquivo atual</a></p>
-      {% if view.kwargs.sistema.plano.anexo.situacao != 2 %}
+      {% if form.sistema.plano.anexo.situacao != 2 %}
         <p>Modificar: {% render_field form.anexo_lei %}</p>
       {% endif %}
     {% else %}
@@ -91,18 +95,22 @@
     <label for="{{ form.possui_metas.id_for_label }}">
       Possui metas?</br>
     </label>
-    {% for radio in form.possui_metas %}
-      {{ radio }}</br>
-    {% endfor %}
+    {% if form.sistema.plano.metas.situacao != 2 %}
+      {% render_field form.possui_metas class="radio" %}
+    {% else %}
+      {% render_field form.possui_metas disabled="disabled" class="radio" %}
+    {% endif %}
   </div>
 
   <div class="form-group" id="metas_na_lei" style="display: none">
     <label for="{{ form.metas_na_lei.id_for_label }}">
       As metas estão descritas no mesmo documento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
     </label>
-    {% for radio in form.metas_na_lei %}
-      {{ radio }}</br>
-    {% endfor %}
+    {% if form.sistema.plano.metas.situacao != 2 %}
+      {% render_field form.metas_na_lei class="radio" %}
+    {% else %}
+      {% render_field form.metas_na_lei disabled="disabled" class="radio" %}
+    {% endif %}
   </div>
 
   <div class="form-group" id="metas" style="display: none">
@@ -111,7 +119,7 @@
     </label>
     {% if form.arquivo_metas.value %}
       <p><a href="{{ form.arquivo_metas.value.url }}">Baixar arquivo atual</a></p>
-      {% if view.kwargs.sistema.plano.metas.situacao != 2 %}
+      {% if form.sistema.plano.metas.situacao != 2 %}
         <p>Modificar: {% render_field form.arquivo_metas %}</p>
       {% endif %}
     {% else %}
@@ -211,6 +219,11 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
+
+    $('#form').submit(function(){
+      $("#form :disabled").removeAttr('disabled');
+    });
+
     var formularioComponente = $('form.componente-form');
     if ($('#form-type').data('form-type') === 'True') {
       formularioComponente.after(`
@@ -263,6 +276,13 @@
       }
     })
 
+    if($('#id_metas_na_lei_0').is(":checked")){
+      $('#metas').css('display', 'none');
+    }
+    if($('#id_metas_na_lei_1').is(":checked")){
+      $('#metas').css('display', 'block');
+    }
+
     if($('#id_possui_metas_0').is(":checked")){
       $('#metas_na_lei').css('display', 'block');
     }
@@ -278,6 +298,7 @@
       }
       else {
         $('#metas_na_lei').fadeIn();
+        $('#metas').fadeIn();
       }
     })
 

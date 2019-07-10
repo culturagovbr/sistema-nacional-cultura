@@ -718,3 +718,7 @@ background-color: #F28E00;
   width: 22%;
   padding: 7px;
 }
+
+.radio {
+  margin-left: 0em !important;
+}
