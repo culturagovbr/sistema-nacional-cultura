@@ -99,16 +99,6 @@ class CriarComponenteForm(ModelForm):
 class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
 
-    def __init__(self, *args, **kwargs):
-        kwargs['tipo'] = 'orgao_gestor'
-        logged_user = kwargs['logged_user']
-        super(CriarOrgaoGestorForm, self).__init__(*args, **kwargs)
-
-        if logged_user.is_staff:
-            self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Órgão Gestor'
-            })
-
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao',)
@@ -148,6 +138,7 @@ class CriarPlanoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
+        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
@@ -329,7 +320,7 @@ class CriarPlanoForm(ModelForm):
             'arquivo', 'data_publicacao')
 
 
-class CriarFundoForm(CriarComponenteForm):
+class CriarFundoForm(ModelForm):
     cnpj = BRCNPJField(required=False)
     comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
@@ -340,7 +331,9 @@ class CriarFundoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
-        logged_user = kwargs['logged_user']
+        self.sistema = kwargs.pop('sistema')
+        self.tipo_componente = kwargs.pop('tipo')
+        logged_user = kwargs.pop('logged_user')
         super(CriarFundoForm, self).__init__(*args, **kwargs)
 
         if logged_user.is_staff:
@@ -401,8 +394,9 @@ class CriarFundoForm(CriarComponenteForm):
 
 
     def save(self, commit=True, *args, **kwargs):
-        componente = super(CriarComponenteForm, self).save(commit=False)
-        componente.tipo = self.componentes.get('fundo_cultura')
+        componente = super(CriarFundoForm, self).save(commit=False)
+        FUNDO_CULTURA = 2
+        componente.tipo = FUNDO_CULTURA
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
@@ -454,6 +448,7 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
+        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarConselhoForm, self).__init__(*args, **kwargs)

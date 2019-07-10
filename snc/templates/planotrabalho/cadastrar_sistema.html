@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
-<form method="post" class="componente-form" enctype="multipart/form-data">
+<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
 
   <p>
@@ -13,18 +13,24 @@
     <label for="{{ form.data_publicacao.id_for_label }}">
       Data de Publicação da Lei do Sistema de Cultura
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% if form.sistema.legislacao.situacao != 2 %}
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% else %}
+      {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
+    {% endif %}
   </div>
 
   <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">Lei do Sistema de Cultura</label>
+    <label for="{{ form.arquivo.id_for_label }}">
+      Lei do Sistema de Cultura
+    </label>
     {% if form.arquivo.value %}
-    <p><a href="{{form.arquivo.value.url}}" target="_blank">Baixar arquivo atual</a></p>
-    {% if request.user.usuario.plano_trabalho.criacao_sistema.situacao.id != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
+      <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+      {% if form.sistema.legislacao.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+      {% endif %}
     {% else %}
-    <p>{% render_field form.arquivo %}</p>
+      <p>{% render_field form.arquivo %}</p>
     {% endif %}
   </div>
 

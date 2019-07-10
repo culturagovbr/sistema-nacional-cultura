@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
 <div id="form-type" data-form-type="{{is_edit}}"></div>
-<form method="post" class="componente-form" enctype="multipart/form-data">
+<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -17,7 +17,11 @@
     <label for="{{ form.data_publicacao.id_for_label }}">
       Data da Publicação do Ato Normativo relativo a criação do Órgão Gestor
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% if form.sistema.orgao_gestor.situacao != 2 %}
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% else %}
+       {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
+    {% endif %}
   </div>
 
   <div class="form-group">
@@ -26,7 +30,7 @@
     </label>
     {% if form.arquivo.value %}
     <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-    {% if view.kwargs.sistema.orgao_gestor.situacao != 2 %}
+    {% if form.sistema.orgao_gestor.situacao != 2 %}
     <p>Modificar: {% render_field form.arquivo %}</p>
     {% endif %}
     {% else %}
@@ -62,20 +66,27 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
+
+    $('#form').submit(function(){
+      $("#form :disabled").removeAttr('disabled');
+    });
+
     var formularioComponente = $('form.componente-form');
-    if ($('#form-type').data('form-type') === 'True') {
+    if ($('#form-type').data('form-type') === 'True'){
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
       `);
+    } else {
+      formularioComponente.after(`
+        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
+      `);
     }
-
     $('#botaoSalvarConfirmacao').on('click', () => {
-      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá ocasionar o retrocesso do seu processo.');
       if (confirmacao == true) {
         formularioComponente.submit();
       }
     });
-
     $('#botaoSalvar').on('click', () => {
       formularioComponente.submit();
     });

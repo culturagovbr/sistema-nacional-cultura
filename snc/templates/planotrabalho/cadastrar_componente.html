@@ -12,6 +12,10 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
+    $('#form').submit(function(){
+      $("#form :disabled").removeAttr('disabled');
+    });
+
     var formularioComponente = $('form.componente-form');
     if ($('#form-type').data('form-type') === 'True'){
       formularioComponente.after(`

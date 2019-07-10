@@ -50,12 +50,15 @@ class PlanoTrabalho(DetailView):
 
 
 class CadastrarComponente(CreateView):
+    model = Componente
+    form_class = CriarComponenteForm
     template_name = 'planotrabalho/cadastrar_componente.html'
 
     def get_form_kwargs(self):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
         sistema_id = self.request.session['sistema_cultura_selecionado']['id']
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
         return kwargs
@@ -126,6 +129,7 @@ class AlterarPlanoCultura(UpdateView):
         kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
         sistema_id = self.object.plano.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -184,6 +188,7 @@ class AlterarOrgaoGestor(UpdateView):
         kwargs = super(AlterarOrgaoGestor, self).get_form_kwargs()
         sistema_id = self.object.orgao_gestor.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -210,6 +215,7 @@ class AlterarFundoCultura(UpdateView):
         kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
         sistema_id = self.object.fundo_cultura.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -244,6 +250,7 @@ class AlterarConselhoCultura(UpdateView):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
         sistema_id = self.object.conselho.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
