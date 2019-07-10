@@ -263,7 +263,7 @@
         <strong><u><br/>II - AO {% if request.session.sistema_ente.cod_ibge > 100 %}MUNICÍPIO{% else %}ESTADO{% endif %} incumbe:</u></strong>
         <p>
           <br/>a) Criar, coordenar e desenvolver o Sistema {% if request.session.sistema_ente.cod_ibge > 100 %}Municipal de Cultura - SNC{% else %}
-          Estadual de Cultura;;
+          Estadual de Cultura{% endif %};
         </p>
         <p>
           b) Integrar-se ao Sistema Nacional de Cultura;
@@ -327,7 +327,7 @@
           o) Implantar e regulamentar as normas específicas locais dos sistemas setoriais de cultura;
         </p>
         <p>
-          p) Promover a integração com outros Municípios, com o Estado e a União, para a promoção de metas culturais conjuntas, inclusive por meio de consórcios públicos;
+          p) Promover a integração com outros Municípios{% if request.session.sistema_ente.cod_ibge > 100 %}, com o Estado{% endif %} e a União, para a promoção de metas culturais conjuntas, inclusive por meio de consórcios públicos;
         </p>
         <p>
           q) Designar, formalmente, responsável pelo acompanhamento dos compromissos decorrentes deste Acordo e de seus Planos de Trabalho.
@@ -403,7 +403,7 @@
         </p>
         <p>
           <strong>Parágrafo Segundo.</strong>
-          Caberá ao Município designar responsável pela alimentação das informações no Sistema Nacional de Informações e Indicadores Culturais, conforme orientação do Ministério da Cidadania - Secretaria Especial da Cultura .
+          Caberá ao {% if request.session.sistema_ente.cod_ibge > 100 %}Município{% else %}Estado{% endif %} designar responsável pela alimentação das informações no Sistema Nacional de Informações e Indicadores Culturais, conforme orientação do Ministério da Cidadania - Secretaria Especial da Cultura .
         </p>
       </p>
     </div>
@@ -415,7 +415,7 @@
         assuntos pertinentes.
         <p>
           <strong>Parágrafo Único.</strong>
-          O Município encaminhará ao Ministério da Cidadania - Secretaria Especial da Cultura , no prazo de 30 dias após a publicação do instrumento, a indicação do responsável, preferencialmente o dirigente do órgão específico de gestão da política cultural no âmbito municipal, que será responsável
+          O {% if request.session.sistema_ente.cod_ibge > 100 %}Município{% else %}Estado{% endif %} encaminhará ao Ministério da Cidadania - Secretaria Especial da Cultura , no prazo de 30 dias após a publicação do instrumento, a indicação do responsável, preferencialmente o dirigente do órgão específico de gestão da política cultural no âmbito municipal, que será responsável
           por:
           <p>
             <br/>a) Desenvolver os compromissos pactuados no Plano de Trabalho para alcance dos objetivos do Sistema Nacional de Cultura;
@@ -475,7 +475,7 @@
           E por estarem de pleno Acordo, firmam o presente Acordo de Cooperação em duas vias de igual teor e forma, perante as testemunhas abaixo qualificadas:
         </p>
         <p>
-          Brasília - DF,    de                   de 201  .
+          Brasília - DF,    de                   de 20  .
         </p>
       </p>
     </div>
