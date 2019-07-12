@@ -413,6 +413,19 @@ class Gestor(Funcionario):
         null=True)
 
 
+class AlteraçãoDeCadastrador(models.Model):
+    cadastrador_antigo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteração_antigos")
+    cadastrador_novo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteração_novos")
+    sistema_cultura = models.ForeignKey("SistemaCultura", on_delete=models.SET_NULL, null=True, related_name="alterações_de_cadastrador")
+    alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
+    alterado_por = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistemas_cadastrador_alterado")
+
+    def save(self, *args, **kwargs):
+
+        self.alterado_por = get_current_user()
+        super().save(*args, **kwargs)
+
+
 class SistemaCultura(models.Model):
     """
     Entidade que representa um Sistema de Cultura
