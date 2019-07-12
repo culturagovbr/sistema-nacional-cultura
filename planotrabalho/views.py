@@ -52,13 +52,11 @@ class PlanoTrabalho(DetailView):
 class CadastrarComponente(CreateView):
     model = Componente
     form_class = CriarComponenteForm
-    template_name = 'planotrabalho/cadastrar_componente.html'
 
     def get_form_kwargs(self):
         kwargs = super(CadastrarComponente, self).get_form_kwargs()
         sistema_id = self.request.session['sistema_cultura_selecionado']['id']
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
         return kwargs
@@ -73,6 +71,16 @@ class CadastrarComponente(CreateView):
         return redirect(reverse_lazy('planotrabalho:planotrabalho', kwargs={'pk': self.sistema.id}))
 
 
+class CadastrarLegislacao(CadastrarComponente):
+    template_name = 'planotrabalho/cadastrar_legislacao.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(CadastrarLegislacao, self).get_form_kwargs()
+        kwargs['tipo'] = 'legislacao'
+
+        return kwargs
+
+
 class CadastrarPlanoDeCultura(CadastrarComponente):
     model = PlanoDeCultura
     form_class = CriarPlanoForm
@@ -83,6 +91,12 @@ class CadastrarOrgaoGestor(CadastrarComponente):
     model = OrgaoGestor2
     form_class = CriarOrgaoGestorForm
     template_name = 'planotrabalho/cadastrar_orgao.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(CadastrarOrgaoGestor, self).get_form_kwargs()
+        kwargs['tipo'] = 'orgao_gestor'
+
+        return kwargs
 
 
 class CadastrarFundoDeCultura(CadastrarComponente):
@@ -97,22 +111,22 @@ class CadastrarConselhoDeCultura(CadastrarComponente):
     template_name = 'planotrabalho/cadastrar_conselho.html'
 
 
-class AlterarComponente(UpdateView):
+class AlterarLegislacao(UpdateView):
     model = Componente
     form_class = CriarComponenteForm
-    template_name = 'planotrabalho/cadastrar_componente.html'
+    template_name = 'planotrabalho/cadastrar_legislacao.html'
 
     def get_form_kwargs(self):
-        kwargs = super(AlterarComponente, self).get_form_kwargs()
+        kwargs = super(AlterarLegislacao, self).get_form_kwargs()
         sistema_id = self.request.session['sistema_cultura_selecionado']['id']
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
+        kwargs['tipo'] = 'legislacao'
         kwargs['sistema'] = self.sistema
-        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['logged_user'] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(AlterarComponente, self).get_context_data(**kwargs)
+        context = super(AlterarLegislacao, self).get_context_data(**kwargs)
         context['is_edit'] = True
         return context
 
@@ -129,7 +143,6 @@ class AlterarPlanoCultura(UpdateView):
         kwargs = super(AlterarPlanoCultura, self).get_form_kwargs()
         sistema_id = self.object.plano.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -188,7 +201,7 @@ class AlterarOrgaoGestor(UpdateView):
         kwargs = super(AlterarOrgaoGestor, self).get_form_kwargs()
         sistema_id = self.object.orgao_gestor.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['tipo'] = self.kwargs['tipo']
+        kwargs['tipo'] = 'orgao_gestor'
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -215,7 +228,6 @@ class AlterarFundoCultura(UpdateView):
         kwargs = super(AlterarFundoCultura, self).get_form_kwargs()
         sistema_id = self.object.fundo_cultura.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 
@@ -250,7 +262,6 @@ class AlterarConselhoCultura(UpdateView):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
         sistema_id = self.object.conselho.last().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
-        kwargs['tipo'] = self.kwargs['tipo']
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
 

@@ -138,7 +138,6 @@ class CriarPlanoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
@@ -332,7 +331,6 @@ class CriarFundoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
         super(CriarFundoForm, self).__init__(*args, **kwargs)
 
@@ -448,7 +446,6 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarConselhoForm, self).__init__(*args, **kwargs)

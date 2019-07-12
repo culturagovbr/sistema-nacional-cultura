@@ -16,7 +16,7 @@ def test_criar_fundo_form_cnpj_igual_sede(client, login, sistema_cultura, cnpj):
     }
 
     form = CriarFundoForm(logged_user=login.user, sistema=sistema_cultura,
-        tipo="fundo_cultura", data=data, files={"arquivo": SimpleUploadedFile(
+        data=data, files={"arquivo": SimpleUploadedFile(
                 "componente.txt", b"file_content", content_type="text/plain"
             ),
             "comprovante": SimpleUploadedFile(

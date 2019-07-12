@@ -455,7 +455,8 @@ class InserirComponente(CreateView):
     def get_form_kwargs(self):
         kwargs = super(InserirComponente, self).get_form_kwargs()
         pk = self.kwargs['pk']
-        kwargs['tipo'] = self.kwargs['componente']
+        if self.kwargs['componente'] == 'orgao_gestor' or self.kwargs['componente'] == 'legislacao':
+            kwargs['tipo'] = self.kwargs['componente']
         kwargs['sistema'] = SistemaCultura.sistema.get(pk=pk)
         kwargs['logged_user'] = self.request.user
         return kwargs
