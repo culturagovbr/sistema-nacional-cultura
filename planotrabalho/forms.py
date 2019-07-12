@@ -108,7 +108,8 @@ class CriarPlanoForm(ModelForm):
 
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    arquivo = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
+    arquivo = forms.FileField(widget=FileInput, label="Arquivo da Lei")
+    data_publicacao = forms.DateField(required=True)
     possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
     anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
