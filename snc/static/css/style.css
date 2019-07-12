@@ -706,7 +706,19 @@ background-color: #F28E00;
   color: #a94442;
   border-color: #a94442;
   background-color: #f2dede;
+}
   
 .half-width {
   width: 50%;
+}
+
+.componente-concluido {
+  border: black solid 1px;
+  border-radius: 5px;
+  width: 22%;
+  padding: 7px;
+}
+
+.radio {
+  margin-left: 0em !important;
 }

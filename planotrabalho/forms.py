@@ -99,15 +99,6 @@ class CriarComponenteForm(ModelForm):
 class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
 
-    def __init__(self, *args, **kwargs):
-        logged_user = kwargs['logged_user']
-        super(CriarOrgaoGestorForm, self).__init__(*args, **kwargs)
-
-        if logged_user.is_staff:
-            self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Órgão Gestor'
-            })
-
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao',)
@@ -147,7 +138,6 @@ class CriarPlanoForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarPlanoForm, self).__init__(*args, **kwargs)
@@ -280,12 +270,13 @@ class CriarPlanoForm(ModelForm):
             plano.data_publicacao = self.cleaned_data['data_publicacao']
 
         if self.cleaned_data['possui_anexo'] and not self.cleaned_data['anexo_na_lei']:
-            plano.anexo = ArquivoComponente2()
-            plano.anexo.situacao = 1
-            plano.anexo.save()
-            plano.anexo.anexo_plano.add(plano)
-            plano.anexo.arquivo = self.cleaned_data['anexo_lei']
-            plano.anexo.save()
+            if 'anexo_lei' in self.changed_data:
+                plano.anexo = ArquivoComponente2()
+                plano.anexo.situacao = 1
+                plano.anexo.save()
+                plano.anexo.anexo_plano.add(plano)
+                plano.anexo.arquivo = self.cleaned_data['anexo_lei']
+                plano.anexo.save()
         elif not self.cleaned_data['possui_anexo']:
             plano.anexo = None
             plano.anexo_na_lei = False
@@ -293,12 +284,13 @@ class CriarPlanoForm(ModelForm):
             plano.anexo = None
 
         if self.cleaned_data['possui_metas'] and not self.cleaned_data['metas_na_lei']:
-            plano.metas = ArquivoComponente2()
-            plano.metas.situacao = 1
-            plano.metas.save()
-            plano.metas.metas_plano.add(plano)
-            plano.metas.arquivo = self.cleaned_data['arquivo_metas']
-            plano.metas.save()
+            if 'arquivo_metas' in self.changed_data:
+                plano.metas = ArquivoComponente2()
+                plano.metas.situacao = 1
+                plano.metas.save()
+                plano.metas.metas_plano.add(plano)
+                plano.metas.arquivo = self.cleaned_data['arquivo_metas']
+                plano.metas.save()
         elif not self.cleaned_data['possui_metas']:
             plano.metas = None
             plano.metas_na_lei = False
@@ -327,7 +319,7 @@ class CriarPlanoForm(ModelForm):
             'arquivo', 'data_publicacao')
 
 
-class CriarFundoForm(CriarComponenteForm):
+class CriarFundoForm(ModelForm):
     cnpj = BRCNPJField(required=False)
     comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
@@ -338,7 +330,8 @@ class CriarFundoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
-        logged_user = kwargs['logged_user']
+        self.sistema = kwargs.pop('sistema')
+        logged_user = kwargs.pop('logged_user')
         super(CriarFundoForm, self).__init__(*args, **kwargs)
 
         if logged_user.is_staff:
@@ -399,8 +392,9 @@ class CriarFundoForm(CriarComponenteForm):
 
 
     def save(self, commit=True, *args, **kwargs):
-        componente = super(CriarComponenteForm, self).save(commit=False)
-        componente.tipo = self.componentes.get(self.tipo_componente)
+        componente = super(CriarFundoForm, self).save(commit=False)
+        FUNDO_CULTURA = 2
+        componente.tipo = FUNDO_CULTURA
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
@@ -430,7 +424,7 @@ class CriarFundoForm(CriarComponenteForm):
             componente.comprovante_cnpj = None
             componente.save()
 
-        sistema_cultura = getattr(componente, self.tipo_componente)
+        sistema_cultura = getattr(componente, 'fundo_cultura')
         sistema_cultura.add(self.sistema)
 
     class Meta:
@@ -452,7 +446,6 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
@@ -533,6 +526,10 @@ class CriarConselhoForm(ModelForm):
         conselho.arquivo = self.cleaned_data['arquivo']
         conselho.data_publicacao = self.cleaned_data['data_publicacao']
         conselho.save()
+
+        if 'data_publicacao_lei' in self.changed_data:
+            conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
+            conselho.lei.save()
 
         if 'mesma_lei' in self.changed_data or 'arquivo_lei' in self.changed_data:
             conselho.lei = ArquivoComponente2()

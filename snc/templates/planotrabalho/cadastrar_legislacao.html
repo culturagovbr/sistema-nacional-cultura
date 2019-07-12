@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container">
+<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <p>
+    <strong>Sanção da Lei de criação do Sistema de Cultura pelo Governador/Prefeito</strong>
+  </p>
+
+  <div class="form-group">
+    <label for="{{ form.data_publicacao.id_for_label }}">
+      Data de Publicação da Lei do Sistema de Cultura
+    </label>
+    {% if form.sistema.legislacao.situacao != 2 %}
+      {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% else %}
+      {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.arquivo.id_for_label }}">
+      Lei do Sistema de Cultura
+    </label>
+    {% if form.arquivo.value %}
+      <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+      {% if form.sistema.legislacao.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% render_field form.arquivo %}</p>
+    {% endif %}
+  </div>
+
+  <div class="alert alert-info" role="alert">
+    <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
+    - Elaborar a minuta e discuti-la com a sociedade;<br>
+    - Encaminhar para análise jurídica;<br>
+    - Encaminhar ao governador/prefeito para sanção;<br>
+    - Publicar no Diário Oficial.<br><br>
+    <strong>Observação:</strong><br>
+    - Manuais disponíveis no site: <br>
+    <a href="http://portalsnc.cultura.gov.br/manuais/">http://portalsnc.cultura.gov.br/manuais/</a><br>
+    - Modelo de lei editável em Word: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/">http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
+    - Componente do Sistema de Cultura: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/">http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
+    Atenção! Estes modelos devem ser adequados à realidade do município.
+
+  </div>
+
+</form>
+</div>
+{% endblock content %}
+{% block js %}
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#form').submit(function(){
+      $("#form :disabled").removeAttr('disabled');
+    });
+
+    var formularioComponente = $('form.componente-form');
+    if ($('#form-type').data('form-type') === 'True'){
+      formularioComponente.after(`
+        <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
+      `);
+    } else {
+      formularioComponente.after(`
+        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
+      `);
+    }
+
+    $('#botaoSalvarConfirmacao').on('click', () => {
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá acarretar na mudança de posição na fila de análise do seu processo.');
+      if (confirmacao == true) {
+        formularioComponente.submit();
+      }
+    });
+
+    $('#botaoSalvar').on('click', () => {
+      formularioComponente.submit();
+    });
+
+  });
+</script>
+
+{% endblock js %}

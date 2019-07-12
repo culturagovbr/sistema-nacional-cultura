@@ -21,7 +21,7 @@ def test_cadastrar_componente_tipo_legislacao(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "legislacao"})
+    url = reverse("planotrabalho:cadastrar_legislacao")
 
     arquivo = SimpleUploadedFile(
         "componente.txt", b"file_content", content_type="text/plain"
@@ -46,7 +46,7 @@ def test_cadastrar_componente_tipo_orgao_gestor(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "orgao_gestor"})
+    url = reverse("planotrabalho:cadastrar_orgao")
 
     arquivo = SimpleUploadedFile(
         "componente.txt", b"file_content", content_type="text/plain"
@@ -99,7 +99,7 @@ def test_cadastrar_componente_tipo_fundo_cultura(client, login, cnpj):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "fundo_cultura"})
+    url = reverse("planotrabalho:cadastrar_fundo_cultura")
 
     arquivo = SimpleUploadedFile(
         "componente.txt", b"file_content", content_type="text/plain"
@@ -136,7 +136,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_sem_cnpj(client
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "fundo_cultura"})
+    url = reverse("planotrabalho:cadastrar_fundo_cultura")
 
     response = client.post(url, data={"possui_cnpj": 'False',
                                       'mesma_lei': 'True'})
@@ -163,7 +163,7 @@ def test_cadastrar_componente_tipo_fundo_cultura_reaproveita_lei_com_cnpj(client
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "fundo_cultura"})
+    url = reverse("planotrabalho:cadastrar_fundo_cultura")
 
     cnpj = SimpleUploadedFile(
         "cnpj.txt", b"file_content", content_type="text/plain"
@@ -192,7 +192,7 @@ def test_cadastrar_componente_tipo_conselho(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "conselho"})
+    url = reverse("planotrabalho:cadastrar_conselho")
 
     arquivo_ata = SimpleUploadedFile(
         "ata.txt", b"file_content", content_type="text/plain"
@@ -233,7 +233,7 @@ def test_cadastrar_componente_tipo_conselho_importar_lei(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "conselho"})
+    url = reverse("planotrabalho:cadastrar_conselho")
 
     response = client.post(url, data={'mesma_lei': True,
                                       'possui_ata': False,
@@ -259,7 +259,7 @@ def test_cadastrar_componente_tipo_plano(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:cadastrar_componente", kwargs={"tipo": "plano"})
+    url = reverse("planotrabalho:cadastrar_plano")
 
     arquivo = SimpleUploadedFile(
         "componente.txt", b"file_content", content_type="text/plain"
@@ -317,8 +317,7 @@ def test_alterar_componente(client, login):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:alterar_componente", kwargs={"tipo": "legislacao", 
-        "pk": sistema_cultura.legislacao.id})
+    url = reverse("planotrabalho:alterar_legislacao", kwargs={"pk": sistema_cultura.legislacao.id})
 
     numero_componentes = Componente.objects.count()
 
@@ -348,7 +347,7 @@ def test_alterar_fundo_cultura(client, login, cnpj):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:alterar_fundo", kwargs={"pk": sistema_cultura.fundo_cultura.id})
+    url = reverse("planotrabalho:alterar_fundo_cultura", kwargs={"pk": sistema_cultura.fundo_cultura.id})
 
     numero_componentes = Componente.objects.count()
     numero_fundo_cultura = FundoDeCultura.objects.count()
@@ -394,7 +393,7 @@ def test_alterar_fundo_cultura_remove_cnpj(client, login, cnpj):
     url = reverse("adesao:home")
     client.get(url)
 
-    url = reverse("planotrabalho:alterar_fundo", kwargs={"pk": sistema_cultura.fundo_cultura.id})
+    url = reverse("planotrabalho:alterar_fundo_cultura", kwargs={"pk": sistema_cultura.fundo_cultura.id})
 
     numero_componentes = Componente.objects.count()
     numero_fundo_cultura = FundoDeCultura.objects.count()
