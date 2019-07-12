@@ -13,18 +13,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AlteraçãoDeCadastrador',
+            name='AlteracaoDeCadastrador',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('alterado_em', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Alterado em')),
                 ('alterado_por', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sistemas_cadastrador_alterado', to='adesao.Usuario')),
-                ('cadastrador_antigo', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alteração_antigos', to='adesao.Usuario')),
-                ('cadastrador_novo', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alteração_novos', to='adesao.Usuario')),
+                ('cadastrador_antigo', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alteracao_antigos', to='adesao.Usuario')),
+                ('cadastrador_novo', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alteracao_novos', to='adesao.Usuario')),
             ],
-        ),
-        migrations.AddField(
-            model_name='alteraçãodecadastrador',
-            name='sistema_cultura',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alterações_de_cadastrador', to='adesao.SistemaCultura'),
         ),
     ]

@@ -413,10 +413,9 @@ class Gestor(Funcionario):
         null=True)
 
 
-class AlteraçãoDeCadastrador(models.Model):
-    cadastrador_antigo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteração_antigos")
-    cadastrador_novo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteração_novos")
-    sistema_cultura = models.ForeignKey("SistemaCultura", on_delete=models.SET_NULL, null=True, related_name="alterações_de_cadastrador")
+class AlteracaoDeCadastrador(models.Model):
+    cadastrador_antigo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteracao_antigos")
+    cadastrador_novo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteracao_novos")
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
     alterado_por = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistemas_cadastrador_alterado")
 
@@ -431,6 +430,7 @@ class SistemaCultura(models.Model):
     Entidade que representa um Sistema de Cultura
     """
 
+    alteracao_cadastrador = models.ForeignKey("AlteracaoDeCadastrador", on_delete=models.SET_NULL, null=True, related_name="alteracoes_cadastrador")
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
