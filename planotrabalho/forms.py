@@ -527,6 +527,10 @@ class CriarConselhoForm(ModelForm):
         conselho.data_publicacao = self.cleaned_data['data_publicacao']
         conselho.save()
 
+        if 'data_publicacao_lei' in self.changed_data:
+            conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
+            conselho.lei.save()
+
         if 'mesma_lei' in self.changed_data or 'arquivo_lei' in self.changed_data:
             conselho.lei = ArquivoComponente2()
             conselho.lei.save()
