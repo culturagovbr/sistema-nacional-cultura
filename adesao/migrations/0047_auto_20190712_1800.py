@@ -13,15 +13,25 @@ def copia_alteracoes(apps, schema_editor):
                 ente_federado__cod_ibge=sistema.ente_federado.cod_ibge).order_by('alterado_em')
             sistema_base = ente_historico.first()
 
-            for sistema in ente_historico:
-                if sistema.cadastrador != sistema_base.cadastrador or sistema == ente_historico.first():
-                    alteracao = AlteracaoDeCadastrador.objects.create(cadastrador_antigo=sistema_base.cadastrador,
-                        cadastrador_novo=sistema.cadastrador, alterado_em=sistema.alterado_em,
-                        alterado_por=sistema.alterado_por)
-                    sistema.alteracao_cadastrador = alteracao
-                    sistema.save()
+            alteracao = AlteracaoDeCadastrador.objects.create(cadastrador_antigo=None,
+                        cadastrador_novo=sistema_base.cadastrador, alterado_em=sistema_base.alterado_em,
+                        alterado_por=sistema_base.alterado_por)
+            sistema_base.alteracao_cadastrador = alteracao
+            sistema_base.save()
 
-                    sistema_base = sistema
+            for sistema in ente_historico[1:]:
+                if sistema.cadastrador != sistema_base.cadastrador:
+                    sistema.alteracao_cadastrador = sistema_base.alteracao_cadastrador
+                    sistema.alteracao_cadastrador.cadastrador_antigo = sistema_base.cadastrador
+                    sistema.alteracao_cadastrador.cadastrador_novo = sistema.cadastrador
+                    sistema.alteracao_cadastrador.alterado_em = sistema.alterado_em
+                    sistema.alteracao_cadastrador.alterado_por = sistema.alterado_por
+                else:
+                    sistema.alteracao_cadastrador = sistema_base.alteracao_cadastrador
+
+                sistema.alteracao_cadastrador.save()
+                sistema.save()
+                sistema_base = sistema
 
 
 class Migration(migrations.Migration):
