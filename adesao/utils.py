@@ -7,6 +7,8 @@ from adesao.models import SistemaCultura
 from django.core.exceptions import ObjectDoesNotExist
 from templated_email import send_templated_mail
 
+from planotrabalho.models import LISTA_SITUACAO_ARQUIVO
+
 
 def limpar_mascara(mascara):
     return ''.join(re.findall('\d+', mascara))
@@ -33,7 +35,11 @@ def verificar_anexo(sistema, componente):
     try:
         componente = getattr(sistema, componente)
         if componente:
-            return componente.get_situacao_display()
+            situacao = componente.get_situacao_display()
+            if situacao == LISTA_SITUACAO_ARQUIVO[3][1]:
+                return LISTA_SITUACAO_ARQUIVO[2][1]
+            
+            return situacao
         else:
             return 'Não Possui'
     except (AttributeError, ObjectDoesNotExist) as exceptions:
@@ -155,7 +161,7 @@ def preenche_planilha(planilha):
 
 def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura, exclude=['data_criacao', 'alterado_em',
-        'data_publicacao_acordo'])
+        'data_publicacao_acordo', 'data_publicacao_retificacao'])
     request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime("%d/%m/%Y às %H:%M:%S")
 
     if sistema_cultura.alterado_por:

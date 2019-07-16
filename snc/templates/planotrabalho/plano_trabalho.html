@@ -18,69 +18,83 @@
       <p>
         <strong>I. Lei de Criação do Sistema de Cultura</strong>
       </p>
-      {% if sistema.legislacao.situacao != 2 %}
-        {% if sistema.legislacao.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='legislacao' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='legislacao' %}">Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.legislacao.arquivo %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_legislacao' %}" >Enviar Comprovação</a>
+        </br>
+        </br>
+      {% else %}
+        <strong>Situação da Lei: </strong>{{ sistema.legislacao.get_situacao_display|default:"Não possui" }}</br>
+        <br />
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:alterar_legislacao' pk=sistema.legislacao.id %}">Editar Componente</a>
+        <br />
+        </br>
       {% endif %}
-      <br />
-      <br />
     </li>
     <li class="list-group-item">
       <p>
         <strong>II. Órgão Gestor</strong>
       </p>
-      {% if sistema.orgao_gestor.situacao != 2 %}
-        {% if sistema.orgao_gestor.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='orgao_gestor' %}" />Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.orgao_gestor.arquivo %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_orgao' %}" >Enviar Comprovação</a>
+        </br>
+        </br>
+      {% else %}
+        <strong>Situação da Lei: </strong>{{ sistema.orgao_gestor.get_situacao_display|default:"Não possui" }}</br>
+        <br />
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:alterar_orgao' pk=sistema.orgao_gestor.id %}">Editar Componente</a>
+        <br />
+        </br>
       {% endif %}
-      <br />
-      <br />
     </li>
     <li class="list-group-item">
       <p>
         <strong>III. Conselho de Política Cultural</strong>
       </p>
-      {% if sistema.conselho.lei.situacao != 2 %}
-        {% if sistema.conselho.lei.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='conselho' %}" >Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.conselho.arquivo and not sistema.conselho.lei %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_conselho' %}" >Enviar Comprovação</a>
+        </br>
+        </br>
+      {% else %}
+        <strong>Situação da Lei: </strong>{{ sistema.conselho.lei.get_situacao_display|default:"Não possui" }}</br>
+        <strong>Situação da Ata: </strong>{{ sistema.conselho.get_situacao_display|default:"Não possui"}}</br>
+        </br>
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:alterar_conselho' pk=sistema.conselho.id %}">Editar Componente</a>
+        </br>
+        </br>
       {% endif %}
-      <br />
-      <br />
     </li>
     <li class="list-group-item">
       <p>
         <strong>IV. Fundo de Cultura</strong>
       </p>
-      {% if sistema.fundo_cultura.situacao != 2 %}
-        {% if sistema.fundo_cultura.situacao == 1 %}
-          <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='fundo_cultura' %}" >Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.fundo_cultura.arquivo and not sistema.fundo_cultura.comprovante_cnpj %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_fundo_cultura' %}" >Enviar Comprovação</a>
+        </br>
+        </br>
+      {% else %}
+        <strong>Situação da Lei: </strong>{{ sistema.fundo_cultura.get_situacao_display|default:"Não possui" }}</br>
+        <strong>Situação do Comprovante do CNPJ: </strong>{{ sistema.fundo_cultura.comprovante_cnpj.get_situacao_display|default:"Não possui"}}</br>
+        </br>
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:alterar_fundo_cultura' pk=sistema.fundo_cultura.id %}">Editar Componente</a>
+        </br>
+        </br>
       {% endif %}
-
-      <br />
-      <br />
     </li>
     <li class="list-group-item">
       <p>
         <strong>V. Plano de Cultura</strong>
       </p>
-      {% if sistema.plano.situacao != 2 %}
-        {% if sistema.plano.situacao == 1 %}
-        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}">Aguarda Análise</a>
-        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_componente' tipo='plano' %}" >Enviar Comprovação</a>
-        {% endif %}
+      {% if not sistema.plano.situacao and not sistema.plano.anexo and not sistema.plano.metas %}
+        <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_plano' %}" >Enviar Comprovação</a>
+        </br>
+        </br>
+      {% else %}
+        <strong>Situação da Lei: </strong>{{ sistema.plano.get_situacao_display|default:"Não possui" }}</br>
+        <strong>Situação do Anexo da Lei: </strong>{{ sistema.plano.anexo.get_situacao_display|default:"Não possui"}}</br>
+        <strong>Situação do Arquivo com as Metas: </strong>{{ sistema.plano.metas.get_situacao_display|default:"Não possui"}}</br>
+        </br>
+        <a class="btn btn-warning" style="color:#FFF" href="{% url 'planotrabalho:alterar_plano' pk=sistema.plano.id %}">Editar Componente</a>
+      </br>
       {% endif %}
     </li>
 

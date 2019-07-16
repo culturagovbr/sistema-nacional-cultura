@@ -7,14 +7,18 @@ from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
 from .models import FundoCultura, Componente
-from .models import FundoDeCultura, PlanoCultura, ConselhoDeCultura
+from .models import FundoDeCultura, PlanoDeCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
-from .models import LISTA_PERFIS_ORGAO_GESTOR
+from .models import LISTA_PERFIS_ORGAO_GESTOR, LISTA_PERIODICIDADE
+from .models import LISTA_ESFERAS_FEDERACAO, LISTA_CURSOS
+from .models import LISTA_PERFIL_PARTICIPANTE_CURSOS
 from .models import ArquivoComponente2
 from .models import OrgaoGestor2
 from .utils import add_anos
 from adesao.models import SistemaCultura
 from gestao.forms import content_types
+
+from adesao.utils import limpar_mascara
 
 from snc.widgets import FileUploadWidget
 
@@ -95,21 +99,228 @@ class CriarComponenteForm(ModelForm):
 class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
 
-    def __init__(self, *args, **kwargs):
-        logged_user = kwargs['logged_user']
-        super(CriarOrgaoGestorForm, self).__init__(*args, **kwargs)
-
-        if logged_user.is_staff:
-            self.fields['arquivo'].widget = FileUploadWidget(attrs={
-                'label': 'Órgão Gestor'
-            })
-
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao',)
 
 
-class CriarFundoForm(CriarComponenteForm):
+class CriarPlanoForm(ModelForm):
+
+    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    arquivo = forms.FileField(widget=FileInput, label="Arquivo da Lei")
+    data_publicacao = forms.DateField(required=True)
+    possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    anexo_lei = forms.FileField(required=False, widget=FileInput, label="Arquivo de Anexo")
+    periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
+    ultimo_ano_vigencia = forms.IntegerField()
+    possui_metas = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    metas_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    arquivo_metas = forms.FileField(required=False, widget=FileInput, label="Arquivo com as metas")
+    monitorado = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    local_monitoramento = forms.CharField(required=False)
+    participou_curso = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                            (False, 'Não')]))
+    ano_inicio_curso = forms.IntegerField(required=False)
+    ano_termino_curso = forms.IntegerField(required=False)
+    esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
+        widget=forms.CheckboxSelectMultiple)
+    tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
+        widget=forms.CheckboxSelectMultiple)
+    perfil_participante = forms.MultipleChoiceField(required=False, choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
+        widget=forms.CheckboxSelectMultiple)
+
+
+    def __init__(self, *args, **kwargs):
+        self.sistema = kwargs.pop('sistema')
+        logged_user = kwargs.pop('logged_user')
+
+        super(CriarPlanoForm, self).__init__(*args, **kwargs)
+
+        if logged_user.is_staff:
+            self.fields['arquivo'].widget = FileUploadWidget(attrs={
+                'label': 'Lei do Plano de Cultura'
+            })
+            self.fields['anexo_lei'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo de Anexo da Lei'
+            })
+            self.fields['arquivo_metas'].widget = FileUploadWidget(attrs={
+                'label': 'Arquivo com as metas'
+           })
+
+    def clean_exclusivo_cultura(self):
+        if self.cleaned_data['exclusivo_cultura'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['exclusivo_cultura']
+
+    def clean_possui_anexo(self):
+        if self.cleaned_data['possui_anexo'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['possui_anexo']
+
+    def clean_anexo_na_lei(self):
+        if self.cleaned_data.get('possui_anexo', None) and self.cleaned_data['anexo_na_lei'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['anexo_na_lei']
+
+    def clean_anexo_lei(self):
+        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and self.cleaned_data['anexo_lei'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['anexo_lei']
+
+    def clean_possui_metas(self):
+        if self.cleaned_data.get('possui_metas', None) is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['possui_metas']
+
+    def clean_metas_na_lei(self):
+        if self.cleaned_data.get('possui_metas', None) and self.cleaned_data['metas_na_lei'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['metas_na_lei']
+
+    def clean_arquivo_metas(self):
+        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and self.cleaned_data['arquivo_metas'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['arquivo_metas']
+
+    def clean_monitorado(self):
+        if self.cleaned_data['monitorado'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['monitorado']
+
+    def clean_local_monitoramento(self):
+        if self.cleaned_data.get('monitorado', None) and self.cleaned_data.get('local_monitoramento') == '':
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('monitorado', None):
+            self.cleaned_data['local_monitoramento'] = None
+
+        return self.cleaned_data['local_monitoramento']
+
+    def clean_participou_curso(self):
+        if self.cleaned_data['participou_curso'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+
+        return self.cleaned_data['participou_curso']
+
+    def clean_ano_inicio_curso(self):
+        if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_inicio_curso'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['ano_inicio_curso'] = None
+
+        return self.cleaned_data['ano_inicio_curso']
+
+    def clean_ano_termino_curso(self):
+        if self.cleaned_data.get('participou_curso', None) and self.cleaned_data['ano_termino_curso'] is None:
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['ano_termino_curso'] = None
+        elif self.cleaned_data['ano_termino_curso'] <= self.cleaned_data['ano_inicio_curso']:
+            raise forms.ValidationError("O ano de término não pode ser menor ou igual ao ano de início")
+
+        return self.cleaned_data['ano_termino_curso']
+
+    def clean_esfera_federacao_curso(self):
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['esfera_federacao_curso']:
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['esfera_federacao_curso'] = None
+
+        return self.cleaned_data['esfera_federacao_curso']
+
+    def clean_tipo_oficina(self):
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['tipo_oficina']:
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['tipo_oficina'] = None
+
+        return self.cleaned_data['tipo_oficina']
+
+    def clean_perfil_participante(self):
+        if self.cleaned_data.get('participou_curso', None) and not self.cleaned_data['perfil_participante']:
+            raise forms.ValidationError("Este campo é obrigatório")
+        elif not self.cleaned_data.get('participou_curso', None):
+            self.cleaned_data['perfil_participante'] = None
+
+        return self.cleaned_data['perfil_participante']
+
+    def save(self, commit=True, *args, **kwargs):
+        plano = super(CriarPlanoForm, self).save(commit=False)
+        TIPO_PLANO = 4
+        plano.tipo = TIPO_PLANO
+
+        if 'arquivo' in self.changed_data:
+            plano.situacao = 1
+            plano.arquivo = None
+            plano.save()
+            plano.arquivo = self.cleaned_data['arquivo']
+            plano.data_publicacao = self.cleaned_data['data_publicacao']
+
+        if self.cleaned_data['possui_anexo'] and not self.cleaned_data['anexo_na_lei']:
+            if 'anexo_lei' in self.changed_data:
+                plano.anexo = ArquivoComponente2()
+                plano.anexo.situacao = 1
+                plano.anexo.save()
+                plano.anexo.anexo_plano.add(plano)
+                plano.anexo.arquivo = self.cleaned_data['anexo_lei']
+                plano.anexo.save()
+        elif not self.cleaned_data['possui_anexo']:
+            plano.anexo = None
+            plano.anexo_na_lei = False
+        elif self.cleaned_data['possui_anexo'] and self.cleaned_data['anexo_na_lei']:
+            plano.anexo = None
+
+        if self.cleaned_data['possui_metas'] and not self.cleaned_data['metas_na_lei']:
+            if 'arquivo_metas' in self.changed_data:
+                plano.metas = ArquivoComponente2()
+                plano.metas.situacao = 1
+                plano.metas.save()
+                plano.metas.metas_plano.add(plano)
+                plano.metas.arquivo = self.cleaned_data['arquivo_metas']
+                plano.metas.save()
+        elif not self.cleaned_data['possui_metas']:
+            plano.metas = None
+            plano.metas_na_lei = False
+        elif self.cleaned_data['possui_metas'] and self.cleaned_data['metas_na_lei']:
+            plano.metas = None
+
+        if 'participou_curso' in self.changed_data:
+            plano.ano_inicio_curso = self.cleaned_data['ano_inicio_curso']
+            plano.ano_termino_curso = self.cleaned_data['ano_termino_curso']
+            plano.esfera_federacao_curso = self.cleaned_data['esfera_federacao_curso']
+            plano.tipo_oficina = self.cleaned_data['tipo_oficina']
+            plano.perfil_participante = self.cleaned_data['perfil_participante']
+
+        if 'monitorado' in self.changed_data:
+            plano.local_monitoramento = self.cleaned_data['local_monitoramento']
+
+        plano.save()
+        sistema_cultura = plano.plano
+        sistema_cultura.add(self.sistema)
+
+        return plano
+
+    class Meta:
+        model = PlanoDeCultura
+        fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade',
+            'arquivo', 'data_publicacao')
+
+
+class CriarFundoForm(ModelForm):
     cnpj = BRCNPJField(required=False)
     comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
@@ -120,7 +331,8 @@ class CriarFundoForm(CriarComponenteForm):
                                                             (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
-        logged_user = kwargs['logged_user']
+        self.sistema = kwargs.pop('sistema')
+        logged_user = kwargs.pop('logged_user')
         super(CriarFundoForm, self).__init__(*args, **kwargs)
 
         if logged_user.is_staff:
@@ -164,6 +376,10 @@ class CriarFundoForm(CriarComponenteForm):
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_cnpj', None) == 'False' and self.cleaned_data['cnpj']:
             self.cleaned_data['cnpj'] = None
+        elif self.sistema.sede and self.cleaned_data['cnpj']:
+            if limpar_mascara(self.sistema.sede.cnpj) == limpar_mascara(self.cleaned_data['cnpj']):
+                raise forms.ValidationError(
+                    "CNPJ já cadastrado no ente, insira um CNPJ exclusivo do fundo de cultura")
 
         return self.cleaned_data['cnpj']
 
@@ -177,8 +393,9 @@ class CriarFundoForm(CriarComponenteForm):
 
 
     def save(self, commit=True, *args, **kwargs):
-        componente = super(CriarComponenteForm, self).save(commit=False)
-        componente.tipo = self.componentes.get(self.tipo_componente)
+        componente = super(CriarFundoForm, self).save(commit=False)
+        FUNDO_CULTURA = 2
+        componente.tipo = FUNDO_CULTURA
 
         if 'arquivo' in self.changed_data:
             componente.situacao = 1
@@ -208,7 +425,7 @@ class CriarFundoForm(CriarComponenteForm):
             componente.comprovante_cnpj = None
             componente.save()
 
-        sistema_cultura = getattr(componente, self.tipo_componente)
+        sistema_cultura = getattr(componente, 'fundo_cultura')
         sistema_cultura.add(self.sistema)
 
     class Meta:
@@ -230,7 +447,6 @@ class CriarConselhoForm(ModelForm):
                                                             (False, 'Não')]), label="Paritário")
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
 
         super(CriarConselhoForm, self).__init__(*args, **kwargs)
@@ -292,7 +508,7 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']: 
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
@@ -326,6 +542,10 @@ class CriarConselhoForm(ModelForm):
                 conselho.lei.arquivo = self.cleaned_data['arquivo_lei']
                 conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
 
+            conselho.lei.save()
+
+        if 'data_publicacao_lei' in self.changed_data:
+            conselho.lei.data_publicacao = self.cleaned_data['data_publicacao_lei']
             conselho.lei.save()
 
         sistema_cultura = conselho.conselho

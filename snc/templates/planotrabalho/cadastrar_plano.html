@@ -2,35 +2,193 @@
 {% block content %}
 {% load widget_tweaks %}
 <div class="container">
-<form method="post" class="componente-form" enctype="multipart/form-data">
+<div id="form-type" data-form-type="{{is_edit}}"></div>
+<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Elaboração do Plano de Cultura</strong>
   </h3>
 
-  <h5>
-    <strong>Lei de criação do Plano de Cultura (com as metas)</strong>
-  </h5>
-
   <div class="form-group">
-    <label for="{{ form.data_publicacao.id_for_label }}">
-      Data de Publicação da Lei do Plano de Cultura
+    <label for="{{ form.exclusivo_cultura.id_for_label }}">
+      O plano é exclusivo de cultura?</br>
     </label>
-    {% render_field form.data_publicacao class="form-control date half-width" %}
+    {% for radio in form.exclusivo_cultura %}
+      {{ radio }}</br>
+    {% endfor %}
+  </div>
+
+  <div id="lei_form">
+    <div class="form-group">
+      <label for="{{ form.data_publicacao.id_for_label }}">
+        Data de Publicação da Lei do Plano de Cultura
+      </label>
+      {% if form.sistema.plano.situacao != 2 %}
+        {% render_field form.data_publicacao class="form-control date half-width" %}
+      {% else %}
+        {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.arquivo.id_for_label }}">
+        Publicação da Lei no Diário Oficial
+      </label>
+      {% if form.arquivo.value %}
+        <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
+        {% if form.sistema.plano.situacao != 2 %}
+          <p>Modificar: {% render_field form.arquivo %}</p>
+        {% endif %}
+      {% else %}
+        <p>{% render_field form.arquivo %}</p>
+      {% endif %}
+    </div>
   </div>
 
   <div class="form-group">
-    <label for="{{ form.arquivo.id_for_label }}">
-      Publicação da Lei no Diário Oficial
+    <label for="{{ form.possui_anexo.id_for_label }}">
+      A lei possui anexo?</br>
     </label>
-    {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-    {% if view.kwargs.sistema.plano.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
+    {% if form.sistema.plano.anexo.situacao != 2 %}
+      {% render_field form.possui_anexo class="radio" %}
     {% else %}
-    <p>{% render_field form.arquivo %}</p>
+      {% render_field form.possui_anexo disabled="disabled" class="radio" %}
     {% endif %}
+  </div>
+
+  <div class="form-group" id="anexo_na_lei">
+    <label for="{{ form.anexo_na_lei.id_for_label }}">
+      O anexo já consta no mesmo arquivo da lei?</br>
+    </label>
+    {% if form.sistema.plano.anexo.situacao != 2 %}
+      {% render_field form.anexo_na_lei class="radio" %}
+    {% else %}
+      {% render_field form.anexo_na_lei disabled="disabled" class="radio" %}
+    {% endif %}
+  </div>
+
+  <div class="form-group" id="anexo" style="display: none">
+    <label for="{{ form.anexo_lei.id_for_label }}">
+      Arquivo de anexo da lei
+    </label>
+    {% if form.anexo_lei.value %}
+      <p><a href="{{ form.anexo_lei.value.url }}">Baixar arquivo atual</a></p>
+      {% if form.sistema.plano.anexo.situacao != 2 %}
+        <p>Modificar: {% render_field form.anexo_lei %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% render_field form.anexo_lei %}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.ultimo_ano_vigencia.id_for_label }}">
+      Qual o último ano de vigência do Plano de Cultura?
+    </label>
+    {% render_field form.ultimo_ano_vigencia class="form-control" %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.periodicidade.id_for_label }}">
+      Qual a periodicidade do plano?
+    </label>
+    {% render_field form.periodicidade class="form-control" %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.possui_metas.id_for_label }}">
+      Possui metas?</br>
+    </label>
+    {% if form.sistema.plano.metas.situacao != 2 %}
+      {% render_field form.possui_metas class="radio" %}
+    {% else %}
+      {% render_field form.possui_metas disabled="disabled" class="radio" %}
+    {% endif %}
+  </div>
+
+  <div class="form-group" id="metas_na_lei" style="display: none">
+    <label for="{{ form.metas_na_lei.id_for_label }}">
+      As metas estão descritas no mesmo documento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
+    </label>
+    {% if form.sistema.plano.metas.situacao != 2 %}
+      {% render_field form.metas_na_lei class="radio" %}
+    {% else %}
+      {% render_field form.metas_na_lei disabled="disabled" class="radio" %}
+    {% endif %}
+  </div>
+
+  <div class="form-group" id="metas" style="display: none">
+    <label for="{{ form.arquivo_metas.id_for_label }}">
+      Arquivo com as metas
+    </label>
+    {% if form.arquivo_metas.value %}
+      <p><a href="{{ form.arquivo_metas.value.url }}">Baixar arquivo atual</a></p>
+      {% if form.sistema.plano.metas.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo_metas %}</p>
+      {% endif %}
+    {% else %}
+      <p>{% render_field form.arquivo_metas %}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.monitorado.id_for_label }}">
+      O plano é monitorado?</br>
+    </label>
+    {% for radio in form.monitorado %}
+      {{ radio }}</br>
+    {% endfor %}
+  </div>
+
+  <div class="form-group" id="monitoramento" style="display: none">
+    <label for="{{ form.local_monitoramento.id_for_label }}">
+      Indique o local onde o resultado do monitoramento pode ser visualizado
+    </label>
+    {% render_field form.local_monitoramento class="form-control" %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.participou_curso.id_for_label }}">
+      Para a construção do Plano de Cultura, o ente federado participou de algum Programa de Formação de Gestores e Conselheiros Culturais?</br>
+    </label>
+    {% for radio in form.participou_curso %}
+      {{ radio }}</br>
+    {% endfor %}
+  </div>
+
+   <div class="form-group" id="ano_inicio" style="display: none">
+    <label for="{{ form.ano_inicio_curso.id_for_label }}">
+      Indique o ano de início do curso
+    </label>
+    {% render_field form.ano_inicio_curso class="form-control" %}
+  </div>
+
+  <div class="form-group" id="ano_termino" style="display: none">
+    <label for="{{ form.ano_termino_curso.id_for_label }}">
+      Indique o ano de término do curso
+    </label>
+    {% render_field form.ano_termino_curso class="form-control" %}
+  </div>
+
+  <div class="form-group" id="esfera_federacao" style="display: none">
+    <label for="esfera_federacao">
+      Indique por qual esfera da federação foi ofertado o curso:</br>
+    </label>
+    {% render_field form.esfera_federacao_curso %}
+  </div>
+
+  <div class="form-group" id="tipo_oficina" style="display: none">
+    <label for="{{ form.tipo_oficina.id_for_label }}">
+      Indique o tipo do curso:</br>
+    </label>
+    {% render_field form.tipo_oficina %}
+  </div>
+
+  <div class="form-group" id="perfil_participante" style="display: none">
+    <label for="{{ form.perfil_participante.id_for_label }}">
+      Qual o perfil do participante?</br>
+    </label>
+    {% render_field form.perfil_participante %}
   </div>
 
   <div class="alert alert-info" role="alert">
@@ -63,5 +221,150 @@
 
 </form>
 </div>
+<script type="text/javascript">
+  $(document).ready(function(){
 
+    $('#form').submit(function(){
+      $("#form :disabled").removeAttr('disabled');
+    });
+
+    var formularioComponente = $('form.componente-form');
+    if ($('#form-type').data('form-type') === 'True'){
+      formularioComponente.after(`
+        <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
+      `);
+    } else {
+      formularioComponente.after(`
+        <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
+      `);
+    }
+    $('#botaoSalvarConfirmacao').on('click', () => {
+      var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá ocasionar o retrocesso do seu processo.');
+      if (confirmacao == true) {
+        formularioComponente.submit();
+      }
+    });
+    $('#botaoSalvar').on('click', () => {
+      formularioComponente.submit();
+    });
+
+    if($('#id_anexo_na_lei_0').is(":checked")){
+      $('#anexo').css('display', 'none');
+    }
+    if($('#id_anexo_na_lei_1').is(":checked")){
+      $('#anexo').css('display', 'block');
+    }
+
+    if($('#id_possui_anexo_0').is(":checked")){
+      $('#anexo_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_anexo_1').is(":checked")){
+      $('#anexo_na_lei').css('display', 'none');
+      $('#anexo').css('display', 'none');
+    }
+
+    $('input[name=possui_anexo]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo_na_lei').fadeOut();
+        $('#anexo').fadeOut();
+      }
+      else {
+        $('#anexo_na_lei').fadeIn();
+      }
+    })
+
+    $('input[name=anexo_na_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#anexo').fadeIn();
+      }
+      else {
+        $('#anexo').fadeOut();
+      }
+    })
+
+    if($('#id_metas_na_lei_0').is(":checked")){
+      $('#metas').css('display', 'none');
+    }
+    if($('#id_metas_na_lei_1').is(":checked")){
+      $('#metas').css('display', 'block');
+    }
+
+    if($('#id_possui_metas_0').is(":checked")){
+      $('#metas_na_lei').css('display', 'block');
+    }
+    if($('#id_possui_metas_1').is(":checked")){
+      $('#metas_na_lei').css('display', 'none');
+      $('#metas').css('display', 'none');
+    }
+
+    $('input[name=possui_metas]').change(function() { 
+      if(this.value=='False') {
+        $('#metas_na_lei').fadeOut();
+        $('#metas').fadeOut();
+      }
+      else {
+        $('#metas_na_lei').fadeIn();
+        $('#metas').fadeIn();
+      }
+    })
+
+    $('input[name=metas_na_lei]').change(function() { 
+      if(this.value=='False') {
+        $('#metas').fadeIn();
+      }
+      else {
+        $('#metas').fadeOut();
+      }
+    })
+
+    if($('#id_monitorado_0').is(":checked")){
+      $('#monitoramento').css('display', 'block');
+    }
+    if($('#id_monitorado_1').is(":checked")){
+      $('#monitoramento').css('display', 'none');
+    }
+
+    $('input[name=monitorado]').change(function() { 
+      if(this.value=='False') {
+        $('#monitoramento').fadeOut();
+      }
+      else {
+        $('#monitoramento').fadeIn();
+      }
+    })
+
+    if($('#id_participou_curso_0').is(":checked")){
+      $('#ano_inicio').css('display', 'block');
+      $('#ano_termino').css('display', 'block');
+      $('#esfera_federacao').css('display', 'block');
+      $('#tipo_oficina').css('display', 'block');
+      $('#perfil_participante').css('display', 'block');
+    }
+    if($('#id_participou_curso_1').is(":checked")){
+      $('#ano_inicio').css('display', 'none');
+      $('#ano_termino').css('display', 'none');
+      $('#esfera_federacao').css('display', 'none');
+      $('#tipo_oficina').css('display', 'none');
+      $('#perfil_participante').css('display', 'none');
+    }
+
+    $('input[name=participou_curso]').change(function() { 
+      if(this.value=='False') {
+        $('#ano_inicio').fadeOut();
+        $('#ano_termino').fadeOut();
+        $('#esfera_federacao').fadeOut();
+        $('#tipo_oficina').fadeOut();
+        $('#perfil_participante').fadeOut();
+      }
+      else {
+        $('#ano_inicio').fadeIn();
+        $('#ano_termino').fadeIn();
+        $('#esfera_federacao').fadeIn();
+        $('#tipo_oficina').fadeIn();
+        $('#perfil_participante').fadeIn();
+      }
+    })
+
+  });
+</script>
 {% endblock content %}
