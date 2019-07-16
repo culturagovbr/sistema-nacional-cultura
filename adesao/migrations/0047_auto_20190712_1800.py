@@ -14,7 +14,7 @@ def copia_alteracoes(apps, schema_editor):
             sistema_base = ente_historico.first()
 
             for sistema in ente_historico:
-                if sistema.cadastrador != sistema_base.cadastrador:
+                if sistema.cadastrador != sistema_base.cadastrador or sistema == ente_historico.first():
                     alteracao = AlteracaoDeCadastrador.objects.create(cadastrador_antigo=sistema_base.cadastrador,
                         cadastrador_novo=sistema.cadastrador, alterado_em=sistema.alterado_em,
                         alterado_por=sistema.alterado_por)
@@ -27,7 +27,7 @@ def copia_alteracoes(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('adesao', '0046_auto_20190712_1611'),
+        ('adesao', '0046_auto_20190716_1436'),
     ]
 
     operations = [
