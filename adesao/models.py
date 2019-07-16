@@ -26,6 +26,8 @@ from adesao.middleware import get_current_user
 
 from itertools import tee
 
+from simple_history.models import HistoricalRecords
+
 
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
@@ -418,6 +420,7 @@ class AlteracaoDeCadastrador(models.Model):
     cadastrador_novo = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="alteracao_novos")
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
     alterado_por = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistemas_cadastrador_alterado")
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
 

@@ -9,7 +9,8 @@ def copia_alteracoes(apps, schema_editor):
     AlteracaoDeCadastrador = apps.get_model('adesao', 'AlteracaoDeCadastrador')
     for sistema in SistemaCultura.objects.distinct('ente_federado').order_by('ente_federado'):
         if sistema.ente_federado:
-            ente_historico = SistemaCultura.objects.filter(ente_federado__cod_ibge=sistema.ente_federado.cod_ibge)
+            ente_historico = SistemaCultura.objects.filter(
+                ente_federado__cod_ibge=sistema.ente_federado.cod_ibge).order_by('alterado_em')
             sistema_base = ente_historico.first()
 
             for sistema in ente_historico:
@@ -20,6 +21,8 @@ def copia_alteracoes(apps, schema_editor):
                     sistema.alteracao_cadastrador = alteracao
                     sistema.save()
 
+                    sistema_base = sistema
+
 
 class Migration(migrations.Migration):
 
@@ -28,10 +31,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='sistemacultura',
-            name='alteracao_cadastrador',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='alteracoes_cadastrador', to='adesao.AlteracaoDeCadastrador'),
-        ),
         migrations.RunPython(copia_alteracoes),
     ]
