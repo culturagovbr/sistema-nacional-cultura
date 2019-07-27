@@ -508,7 +508,7 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']: 
+        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None

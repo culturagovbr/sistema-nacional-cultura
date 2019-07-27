@@ -54,7 +54,13 @@ from planotrabalho.views import AlterarOrgaoGestor
 from planotrabalho.views import AlterarFundoCultura
 from planotrabalho.views import AlterarConselhoCultura
 
-from gestao.utils import empty_to_none, get_uf_by_mun_cod
+from gestao.utils import empty_to_none, get_uf_by_mun_cod, not_in_scdc_user_group
+from django.utils.decorators import method_decorator
+
+
+
+
+from django.contrib.auth.decorators import user_passes_test
 
 from .models import DiligenciaSimples, Contato
 
@@ -205,8 +211,15 @@ def aditivar_prazo(request):
     return JsonResponse(data={}, status=200)
 
 
+@method_decorator(user_passes_test(not_in_scdc_user_group), 'user_passes_test')
 class AcompanharSistemaCultura(TemplateView):
     template_name = 'gestao/adesao/acompanhar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        print(self.request.user.groups.filter(name='usuario_scdc').exists())
+        return context
 
 
 class AcompanharComponente(TemplateView):
