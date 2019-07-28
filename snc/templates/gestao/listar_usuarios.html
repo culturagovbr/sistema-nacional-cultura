@@ -126,17 +126,31 @@ $(document).ready(function(){
         {
           data: null,
           name: "user__is_staff",
-          render: (data) => `
+          render: (data) => {
+            var dataValue = '';
+            switch (data[6]) {
+            case 'Cadastrador':
+                dataValue = '0';
+                break;
+            case 'Administrador':
+                dataValue = '1';
+                break;
+            case 'Central de Relacionamento':
+                dataValue = '2';
+                break;
+            }
+
+            return `
               <a
               href="#"
               class="user__is_staff"
               data-name="is_staff"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[6] == 'Administrador' ? 1 : 0}"
+              data-value="${dataValue}"
               data-title="Alterar Perfil">
                 ${data[6]} <i class="fa fa-edit"></i>
-              </a>`
+              </a>`}
         },
         {
           data: null,
@@ -210,10 +224,9 @@ $(document).ready(function(){
         { value: 0, text: 'Cadastrador' },
 
         {value: 1, text: 'Administrador'},
-        { value: 2, text: 'Administrador' },
+        { value: 2, text: 'Central de Relacionamento' },
       ],
       display: function(value, source) {
-        console.log(value,source)
         $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
       },
       success: function(response, newValue) {

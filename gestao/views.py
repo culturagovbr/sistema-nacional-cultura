@@ -924,6 +924,14 @@ class DataTableUsuarios(BaseDatatableView):
                     sistema.ente_federado.nome
                 ])
 
+            tipo_perfil = ''
+            if not item.user.is_staff:
+                tipo_perfil = 'Cadastrador'
+            elif item.user.is_staff == True and not item.user.groups.filter(name='usuario_scdc').count() == 0:
+                tipo_perfil = 'Administrador'
+            elif item.user.is_staff == True and item.user.groups.filter(name='usuario_scdc').count() == 0:
+                tipo_perfil = 'Central de Relacionamento'
+
             json_data.append([
                 item.user.id,
                 item.user.username,
@@ -931,7 +939,7 @@ class DataTableUsuarios(BaseDatatableView):
                 item.user.email,
                 item.user.last_login if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
-                'Administrador' if item.user.is_staff else 'Cadastrador',
+                tipo_perfil,
                 entes,
                 item.user.date_joined,
 
