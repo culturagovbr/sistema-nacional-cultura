@@ -54,11 +54,10 @@ from planotrabalho.views import AlterarOrgaoGestor
 from planotrabalho.views import AlterarFundoCultura
 from planotrabalho.views import AlterarConselhoCultura
 
-from gestao.utils import empty_to_none, get_uf_by_mun_cod, not_in_scdc_user_group
+from gestao.utils import empty_to_none, get_uf_by_mun_cod, scdc_user_group_required
 from django.utils.decorators import method_decorator
 
-
-
+from django.contrib.auth.models import Group
 
 from django.contrib.auth.decorators import user_passes_test
 
@@ -90,14 +89,12 @@ from snc.client import Client
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
 
-
+@user_passes_test(scdc_user_group_required)
 def plano_trabalho(request, **kwargs):
-
     return render(request, "plano_trabalho.html")
 
 
 def listar_componentes(request, **kwargs):
-
     return render(request, "listar_componentes.html")
 
 
@@ -199,8 +196,11 @@ def ajax_cadastrador_cpf(request):
 
 class AcompanharPrazo(TemplateView):
     template_name = 'gestao/acompanhar_prazo.html'
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AcompanharPrazo, self).dispatch(*args, **kwargs)
 
-
+@user_passes_test(scdc_user_group_required)
 def aditivar_prazo(request):
     if request.method == "POST":
         id = request.POST.get('id', None)
@@ -211,15 +211,8 @@ def aditivar_prazo(request):
     return JsonResponse(data={}, status=200)
 
 
-@method_decorator(user_passes_test(not_in_scdc_user_group), 'user_passes_test')
 class AcompanharSistemaCultura(TemplateView):
     template_name = 'gestao/adesao/acompanhar.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        print(self.request.user.groups.filter(name='usuario_scdc').exists())
-        return context
 
 
 class AcompanharComponente(TemplateView):
@@ -364,20 +357,12 @@ class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
 class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
 
-
-class AlterarUsuario(UpdateView):
-    model = User
-    form_class = AlterarUsuarioForm
-    template_name = 'gestao/listar_usuarios.html'
-    success_url = reverse_lazy('gestao:usuarios')
-
-    def get_success_url(self):
-        messages.success(
-            self.request,
-            'Situação de CPF: ' + str(self.object) + ' alterada com sucesso.')
-        return reverse_lazy('gestao:usuarios')
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(ListarUsuarios, self).dispatch(*args, **kwargs)
 
 
+@user_passes_test(scdc_user_group_required)
 def alterar_usuario(request):
     field_name = request.POST.get('name', None)
     field_value = request.POST.get('value', None)
@@ -390,6 +375,14 @@ def alterar_usuario(request):
         form = AlterarUsuarioForm(kwargs)
         if form.is_valid():
             user = User.objects.get(id=id)
+
+            if field_name == 'is_staff' and int(field_value) == 1:
+                group, created = Group.objects.get_or_create(name='usuario_scdc')
+                group.user_set.add(user)
+            elif field_name == 'is_staff' and int(field_value) == 2:
+                field_value = 1
+                user.groups.clear()
+
             setattr(user, field_name, field_value)
             user.save()
             return JsonResponse(data={"data": {
@@ -841,6 +834,10 @@ class DataTableEntes(BaseDatatableView):
 
 
 class DataTablePrazo(BaseDatatableView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DataTablePrazo, self).dispatch(*args, **kwargs)
+
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
 
@@ -877,6 +874,10 @@ class DataTablePrazo(BaseDatatableView):
 
 
 class DataTableUsuarios(BaseDatatableView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DataTableUsuarios, self).dispatch(*args, **kwargs)
+
     def get_initial_queryset(self):
         return Usuario.objects.all()
 
@@ -939,6 +940,10 @@ class DataTableUsuarios(BaseDatatableView):
 
 
 class DataTablePlanoTrabalho(BaseDatatableView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DataTablePlanoTrabalho, self).dispatch(*args, **kwargs)
+
     def get_initial_queryset(self):
         sistemas = SistemaCultura.sistema.values_list('id', flat=True)
         sistemas = SistemaCultura.objects.filter(id__in=sistemas, estado_processo='6')

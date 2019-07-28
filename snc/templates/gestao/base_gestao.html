@@ -1,3 +1,4 @@
+{% load gestao_tags %}
 <!DOCTYPE html>
 
 <head>
@@ -49,12 +50,14 @@
             </a>
           </li>
 
+          {% if request.user|has_group:"usuario_scdc" %}
           <li class="nav-item" id="menu-usuarios">
             <a class="nav-link" href="{% url 'gestao:usuarios' %}">
               <i class="material-icons">person</i>
               <p>Usuarios</p>
             </a>
           </li>
+          {% endif %}
 
           <li class="nav-item" id="menu-ente">
             <a class="nav-link" href="{% url 'gestao:acompanhar_adesao' %}">
@@ -63,20 +66,20 @@
             </a>
           </li>
 
+          {% if request.user|has_group:"usuario_scdc" %}
           <li class="nav-item" id="menu-prazo">
             <a class="nav-link" href="{% url 'gestao:acompanhar_prazo' %}">
               <i class="material-icons">hourglass_full</i>
               <p>Prazos</p>
             </a>
           </li>
-
           <li class="nav-item" id="menu-plano">
             <a class="nav-link" href="{% url 'gestao:plano_trabalho' %}">
               <i class="material-icons">location_ons</i>
               <p>Plano de Trabalho</p>
             </a>
           </li>
-
+          {% endif %}
         </ul>
       </div>
     </div>
