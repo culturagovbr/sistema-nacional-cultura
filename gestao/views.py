@@ -340,6 +340,10 @@ class AlterarDadosEnte(UpdateView, LookUpAnotherFieldMixin):
     lookup_field = "ente_federado__cod_ibge"
     queryset = SistemaCultura.sistema.all()
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarDadosEnte, self).dispatch(*args, **kwargs)
+
 
 class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
     model = SistemaCultura
@@ -425,6 +429,10 @@ class CriarContato(CreateView):
     form_class = CriarContatoForm
     template_name = "criar_contato.html"
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(CriarContato, self).dispatch(*args, **kwargs)
+
     def get_form_kwargs(self):
         kwargs = super(CriarContato, self).get_form_kwargs()
         kwargs['sistema'] = SistemaCultura.objects.get(pk=self.kwargs['pk'])
@@ -438,6 +446,10 @@ class CriarContato(CreateView):
 
 
 class InserirComponente(CreateView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(InserirComponente, self).dispatch(*args, **kwargs)
+
     def get_template_names(self):
         componente = self.kwargs['componente']
         if componente == 'fundo_cultura' or componente == 'conselho' or componente == 'orgao_gestor' or componente == 'plano':
@@ -485,6 +497,10 @@ class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
     model = Componente
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarComponente, self).dispatch(*args, **kwargs)
+
     def get_template_names(self):
         componente = self.kwargs['componente']
         if componente == 'fundo_cultura' or componente == 'conselho':
@@ -515,6 +531,10 @@ class AlterarConselhoCultura(AlterarConselhoCultura):
     model = ConselhoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_conselho.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarConselhoCultura, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         kwgs = {'conselho': self.kwargs.get('pk')}
@@ -537,6 +557,10 @@ class AlterarPlanoCultura(AlterarPlanoCultura):
     form_class = CriarPlanoForm
     template_name = 'gestao/inserir_documentos/inserir_plano.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarPlanoCultura, self).dispatch(*args, **kwargs)
+
     def get_success_url(self):
         kwgs = {'plano': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -551,6 +575,10 @@ class AlterarFundoCultura(AlterarFundoCultura):
     model = FundoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_fundo_cultura.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarFundoCultura, self).dispatch(*args, **kwargs)
+
     def get_success_url(self):
         kwgs = {'fundo_cultura': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -564,6 +592,10 @@ class AlterarOrgaoGestor(AlterarOrgaoGestor):
     form_class = CriarOrgaoGestorForm
     model = OrgaoGestor2
     template_name = 'gestao/inserir_documentos/inserir_orgao_gestor.html'
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarOrgaoGestor, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         kwgs = {'orgao_gestor': self.kwargs.get('pk')}
@@ -600,6 +632,10 @@ class DiligenciaComponenteView(CreateView):
     model = DiligenciaSimples
     form_class = DiligenciaComponenteForm
     context_object_name = "diligencia"
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaComponenteView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(DiligenciaComponenteView, self).get_form_kwargs()
@@ -658,6 +694,10 @@ class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):
     form_class = DiligenciaComponenteForm
     context_object_name = "diligencia"
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarDiligenciaComponenteView, self).dispatch(*args, **kwargs)
+
     def get_sistema_cultura(self):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['ente']))
 
@@ -669,6 +709,10 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cultura.gov.br"
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaGeralCreateView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(DiligenciaGeralCreateView, self).get_form_kwargs()
@@ -720,6 +764,10 @@ class DiligenciaGeralDetailView(DetailView):
     fields = ['diligencia']
     template_name = 'diligencia.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaGeralDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -731,6 +779,10 @@ class DiligenciaGeralDetailView(DetailView):
 class SituacaoArquivoComponenteUpdateView(UpdateView):
     model = Componente
     fields = ['situacao']
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(SituacaoArquivoComponenteUpdateView, self).dispatch(*args, **kwargs)
 
 
 class DataTableEntes(BaseDatatableView):
