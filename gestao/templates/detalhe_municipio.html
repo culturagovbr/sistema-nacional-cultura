@@ -159,7 +159,7 @@
 
 </div>
 
-{% if ente.estado_processo == '6' %}
+{% if ente.estado_processo == '6' and request.user|has_group:"usuario_scdc"  %}
 <div class="row">
     <div class="col-sm-12 col-md-12 col-xl-12">
       <div class="card">
@@ -587,17 +587,19 @@
 {% endif %}
 
 <div id="container-floating">
-    {% if ente.estado_processo == '6' %}
-    <div class="nd5 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
-      <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
-    </div>
+    {% if request.user|has_group:"usuario_scdc" %}
+      {% if ente.estado_processo == '6' %}
+      <div class="nd5 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
+        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
+      </div>
+      {% endif %}
+      <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Registrar Contato" rel="tooltip">
+        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:criar_contato' pk=ente.id %}'">phone</div>
+      </div>
+      <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
+          <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
+      </div>
     {% endif %}
-    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Registrar Contato" rel="tooltip">
-      <div class="material-icons float-options" onclick="location.href='{% url 'gestao:criar_contato' pk=ente.id %}'">phone</div>
-    </div>
-    <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
-        <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
-    </div>
     <div class="nd2 nds"  data-toggle="tooltip" data-placement="left" title="Alterar Dados do Ente" rel="tooltip">
         <div class="material-icons float-options" onclick="location.href='{% url 'gestao:alterar_sistema' pk=ente.id %}'">edit_location</div>
     </div>

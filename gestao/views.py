@@ -196,11 +196,8 @@ def ajax_cadastrador_cpf(request):
 
 class AcompanharPrazo(TemplateView):
     template_name = 'gestao/acompanhar_prazo.html'
-    @method_decorator(user_passes_test(scdc_user_group_required))
-    def dispatch(self, *args, **kwargs):
-        return super(AcompanharPrazo, self).dispatch(*args, **kwargs)
 
-@user_passes_test(scdc_user_group_required)
+
 def aditivar_prazo(request):
     if request.method == "POST":
         id = request.POST.get('id', None)
@@ -357,12 +354,7 @@ class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
 class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
 
-    @method_decorator(user_passes_test(scdc_user_group_required))
-    def dispatch(self, *args, **kwargs):
-        return super(ListarUsuarios, self).dispatch(*args, **kwargs)
 
-
-@user_passes_test(scdc_user_group_required)
 def alterar_usuario(request):
     field_name = request.POST.get('name', None)
     field_value = request.POST.get('value', None)
@@ -376,10 +368,10 @@ def alterar_usuario(request):
         if form.is_valid():
             user = User.objects.get(id=id)
 
-            if field_name == 'is_staff' and int(field_value) == 1:
+            if scdc_user_group_required(user) and field_name == 'is_staff' and int(field_value) == 1:
                 group, created = Group.objects.get_or_create(name='usuario_scdc')
                 group.user_set.add(user)
-            elif field_name == 'is_staff' and int(field_value) == 2:
+            elif scdc_user_group_required(user) and field_name == 'is_staff' and int(field_value) == 2:
                 field_value = 1
                 user.groups.clear()
 
@@ -834,10 +826,6 @@ class DataTableEntes(BaseDatatableView):
 
 
 class DataTablePrazo(BaseDatatableView):
-    @method_decorator(user_passes_test(scdc_user_group_required))
-    def dispatch(self, *args, **kwargs):
-        return super(DataTablePrazo, self).dispatch(*args, **kwargs)
-
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
 
@@ -874,10 +862,6 @@ class DataTablePrazo(BaseDatatableView):
 
 
 class DataTableUsuarios(BaseDatatableView):
-    @method_decorator(user_passes_test(scdc_user_group_required))
-    def dispatch(self, *args, **kwargs):
-        return super(DataTableUsuarios, self).dispatch(*args, **kwargs)
-
     def get_initial_queryset(self):
         return Usuario.objects.all()
 
