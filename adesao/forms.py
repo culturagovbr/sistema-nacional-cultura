@@ -141,8 +141,6 @@ class CadastrarGestor(ModelForm):
                 'label': 'Cópia do CPF'
             })
 
-
-
     class Meta:
         model = Gestor
         exclude = ('tipo_funcionario',)

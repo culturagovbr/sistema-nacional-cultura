@@ -296,6 +296,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
                     'descricao': descricao
                 })
 
+        context['form'] = CadastradorEnte()
+
         return context
 
     def get_descricao_componente(self, id):
