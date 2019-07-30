@@ -95,7 +95,8 @@ $(document).ready(function(){
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
               data-title="Alterar E-mail">
-                ${data[3]} <i class="fa fa-edit"></i>
+                ${data[3]}
+                <i class="fa fa-edit"></i>
               </a>`
         },
         {
@@ -126,17 +127,32 @@ $(document).ready(function(){
         {
           data: null,
           name: "user__is_staff",
-          render: (data) => `
+          render: (data) => {
+            var dataValue = '';
+            switch (data[6]) {
+            case 'Cadastrador':
+                dataValue = '0';
+                break;
+            case 'Administrador':
+                dataValue = '1';
+                break;
+            case 'Central de Relacionamento':
+                dataValue = '2';
+                break;
+            }
+
+            return `
               <a
+              disabled
               href="#"
               class="user__is_staff"
               data-name="is_staff"
               data-pk="${data[0]}"
               data-url="${alterar_usuario_url}${data[0]}"
-              data-value="${data[6] == 'Administrador' ? 1 : 0}"
+              data-value="${dataValue}"
               data-title="Alterar Perfil">
                 ${data[6]} <i class="fa fa-edit"></i>
-              </a>`
+              </a>`}
         },
         {
           data: null,
@@ -210,10 +226,15 @@ $(document).ready(function(){
         { value: 0, text: 'Cadastrador' },
 
         {value: 1, text: 'Administrador'},
+        { value: 2, text: 'Central de Relacionamento' },
       ],
       display: function(value, source) {
-        console.log(value,source)
-        $(this).html(`${source[value].text} <i class="fa fa-edit"></i>`);
+        $(this).html(
+          `${source[value].text}
+          {% if request.user|has_group:"usuario_scdc" %}
+          <i class="fa fa-edit"></i>
+          {% endif %}`
+          );
       },
       success: function(response, newValue) {
         $.notify(
@@ -225,6 +246,11 @@ $(document).ready(function(){
         );
       }
     });
+
+    {% if not request.user|has_group:"usuario_scdc" %}
+      $('.user__is_staff').editable('toggleDisabled');
+    {% endif %}
+
   });
 
   var diasSemLogar = function (data_cadastro){
@@ -259,14 +285,14 @@ $(document).ready(function(){
         </a>
       `
 
-      if(!chave){
+      if (!chave){
         linhas_entes += `
           <tr>
             <td style="font-weight: bold;">Ente Federado:</td>
             <td>${link_pagina_ente}</td>
           </tr>
           `
-      }else{
+      } else {
         linhas_entes += `
           <tr>
             <td>&nbsp;</td>

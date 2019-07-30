@@ -56,3 +56,9 @@ def empty_to_none(value):
 
 def get_uf_by_mun_cod(municipio_cod):
     return UFS[int((str(municipio_cod))[:2])]
+
+
+def scdc_user_group_required(user):
+    if user:
+        return not user.groups.filter(name='usuario_scdc').count() == 0
+    return True

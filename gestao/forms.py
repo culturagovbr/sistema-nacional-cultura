@@ -53,6 +53,15 @@ class InserirSEI(ModelForm):
 
 class CadastradorEnte(forms.ModelForm):
     cpf_cadastrador = BRCPFField()
+    oficio_cadastrador = RestrictedFileField(
+        widget=FileUploadWidget(),
+        content_types=content_types,
+        max_upload_size=max_upload_size)
+
+    def __init__(self, *args, **kwargs):
+        super(CadastradorEnte, self).__init__(*args, **kwargs)
+        self.fields['oficio_cadastrador'].widget.attrs = {
+            'label': 'Ofício de Indicação do Cadastrador'}
 
     def clean_cpf_cadastrador(self):
         try:
@@ -72,7 +81,7 @@ class CadastradorEnte(forms.ModelForm):
 
     class Meta:
         model = SistemaCultura
-        fields = ["cpf_cadastrador"]
+        fields = ["cpf_cadastrador", "oficio_cadastrador"]
 
 
 class AlterarDadosEnte(ModelForm):
