@@ -1,5 +1,6 @@
 import json
 import re
+import base64
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
@@ -78,6 +79,7 @@ from planotrabalho.forms import CriarOrgaoGestorForm
 from planotrabalho.forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
+from .forms import AditivarPrazoForm
 
 from adesao.views import AlterarSistemaCultura
 from adesao.views import AlterarFuncionario
@@ -85,9 +87,12 @@ from adesao.views import CadastrarFuncionario
 
 from snc.client import Client
 
+from django.core.files.storage import FileSystemStorage
+
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
+
 
 @user_passes_test(scdc_user_group_required)
 def plano_trabalho(request, **kwargs):
@@ -197,14 +202,30 @@ def ajax_cadastrador_cpf(request):
 class AcompanharPrazo(TemplateView):
     template_name = 'gestao/acompanhar_prazo.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AditivarPrazoForm()
+        return context
+
 
 def aditivar_prazo(request):
     if request.method == "POST":
         id = request.POST.get('id', None)
         sistema = SistemaCultura.objects.get(id=id)
-        sistema.prazo = sistema.prazo + 2
-        sistema.save()
 
+        form = AditivarPrazoForm(request.POST, request.FILES)
+        field_name = 'oficio_prorrogacao_prazo'
+
+        if form.is_valid():
+            oficio_prorrogacao_prazo = request.FILES.get(
+                field_name, None)
+            fs = FileSystemStorage(location=f"./media/{field_name}/")
+            filename = fs.save(oficio_prorrogacao_prazo.name, oficio_prorrogacao_prazo)
+            sistema.prazo = sistema.prazo + 2
+            sistema.oficio_prorrogacao_prazo = f"/oficio_prorrogacao_prazo/{filename}"
+            sistema.save()
+        else:
+            return JsonResponse(data={}, status=422)
     return JsonResponse(data={}, status=200)
 
 
