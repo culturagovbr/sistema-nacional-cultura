@@ -58,6 +58,9 @@
               <p><strong>Ofício de Indicação do Cadastrador:</strong>
                 <a href="{% if ente.oficio_cadastrador %} {{ ente.oficio_cadastrador.url }} {% endif %}"
                   target="_blank">{{ ente.oficio_cadastrador }}</a></p>
+              <p><strong>Ofício de Indicação do Cadastrador:</strong>
+                <a href="{% if ente.oficio_prorrogacao_prazo %} {{ ente.oficio_prorrogacao_prazo.url }} {% endif %}"
+                  target="_blank">{{ ente.oficio_prorrogacao_prazo }}</a></p>
             </div>
 
             <div class="col-md-5">

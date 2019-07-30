@@ -420,7 +420,10 @@ class SistemaCultura(models.Model):
     oficio_cadastrador = models.FileField(
         upload_to='oficio_cadastrador',
         max_length=255,
-        blank=True,
+        null=True)
+    oficio_prorrogacao_prazo = models.FileField(
+        upload_to='oficio_prorrogacao_prazo',
+        max_length=255,
         null=True)
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
