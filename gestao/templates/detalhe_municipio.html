@@ -55,10 +55,7 @@
               <p><strong>Bairro:</strong> {{ ente.sede.bairro }}</p>
               <p><strong>CEP:</strong> {{ ente.sede.cep }}</p>
               <p><strong>Sítio Institucional:</strong> {{ ente.sede.endereco_eletronico }}</p>
-              <p><strong>Ofício de Indicação do Cadastrador:</strong>
-                <a href="{% if ente.oficio_cadastrador %} {{ ente.oficio_cadastrador.url }} {% endif %}"
-                  target="_blank">{{ ente.oficio_cadastrador }}</a></p>
-              <p><strong>Ofício de Indicação do Cadastrador:</strong>
+              <p><strong>Ofício de aditivação do prazo:</strong>
                 <a href="{% if ente.oficio_prorrogacao_prazo %} {{ ente.oficio_prorrogacao_prazo.url }} {% endif %}"
                   target="_blank">{{ ente.oficio_prorrogacao_prazo }}</a></p>
             </div>
@@ -159,6 +156,9 @@
         <p><strong>Nome:</strong> {{ ente.cadastrador.nome_usuario }}</p>
         <p><strong>E-mail:</strong> {{ ente.cadastrador.user.email }}</p>
         <p><strong>Data de cadastro:</strong> {{ ente.cadastrador.data_cadastro }}</p>
+        <p><strong>Ofício de Indicação do Cadastrador:</strong>
+          <a href="{% if ente.oficio_cadastrador %} {{ ente.oficio_cadastrador.url }} {% endif %}"
+            target="_blank">{{ ente.oficio_cadastrador }}</a></p>
       </div>
     </div>
   </div>
