@@ -8,7 +8,7 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<form method="POST" autocomplete="off" action={% url 'gestao:alterar_cadastrador' object.ente_federado.cod_ibge %}>
+				<form method="POST" autocomplete="off" enctype="multipart/form-data" action={% url 'gestao:alterar_cadastrador' object.ente_federado.cod_ibge %}>
 					<div class="card-body">
 							<div class="form-group">
 								<label for="nome-atual">Nome</label>
@@ -21,6 +21,9 @@
 							<div class="form-group">
 								<label for="nome-novo" class="col-form-label">Novo Cadastrador</label>
 								<input type="text" class="form-control" id="nome-novo" disabled>
+							</div>
+							<div class="form-group">
+								{{form.oficio_cadastrador}}
 							</div>
 							<div id="cpf_form" class="form-group">
 								{% csrf_token %}

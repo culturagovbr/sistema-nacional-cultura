@@ -1,3 +1,4 @@
+{% load gestao_tags %}
 <!DOCTYPE html>
 
 <head>
@@ -70,13 +71,14 @@
             </a>
           </li>
 
+          {% if request.user|has_group:"usuario_scdc" %}
           <li class="nav-item" id="menu-plano">
             <a class="nav-link" href="{% url 'gestao:plano_trabalho' %}">
               <i class="material-icons">location_ons</i>
               <p>Plano de Trabalho</p>
             </a>
           </li>
-
+          {% endif %}
         </ul>
       </div>
     </div>
@@ -220,6 +222,7 @@
   <!-- <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js" type="text/javascript"></script> -->
   <script src="{% static 'js/bootstrap-select-1.13.9.min.js' %}"></script>
   <script src="{% static 'js/card-input-file.js' %}"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function () {

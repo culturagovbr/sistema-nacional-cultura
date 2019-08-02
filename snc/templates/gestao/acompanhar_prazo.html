@@ -1,5 +1,6 @@
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
 
+
 <menu data-target="prazo" ></menu>
 
 <div class="row">
@@ -36,6 +37,11 @@
           </button>
         </div>
         <div class="modal-body" id="modal-body-text">
+          <form id="form-oficio" name="form-oficio" enctype="multipart/form-data" method="POST">
+            {{form.oficio_prorrogacao_prazo}}
+          </form>
+          <div id="confirmation-message">
+          </div>
         </div>
         <div class="modal-footer">
           <input type="hidden" id="id-ente-federado" value="">
@@ -50,6 +56,7 @@
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
+
   $('#datepicker').datepicker();
   csrf_token = '{{ csrf_token }}';
 
@@ -109,38 +116,53 @@ $(document).ready(function(){
     },
   });
 
+  var getBase64 = function(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        let encoded = reader.result.replace(/^data:(.*;base64,)?/, '');
+        if ((encoded.length % 4) > 0) {
+          encoded += '='.repeat(4 - (encoded.length % 4));
+        }
+        resolve(encoded);
+      };
+      reader.onerror = error => reject(error);
+    });
+  }
+
   var salvarAditivacaoPrazo = () => {
     let id_ente = $('#id-ente-federado').val();
-    $.ajax({
-			type: "POST",
-			url: "{% url 'gestao:aditivar_prazo' %}",
-			data: {
+
+    $('#form-oficio').ajaxSubmit({
+      url: "{% url 'gestao:aditivar_prazo' %}",
+      type: 'POST',
+      data: {
         id: id_ente,
         csrfmiddlewaretoken: csrf_token
       },
-			dataType: 'json',
-			cache: false,
-			success: function(response){
+      cache: false,
+      success: function (response) {
         tabela.ajax.reload(null, false)
         $.notify(
           {
             icon: "check_circle",
             message: 'Prazo aditivado com sucesso.',
           },
-          {type: "success"}
+          { type: "success" }
         );
-			},
-			error: function(error){
+      },
+      error: function (error) {
         tabela.ajax.reload(null, false)
         $.notify(
           {
             icon: "error",
-            message: 'Ocorreu algum problema ao aditivar o prazo.',
+            message: 'Arquivo não preenchido ou inválido.',
           },
-          {type: "danger"}
+          { type: "danger" }
         );
       },
-		})
+    });
   }
 
   $('#btn-aditivar').on('click', salvarAditivacaoPrazo);
@@ -152,8 +174,7 @@ $(document).ready(function(){
     let id = opts.id;
 
     $('#id-ente-federado').val(id);
-
-    $('#modal-body-text').html(`
+    $('#confirmation-message').html(`
       Deseja realmente aditivar o prazo de ${nome} de ${prazo} para ${prazo_extendido} anos?`
     )
   }
@@ -163,6 +184,9 @@ $(document).ready(function(){
     let nome_ente = button.data('nome');
     let prazo = button.data('prazo');
     let id_ente = button.data('id');
+
+    $("#id_oficio_prorrogacao_prazo").val('')
+    $("#file-name-oficio_prorrogacao_prazo").html('Clique ou arraste para upload')
 
     preencherDadosModal({
       id: id_ente,

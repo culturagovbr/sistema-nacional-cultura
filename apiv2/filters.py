@@ -75,7 +75,9 @@ class SistemaCulturaFilter(filters.FilterSet):
 
     class Meta:
         model = SistemaCultura
-        fields = "__all__"
+        exclude = (
+            'oficio_cadastrador',
+            'oficio_prorrogacao_prazo',)
 
     def sigla_filter(self, queryset, name, value):
         try:
@@ -123,4 +125,6 @@ class SistemaCulturaFilter(filters.FilterSet):
 class PlanoTrabalhoFilter(SistemaCulturaFilter):
     class Meta:
         model = SistemaCultura
-        fields = "__all__"
+        exclude = (
+            'oficio_cadastrador',
+            'oficio_prorrogacao_prazo',)

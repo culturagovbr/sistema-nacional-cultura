@@ -55,6 +55,9 @@
               <p><strong>Bairro:</strong> {{ ente.sede.bairro }}</p>
               <p><strong>CEP:</strong> {{ ente.sede.cep }}</p>
               <p><strong>Sítio Institucional:</strong> {{ ente.sede.endereco_eletronico }}</p>
+              <p><strong>Ofício de aditivação do prazo:</strong>
+                <a href="{% if ente.oficio_prorrogacao_prazo %} {{ ente.oficio_prorrogacao_prazo.url }} {% endif %}"
+                  target="_blank">{{ ente.oficio_prorrogacao_prazo }}</a></p>
             </div>
 
             <div class="col-md-5">
@@ -153,13 +156,16 @@
         <p><strong>Nome:</strong> {{ ente.cadastrador.nome_usuario }}</p>
         <p><strong>E-mail:</strong> {{ ente.cadastrador.user.email }}</p>
         <p><strong>Data de cadastro:</strong> {{ ente.cadastrador.data_cadastro }}</p>
+        <p><strong>Ofício de Indicação do Cadastrador:</strong>
+          <a href="{% if ente.oficio_cadastrador %} {{ ente.oficio_cadastrador.url }} {% endif %}"
+            target="_blank">{{ ente.oficio_cadastrador }}</a></p>
       </div>
     </div>
   </div>
 
 </div>
 
-{% if ente.estado_processo == '6' %}
+{% if ente.estado_processo == '6' and request.user|has_group:"usuario_scdc"  %}
 <div class="row">
     <div class="col-sm-12 col-md-12 col-xl-12">
       <div class="card">
@@ -587,17 +593,19 @@
 {% endif %}
 
 <div id="container-floating">
-    {% if ente.estado_processo == '6' %}
-    <div class="nd5 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
-      <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
-    </div>
+    {% if request.user|has_group:"usuario_scdc" %}
+      {% if ente.estado_processo == '6' %}
+      <div class="nd5 nds" data-toggle="tooltip" data-placement="left" title="Criar Diligência" rel="tooltip">
+        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:diligencia_geral_adicionar' pk=ente.id %}'">mail</div>
+      </div>
+      {% endif %}
+      <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Registrar Contato" rel="tooltip">
+        <div class="material-icons float-options" onclick="location.href='{% url 'gestao:criar_contato' pk=ente.id %}'">phone</div>
+      </div>
+      <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
+          <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
+      </div>
     {% endif %}
-    <div class="nd4 nds" data-toggle="tooltip" data-placement="left" title="Registrar Contato" rel="tooltip">
-      <div class="material-icons float-options" onclick="location.href='{% url 'gestao:criar_contato' pk=ente.id %}'">phone</div>
-    </div>
-    <div class="nd3 nds" data-toggle="tooltip" data-placement="left" title="Alterar Adesão" rel="tooltip">
-        <div class="material-icons float-options" data-toggle="modal" data-target="#alterarAdesaoEnte">edit</div>
-    </div>
     <div class="nd2 nds"  data-toggle="tooltip" data-placement="left" title="Alterar Dados do Ente" rel="tooltip">
         <div class="material-icons float-options" onclick="location.href='{% url 'gestao:alterar_sistema' pk=ente.id %}'">edit_location</div>
     </div>
@@ -611,7 +619,7 @@
 </div>
 
 <div class="row">
-  {% if historico %}
+  {% if historico and request.user|has_group:"usuario_scdc"%}
     <div class="col-md-6 col-md-5 col-xl-6">
         <div class="card card-info">
           <div class="card-header card-header-primary" >

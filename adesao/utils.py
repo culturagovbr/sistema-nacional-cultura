@@ -38,7 +38,7 @@ def verificar_anexo(sistema, componente):
             situacao = componente.get_situacao_display()
             if situacao == LISTA_SITUACAO_ARQUIVO[3][1]:
                 return LISTA_SITUACAO_ARQUIVO[2][1]
-            
+
             return situacao
         else:
             return 'Não Possui'
@@ -161,7 +161,7 @@ def preenche_planilha(planilha):
 
 def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura, exclude=['data_criacao', 'alterado_em',
-        'data_publicacao_acordo', 'data_publicacao_retificacao'])
+        'data_publicacao_acordo', 'data_publicacao_retificacao', 'oficio_prorrogacao_prazo', 'oficio_cadastrador'])
     request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime("%d/%m/%Y às %H:%M:%S")
 
     if sistema_cultura.alterado_por:

@@ -417,7 +417,14 @@ class SistemaCultura(models.Model):
     """
     Entidade que representa um Sistema de Cultura
     """
-
+    oficio_cadastrador = models.FileField(
+        upload_to='oficio_cadastrador',
+        max_length=255,
+        null=True)
+    oficio_prorrogacao_prazo = models.FileField(
+        upload_to='oficio_prorrogacao_prazo',
+        max_length=255,
+        null=True)
     cadastrador = models.ForeignKey("Usuario", on_delete=models.SET_NULL, null=True, related_name="sistema_cultura")
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
     data_criacao = models.DateTimeField(default=timezone.now)
@@ -497,7 +504,6 @@ class SistemaCultura(models.Model):
                 sistema_base = sistema
 
         return historico_cadastradores
-
 
     def get_situacao_componentes(self):
         """

@@ -1,5 +1,6 @@
 import json
 import re
+import base64
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
@@ -54,7 +55,12 @@ from planotrabalho.views import AlterarOrgaoGestor
 from planotrabalho.views import AlterarFundoCultura
 from planotrabalho.views import AlterarConselhoCultura
 
-from gestao.utils import empty_to_none, get_uf_by_mun_cod
+from gestao.utils import empty_to_none, get_uf_by_mun_cod, scdc_user_group_required
+from django.utils.decorators import method_decorator
+
+from django.contrib.auth.models import Group
+
+from django.contrib.auth.decorators import user_passes_test
 
 from .models import DiligenciaSimples, Contato
 
@@ -73,6 +79,7 @@ from planotrabalho.forms import CriarOrgaoGestorForm
 from planotrabalho.forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
+from .forms import AditivarPrazoForm
 
 from adesao.views import AlterarSistemaCultura
 from adesao.views import AlterarFuncionario
@@ -80,18 +87,19 @@ from adesao.views import CadastrarFuncionario
 
 from snc.client import Client
 
+from django.core.files.storage import FileSystemStorage
+
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
 
 
+@user_passes_test(scdc_user_group_required)
 def plano_trabalho(request, **kwargs):
-
     return render(request, "plano_trabalho.html")
 
 
 def listar_componentes(request, **kwargs):
-
     return render(request, "listar_componentes.html")
 
 
@@ -194,14 +202,30 @@ def ajax_cadastrador_cpf(request):
 class AcompanharPrazo(TemplateView):
     template_name = 'gestao/acompanhar_prazo.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AditivarPrazoForm()
+        return context
+
 
 def aditivar_prazo(request):
     if request.method == "POST":
         id = request.POST.get('id', None)
         sistema = SistemaCultura.objects.get(id=id)
-        sistema.prazo = sistema.prazo + 2
-        sistema.save()
 
+        form = AditivarPrazoForm(request.POST, request.FILES)
+        field_name = 'oficio_prorrogacao_prazo'
+
+        if form.is_valid():
+            oficio_prorrogacao_prazo = request.FILES.get(
+                field_name, None)
+            fs = FileSystemStorage(location=f"./media/{field_name}/")
+            filename = fs.save(oficio_prorrogacao_prazo.name, oficio_prorrogacao_prazo)
+            sistema.prazo = sistema.prazo + 2
+            sistema.oficio_prorrogacao_prazo = f"/oficio_prorrogacao_prazo/{filename}"
+            sistema.save()
+        else:
+            return JsonResponse(data={}, status=422)
     return JsonResponse(data={}, status=200)
 
 
@@ -293,6 +317,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
                     'descricao': descricao
                 })
 
+        context['form'] = CadastradorEnte()
+
         return context
 
     def get_descricao_componente(self, id):
@@ -337,6 +363,10 @@ class AlterarDadosEnte(UpdateView, LookUpAnotherFieldMixin):
     lookup_field = "ente_federado__cod_ibge"
     queryset = SistemaCultura.sistema.all()
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarDadosEnte, self).dispatch(*args, **kwargs)
+
 
 class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
     model = SistemaCultura
@@ -352,19 +382,6 @@ class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
 
 
-class AlterarUsuario(UpdateView):
-    model = User
-    form_class = AlterarUsuarioForm
-    template_name = 'gestao/listar_usuarios.html'
-    success_url = reverse_lazy('gestao:usuarios')
-
-    def get_success_url(self):
-        messages.success(
-            self.request,
-            'Situação de CPF: ' + str(self.object) + ' alterada com sucesso.')
-        return reverse_lazy('gestao:usuarios')
-
-
 def alterar_usuario(request):
     field_name = request.POST.get('name', None)
     field_value = request.POST.get('value', None)
@@ -373,10 +390,20 @@ def alterar_usuario(request):
     try:
         kwargs = QueryDict(mutable=True)
         kwargs[field_name] = field_value
+        user = User.objects.get(id=id)
+        if field_name == 'is_staff' and int(field_value) == 1:
+            group, created = Group.objects.get_or_create(name='usuario_scdc')
+            group.user_set.add(user)
+            field_value = True
+        elif field_name == 'is_staff' and int(field_value) == 2:
+            field_value = True
+            user.groups.clear()
+        elif field_name == 'is_staff' and int(field_value) == 0:
+            field_value = False
 
         form = AlterarUsuarioForm(kwargs)
         if form.is_valid():
-            user = User.objects.get(id=id)
+
             setattr(user, field_name, field_value)
             user.save()
             return JsonResponse(data={"data": {
@@ -427,6 +454,10 @@ class CriarContato(CreateView):
     form_class = CriarContatoForm
     template_name = "criar_contato.html"
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(CriarContato, self).dispatch(*args, **kwargs)
+
     def get_form_kwargs(self):
         kwargs = super(CriarContato, self).get_form_kwargs()
         kwargs['sistema'] = SistemaCultura.objects.get(pk=self.kwargs['pk'])
@@ -440,6 +471,10 @@ class CriarContato(CreateView):
 
 
 class InserirComponente(CreateView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(InserirComponente, self).dispatch(*args, **kwargs)
+
     def get_template_names(self):
         componente = self.kwargs['componente']
         if componente == 'fundo_cultura' or componente == 'conselho' or componente == 'orgao_gestor' or componente == 'plano':
@@ -487,6 +522,10 @@ class AlterarComponente(UpdateView):
     form_class = AlterarComponenteForm
     model = Componente
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarComponente, self).dispatch(*args, **kwargs)
+
     def get_template_names(self):
         componente = self.kwargs['componente']
         if componente == 'fundo_cultura' or componente == 'conselho':
@@ -517,6 +556,10 @@ class AlterarConselhoCultura(AlterarConselhoCultura):
     model = ConselhoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_conselho.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarConselhoCultura, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, form=None, **kwargs):
         context = super().get_context_data(**kwargs)
         kwgs = {'conselho': self.kwargs.get('pk')}
@@ -539,6 +582,10 @@ class AlterarPlanoCultura(AlterarPlanoCultura):
     form_class = CriarPlanoForm
     template_name = 'gestao/inserir_documentos/inserir_plano.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarPlanoCultura, self).dispatch(*args, **kwargs)
+
     def get_success_url(self):
         kwgs = {'plano': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -553,6 +600,10 @@ class AlterarFundoCultura(AlterarFundoCultura):
     model = FundoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_fundo_cultura.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarFundoCultura, self).dispatch(*args, **kwargs)
+
     def get_success_url(self):
         kwgs = {'fundo_cultura': self.kwargs.get('pk')}
         ente_pk = SistemaCultura.sistema.get(
@@ -566,6 +617,10 @@ class AlterarOrgaoGestor(AlterarOrgaoGestor):
     form_class = CriarOrgaoGestorForm
     model = OrgaoGestor2
     template_name = 'gestao/inserir_documentos/inserir_orgao_gestor.html'
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarOrgaoGestor, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         kwgs = {'orgao_gestor': self.kwargs.get('pk')}
@@ -602,6 +657,10 @@ class DiligenciaComponenteView(CreateView):
     model = DiligenciaSimples
     form_class = DiligenciaComponenteForm
     context_object_name = "diligencia"
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaComponenteView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(DiligenciaComponenteView, self).get_form_kwargs()
@@ -660,6 +719,10 @@ class AlterarDiligenciaComponenteView(DiligenciaComponenteView, UpdateView):
     form_class = DiligenciaComponenteForm
     context_object_name = "diligencia"
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(AlterarDiligenciaComponenteView, self).dispatch(*args, **kwargs)
+
     def get_sistema_cultura(self):
         return get_object_or_404(SistemaCultura, pk=int(self.kwargs['ente']))
 
@@ -671,6 +734,10 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cultura.gov.br"
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaGeralCreateView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(DiligenciaGeralCreateView, self).get_form_kwargs()
@@ -722,6 +789,10 @@ class DiligenciaGeralDetailView(DetailView):
     fields = ['diligencia']
     template_name = 'diligencia.html'
 
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DiligenciaGeralDetailView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -733,6 +804,10 @@ class DiligenciaGeralDetailView(DetailView):
 class SituacaoArquivoComponenteUpdateView(UpdateView):
     model = Componente
     fields = ['situacao']
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(SituacaoArquivoComponenteUpdateView, self).dispatch(*args, **kwargs)
 
 
 class DataTableEntes(BaseDatatableView):
@@ -910,6 +985,14 @@ class DataTableUsuarios(BaseDatatableView):
                     sistema.ente_federado.nome
                 ])
 
+            tipo_perfil = ''
+            if not item.user.is_staff:
+                tipo_perfil = 'Cadastrador'
+            elif item.user.is_staff == True and not item.user.groups.filter(name='usuario_scdc').count() == 0:
+                tipo_perfil = 'Administrador'
+            elif item.user.is_staff == True and item.user.groups.filter(name='usuario_scdc').count() == 0:
+                tipo_perfil = 'Central de Relacionamento'
+
             json_data.append([
                 item.user.id,
                 item.user.username,
@@ -917,7 +1000,7 @@ class DataTableUsuarios(BaseDatatableView):
                 item.user.email,
                 item.user.last_login if item.user.last_login else '',
                 'Ativo' if item.user.is_active else 'Inativo',
-                'Administrador' if item.user.is_staff else 'Cadastrador',
+                tipo_perfil,
                 entes,
                 item.user.date_joined,
 
@@ -926,6 +1009,10 @@ class DataTableUsuarios(BaseDatatableView):
 
 
 class DataTablePlanoTrabalho(BaseDatatableView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DataTablePlanoTrabalho, self).dispatch(*args, **kwargs)
+
     def get_initial_queryset(self):
         sistemas = SistemaCultura.sistema.values_list('id', flat=True)
         sistemas = SistemaCultura.objects.filter(id__in=sistemas, estado_processo='6')
