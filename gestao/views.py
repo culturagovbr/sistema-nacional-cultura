@@ -390,17 +390,19 @@ def alterar_usuario(request):
     try:
         kwargs = QueryDict(mutable=True)
         kwargs[field_name] = field_value
+        user = User.objects.get(id=id)
+        if field_name == 'is_staff' and int(field_value) == 1:
+            group, created = Group.objects.get_or_create(name='usuario_scdc')
+            group.user_set.add(user)
+            field_value = True
+        elif field_name == 'is_staff' and int(field_value) == 2:
+            field_value = True
+            user.groups.clear()
+        elif field_name == 'is_staff' and int(field_value) == 0:
+            field_value = False
 
         form = AlterarUsuarioForm(kwargs)
         if form.is_valid():
-            user = User.objects.get(id=id)
-
-            if scdc_user_group_required(user) and field_name == 'is_staff' and int(field_value) == 1:
-                group, created = Group.objects.get_or_create(name='usuario_scdc')
-                group.user_set.add(user)
-            elif scdc_user_group_required(user) and field_name == 'is_staff' and int(field_value) == 2:
-                field_value = 1
-                user.groups.clear()
 
             setattr(user, field_name, field_value)
             user.save()
