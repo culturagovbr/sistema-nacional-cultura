@@ -317,7 +317,7 @@ class ListarConselheiros(ListView):
 
 class AlterarConselheiro(UpdateView):
     form_class = AlterarConselheiroForm
-    template_name = 'planotrabalho/cadastrar_conselheiro.html'
+    template_name = 'planotrabalho/cadastrar_conselheiros.html'
 
     def get_queryset(self):
         pk = self.kwargs['pk']
