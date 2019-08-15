@@ -138,7 +138,7 @@ class CadastrarGestor(ModelForm):
                 'label': 'Cópia do CPF'
                 })
             self.fields['termo_posse'].widget = FileUploadWidget(attrs={
-                'label': 'Cópia do CPF'
+                'label': 'Cópia do Termo de Posse'
             })
 
     class Meta:
