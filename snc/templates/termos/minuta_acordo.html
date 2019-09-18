@@ -29,7 +29,7 @@
         {% else %}
           GOVERNO DO
         {% endif %}
-        {{ request.session.sistema_ente.nome|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
+      {{ ente_federado|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
       </strong>
   </div>
 
@@ -45,7 +45,7 @@
       {% else %}
         <strong>GOVERNO DO </strong>
       {% endif %}
-      <strong>{{ request.session.sistema_ente.nome|upper }}</strong>,
+      <strong>{{ ente_federado|upper }}</strong>,
       CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por <strong>{{ request.session.sistema_gestor.nome }}</strong>,
       {% if request.session.sistema_ente.cod_ibge > 100 %}
         Prefeito(a) Municipal,
@@ -403,12 +403,13 @@
     <p>
       E por estarem de pleno Acordo, firmam o presente Acordo de Cooperação em duas vias de igual teor e forma, perante as testemunhas abaixo qualificadas:
     </p>
+    <br/>
     <p>
       Brasília - DF,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;de&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;de&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;.
     </p>
   </div>
 
-  <div class="row">
+  <div class="row" style="padding-top: 20px">
     <div class="col-xs-5 col-md-5" style="width: 50%; float: left; text-align:center; font-size: 14px;">
         <br/>_____________________________________
         <br/><strong>GUSTAVO CARVALHO AMARAL</strong>
@@ -420,9 +421,9 @@
         <br/>_____________________________________
         <br/>{{request.session.sistema_gestor.nome|upper}}
         {% if request.session.sistema_ente.cod_ibge > 100 %}
-          <br/>Prefeito(a) do Município de {{ request.session.sistema_ente.nome }}
+          <br/>Prefeito(a) do Município de {{ ente_federado }}
         {% else %}
-          <br/>Governador(a) {{ request.session.sistema_ente.nome }}
+          <br/>Governador(a) {{ ente_federado}}
         {% endif %}
     </div>
   </div>

@@ -30,7 +30,8 @@ from adesao.models import (
     Historico,
     Uf,
     Cidade,
-    Funcionario
+    Funcionario,
+    EnteFederado
 )
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
@@ -467,10 +468,12 @@ class AlterarFuncionario(UpdateView):
 
 
 class GeraPDF(WeasyTemplateView):
+    model = EnteFederado
 
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
         context["request"] = self.request
+        context['ente_federado'] = get_object_or_404(EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
         context["static"] = self.request.get_host()
         return context
 
