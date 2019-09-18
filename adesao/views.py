@@ -468,7 +468,6 @@ class AlterarFuncionario(UpdateView):
 
 
 class GeraPDF(WeasyTemplateView):
-    model = EnteFederado
 
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
