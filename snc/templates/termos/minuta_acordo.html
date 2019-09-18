@@ -2,506 +2,454 @@
 
 <head>
   <title>Acordo de Cooperação</title>
-  <link href="http://{{static}}/static/css/bootstrap.min.css" rel="stylesheet">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="http://{{static}}/static/css/bootstrap.min.css" rel="stylesheet">
-  <link href="http://{{static}}/static/css/pdf.css" rel="stylesheet">
+  <link href="http://{{static}}/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://{{static}}/css/pdf.css" rel="stylesheet">
 </head>
 
-<body>
-  <div style="margin:0; padding:0;">
-    <center>
-      <p>
-        <img src="http://{{static}}/static/images/brasao.png" /><br/>
-        <p><strong>Ministério da Cidadania</strong><br/>
-        Secretaria Especial da Cultura<br/>
-        Secretaria da Diversidade Cultural</p>
-      </p>
-    </center>
+<body style="font-family: Helvetica Neue, Arial, FreeSans, sans-serif; !important;">
+<div style="margin:0; padding:0;">
+  <center>
+    <p>
+      <img src="http://{{static}}/static/images/brasao.png" /><br/>
+    <p><strong>Ministério da Cidadania</strong><br/>
+      Secretaria Especial da Cultura<br/>
+      Secretaria da Diversidade Cultural</p>
+    </p>
+  </center>
+</div>
+<div style="padding-top:20px;" class="content">
+
+  <div class="col-xs-6" style="float: right; width: 48%; text-align: justify">
+      <strong style="font-size: 15px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACORDO DE COOPERAÇÃO FEDERATIVA QUE ENTRE SI FIRMAM A UNIÃO,
+        POR INTERMÉDIO DO MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA E O
+        {% if request.session.sistema_ente.cod_ibge > 100 %}
+          MUNICÍPIO DE
+        {% else %}
+          GOVERNO DO
+        {% endif %}
+      {{ ente_federado|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
+      </strong>
   </div>
-  <div style="padding-top:20px;" class="content">
-    <div class="row">
-      <div class="col-xs-6">
-      </div>
-      <div class="col-xs-6">
-        <p>
-          <strong>
-            ACORDO DE COOPERAÇÃO FEDERATIVA QUE ENTRE SI FIRMAM A UNIÃO, POR INTERMÉDIO DO MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA E O
-            {% if request.session.sistema_ente.cod_ibge > 100 %}
-            MUNICÍPIO DE
-            {% else %}
-            GOVERNO DO
-            {% endif %}
-             {{ request.session.sistema_ente.nome|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
-          </strong>
-        </p>
-      </div>
-    </div>
-    <div class="row">
 
-        <p>
-          <br/>  A
-          <strong>UNIÃO</strong>, por intermédio do
-          <strong>MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA</strong>, inscrito no CNPJ/MF sob o N.° 5.526.783/0001-65, situado na Esplanada dos Ministérios, Bloco "A", Brasília - Distrito Federal, neste ato representado pelo Secretário da Diversidade Cultural,
-          <strong>GUSTAVO CARVALHO AMARAL,</strong> residente em Brasília, carteira de identidade nº <strong> 2.356.343  SSP/DF</strong>, 
-          CPF/MF nº <strong>023.999.361-67 </strong>, nomeado pela <strong>Portaria nº1.273, de 20 defevereiro de 2019</strong>, e conforme delegação de competência da Portaria Nº 47, de 17 de julho de 2009 e o
-          {% if request.session.sistema_ente.cod_ibge > 100 %}
-          <strong>MUNICÍPIO DE </strong>
-          {% else %}
-          <strong>GOVERNO DO </strong>
-          {% endif %}
-          <strong>{{ request.session.sistema_ente.nome|upper }}</strong>,
-          CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por <strong>{{ request.session.sistema_gestor.nome }}</strong>,
-          {% if request.session.sistema_ente.cod_ibge > 100 %}
-          Prefeito(a) Municipal,
-          {% else %}
-          Governador(a),
-          {% endif %}
-          carteira de identidade nº <strong>{{ request.session.sistema_gestor.rg }}</strong>, CPF/MF nº <strong>{{ request.session.sistema_gestor.cpf }}</strong>, firmam o presente Acordo de Cooperação
-          Federativa, que irá se reger pelas disposições do Art. 216-A da Constituição; da Lei no 8.666 de 21 de junho de 1993, no que couber; da Lei nº 8.313, de 23 de dezembro de 1991 e demais disposições legais pertinentes, no que couber, tendo
-          como justas e acordadas as seguintes cláusulas e condições:
-        </p>
+  <div class="row" style="clear: both; text-align: justify; font-size: 15px;">
+    <p>
+      <br/>  A
+      <strong>UNIÃO</strong>, por intermédio do
+      <strong>MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA</strong>, inscrito no CNPJ/MF sob o N.° 5.526.783/0001-65, situado na Esplanada dos Ministérios, Bloco "A", Brasília - Distrito Federal, neste ato representado pelo Secretário da Diversidade Cultural,
+      <strong>GUSTAVO CARVALHO AMARAL,</strong> residente em Brasília, carteira de identidade nº <strong> 2.356.343  SSP/DF</strong>,
+      CPF/MF nº <strong>023.999.361-67 </strong>, nomeado pela <strong>Portaria nº1.273, de 20 defevereiro de 2019</strong>, e conforme delegação de competência da Portaria Nº 47, de 17 de julho de 2009 e o
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        <strong>MUNICÍPIO DE </strong>
+      {% else %}
+        <strong>GOVERNO DO </strong>
+      {% endif %}
+      <strong>{{ ente_federado|upper }}</strong>,
+      CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por <strong>{{ request.session.sistema_gestor.nome }}</strong>,
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        Prefeito(a) Municipal,
+      {% else %}
+        Governador(a),
+      {% endif %}
+      carteira de identidade nº <strong>{{ request.session.sistema_gestor.rg }}</strong>, CPF/MF nº <strong>{{ request.session.sistema_gestor.cpf }}</strong>, firmam o presente Acordo de Cooperação
+      Federativa, que irá se reger pelas disposições do Art. 216-A da Constituição; da Lei no 8.666 de 21 de junho de 1993, no que couber; da Lei nº 8.313, de 23 de dezembro de 1991 e demais disposições legais pertinentes, no que couber, tendo
+      como justas e acordadas as seguintes cláusulas e condições:
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px;">
+    <strong style="font-size: 17px;">CLÁUSULA PRIMEIRA - DO OBJETO</strong>
+    <p style="font-size: 15px">
+      O presente Acordo de Cooperação Federativa tem por objeto estabelecer as condições e orientar a instrumentalização necessária para o desenvolvimento do Sistema Nacional de Cultura - SNC com implementação coordenada e/ou conjunta de programas,
+      projetos e ações, no âmbito da competência do Município.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong style="font-size: 15px!important;">CLÁUSULA SEGUNDA - DO SISTEMA NACIONAL DE CULTURA</strong>
+    <p>
+      O Sistema Nacional de Cultura (SNC) se constitui num processo de articulação, gestão, informação, formação, fomento e promoção de políticas públicas de cultura com participação e controle da sociedade civil, envolvendo todos os entes federados.
+      Tem como objetivo formular e implantar políticas públicas de cultura, democráticas e permanentes, pactuadas entre os entes da federação e a sociedade civil, promovendo o desenvolvimento - humano, social e econômico - com pleno exercício dos
+      direitos culturais e amplo acesso a bens e a serviços culturais.
+    </p>
+    <p>
+      <strong>Parágrafo Primeiro.</strong>
+      Constitui a estrutura do SNC, nas respectivas esferas de governo, órgãos gestores da cultura, conselhos de política cultural, conferências de cultura, sistemas de financiamento à cultura, em especial, fundos de fomento à cultura, planos de cultura, sistemas setoriais de cultura, comissões intergestores, sistemas de informações e indicadores culturais e programas de formação na área da cultura.
+    </p>
+    <p>
+      <strong>Parágrafo Segundo.</strong>
+      Os Órgãos Gestores devem apresentar periodicamente relatórios de gestão para avaliação nas instâncias de controle social do SNC.
+    </p>
+    <p>
+      <strong>Parágrafo Terceiro.</strong>
+      As diretrizes de gestão cultural serão definidas por meio das respectivas Conferências de Cultura
+      e Conselhos de Política Cultural, compostos por, no mínimo, 50% de representantes da sociedade civil, eleitos democraticamente.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA TERCEIRA - DOS PRINCÍPIOS DO SNC:</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      O Sistema Nacional de Cultura - SNC rege-se pelos seguintes princípios:
+    </p>
+    <p>
+      a)&nbsp;<strong>diversidade</strong> das expressões culturais;
+    </p>
+    <p>
+      b)&nbsp;<strong>universalização</strong> do acesso aos bens e serviços culturais;
+    </p>
+    <p>
+      c)&nbsp;<strong>fomento</strong> à produção, difusão e circulação de conhecimento e bens culturais;
+    </p>
+    <p>
+      d)&nbsp;<strong>cooperação</strong> entre os entes federados, os agentes públicos e privados atuantes na área cultural;
+    </p>
+    <p>
+      e)&nbsp;<strong>integração e interação</strong> na execução das políticas, programas, projetos e ações desenvolvidas;
+    </p>
+    <p>
+      f)&nbsp;<strong>complementaridade</strong> nos papéis dos agentes culturais;
+    </p>
+    <p>
+      g)&nbsp;<strong>transversalidade</strong> das políticas culturais;
+    </p>
+    <p>
+      h)&nbsp;<strong>autonomia</strong> dos entes federados e das instituições da sociedade civil;
+    </p>
+    <p>
+      i)&nbsp;<strong>transparência</strong> e compartilhamento das informações;
+    </p>
+    <p>
+      j)&nbsp;<strong>democratização</strong> dos processos decisórios com participação e controle social;
+    </p>
+    <p>
+      k)&nbsp;<strong>descentralização</strong> articulada e pactuada da gestão, dos recursos e das ações; e
+    </p>
+    <p>
+      l)&nbsp;<strong>ampliação progressiva dos recursos</strong> contidos nos orçamentos públicos para a cultura.
+    </p>
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA QUARTA - DOS OBJETIVOS DO SNC:</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      O SNC, atendendo as diretrizes previstas no Plano Nacional de Cultura, tem por objetivos:
+    <p>
+      a)&nbsp;Articular os entes federados visando o desenvolvimento de políticas, programas, projetos e ações conjuntas no campo da cultura.
+    </p>
+    <p>
+      b)&nbsp;Estabelecer um processo democrático de participação na gestão das políticas e dos recursos públicos na área cultural;
+    </p>
+    <p>
+      c)&nbsp;Promover a articulação e implementação de políticas públicas que promovam a interação da cultura com as demais áreas sociais, destacando seu papel estratégico no processo de desenvolvimento;
+    </p>
+    <p>
+      d)&nbsp;Promover o intercâmbio entre os entes federados para a formação, capacitação e circulação de bens e serviços culturais, viabilizando a cooperação técnica entre estes;
+    </p>
+    <p>
+      e)&nbsp;Criar instrumentos de gestão para acompanhamento e avaliação das políticas públicas de cultura desenvolvidas no âmbito do SNC;
+    </p>
+    <p>
+      f)&nbsp;Estabelecer parcerias entre os setores público e privado, nas áreas de gestão e de promoção da cultura;
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA QUINTA- DOS COMPROMISSOS PACTUADOS</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      Para o alcance dos objetivos propostos, os partícipes, no âmbito de suas competências, comprometem-se a promover as condições institucionais voltadas para:
+    <p>
+      a)&nbsp;Implantação dos Sistemas Setoriais de Cultura, com vistas à articulação e integração das diversas áreas da cultura brasileira, atendendo sempre os princípios de participação e controle social;
+    </p>
+    <p>
+      b)&nbsp;Elaboração e efetivação dos planos de cultura nas respectivas esferas de competência;
+    </p>
+    <p>
+      c)&nbsp;Realização de conferências de cultura no âmbito de suas competências, para fortalecimento do processo participativo de discussão de políticas públicas de cultura, conforme cláusula oitava deste Acordo de Cooperação;
+    </p>
+    <p>
+      d)&nbsp;Fortalecimento, integração e otimização dos mecanismos de financiamento específicos para cultura, nas suas esferas administrativas;
+    </p>
+    <p>
+      e)&nbsp;Criação, instalação, implementação e/ou fortalecimento de um processo participativo de formulação de políticas públicas de cultura, estimulando a criação de Fóruns, Colegiados e Conselhos de Política Cultural, que atuarão de forma integrada;
+    </p>
+    <p>
+      f)&nbsp;Criação e implantação, ou manutenção de órgão específico de gestão da política cultural em sua esfera administrativa;
+    </p>
+    <p>
+      g)&nbsp;Criação e implementação de comissões intergestores para operacionalização do Sistema Nacional de Cultura;
+    </p>
+    <p>
+      h)&nbsp;Implantação e publicização do Sistema Nacional de Informações e Indicadores Culturais, conforme cláusula décima deste Acordo de Cooperação;
+    </p>
+    <p>
+      i)&nbsp;Integração de programas e projetos de capacitação e aprimoramento de setores e instituições culturais específicos; e
+    </p>
+    <p>
+      j)&nbsp;Fomento ao fluxo de projetos em circuitos culturais.
+    </p>
+    <p>
+      <strong>Parágrafo Único.</strong>
+      Os resultados devem ser concretizados durante a vigência deste Acordo de Cooperação.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA SEXTA - DAS OBRIGAÇÕES DOS PARTÍCIPES</strong>
+    <p style="font-size: 15px">
+      <br/>São obrigações dos partícipes:
+    </p>
+    <p style="font-size: 17px; text-align: left !important;">
+      <strong><u>I - AO MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA - incumbe:</u></strong>
+    </p>
+    <div style="font-size: 15px">
+      <p>a)&nbsp;Coordenar e desenvolver o Sistema Nacional de Cultura - SNC;</p>
+      <p>b)&nbsp;Criar condições de natureza legal, administrativa, participativa e orçamentária para desenvolvimento do Sistema Nacional de Cultura;</p>
+      <p>c)&nbsp;Apoiar a criação, a implementação e o desenvolvimento dos Sistemas Estaduais, Municipais e Distrital de Cultura;</p>
+      <p>d)&nbsp;Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano Nacional de Cultura;</p>
+      <p>e)&nbsp;Manter ativo e fortalecer o Conselho Nacional de Política Cultural;</p>
+      <p>f)&nbsp;Realizar, pelo menos a cada quatro anos, as Conferências Nacionais de Cultura;</p>
+      <p>g)&nbsp;Apoiar a realização das conferências estaduais, municipais e distrital de Cultura;</p>
+      <p>h)&nbsp;Criar e implementar a Comissão Intergestores Tripartite para operacionalização do Sistema Nacional de Cultura;</p>
+      <p>i)&nbsp;Implantar e coordenar o Sistema Nacional de Informações e Indicadores Culturais;</p>
+      <p>j)&nbsp;Criar e implementar o Programa Nacional de Formação na Área da Cultura e articular, em âmbito nacional, a formação de uma rede de instituições de formação na área da cultura;</p>
+      <p>k)&nbsp;Criar o Sistema Nacional de Financiamento à Cultura, aprimorando, articulando e fortalecendo os diversos mecanismos de financiamento da cultura, em especial, o Fundo Nacional da Cultura,
+        no âmbito da União;</p>
+      <p>l)&nbsp;Compartilhar recursos para a execução de programas, projetos e ações culturais, no âmbito do SNC, nos termos da Portaria Interministerial MP/MF/CGU n° 507, de 24 de novembro de 2011;</p>
+      <p>m)&nbsp;Acompanhar a execução de programas e projetos culturais, no âmbito do SNC;</p>
+      <p>n)&nbsp;Fomentar e regulamentar a constituição de sistemas setoriais nacionais de cultura;</p>
+      <p>o)&nbsp;Fomentar, no que couber, a integração/consorciamento de Estados e de Municípios para a promoção de metas culturais;</p>
+      <p>p)&nbsp;Designar, formalmente, responsável pelo acompanhamento dos compromissos decorrentes do pactuado neste Acordo e em seus Planos de Trabalhos.</p>
     </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA PRIMEIRA - DO OBJETO</strong>
-      <p>
-        <br/> O presente Acordo de Cooperação Federativa tem por objeto estabelecer as condições e orientar a instrumentalização necessária para o desenvolvimento do Sistema Nacional de Cultura - SNC com implementação coordenada e/ou conjunta de programas,
-        projetos e ações, no âmbito da competência do Município.
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA SEGUNDA - DO SISTEMA NACIONAL DE CULTURA</strong>
-      <p>
-        <br/>O Sistema Nacional de Cultura (SNC) se constitui num processo de articulação, gestão, informação, formação, fomento e promoção de políticas públicas de cultura com participação e controle da sociedade civil, envolvendo todos os entes federados.
-        Tem como objetivo formular e implantar políticas públicas de cultura, democráticas e permanentes, pactuadas entre os entes da federação e a sociedade civil, promovendo o desenvolvimento - humano, social e econômico - com pleno exercício dos
-        direitos culturais e amplo acesso a bens e a serviços culturais.
-        <p>
-          <strong>Parágrafo Primeiro.</strong>
-          Constitui a estrutura do SNC, nas respectivas esferas de governo, órgãos gestores da cultura, conselhos de política cultural, conferências de cultura, sistemas de financiamento à cultura, em especial, fundos de fomento à cultura, planos de cultura, sistemas setoriais de cultura, comissões intergestores, sistemas de informações e indicadores culturais e programas de formação na área da cultura.
-        </p>
-        <p>
-          <strong>Parágrafo Segundo.</strong>
-          Os Órgãos Gestores devem apresentar periodicamente relatórios de gestão para avaliação nas instâncias de controle social do SNC.
-        </p>
-        <p>
-          <strong>Parágrafo Terceiro.</strong>
-          As diretrizes de gestão cultural serão definidas por meio das respectivas Conferências de Cultura
-          e Conselhos de Política Cultural, compostos por, no mínimo, 50% de representantes da sociedade civil, eleitos democraticamente.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA TERCEIRA - DOS PRINCÍPIOS DO SNC:</strong>
-      <p>
-        <br/>O Sistema Nacional de Cultura - SNC rege-se pelos seguintes princípios:
-        <p>
-          <br/>a) <strong>diversidade</strong> das expressões culturais;
-        </p>
-        <p>
-          b) <strong>universalização</strong> do acesso aos bens e serviços culturais;
-        </p>
-        <p>
-          c) <strong>fomento</strong> à produção, difusão e circulação de conhecimento e bens culturais;
-        </p>
-        <p>
-          d) <strong>cooperação</strong> entre os entes federados, os agentes públicos e privados atuantes na área cultural;
-        </p>
-        <p>
-          e) <strong>integração e interação</strong> na execução das políticas, programas, projetos e ações desenvolvidas;
-        </p>
-        <p>
-          f) <strong>complementaridade</strong> nos papéis dos agentes culturais;
-        </p>
-        <p>
-          g) <strong>transversalidade</strong> das políticas culturais;
-        </p>
-        <p>
-          h) <strong>autonomia</strong> dos entes federados e das instituições da sociedade civil;
-        </p>
-        <p>
-          i) <strong>transparência</strong> e compartilhamento das informações;
-        </p>
-        <p>
-          j) <strong>democratização</strong> dos processos decisórios com participação e controle social;
-        </p>
-        <p>
-          k) <strong>descentralização</strong> articulada e pactuada da gestão, dos recursos e das ações; e
-        </p>
-        <p>
-          l) <strong>ampliação progressiva dos recursos</strong> contidos nos orçamentos públicos para a cultura.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA QUARTA - DOS OBJETIVOS DO SNC:</strong>
-      <p>
-        <br/> O SNC, atendendo as diretrizes previstas no Plano Nacional de Cultura, tem por objetivos:
-        <p>
-          <br/>a) Articular os entes federados visando o desenvolvimento de políticas, programas, projetos e ações conjuntas no campo da cultura.
-        </p>
-        <p>
-          b) Estabelecer um processo democrático de participação na gestão das políticas e dos recursos públicos na área cultural;
-        </p>
-        <p>
-          c) Promover a articulação e implementação de políticas públicas que promovam a interação da cultura com as demais áreas sociais, destacando seu papel estratégico no processo de desenvolvimento;
-        </p>
-        <p>
-          d) Promover o intercâmbio entre os entes federados para a formação, capacitação e circulação de bens e serviços culturais, viabilizando a cooperação técnica entre estes;
-        </p>
-        <p>
-          e) Criar instrumentos de gestão para acompanhamento e avaliação das políticas públicas de cultura desenvolvidas no âmbito do SNC;
-        </p>
-        <p>
-          f) Estabelecer parcerias entre os setores público e privado, nas áreas de gestão e de promoção da cultura;
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA QUINTA- DOS COMPROMISSOS PACTUADOS</strong>
-      <p>
-        <br/>Para o alcance dos objetivos propostos, os partícipes, no âmbito de suas competências, comprometem-se a promover as condições institucionais voltadas para:
-        <p>
-          <br/>a) Implantação dos Sistemas Setoriais de Cultura, com vistas à articulação e integração das diversas áreas da cultura brasileira, atendendo sempre os princípios de participação e controle social;
-        </p>
-        <p>
-          b) Elaboração e efetivação dos planos de cultura nas respectivas esferas de competência;
-        </p>
-        <p>
-          c) Realização de conferências de cultura no âmbito de suas competências, para fortalecimento do processo participativo de discussão de políticas públicas de cultura, conforme cláusula oitava deste Acordo de Cooperação;
-        </p>
-        <p>
-          d) Fortalecimento, integração e otimização dos mecanismos de financiamento específicos para cultura, nas suas esferas administrativas;
-        </p>
-        <p>
-          e) Criação, instalação, implementação e/ou fortalecimento de um processo participativo de formulação de políticas públicas de cultura, estimulando a criação de Fóruns, Colegiados e Conselhos de Política Cultural, que atuarão de forma integrada;
-        </p>
-        <p>
-          f) Criação e implantação, ou manutenção de órgão específico de gestão da política cultural em sua esfera administrativa;
-        </p>
-        <p>
-          g) Criação e implementação de comissões intergestores para operacionalização do Sistema Nacional de Cultura;
-        </p>
-        <p>
-          h) Implantação e publicização do Sistema Nacional de Informações e Indicadores Culturais, conforme cláusula décima deste Acordo de Cooperação;
-        </p>
-        <p>
-          i) Integração de programas e projetos de capacitação e aprimoramento de setores e instituições culturais específicos; e
-        </p>
-        <p>
-          j) Fomento ao fluxo de projetos em circuitos culturais.
-        </p>
-      </p>
-      <p>
-        <strong>Parágrafo Único.</strong>
-        Os resultados devem ser concretizados durante a vigência deste Acordo de Cooperação.
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA SEXTA - DAS OBRIGAÇÕES DOS PARTÍCIPES</strong>
-      <p>
-        <br/>São obrigações dos partícipes:
-      </p>
-      <p>
-        <strong><u><br/>I - Ao MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA -incumbe:</u></strong>
-        <p>
-          <br/>a) Coordenar e desenvolver o Sistema Nacional de Cultura - SNC;
-        </p>
-        <p>
-          b) Criar condições de natureza legal, administrativa, participativa e orçamentária para desenvolvimento do Sistema Nacional de Cultura;
-        </p>
-        <p>
-          c) Apoiar a criação, a implementação e o desenvolvimento dos Sistemas Estaduais, Municipais e Distrital de Cultura;
-        </p>
-        <p>
-          d) Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano Nacional de Cultura;
-        </p>
-        <p>
-          e) Manter ativo e fortalecer o Conselho Nacional de Política Cultural;
-        </p>
-        <p>
-          f) Realizar, pelo menos a cada quatro anos, as Conferências Nacionais de Cultura;
-        </p>
-        <p>
-          g) Apoiar a realização das conferências estaduais, municipais e distrital de Cultura;
-        </p>
-        <p>
-          h) Criar e implementar a Comissão Intergestores Tripartite para operacionalização do Sistema Nacional de Cultura;
-        </p>
-        <p>
-          i) Implantar e coordenar o Sistema Nacional de Informações e Indicadores Culturais;
-        </p>
-        <p>
-          j) Criar e implementar o Programa Nacional de Formação na Área da Cultura e articular, em âmbito nacional, a formação de uma rede de instituições de formação na área da cultura;
-        </p>
-        <p>
-          k) Criar o Sistema Nacional de Financiamento à Cultura, aprimorando, articulando e fortalecendo os diversos mecanismos de financiamento da cultura, em especial, o Fundo Nacional da Cultura,
-          no âmbito da União;
-        </p>
-        <p>
-          l) Compartilhar recursos para a execução de programas, projetos e ações culturais, no âmbito do SNC, nos termos da Portaria Interministerial MP/MF/CGU n° 507, de 24 de novembro de 2011;
-        </p>
-        <p>
-          m) Acompanhar a execução de programas e projetos culturais, no âmbito do SNC;
-        </p>
-        <p>
-          n) Fomentar e regulamentar a constituição de sistemas setoriais nacionais de cultura;
-        </p>
-        <p>
-          o) Fomentar, no que couber, a integração/consorciamento de Estados e de Municípios para a promoção de metas culturais;
-        </p>
-        <p>
-          p) Designar, formalmente, responsável pelo acompanhamento dos compromissos decorrentes do pactuado neste Acordo e em seus Planos de Trabalhos.
-        </p>
-      </p>
-      <p>
-        <strong><u><br/>II - AO MUNICÍPIO incumbe:</u></strong>
-        <p>
-          <br/>a) Criar, coordenar e desenvolver o Sistema Municipal de Cultura - SNC;
-        </p>
-        <p>
-          b) Integrar-se ao Sistema Nacional de Cultura;
-        </p>
-        <p>
-          c) Criar condições de natureza legal, administrativa, participativa e orçamentária para sua integração ao Sistema Nacional de Cultura;
-        </p>
-        <p>
-          d) Integrar-se ao Sistema Estadual de Cultura;
-        </p>
-          e) Apoiar a criação e implementação da Comissão Intergestores Bipartite para operacionalização do Sistema Estadual de Cultura;
-        </p>
-        <p>
-          f) Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano Municipal de Cultura;
-        </p>
-        <p>
-          g) Criar e implantar ou reestruturar o Conselho Municipal de Política Cultural, garantindo o funcionamento e a composição de, no mínimo, 50% de representantes da Sociedade Civil, eleitos democraticamente;
-        </p>
-        <p>
-          h) Fomentar a participação social por meio da criação de Fóruns Municipais de Cultura;
-        </p>
-        <p>
-          i) Criar e implantar, manter ou reestruturar o Sistema Municipal de Financiamento à Cultura, em especial o Fundo Municipal de Cultura, garantindo recursos para o seu funcionamento;
-        </p>
-        <p>
-          j) Realizar as Conferências Municipais de Cultura, previamente às Conferências Estaduais e Nacionais, seguindo o calendário estabelecido pelo Ministério da Cidadania - Secretaria Especial da Cultura ;
-        </p>
-        <p>
-          k) Apoiar a realização e participar das Conferências Estaduais e Nacionais de Cultura;
-        </p>
-        <p>
-          l) Compartilhar recursos para a execução de programas, de projetos e de ações culturais no âmbito do SNC;
-        </p>
-        <p>
-          m) Compartilhar informações por meio do Sistema Nacional de Informações e Indicadores Culturais disponibilizado pela União;
-        </p>
-        <p>
-          n) Apoiar e participar do Programa Estadual de Formação na Área da Cultura;
-        </p>
-        <p>
-          o) Implantar e regulamentar as normas específicas locais dos sistemas setoriais de cultura;
-        </p>
-        <p>
-          p) Promover a integração com outros Municípios, com o Estado e a União, para a promoção de metas culturais conjuntas, inclusive por meio de consórcios públicos;
-        </p>
-        <p>
-          q) Designar, formalmente, responsável pelo acompanhamento dos compromissos decorrentes deste Acordo e de seus Planos de Trabalho.
-        </p>
-        <p>
-          <strong>Parágrafo Primeiro.</strong>
-          Os compromissos a serem desenvolvidos em decorrência deste Acordo de Cooperação, consideradas as obrigações de cada partícipe, serão detalhados em Plano de Trabalho, parte integrante deste instrumento, e do qual constará o rol de atividades,
-          o cronograma de execução e metas a serem atingidas.
-        </p>
-        <p>
-          <strong>Parágrafo Segundo.</strong>
-          A elaboração dos Planos de Trabalho deverá ser realizada em comum Acordo entre as partes, a partir da publicação deste Acordo de Cooperação no Diário Oficial da União.
-        </p>
-        <p>
-          <strong>Parágrafo Terceiro.</strong>
-          O Plano de Trabalho deve ser executado em até dois anos, a partir da publicação deste Acordo de Cooperação no Diário Oficial da União.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA SÉTIMA - DA IMPLEMENTAÇÃO DE PROGRAMAS</strong>
-      <p>
-        <br/>A implementação coordenada e/ou conjunta de programas, projetos e ações, negociada entre as partes, será formalizada em instrumentos específicos, os quais serão parte integrante deste, independente de transcrição.
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA OITAVA - DAS CONFERÊNCIAS</strong>
-      <p>
-        <br/>As Conferências de Cultura deverão ser convocadas pelo Poder Executivo, no âmbito das respectivas esferas de atuação, com a finalidade de definir as diretrizes e prioridades dos planos de cultura.
-        <p>
-          <strong>Parágrafo Único.</strong>
-          O Ministério da Cidadania - Secretaria Especial da Cultura coordenará e convocará as Conferências Nacionais de Cultura, a serem realizadas, pelo menos a cada quatro anos, definindo o período para realização das Conferências Municipais e Estaduais, que a antecederão.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA NONA - DOS CONSELHOS</strong>
-      <p>
-        <br/>Os Conselhos de Política Cultural constituem espaços de pactuação de políticas públicas de cultura, devendo apresentar, pelo menos, as seguintes competências:
-        <p>
-          <br/>a) Elaborar e aprovar os planos de cultura a partir das orientações aprovadas nas conferências, no âmbito das respectivas esferas de atuação;
-        </p>
-        <p>
-          b) Acompanhar a execução dos respectivos planos de cultura;
-        </p>
-        <p>
-          c) Apreciar e aprovar as diretrizes dos Fundos de Cultura no âmbito das respectivas esferas de competência;
-        </p>
-        <p>
-          d) Fiscalizar a aplicação dos recursos recebidos em decorrência das transferências entre os entes da federação;
-        </p>
-        <p>
-          e) Acompanhar o cumprimento das diretrizes e instrumentos de financiamento da cultura.
-        </p>
-        <p>
-          <strong>Parágrafo Único.</strong>
-          Os Conselhos de Política Cultural terão caráter deliberativo e consultivo e serão compostos por, no mínimo, 50% de representantes da sociedade civil, eleitos democraticamente.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA - DO SISTEMA NACIONAL DE INFORMAÇÕES E INDICADORES CULTURAIS</strong>
-      <p>
-        <br/>O Sistema Nacional de Informações e Indicadores Culturais será constituído de bancos de dados, disponibilizados ao público, referentes a bens, aos serviços, à infraestrutura, aos investimentos, à produção, ao acesso, ao consumo, aos agentes,
-        aos programas, às instituições, à gestão cultural, entre outras.
-        <p>
-          <strong>Parágrafo Primeiro.</strong>
-          Caberá ao Ministério da Cidadania - Secretaria Especial da Cultura  desenvolver, implantar e manter o Sistema Nacional de Informações e Indicadores Culturais, responsabilizando-se pelo gerenciamento do sistema informatizado e pela publicização das informações.
-        </p>
-        <p>
-          <strong>Parágrafo Segundo.</strong>
-          Caberá ao Município designar responsável pela alimentação das informações no Sistema Nacional de Informações e Indicadores Culturais, conforme orientação do Ministério da Cidadania - Secretaria Especial da Cultura .
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA PRIMEIRA - DO ACOMPANHAMENTO</strong>
-      <p>
-        <br/>Cada partícipe designará pessoa ou órgão responsável para o acompanhamento deste Acordo de Cooperação, o qual terá incumbência de dar cumprimento às obrigações pactuadas, detalhadas em metas descritas no Plano de Trabalho e encaminhamento dos
-        assuntos pertinentes.
-        <p>
-          <strong>Parágrafo Único.</strong>
-          O Município encaminhará ao Ministério da Cidadania - Secretaria Especial da Cultura , no prazo de 30 dias após a publicação do instrumento, a indicação do responsável, preferencialmente o dirigente do órgão específico de gestão da política cultural no âmbito municipal, que será responsável
-          por:
-          <p>
-            <br/>a) Desenvolver os compromissos pactuados no Plano de Trabalho para alcance dos objetivos do Sistema Nacional de Cultura;
-          </p>
-          <p>
-            b) Atuar na interlocução com o Governo Federal e demais entes da Federação no sentido de desenvolver o Sistema Nacional de Cultura;
-          </p>
-          <p>
-            c) Coordenar o processo de realização das conferências municipais de cultura;
-          </p>
-          <p>
-            d) Fornecer e atualizar as informações solicitadas para o Sistema Nacional de Informações e Indicadores Culturais;
-          </p>
-          <p>
-            e) Participar das atividades e ações executadas pelo Ministério da Cidadania - Secretaria Especial da Cultura, relativas ao Sistema Nacional de Cultura, quando for solicitado.
-          </p>
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA SEGUNDA - DA DIVULGAÇÃO</strong>
-      <p>
-        <br/>Os partícipes deverão dar, de forma pública e impessoal, ampla divulgação das ações e dos resultados alcançados em decorrência deste Acordo de Cooperação, de modo a manter a sociedade informada e integrada ao Sistema Nacional de Cultura.
-        <p>
-          <strong>Parágrafo Único.</strong>
-          Utilizar e respeitar os padrões de identidade visual do SNC, de programas, de projetos e de ações desenvolvidas em conjunto, aplicando as regras vigentes durante os períodos eleitorais.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA TERCEIRA - DA VIGÊNCIA E MODIFICAÇÃO</strong>
-      <p>
-        <br/>O prazo de vigência do presente Acordo de Cooperação é por tempo indeterminado, iniciando-se a partir da data de sua celebração, podendo sua redação ser alterada a qualquer tempo mediante termos aditivos.
-        <p>
-          <strong>Parágrafo Primeiro.</strong>
-          Eventuais dúvidas ou controvérsias decorrentes da aplicação deste Acordo ou de seus anexos deverão ser dirimidas entre as partes.
-        </p>
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA QUARTA - DA RESCISÃO</strong>
-      <p>
-        <br/>O presente instrumento poderá ser denunciado ou rescindido pelos partícipes a qualquer momento, ficando as partes responsáveis pelas obrigações assumidas durante o tempo de vigência.
-      </p>
-    </div>
-    <div class="row">
-      <br/>
-      <strong>CLÁUSULA DÉCIMA QUINTA - DO FORO</strong>
-    </div>
-    <div class="row">
-      <p>
-        <br/>O Foro para dirimir litígios na execução deste Acordo de Cooperação é o da Justiça Federal, Seção de Brasília, Distrito Federal.
-        <p>
-          E por estarem de pleno Acordo, firmam o presente Acordo de Cooperação em duas vias de igual teor e forma, perante as testemunhas abaixo qualificadas:
-        </p>
-        <p>
-          Brasília - DF,    de                   de 201  .
-        </p>
-      </p>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-6">
-        <center>
-          <br/>_____________________________________
-          <br/><strong>GUSTAVO CARVALHO AMARAL</strong>
-          <br/>Secretário da Diversidade Cultural
-          <br/>Ministério da Cidadania - Secretaria
-          <br/>Especial da Cultura
-        </center>
-      </div>
-      <div class="col-xs-6">
-        <center>
-          <br/>_____________________________________
-          <br/>{{request.session.sistema_gestor.nome|upper}}
-          {% if request.session.sistema_ente.cod_ibge > 100 %}
-          <br/>Prefeito(a) do Município de {{ request.session.sistema_ente.nome }}
-          {% else %}
-          <br/>Governador(a) {{ request.session.sistema_ente.nome }}
-          {% endif %}
-        </center>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-        <br/>Testemunhas:
-        <br/>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-6">
-        <br/>________________________________
-        <br/>Nome:
-        <br/>RG:
-      </div>
-      <div class="col-xs-6">
-        <br/>________________________________
-        <br/>Nome:
-        <br/>RG:
-      </div>
+    <p style="font-size: 17px; text-align: left !important;">
+      <strong><u><br/>II - AO MUNICÍPIO incumbe:</u></strong>
+    </p>
+    <div style="font-size: 15px">
+    <p>
+      a)&nbsp;Criar, coordenar e desenvolver o Sistema Municipal de Cultura - SNC;
+    </p>
+    <p>
+      b)&nbsp;Integrar-se ao Sistema Nacional de Cultura;
+    </p>
+    <p>
+      c)&nbsp;Criar condições de natureza legal, administrativa, participativa e orçamentária para sua integração ao Sistema Nacional de Cultura;
+    </p>
+    <p>
+      d)&nbsp;Integrar-se ao Sistema Estadual de Cultura;
+    </p>
+    e)&nbsp;Apoiar a criação e implementação da Comissão Intergestores Bipartite para operacionalização do Sistema Estadual de Cultura;
+    </p>
+    <p>
+      f)&nbsp;Elaborar, em conjunto com a sociedade, institucionalizar e implementar o Plano Municipal de Cultura;
+    </p>
+    <p>
+      g)&nbsp;Criar e implantar ou reestruturar o Conselho Municipal de Política Cultural, garantindo o funcionamento e a composição de, no mínimo, 50% de representantes da Sociedade Civil, eleitos democraticamente;
+    </p>
+    <p>
+      h)&nbsp;Fomentar a participação social por meio da criação de Fóruns Municipais de Cultura;
+    </p>
+    <p>
+      i)&nbsp;Criar e implantar, manter ou reestruturar o Sistema Municipal de Financiamento à Cultura, em especial o Fundo Municipal de Cultura, garantindo recursos para o seu funcionamento;
+    </p>
+    <p>
+      j)&nbsp;Realizar as Conferências Municipais de Cultura, previamente às Conferências Estaduais e Nacionais, seguindo o calendário estabelecido pelo Ministério da Cidadania - Secretaria Especial da Cultura;
+    </p>
+    <p>
+      k)&nbsp;Apoiar a realização e participar das Conferências Estaduais e Nacionais de Cultura;
+    </p>
+    <p>
+      l)&nbsp;Compartilhar recursos para a execução de programas, de projetos e de ações culturais no âmbito do SNC;
+    </p>
+    <p>
+      m)&nbsp;Compartilhar informações por meio do Sistema Nacional de Informações e Indicadores Culturais disponibilizado pela União;
+    </p>
+    <p>
+      n)&nbsp;Apoiar e participar do Programa Estadual de Formação na Área da Cultura;
+    </p>
+    <p>
+      o)&nbsp;Implantar e regulamentar as normas específicas locais dos sistemas setoriais de cultura;
+    </p>
+    <p>
+      p)&nbsp;Promover a integração com outros Municípios, com o Estado e a União, para a promoção de metas culturais conjuntas, inclusive por meio de consórcios públicos;
+    </p>
+    <p>
+      q)&nbsp;Designar, formalmente, responsável pelo acompanhamento dos compromissos decorrentes deste Acordo e de seus Planos de Trabalho.
+    </p>
+    <p>
+      <strong>Parágrafo Primeiro.</strong>
+      Os compromissos a serem desenvolvidos em decorrência deste Acordo de Cooperação, consideradas as obrigações de cada partícipe, serão detalhados em Plano de Trabalho, parte integrante deste instrumento, e do qual constará o rol de atividades,
+      o cronograma de execução e metas a serem atingidas.
+    </p>
+    <p>
+      <strong>Parágrafo Segundo.</strong>
+      A elaboração dos Planos de Trabalho deverá ser realizada em comum Acordo entre as partes, a partir da publicação deste Acordo de Cooperação no Diário Oficial da União.
+    </p>
+    <p>
+      <strong>Parágrafo Terceiro.</strong>
+      O Plano de Trabalho deve ser executado em até dois anos, a partir da publicação deste Acordo de Cooperação no Diário Oficial da União.
+    </p>
     </div>
   </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA SÉTIMA - DA IMPLEMENTAÇÃO DE PROGRAMAS</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      A implementação coordenada e/ou conjunta de programas, projetos e ações, negociada entre as partes, será formalizada em instrumentos específicos, os quais serão parte integrante deste, independente de transcrição.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA OITAVA - DAS CONFERÊNCIAS</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      As Conferências de Cultura deverão ser convocadas pelo Poder Executivo, no âmbito das respectivas esferas de atuação, com a finalidade de definir as diretrizes e prioridades dos planos de cultura.
+    </p>
+    <p>
+      <strong>Parágrafo Único.</strong>
+      O Ministério da Cidadania - Secretaria Especial da Cultura coordenará e convocará as Conferências Nacionais de Cultura, a serem realizadas, pelo menos a cada quatro anos, definindo o período para realização das Conferências Municipais e Estaduais, que a antecederão.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA NONA - DOS CONSELHOS</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      Os Conselhos de Política Cultural constituem espaços de pactuação de políticas públicas de cultura, devendo apresentar, pelo menos, as seguintes competências:
+    </p>
+    <p>
+      <br/>a)&nbsp;Elaborar e aprovar os planos de cultura a partir das orientações aprovadas nas conferências, no âmbito das respectivas esferas de atuação;
+    </p>
+    <p>
+      b)&nbsp;Acompanhar a execução dos respectivos planos de cultura;
+    </p>
+    <p>
+      c)&nbsp;Apreciar e aprovar as diretrizes dos Fundos de Cultura no âmbito das respectivas esferas de competência;
+    </p>
+    <p>
+      d)&nbsp;Fiscalizar a aplicação dos recursos recebidos em decorrência das transferências entre os entes da federação;
+    </p>
+    <p>
+      e)&nbsp;Acompanhar o cumprimento das diretrizes e instrumentos de financiamento da cultura.
+    </p>
+    <p>
+      <strong>Parágrafo Único.</strong>
+      Os Conselhos de Política Cultural terão caráter deliberativo e consultivo e serão compostos por, no mínimo, 50% de representantes da sociedade civil, eleitos democraticamente.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA - DO SISTEMA NACIONAL DE INFORMAÇÕES E INDICADORES CULTURAIS</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      O Sistema Nacional de Informações e Indicadores Culturais será constituído de bancos de dados, disponibilizados ao público, referentes a bens, aos serviços, à infraestrutura, aos investimentos, à produção, ao acesso, ao consumo, aos agentes,
+      aos programas, às instituições, à gestão cultural, entre outras.
+    </p>
+    <p>
+      <strong>Parágrafo Primeiro.</strong>
+      Caberá ao Ministério da Cidadania - Secretaria Especial da Cultura  desenvolver, implantar e manter o Sistema Nacional de Informações e Indicadores Culturais, responsabilizando-se pelo gerenciamento do sistema informatizado e pela publicização das informações.
+    </p>
+    <p>
+      <strong>Parágrafo Segundo.</strong>
+      Caberá ao Município designar responsável pela alimentação das informações no Sistema Nacional de Informações e Indicadores Culturais, conforme orientação do Ministério da Cidadania - Secretaria Especial da Cultura .
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA PRIMEIRA - DO ACOMPANHAMENTO</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">Cada partícipe designará pessoa ou órgão responsável para o acompanhamento deste Acordo de Cooperação, o qual terá incumbência de dar cumprimento às obrigações pactuadas, detalhadas em metas descritas no Plano de Trabalho e encaminhamento dos
+      assuntos pertinentes.
+    </p>
+    <p>
+      <strong>Parágrafo Único.</strong>
+      O Município encaminhará ao Ministério da Cidadania - Secretaria Especial da Cultura , no prazo de 30 dias após a publicação do instrumento, a indicação do responsável, preferencialmente o dirigente do órgão específico de gestão da política cultural no âmbito municipal, que será responsável
+      por:
+    </p>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      a)&nbsp;Desenvolver os compromissos pactuados no Plano de Trabalho para alcance dos objetivos do Sistema Nacional de Cultura;
+    </p>
+    <p>
+      b)&nbsp;Atuar na interlocução com o Governo Federal e demais entes da Federação no sentido de desenvolver o Sistema Nacional de Cultura;
+    </p>
+    <p>
+      c)&nbsp;Coordenar o processo de realização das conferências municipais de cultura;
+    </p>
+    <p>
+      d)&nbsp;Fornecer e atualizar as informações solicitadas para o Sistema Nacional de Informações e Indicadores Culturais;
+    </p>
+    <p>
+      e)&nbsp;Participar das atividades e ações executadas pelo Ministério da Cidadania - Secretaria Especial da Cultura, relativas ao Sistema Nacional de Cultura, quando for solicitado.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA SEGUNDA - DA DIVULGAÇÃO</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      Os partícipes deverão dar, de forma pública e impessoal, ampla divulgação das ações e dos resultados alcançados em decorrência deste Acordo de Cooperação, de modo a manter a sociedade informada e integrada ao Sistema Nacional de Cultura.
+    </p>
+    <p>
+      <strong>Parágrafo Único.</strong>
+      Utilizar e respeitar os padrões de identidade visual do SNC, de programas, de projetos e de ações desenvolvidas em conjunto, aplicando as regras vigentes durante os períodos eleitorais.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA TERCEIRA - DA VIGÊNCIA E MODIFICAÇÃO</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      O prazo de vigência do presente Acordo de Cooperação é por tempo indeterminado, iniciando-se a partir da data de sua celebração, podendo sua redação ser alterada a qualquer tempo mediante termos aditivos.
+    </p>
+    <p>
+      <strong>Parágrafo Primeiro.</strong>
+      Eventuais dúvidas ou controvérsias decorrentes da aplicação deste Acordo ou de seus anexos deverão ser dirimidas entre as partes.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA QUARTA - DA RESCISÃO</strong>
+    <p style="padding-top: 5px; padding-bottom: 5px">
+      O presente instrumento poderá ser denunciado ou rescindido pelos partícipes a qualquer momento, ficando as partes responsáveis pelas obrigações assumidas durante o tempo de vigência.
+    </p>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <strong  style="font-size: 15px!important;">CLÁUSULA DÉCIMA QUINTA - DO FORO</strong>
+  </div>
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 15px;">
+    <p>
+      O Foro para dirimir litígios na execução deste Acordo de Cooperação é o da Justiça Federal, Seção de Brasília, Distrito Federal.
+    <p>
+      E por estarem de pleno Acordo, firmam o presente Acordo de Cooperação em duas vias de igual teor e forma, perante as testemunhas abaixo qualificadas:
+    </p>
+    <br/>
+    <p>
+      Brasília - DF,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;de&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;de&nbsp;20&nbsp;&nbsp;&nbsp;&nbsp;.
+    </p>
+  </div>
+
+  <div class="row" style="padding-top: 20px">
+    <div class="col-xs-5 col-md-5" style="width: 50%; float: left; text-align:center; font-size: 14px;">
+        <br/>_____________________________________
+        <br/><strong>GUSTAVO CARVALHO AMARAL</strong>
+        <br/>Secretário da Diversidade Cultural
+        <br/>Ministério da Cidadania - Secretaria
+        <br/>Especial da Cultura
+    </div>
+    <div class="col-xs-5 col-md-5" style="width: 50%; float: right; text-align:center; font-size: 14px;">
+        <br/>_____________________________________
+        <br/>{{request.session.sistema_gestor.nome|upper}}
+        {% if request.session.sistema_ente.cod_ibge > 100 %}
+          <br/>Prefeito(a) do Município de {{ ente_federado }}
+        {% else %}
+          <br/>Governador(a) {{ ente_federado}}
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="row" style="clear: both">
+    <div class="col-xs-12">
+      <br/>
+      <br/>Testemunhas:
+      <br/>
+      <br/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6" style="float: right;">
+      <br/>________________________________
+      <br/>Nome:
+      <br/>RG:
+    </div>
+    <div class="col-xs-6" style="float: left;">
+      <br/>________________________________
+      <br/>Nome:
+      <br/>RG:
+    </div>
+  </div>
+</div>
 </body>
 
 </html>
