@@ -77,7 +77,7 @@ Secretaria Especial da Cultura / Ministério da Cidadania
         mail.outbox[0].subject
         == "Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
     assert mail.outbox[0].to == ["email@email.com", "email@pessoal.com"]
     assert mail.outbox[0].body == texto
 
@@ -154,7 +154,7 @@ SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA"""
         mail.outbox[0].subject
         == "SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - SOLICITAÇÃO NOVA ADESÃO"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
     assert mail.outbox[0].to == [user.email, usuario.email_pessoal, sistema.gestor.email_pessoal,
         sistema.gestor.email_institucional]
     assert mail.outbox[0].body == texto
@@ -541,7 +541,7 @@ Seu prazo para o envio é de até 60 dias corridos.
         mail.outbox[0].subject
         == "Sistema Nacional de Cultura - Solicitação de Adesão ao SNC"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
     assert mail.outbox[0].to == [login.user.email, login.email_pessoal,
         sistema_cultura_atualizado.gestor.email_institucional,
         sistema_cultura_atualizado.gestor.email_pessoal]
@@ -595,7 +595,7 @@ Seu prazo para o envio é de até 60 dias corridos.
         mail.outbox[0].subject
         == "Sistema Nacional de Cultura - Solicitação de Adesão ao SNC"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cultura.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
     assert mail.outbox[0].to == [login.user.email, login.email_pessoal]
     assert mail.outbox[0].body == texto
 

@@ -152,7 +152,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 # EMAIL CONFIGURATION
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cultura.gov.br')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cidadania.gov.br')
 EMAIL_HOST = env('EMAIL_HOST', default='localhost')
 EMAIL_PORT = env('EMAIL_PORT', default=1025)
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')

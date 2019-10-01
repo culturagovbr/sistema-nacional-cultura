@@ -268,7 +268,7 @@ class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
     templated_email_template_name = "usuario"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -301,7 +301,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
 
 
     def form_valid(self, form):

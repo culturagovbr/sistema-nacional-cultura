@@ -23,7 +23,7 @@ def enviar_email_conclusao(request):
 
     send_templated_mail(
         template_name='conclusao_cadastro',
-        from_email='naoresponda@cultura.gov.br',
+        from_email='naoresponda@cidadania.gov.br',
         recipient_list=recipient_list,
         context={
             'request':request,

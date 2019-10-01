@@ -733,7 +733,8 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     form_class = DiligenciaGeralForm
 
     templated_email_template_name = "diligencia"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_bcc_email = "snc@cidadania.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
@@ -778,6 +779,26 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
         return recipient_list
+
+    def templated_email_get_send_email_kwargs(self, valid, form):
+        if valid:
+            context = self.templated_email_get_context_data(form_data=form.data)
+        else:
+            context = self.templated_email_get_context_data(form_errors=form.errors)
+        try:
+            from_email = self.templated_email_from_email()
+        except TypeError:
+            from_email = self.templated_email_from_email
+
+        bcc_email = self.templated_email_bcc_email
+
+        return {
+            'template_name': self.templated_email_get_template_names(valid=valid),
+            'from_email': from_email,
+            'bcc': bcc_email,
+            'recipient_list': self.templated_email_get_recipients(form),
+            'context': context
+        }
 
     def get_success_url(self):
         return reverse_lazy("gestao:detalhar", kwargs={
