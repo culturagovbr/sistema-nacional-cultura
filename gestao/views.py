@@ -114,12 +114,12 @@ def ajax_consulta_entes(request):
         Q(ente_federado__latitude__isnull=False) &
         Q(ente_federado__longitude__isnull=False)
     ).values(
-            'id',
-            'estado_processo',
-            'ente_federado__nome',
-            'ente_federado__cod_ibge',
-            'ente_federado__longitude',
-            'ente_federado__latitude',
+        'id',
+        'estado_processo',
+        'ente_federado__nome',
+        'ente_federado__cod_ibge',
+        'ente_federado__longitude',
+        'ente_federado__latitude',
     )
 
     sistemaList = [{
@@ -159,7 +159,6 @@ class EnteChain(autocomplete.Select2QuerySetView):
 
 
 def ajax_consulta_cpf(request):
-
     if not request.is_ajax():
         return JsonResponse(
             data={"message": "Esta não é uma requisição AJAX"},
@@ -238,7 +237,6 @@ class AcompanharComponente(TemplateView):
 
 
 class LookUpAnotherFieldMixin(SingleObjectMixin):
-
     lookup_field = None
 
     def get_object(self, queryset=None):
@@ -403,7 +401,6 @@ def alterar_usuario(request):
 
         form = AlterarUsuarioForm(kwargs)
         if form.is_valid():
-
             setattr(user, field_name, field_value)
             user.save()
             return JsonResponse(data={"data": {
@@ -439,7 +436,6 @@ class ListarDocumentosEnteFederado(ListView):
 
 
 class AlterarDocumentosEnteFederado(UpdateView):
-
     template_name = 'gestao/inserir_documentos/alterar_entefederado.html'
     form_class = AlterarDocumentosEnteFederadoForm
     model = Gestor
@@ -705,8 +701,9 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
-        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'],
-                                                                                                              arquivo=self.kwargs['arquivo'])
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(
+            componente=self.kwargs['componente'],
+            arquivo=self.kwargs['arquivo'])
         return context
 
     def form_invalid(self, form):
@@ -734,7 +731,8 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cidadania.gov.br"
-    templated_email_bcc_email = "snc@cidadania.gov.br"
+    # templated_email_bcc_email = "snc@cidadania.gov.br"
+    templated_email_bcc_email = "janilson.silva@basis.com.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
@@ -779,6 +777,26 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
         return recipient_list
+
+    def templated_email_get_send_email_kwargs(self, valid, form):
+        if valid:
+            context = self.templated_email_get_context_data(form_data=form.data)
+        else:
+            context = self.templated_email_get_context_data(form_errors=form.errors)
+        try:
+            from_email = self.templated_email_from_email()
+        except TypeError:
+            from_email = self.templated_email_from_email
+
+        bcc_email = self.templated_email_bcc_email
+
+        return {
+            'template_name': self.templated_email_get_template_names(valid=valid),
+            'from_email': from_email,
+            'recipient_list': self.templated_email_get_recipients(form),
+            'context': context,
+            'bcc': [bcc_email]
+        }
 
     def templated_email_get_send_email_kwargs(self, valid, form):
         if valid:
