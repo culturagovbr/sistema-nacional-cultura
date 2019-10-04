@@ -30,15 +30,29 @@
       - Encaminhe para assinatura do prefeito. <br>
       - Digitalize e envie para nosso email: snc@cultura.gov.br
     </div>
-    <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e promoção das políticas públicas de cultura 
-      democráticas e permanentes, pactuadas entre os entes da Federação (União, Estados, DF e Municípios) e a 
-      sociedade. O SNC é organizado em regime de colaboração, de forma descentralizada e participativa, tendo por objetivo 
+    <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e promoção das políticas públicas de cultura
+      democráticas e permanentes, pactuadas entre os entes da Federação (União, Estados, DF e Municípios) e a
+      sociedade. O SNC é organizado em regime de colaboração, de forma descentralizada e participativa, tendo por objetivo
       promover o desenvolvimento humano, social e econômico com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
-    <p style="text-align: justify;">{% blocktrans %}Clique nas abas "Ente Federado", "Interlocutor" e "Responsável" 
-    e preencha as informações para gerar o Acordo de Cooperação Federativa e a Solicitação de Integração ao SNC.
-    {% endblocktrans %}</p>
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %} 
-    {% include "conclusao_cadastro.html" %} 
+
+    {% if request.session.sistema_cultura_selecionado %}
+      {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
+
+        <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“Criar Novo Ente Federado”</b> para iniciar o cadastro de um novo
+        estado/município ou clique na aba “Alterar Novo ente Federado” para alterar informações e dados do
+        estado/município já cadastrado.
+          Clique na aba <b>“Gestor de Cultura”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no seu
+        estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da fundação de
+          cultura){% endblocktrans %}</p>
+      {% endif %}
+    {% else %}
+      <p style="text-align: justify;">{% blocktrans %}Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro do seu
+        estado/município e gerar o Acordo de Cooperação Federativa e a Solicitação de Integração ao SNC.
+      {% endblocktrans %}</p>
+    {% endif %}
+
+  {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
+    {% include "conclusao_cadastro.html" %}
   {% elif request.session.sistema_cultura_selecionado.estado_processo == '2' %}
     <p>
       Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
@@ -105,6 +119,11 @@
     </p>
 
     <p style="text-align: justify;">
+      Você também pode inserir o nome e o e-mail dos conselheiros de
+      cultura do seu estado/município, clicando na opção “Conselheiros”.
+    </p>
+
+    <p style="text-align: justify;">
       Agora você já pode iniciar o seu Plano de Trabalho, <a href="{% url 'planotrabalho:planotrabalho' request.session.sistema_cultura_selecionado.id %}">clicando aqui</a>
       ou no menu a esquerda na opção "Plano de Trabalho"
     </p>
@@ -118,7 +137,7 @@
         <a href="http://portal.in.gov.br" target="_blank">Clique aqui para efetuar a pesquisa</a>
       </p>
     {% endif %}
-      
+
     <p>
       <strong>EQUIPE SNC</strong>
     </p>
@@ -130,7 +149,7 @@
       CEP: 70.308-200    Brasília-DF</br>
       E-mail: snc@cultura.gov.br</br>
     </p>
-    
+
   {% endif %}
 
   {% if request.session.sistema_cultura_selecionado.alterado_em %}
@@ -140,7 +159,7 @@
   {% if request.session.sistema_cultura_selecionado.alterado_por %}
     <p>Atualizado pelo usuário de CPF: {{ request.session.sistema_cultura_selecionado.alterado_por }}</p>
   {% endif %}
-  
+
 {% endif %}
 
 {% if historico %}
@@ -149,7 +168,7 @@
 {% if request.session.sistema_cultura_selecionado.ente_federado %}
   {% include "dados_municipio.html" %}
 {% endif %}
-{% if request.session.sistema_gestor_cultura %} 
+{% if request.session.sistema_gestor_cultura %}
   {% include "dados_gestor_cultura.html" %}
 {% endif %}
 {% endblock content %}

@@ -99,8 +99,8 @@ msgstr ""
 
 msgid "Segundo parágrafo da mensagem da tela home"
 msgstr ""
-"Clique nas abas “Ente Federado”, “Interlocutor” e “Responsável” e preencha as "
-"informações para gerar o Acordo de Cooperação Federativa e a Solicitação de "
+"Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro do seu estado/município e  "
+"gerar o Acordo de Cooperação Federativa e a Solicitação de "
 "Integração ao SNC."
 
 #: templates/planotrabalho/plano_trabalho.html:6

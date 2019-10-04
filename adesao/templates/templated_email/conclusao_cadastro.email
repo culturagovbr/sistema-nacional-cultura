@@ -5,8 +5,7 @@ devidamente assinados pelo(a) Sr(a) {{ request.session.sistema_gestor.nome }}.
 
 Documentos:
 - 1 (uma) via do formulário de Solicitação de Integração ao SNC.
-- 2 (duas) vias do Acordo de Cooperação Federativa.
-Os documentos devem ser enviados à SAI/Minc pelos correios para o seguinte endereço:
+- Acesse o link http://aplicacoes6.mds.gov.br/seiusuarioexterno e efetue o cadastro do Governador/Prefeito
 
 Equipe SNC
 
@@ -15,7 +14,7 @@ SDC / Secretaria Especial da Cultura / Ministério da Cidadania
 SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
-E-mail: snc@cultura.gov.br
+E-mail: snc@cidadania.gov.br
 
 Seu prazo para o envio é de até 60 dias corridos.
 {% endblock %}
