@@ -731,8 +731,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@cidadania.gov.br"
-    # templated_email_bcc_email = "snc@cidadania.gov.br"
-    templated_email_bcc_email = "janilson.silva@basis.com.br"
+    templated_email_bcc_email = "snc@cidadania.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
