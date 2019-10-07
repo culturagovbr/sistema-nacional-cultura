@@ -268,7 +268,7 @@ class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
     templated_email_template_name = "usuario"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -301,7 +301,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
 
 
     def form_valid(self, form):
@@ -472,8 +472,11 @@ class GeraPDF(WeasyTemplateView):
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
         context["request"] = self.request
-        context['ente_federado'] = get_object_or_404(EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
         context["static"] = self.request.get_host()
+
+        if self.kwargs['template'] != 'alterar_responsavel':
+            context['ente_federado'] = get_object_or_404(EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
+
         return context
 
     def get_pdf_filename(self):
