@@ -350,6 +350,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
             context['form_sede'] = CadastrarSede()
+            context['form_sede'] = CadastrarSede()
             context['form_gestor'] = CadastrarGestor(logged_user=self.request.user)
         return context
 
