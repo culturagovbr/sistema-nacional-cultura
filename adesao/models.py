@@ -377,10 +377,7 @@ class Funcionario(models.Model):
         verbose_name='CPF')
     rg = models.CharField(max_length=50, verbose_name='RG')
     orgao_expeditor_rg = models.CharField(max_length=50)
-    estado_expeditor = models.ForeignKey('Uf',
-                                         related_name='funcionario_estado_expeditor',
-                                         on_delete=models.CASCADE,
-                                         choices=UFS.items())
+    estado_expeditor = models.IntegerField(choices=UFS.items())
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, null=True, blank=True)
     instituicao = models.CharField(max_length=100, null=True, blank=True)
