@@ -243,7 +243,6 @@ def exportar_ods(request):
 
 
 def exportar_xls(request):
-
     output = BytesIO()
 
     workbook = xlsxwriter.Workbook(output)
@@ -303,7 +302,6 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     templated_email_template_name = "adesao"
     templated_email_from_email = "naoresponda@cidadania.gov.br"
 
-
     def form_valid(self, form):
         context = self.get_context_data()
 
@@ -332,7 +330,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
                     self.request.session['sistema_cultura_selecionado'].clear()
                     self.request.session.modified = True
 
-            self.request.session['sistemas'].append({"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+            self.request.session['sistemas'].append(
+                {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
 
             return super(CadastrarSistemaCultura, self).form_valid(form)
         else:
@@ -346,10 +345,10 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, logged_user=self.request.user)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES,
+                                                     logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm()
-            context['form_sede'] = CadastrarSede()
             context['form_sede'] = CadastrarSede()
             context['form_gestor'] = CadastrarGestor(logged_user=self.request.user)
         return context
@@ -358,7 +357,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
         recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
-        gestor_pessoal, gestor_institucional]
+                          gestor_pessoal, gestor_institucional]
 
         return recipient_list
 
@@ -404,9 +403,11 @@ class AlterarSistemaCultura(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(AlterarSistemaCultura, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES, instance=self.object)
+            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES,
+                                                                  instance=self.object)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES, instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor, logged_user=self.request.user)
+            context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor,
+                                                     logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
             context['form_sede'] = CadastrarSede(instance=self.object.sede)
@@ -476,7 +477,9 @@ class GeraPDF(WeasyTemplateView):
         context["static"] = self.request.get_host()
 
         if self.kwargs['template'] != 'alterar_responsavel':
-            context['ente_federado'] = get_object_or_404(EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
+            context['ente_federado'] = get_object_or_404(EnteFederado,
+                                                         pk=context['request'].session['sistema_cultura_selecionado'][
+                                                             'ente_federado'])
 
         return context
 
@@ -523,8 +526,8 @@ class RelatorioAderidos(ListView):
 
         municipios_by_uf = (
             Municipio.objects.values("estado_id")
-            .filter(usuario__estado_processo="6", cidade_id__isnull=False)
-            .annotate(municipios_aderiram=Count("estado_id"))
+                .filter(usuario__estado_processo="6", cidade_id__isnull=False)
+                .annotate(municipios_aderiram=Count("estado_id"))
         )
 
         for estado in municipios_by_uf:
@@ -558,7 +561,7 @@ class Detalhar(DetailView):
         context = super(Detalhar, self).get_context_data(**kwargs)
         try:
             context["conselheiros"] = Conselheiro.objects.filter(conselho_id=self.object.conselho,
-                situacao="1")
+                                                                 situacao="1")
         except:
             context["conselheiros"] = None
 
