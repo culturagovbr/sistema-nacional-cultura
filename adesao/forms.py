@@ -12,7 +12,7 @@ from localflavor.br.forms import BRCPFField
 
 from snc.forms import RestrictedFileField, BRCNPJField
 
-from .models import Usuario, Municipio, Responsavel
+from .models import Usuario, Municipio, Responsavel, Uf
 from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor
 
 from snc.widgets import FileUploadWidget
@@ -176,6 +176,9 @@ class CadastrarSistemaCulturaForm(ModelForm):
 
 class CadastrarFuncionarioForm(ModelForm):
     cpf = BRCPFField()
+
+    def clean_estado_endereco(self):
+        return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_endereco']))
 
     class Meta:
         model = Funcionario

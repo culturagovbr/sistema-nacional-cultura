@@ -455,6 +455,14 @@ class AlterarFuncionario(UpdateView):
     template_name = "cadastrar_funcionario.html"
     success_url = reverse_lazy("adesao:sucesso_funcionario")
 
+    def get_context_data(self, **kwargs):
+        context = super(AlterarFuncionario, self).get_context_data(**kwargs)
+        context["post"] = self.request.POST
+
+        print(context["post"])
+
+        return context
+
     def form_valid(self, form):
         funcionario = form.instance
 
