@@ -377,7 +377,10 @@ class Funcionario(models.Model):
         verbose_name='CPF')
     rg = models.CharField(max_length=50, verbose_name='RG')
     orgao_expeditor_rg = models.CharField(max_length=50)
-    estado_expeditor = models.IntegerField(choices=UFS.items())
+    estado_expeditor = models.ForeignKey('Uf',
+                                         related_name='funcionario_estado_expeditor',
+                                         on_delete=models.CASCADE,
+                                         choices=UFS.items())
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, null=True, blank=True)
     instituicao = models.CharField(max_length=100, null=True, blank=True)
@@ -389,6 +392,15 @@ class Funcionario(models.Model):
     tipo_funcionario = models.IntegerField(
         choices=LISTA_TIPOS_FUNCIONARIOS,
         default='0')
+    estado_endereco = models.ForeignKey('Uf',
+                                        related_name='funcionario_estado_endereco',
+                                        on_delete=models.CASCADE,
+                                        choices=UFS.items(),
+                                        null=True)
+    endereco = models.CharField(max_length=255, null=True)
+    complemento = models.CharField(max_length=255, null=True)
+    cep = models.CharField(max_length=10, null=True)
+    bairro = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.cpf
