@@ -58,65 +58,68 @@
       Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
     </p>
 
-    <p>
-      Nossa equipe realizará os procedimentos necessários à sua adesão.
-    </p>
+          <p>
+            Nossa equipe realizará os procedimentos necessários à sua adesão.
+          </p>
 
-    <p>
-      Aguarde nosso  contato.
-    </p>
+          <p>
+            Aguarde nosso contato.
+          </p>
 
-    <p>
-      Atenciosamente,
-      <br> Equipe SNC
-    </p>
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '3' %}
-    <p>
-      Consta em nossos registros a pendência da seguinte documentação física necessária para
-      efetivar a Adesão ao SNC:<br><br>
-      <strong>{{ historico.0.descricao }}</strong>
-    </p>
+          <p>
+            Atenciosamente,
+            <br> Equipe SNC
+          </p>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '3' %}
+          <p>
+            Consta em nossos registros a pendência da seguinte documentação física necessária para
+            efetivar a Adesão ao SNC:<br><br>
+            <strong>{{ historico.0.descricao }}</strong>
+          </p>
 
-    <p>
-      <font color="red">Seu prazo para o envio é de <strong>30 dias</strong> corridos.</font>
-    </p>
+          <p>
+            <font color="red">Seu prazo para o envio é de <strong>30 dias</strong> corridos.</font>
+          </p>
 
-    <p>
-      Atenciosamente,<br>
-      Equipe SNC
-    </p>
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '4' %}
-    <p>
-      Prezad@ {{ request.user.usuario.nome_usuario }},
-    </p>
-    <p>
-      O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante do ministério na assinatura do acordo. Em seguida, providenciaremos a publicação no Diário Oficial da União.
-    </p>
-    <p>
-      Aguarde nosso contato.
-    </p>
-    <p>
-      Atenciosamente,<br>
-      Equipe SNC
-    </p>
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '5' %}
-    <p>
-      Prezad@ {{ request.user.usuario.nome_usuario }}
-    </p>
-    <p>
-      Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no Diário Oficial da União.
-    </p>
-    <p>
-      Aguarde nosso contato
-    </p>
-    <p>
-      Atenciosamente,<br>
-      Equipe SNC
-    </p>
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-    <p style="text-align: justify;">
-      Parabéns! Seu Acordo de Cooperação Federativa foi publicado no Diário Oficial da União (DOU).
-    </p>
+          <p>
+            Atenciosamente,<br>
+            Equipe SNC
+          </p>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '4' %}
+          <p>
+            Prezad@ {{ request.user.usuario.nome_usuario }},
+          </p>
+          <p>
+            O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante
+            do ministério na assinatura do acordo. Em seguida, providenciaremos a publicação no Diário Oficial da União.
+          </p>
+          <p>
+            Aguarde nosso contato.
+          </p>
+          <p>
+            Atenciosamente,<br>
+            Equipe SNC
+          </p>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '5' %}
+          <p>
+            Prezad@ {{ request.user.usuario.nome_usuario }}
+          </p>
+          <p>
+            Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no
+            Diário Oficial da União.
+          </p>
+          <p>
+            Aguarde nosso contato
+          </p>
+          <p>
+            Atenciosamente,<br>
+            Equipe SNC
+          </p>
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
+          <p style="text-align: justify;">
+            Parabéns! Seu Acordo de Cooperação Federativa foi publicado no Diário Oficial da União (DOU).
+          </p>
+
 
     <p style="text-align: justify;">
       Você também pode inserir o nome e o e-mail dos conselheiros de
@@ -152,9 +155,9 @@
 
   {% endif %}
 
-  {% if request.session.sistema_cultura_selecionado.alterado_em %}
-    <p>Última atualização em: {{ request.session.sistema_cultura_selecionado.alterado_em }}</p>
-  {% endif %}
+        {% if request.session.sistema_cultura_selecionado.alterado_em %}
+          <p>Última atualização em: {{ request.session.sistema_cultura_selecionado.alterado_em }}</p>
+        {% endif %}
 
   {% if request.session.sistema_cultura_selecionado.alterado_por %}
     <p>Atualizado pelo usuário de CPF: {{ request.session.sistema_cultura_selecionado.alterado_por }}</p>

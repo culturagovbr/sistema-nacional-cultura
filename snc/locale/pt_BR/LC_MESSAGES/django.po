@@ -102,6 +102,12 @@ msgstr ""
 "Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro do seu estado/município e  "
 "gerar o Acordo de Cooperação Federativa e a Solicitação de "
 "Integração ao SNC."
+"Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro de um novo"
+"estado/município ou clique na aba “Alterar Novo ente Federado” para alterar"
+"informações e dados do estado/município já cadastrado."
+"Clique na aba “Gestor de Cultura” para iniciar o cadastro do gestor responsável"
+"pela pasta da cultura no seu estado/município (Ex: secretário de cultura, diretor"
+"do departamento de cultura, presidente da fundação de cultura)."
 
 #: templates/planotrabalho/plano_trabalho.html:6
 msgid "Primeiro parágrafo da tela inicial do Plano de Trabalho"

@@ -152,9 +152,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 # EMAIL CONFIGURATION
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cultura.gov.br')
-EMAIL_HOST = env('EMAIL_HOST', default='localhost')
-EMAIL_PORT = env('EMAIL_PORT', default=1025)
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cidadania.gov.br')
+EMAIL_USE_TLS = True
+EMAIL_HOST = env('EMAIL_HOST', default='mailapp.cultura.gov.br')
+EMAIL_PORT = env('EMAIL_PORT', default=25)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='srv_salic')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='emailSalic')
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # MANAGER CONFIGURATION
