@@ -5,19 +5,8 @@
       <div class="card">
         <div class="card-header card-header-primary">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
               <h4 class="card-title">Ente Federado</h4>
-            </div>
-            <div class="col-md-3" style="margin: 0;padding: 0; text-align: right;">
-                {% if ente.cadastrador == None %}
-                  <i class="material-icons" style="color: #7f231c;font-weight: bold;">person_add_disabled</i>
-                {% endif %}
-                {% if ente.estado_processo == '0' %}
-                  <i class="material-icons" style="color: #7b59c0;font-weight: bold;">error_outline</i>
-                {% endif %}
-                {% if ente.estado_processo == '1' %}
-                  <i class="material-icons" style="color: #FFCC00;font-weight: bold;">error_outline</i>
-                {% endif %}
             </div>
           </div>
           <a href="{% url 'gestao:alterar_sistema' pk=ente.id %}" class="card-category"
@@ -25,6 +14,53 @@
         </div>
 
         <div class="card-body">
+          <div class="row">
+            <div class="col-md-12" style="text-align: right;">
+                {% if has_analise_nao_correcao %}
+                  <i class="material-icons" style="color: #FFCC00; cursor:help;" title="Falta o envio da diligência por e-mail.">report_problem</i>
+                {% endif %}
+
+                {% if has_prazo_vencido %}
+                  <i class="material-icons" style="color: #000000; cursor:help;" title="Plano de trabalho com o prazo expirado, sem nenhum componente inserido.">report_problem</i>
+                {% endif %}
+
+                {% if has_pendente_analise %}
+                  <i class="material-icons" style="color: #CC0000;">report_problem</i>
+                {% endif %}
+
+                {% if has_componente_sistema %}
+                  <i class="material-icons" style="color: #5ab738; font-weight: bold;">done</i>
+                {% endif %}
+
+                {% if has_cooperacao_federativa %}
+                  <i class="material-icons" style="color: #336699; font-weight: bold;">done</i>
+                {% endif %}
+
+                {% if has_componente_sistema_conselho %}
+                  <i class="material-icons" style="color: #7b59c0; font-weight: bold;">done</i>
+                {% endif %}
+
+                {% if not_has_cadastrador %}
+                  <i class="material-icons" style="color: #CC0000;">person_add_disabled</i>
+                {% endif %}
+
+                {% if not_has_dados_cadastrais %}
+                  <i class="material-icons" style="color: #7b59c0;">report</i>
+                {% endif %}
+
+                {% if not_has_documentacao %}
+                  <i class="material-icons" style="color: #ffcc00;">report</i>
+                {% endif %}
+
+                {% if has_formalizar_adesao %}
+                  <i class="material-icons" style="color: #CC0000;">report</i>
+                {% endif %}
+
+                {% if has_fase_institucionalizar %}
+                  <i class="material-icons" style="color: #5ab738;">report</i>
+                {% endif %}
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-7">
               <p><strong>Localização:</strong> {{ ente.ente_federado }}</p>

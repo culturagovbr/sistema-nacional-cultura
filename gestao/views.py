@@ -89,6 +89,8 @@ from snc.client import Client
 
 from django.core.files.storage import FileSystemStorage
 
+from datetime import date
+
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
@@ -104,7 +106,6 @@ def listar_componentes(request, **kwargs):
 
 
 def ajax_consulta_entes(request):
-
     if not request.is_ajax():
         return JsonResponse(
             data={"message": "Esta não é uma requisição AJAX"}, status=400)
@@ -317,10 +318,45 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['form'] = CadastradorEnte()
 
+        # Situações do Ente Federado
+        context['has_analise_nao_correcao'] = False
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
+        context['has_pendente_analise'] = False
+        context['has_componente_sistema'] = self.get_valida_arquivo_concluido(
+            sistema.legislacao) and self.get_valida_arquivo_concluido(
+            sistema.plano) and self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
+        context['has_cooperacao_federativa'] = self.get_valida_arquivo_concluido(
+            sistema.legislacao) and self.get_valida_arquivo_concluido(
+            sistema.plano) and self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
+            sistema.conselho.lei) and self.get_valida_arquivo_concluido(sistema.orgao_gestor)
+        context['has_componente_sistema_conselho'] = self.get_valida_arquivo_concluido(
+            sistema.conselho) and self.get_valida_arquivo_concluido(sistema.fundo_cultura.comprovante_cnpj)
+
+        context['not_has_cadastrador'] = sistema.cadastrador is None
+        context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
+        context['not_has_documentacao'] = sistema.estado_processo == '1'
+        context['has_formalizar_adesao'] = False
+        context['has_fase_institucionalizar'] = self.get_valida_arquivo_concluido(
+            sistema.legislacao) and self.get_valida_arquivo_concluido(sistema.fundo_cultura)
+
         return context
 
     def get_descricao_componente(self, id):
         return LISTA_TIPOS_COMPONENTES[id][1]
+
+    def get_valida_arquivo_concluido(self, field):
+        return field is not None and field.arquivo is not None and field.situacao in (2, 3)
+
+    def get_valida_prazo_vencido(self, sistema):
+        data_final_publicacao_acordo = None
+        if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
+            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + 2,
+                                                sistema.data_publicacao_acordo.month,
+                                                sistema.data_publicacao_acordo.day)
+
+        return not sistema.conferencia_nacional and data_final_publicacao_acordo is not None and data_final_publicacao_acordo < date.today()
 
 
 class AlterarDadosSistemaCultura(AlterarSistemaCultura):
@@ -757,7 +793,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-            .ente_federado.cod_ibge)
+                .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -769,7 +805,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
         if self.get_sistema_cultura().cadastrador:
             recipient_list = [self.get_sistema_cultura().cadastrador.user.email,
-                          self.get_sistema_cultura().cadastrador.email_pessoal]
+                              self.get_sistema_cultura().cadastrador.email_pessoal]
 
         if self.get_sistema_cultura().gestor:
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
@@ -877,7 +913,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
