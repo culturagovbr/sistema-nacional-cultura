@@ -364,7 +364,7 @@ class CriarFundoForm(ModelForm):
     def clean_mesma_lei(self):
         if self.data.get('mesma_lei', None) == 'True':
             try:
-                if self.sistema.legislacao.arquivo.url:
+                if not self.sistema.legislacao.arquivo or self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
             except (ValueError, AttributeError) as e:
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
@@ -492,7 +492,7 @@ class CriarConselhoForm(ModelForm):
     def clean_mesma_lei(self):
         if self.data.get('mesma_lei', None) == 'True':
             try:
-                if self.sistema.legislacao.arquivo.url:
+                if not self.sistema.legislacao.arquivo or self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
             except (ValueError, AttributeError) as e:
                 raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
