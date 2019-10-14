@@ -1,158 +1,171 @@
 {% extends 'gestao/base_gestao.html' %} {% load widget_tweaks %} {% block content %}
-<style>
-	.lista-diligencia{
-		margin-bottom: 2rem;
-		border: 1px solid #bec5c5;
-		border-radius: 10px;
-	}
-	.lista-diligencia > li.list-group-item{
-		border-bottom: 1px solid #bec5c5;
-	}
-	.lista-diligencia > li.list-group-item:last-child{
-		border-bottom: 0px;
-		border-top: 0px;
-	}
-	table > tbody > tr > td:first-child {
-    font-weight: bold;
-	}
-</style>
-<menu data-target="plano" ></menu>
-<div class="row">
-	<div class="col-md-10">
-		<div class="card">
-			<div class="card-header card-plain card-header-primary">
-				<h4>Diligência</h4>
-				<p class="card-category">Envio de diligência para componente do plano de trabalho</p>
-			</div>
-			<div class="card-body">
-				<form method="POST">
-				{% csrf_token %}
-				<div class="row">
-					<div class="col-md-4">
-						{% if componente == plano_trabalho  %}
-						<table class="table">
-							<tr>
-								<td>Ente Federado</td>
-								<td>{{ sistema_cultura.ente_federado.nome }}</td>
-							</tr>
-							<tr>
-								<td>Criação Sistema</td>
-								<td>{{ situacoes.legislacao }}</td>
-							</tr>
-							<tr>
-								<td>Fundo Cultura</td>
-								<td>{{ situacoes.fundo_cultura }}</td>
-							</tr>
-							<tr>
-								<td>Conselho Cultural</td>
-								<td>{{ situacoes.conselho }}</td>
-							</tr>
-							<tr>
-								<td>Orgao Gestor</td>
-								<td>{{ situacoes.orgao_gestor }}</td>
-							</tr>
-							<tr>
-								<td>Plano Cultura</td>
-								<td>{{ situacoes.plano }}</td>
-							</tr>
-						</table>
-						{% else %}
-						<table class="table">
-							<tr>
-								<td>Ente Federado</td>
-								<td>{{ sistema_cultura.ente_federado.nome }}</td>
-							</tr>
-							<tr>
-								<td>Data de envio do arquivo</td>
-								<td>{{ data_envio }}</td>
-							</tr>
-							<tr>
-								<td>Anexo</td>
-								<td>
-									<a class="btn btn-sm btn-primary" href="{{ arquivo.url }}" target="_blank">
-										<i class="material-icons" style="color:white;">save_alt</i>
-									</a>
-								</td>
-							</tr>
-							{% if componente != plano_trabalho %}
-							<tr>
-								<td>Classificação</td>
-								<td>
-									{% render_field form.classificacao_arquivo class="form-control form-control-sm" %}
-								</td>
-							</tr>
-							{% endif %}
-						</table>
-						{% endif %}
-					</div>
-					<div class="col-md-8">
-						<div class="row">
-								{{form.texto_diligencia}}
-								{{form.media}}
-						</div>
-						<button class="btn btn-primary pull-right" type="submit">Enviar</button>
-						<a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}" class="btn btn-secondary pull-right">Cancelar</a>
-					</div>
-				</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+  <style>
+    .lista-diligencia {
+      margin-bottom: 2rem;
+      border: 1px solid #bec5c5;
+      border-radius: 10px;
+    }
 
-<div class="row">
-	{% if historico_diligencias_componentes %}
-		<div class="col-md-5">
-			<div class="card">
-				<div class="card-header card-plain card-header-primary">
-					Histórico de Diligências dos Componentes
-				</div>
-				<div class="card-body">
-					{% if componente == plano_trabalho %}
-						{% for componente in historico_diligencias_componentes %}
-							<div class="col-md-12 lista-diligencia">
-								<ul class="list-group"></ul>
-								<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-								<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
-								<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-								<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
-								<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
-								</ul>
-							</div>
-						{% endfor %}
-					{% else %}
-						{% for componente in historico_diligencias_componentes %}
-							{% for diligencia_historica in componente.historico_diligencia %}
-								<div class="col-md-12 lista-diligencia">
-									<ul class="list-group"></ul>
-										<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-										<li class="list-group-item"><b>Usuário:</b> {{ diligencia_historica.usuario.nome_usuario }}</li>
-										<li class="list-group-item"><b>Motivo:</b> {{ diligencia_historica.get_classificacao_arquivo_display }}</li>
-										<li class="list-group-item"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
-										<li class="list-group-item"><b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe}}</li>
-										{% if diligencia_historica.arquivo_url %}
-											<li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}" target="_blank">Download do Arquivo</a></li>
-										{% endif %}
-									</ul>
-								</div>
-							{% empty %}
-  							<div class="col-md-12 lista-diligencia">
-    							<ul class="list-group"></ul>
-      							<li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
-      							<li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
-      							<li class="list-group-item"><b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
-      							<li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
-      							<li class="list-group-item"><b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe}}</li>
-    							</ul>
-  							</div>
-							{% endfor %}
-						{% endfor %}
-					{% endif %}
-				</div>
-			</div>
-			{% endif %}
-		</div>
-	</div>
-</div>
+    .lista-diligencia > li.list-group-item {
+      border-bottom: 1px solid #bec5c5;
+    }
+
+    .lista-diligencia > li.list-group-item:last-child {
+      border-bottom: 0px;
+      border-top: 0px;
+    }
+
+    table > tbody > tr > td:first-child {
+      font-weight: bold;
+    }
+  </style>
+  <menu data-target="plano"></menu>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header card-plain card-header-primary">
+          <h4>Diligência</h4>
+          <p class="card-category">Envio de diligência para componente do plano de trabalho</p>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+              {% csrf_token %}
+            <div class="row">
+              <div class="col-md-4">
+                  {% if componente == plano_trabalho %}
+                    <table class="table">
+                      <tr>
+                        <td>Ente Federado</td>
+                        <td>{{ sistema_cultura.ente_federado.nome }}</td>
+                      </tr>
+                      <tr>
+                        <td>Criação Sistema</td>
+                        <td>{{ situacoes.legislacao }}</td>
+                      </tr>
+                      <tr>
+                        <td>Fundo Cultura</td>
+                        <td>{{ situacoes.fundo_cultura }}</td>
+                      </tr>
+                      <tr>
+                        <td>Conselho Cultural</td>
+                        <td>{{ situacoes.conselho }}</td>
+                      </tr>
+                      <tr>
+                        <td>Orgão Gestor</td>
+                        <td>{{ situacoes.orgao_gestor }}</td>
+                      </tr>
+                      <tr>
+                        <td>Plano Cultura</td>
+                        <td>{{ situacoes.plano }}</td>
+                      </tr>
+                    </table>
+                  {% else %}
+                    <table class="table">
+                      <tr>
+                        <td>Ente Federado</td>
+                        <td>{{ sistema_cultura.ente_federado.nome }}</td>
+                      </tr>
+                      <tr>
+                        <td>Data de envio do arquivo</td>
+                        <td>{{ data_envio }}</td>
+                      </tr>
+                      <tr>
+                        <td>Anexo</td>
+                        <td>
+                          <a class="btn btn-sm btn-primary" href="{{ arquivo.url }}" target="_blank">
+                            <i class="material-icons" style="color:white;">save_alt</i>
+                          </a>
+                        </td>
+                      </tr>
+                        {% if componente != plano_trabalho %}
+                          <tr>
+                            <td>Classificação</td>
+                            <td>
+                                {% render_field form.classificacao_arquivo class="form-control form-control-sm" %}
+                            </td>
+                          </tr>
+                        {% endif %}
+                    </table>
+                  {% endif %}
+              </div>
+              <div class="col-md-8">
+                <div class="row">
+                    {{ form.texto_diligencia }}
+                    {{ form.media }}
+                </div>
+                <button class="btn btn-primary pull-right" type="submit">Enviar</button>
+                <a href="{% url 'gestao:detalhar' cod_ibge=sistema_cultura.ente_federado.cod_ibge %}"
+                   class="btn btn-secondary pull-right">Cancelar</a>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+
+  <div class="row">
+      {% if historico_diligencias_componentes %}
+        <div class="col-md-5">
+        <div class="card">
+          <div class="card-header card-plain card-header-primary">
+            Histórico de Diligências dos Componentes
+          </div>
+          <div class="card-body">
+              {% if componente == plano_trabalho %}
+                  {% for componente in historico_diligencias_componentes %}
+                    <div class="col-md-12 lista-diligencia">
+                      <ul class="list-group"></ul>
+                      <li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+                      <li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+                      <li class="list-group-item">
+                        <b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+                      <li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+                      <li class="list-group-item">
+                        <b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe }}</li>
+                      </ul>
+                    </div>
+                  {% endfor %}
+              {% else %}
+                  {% for componente in historico_diligencias_componentes %}
+                      {% for diligencia_historica in componente.historico_diligencia %}
+                        <div class="col-md-12 lista-diligencia">
+                          <ul class="list-group"></ul>
+                          <li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+                          <li class="list-group-item"><b>Usuário:</b> {{ diligencia_historica.usuario.nome_usuario }}
+                          </li>
+                          <li class="list-group-item">
+                            <b>Motivo:</b> {{ diligencia_historica.get_classificacao_arquivo_display }}</li>
+                          <li class="list-group-item"><b>Data:</b> {{ diligencia_historica.data_criacao }}</li>
+                          <li class="list-group-item">
+                            <b>Resumo:</b> {{ diligencia_historica.texto_diligencia | striptags | safe }}</li>
+                            {% if diligencia_historica.arquivo_url %}
+                              <li class="list-group-item"><a href="{{ diligencia_historica.arquivo_url }}"
+                                                             target="_blank">Download do Arquivo</a></li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      {% empty %}
+                        <div class="col-md-12 lista-diligencia">
+                          <ul class="list-group"></ul>
+                          <li class="list-group-item"><b>Componente:</b> {{ componente.get_tipo_display }}</li>
+                          <li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}
+                          </li>
+                          <li class="list-group-item">
+                            <b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+                          <li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+                          <li class="list-group-item">
+                            <b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe }}</li>
+                          </ul>
+                        </div>
+                      {% endfor %}
+                  {% endfor %}
+              {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+    </div>
 
 {% endblock %}
