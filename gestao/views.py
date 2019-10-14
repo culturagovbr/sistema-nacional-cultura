@@ -89,6 +89,8 @@ from snc.client import Client
 
 from django.core.files.storage import FileSystemStorage
 
+from datetime import date
+
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
@@ -104,7 +106,6 @@ def listar_componentes(request, **kwargs):
 
 
 def ajax_consulta_entes(request):
-
     if not request.is_ajax():
         return JsonResponse(
             data={"message": "Esta não é uma requisição AJAX"}, status=400)
@@ -317,10 +318,67 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['form'] = CadastradorEnte()
 
+        # Validação dos documentos concluidos
+        has_legislacao_concluido = self.get_valida_arquivo_concluido(sistema.legislacao)
+        has_plano_concluido = self.get_valida_arquivo_concluido(sistema.plano)
+        has_conselho_concluido = self.get_valida_arquivo_concluido(sistema.conselho)
+        has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(sistema.fundo_cultura)
+        has_conselho_lei_concluido = bool(sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
+        has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(sistema.orgao_gestor)
+        has_comprovante_cnpj_concluido = bool(sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        has_legislacao_arquivo = self.get_valida_arquivo(sistema.legislacao)
+        has_plano_arquivo = self.get_valida_arquivo(sistema.plano)
+        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
+        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
+        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
+        has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
+        has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        # Situações do Ente Federado
+        context['has_analise_nao_correcao'] = False
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
+            sistema) and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
+
+        context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
+            has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and has_conselho_lei_concluido)
+
+        context[
+            'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido
+        context[
+            'has_cooperacao_federativa'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
+        context['has_componente_sistema_conselho'] = has_conselho_concluido and has_comprovante_cnpj_concluido
+
+        context['not_has_cadastrador'] = sistema.cadastrador is None
+        context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
+        context['not_has_documentacao'] = sistema.estado_processo == '1' or not (
+                has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+        context['has_formalizar_adesao'] = sistema.estado_processo == '3'
+        context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
+
         return context
 
     def get_descricao_componente(self, id):
         return LISTA_TIPOS_COMPONENTES[id][1]
+
+    def get_valida_arquivo(self, field):
+        return bool(field) and bool(field.arquivo)
+
+    def get_valida_arquivo_concluido(self, field):
+        return self.get_valida_arquivo(field) and field.situacao in (2, 3)
+
+    def get_valida_prazo_vencido(self, sistema):
+        data_final_publicacao_acordo = None
+        if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
+            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + 2,
+                                                sistema.data_publicacao_acordo.month,
+                                                sistema.data_publicacao_acordo.day)
+
+        return not sistema.conferencia_nacional and data_final_publicacao_acordo is not None and data_final_publicacao_acordo < date.today()
 
 
 class AlterarDadosSistemaCultura(AlterarSistemaCultura):
@@ -757,7 +815,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-            .ente_federado.cod_ibge)
+                .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -769,7 +827,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
         if self.get_sistema_cultura().cadastrador:
             recipient_list = [self.get_sistema_cultura().cadastrador.user.email,
-                          self.get_sistema_cultura().cadastrador.email_pessoal]
+                              self.get_sistema_cultura().cadastrador.email_pessoal]
 
         if self.get_sistema_cultura().gestor:
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
@@ -795,26 +853,6 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             'recipient_list': self.templated_email_get_recipients(form),
             'context': context,
             'bcc': [bcc_email]
-        }
-
-    def templated_email_get_send_email_kwargs(self, valid, form):
-        if valid:
-            context = self.templated_email_get_context_data(form_data=form.data)
-        else:
-            context = self.templated_email_get_context_data(form_errors=form.errors)
-        try:
-            from_email = self.templated_email_from_email()
-        except TypeError:
-            from_email = self.templated_email_from_email
-
-        bcc_email = self.templated_email_bcc_email
-
-        return {
-            'template_name': self.templated_email_get_template_names(valid=valid),
-            'from_email': from_email,
-            'bcc': bcc_email,
-            'recipient_list': self.templated_email_get_recipients(form),
-            'context': context
         }
 
     def get_success_url(self):
@@ -877,7 +915,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
