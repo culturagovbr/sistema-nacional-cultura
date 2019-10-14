@@ -91,8 +91,6 @@ from django.core.files.storage import FileSystemStorage
 
 from datetime import date
 
-from pprint import pprint
-
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
@@ -301,8 +299,6 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             4: "plano",
         }
 
-        pprint(sistema)
-
         for componente_id, componente_nome in componentes.items():
             componente_sistema = getattr(sistema, componente_nome, None)
             arquivo_componente = getattr(componente_sistema, 'arquivo', None)
@@ -363,18 +359,6 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
                 has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
-
-        # context['has_analise_nao_correcao'] = True
-        # context['has_prazo_vencido'] = True
-        # context['has_pendente_analise'] = True
-        # context['has_componente_sistema'] = True
-        # context['has_cooperacao_federativa'] = True
-        # context['has_componente_sistema_conselho'] = True
-        # context['not_has_cadastrador'] = True
-        # context['not_has_dados_cadastrais'] = True
-        # context['not_has_documentacao'] = True
-        # context['has_formalizar_adesao'] = True
-        # context['has_fase_institucionalizar'] = True
 
         return context
 
