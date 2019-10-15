@@ -26,6 +26,8 @@ from adesao.middleware import get_current_user
 
 from itertools import tee
 
+from django.db import connection
+
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
     ('1', 'Aguardando envio da documentação'),
@@ -587,3 +589,43 @@ class SistemaCultura(models.Model):
                 self.atualiza_relacoes_reversas(anterior)
         else:
             super().save(*args, **kwargs)
+
+    def has_not_diligencias_enviadas_aprovadas(self):
+        query = '''SELECT COUNT(ad_sc.id) < 1
+                      FROM adesao_sistemacultura ad_sc 
+                      
+                      JOIN planotrabalho_componente pt_cl
+                        ON pt_cl.arquivocomponente2_ptr_id = ad_sc.legislacao_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acl
+                        ON pt_acl.id = pt_cl.arquivocomponente2_ptr_id
+                       AND pt_acl.situacao IN (2, 3)
+                        
+                      JOIN planotrabalho_componente pt_cp
+                        ON pt_cp.arquivocomponente2_ptr_id = ad_sc.plano_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acp
+                        ON pt_acp.id = pt_cp.arquivocomponente2_ptr_id
+                       AND pt_acp.situacao IN (2, 3)
+                       
+                      JOIN planotrabalho_componente pt_cc
+                        ON pt_cc.arquivocomponente2_ptr_id = ad_sc.conselho_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acc
+                        ON pt_acc.id = pt_cc.arquivocomponente2_ptr_id
+                       AND pt_acc.situacao IN (2, 3)
+                       
+                      JOIN planotrabalho_componente pt_cf
+                        ON pt_cf.arquivocomponente2_ptr_id = ad_sc.fundo_cultura_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acf
+                        ON pt_acf.id = pt_cf.arquivocomponente2_ptr_id
+                       AND pt_acf.situacao IN (2, 3)
+                       
+                      JOIN planotrabalho_componente pt_co
+                        ON pt_co.arquivocomponente2_ptr_id = ad_sc.orgao_gestor_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_aco
+                        ON pt_aco.id = pt_co.arquivocomponente2_ptr_id
+                       AND pt_aco.situacao IN (2, 3)
+                     WHERE ad_sc.ente_federado_id = %s'''
+
+        cursor = connection.cursor()
+        cursor.execute(query, [self.id])
+
+        return cursor.fetchone()[0]
