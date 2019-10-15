@@ -356,7 +356,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context['not_has_cadastrador'] = sistema.cadastrador is None
         context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
         context['not_has_documentacao'] = sistema.estado_processo == '1' or not (
-                has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
 
