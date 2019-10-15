@@ -290,6 +290,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             context['informacao_cnpj'] = Client().consulta_cnpj(sistema.sede.cnpj)
 
         sistema = self.get_queryset().get(id=self.object.id)
+
         context['componentes_restantes'] = []
         componentes = {
             0: "legislacao",
@@ -323,8 +324,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         has_plano_concluido = self.get_valida_arquivo_concluido(sistema.plano)
         has_conselho_concluido = self.get_valida_arquivo_concluido(sistema.conselho)
         has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(sistema.fundo_cultura)
-        has_conselho_lei_concluido = bool(sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
         has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(sistema.orgao_gestor)
+        has_conselho_lei_concluido = bool(sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
         has_comprovante_cnpj_concluido = bool(sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
             sistema.fundo_cultura.comprovante_cnpj)
 
@@ -338,7 +339,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             sistema.fundo_cultura.comprovante_cnpj)
 
         # Situações do Ente Federado
-        context['has_analise_nao_correcao'] = False
+        context[
+            'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
         context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
             sistema) and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
 
