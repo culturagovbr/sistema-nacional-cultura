@@ -1,62 +1,70 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
-<h2>{% blocktrans %}Bem Vindo ao Sistema Nacional Cultura{% endblocktrans %}
-  <a class="anchorjs-link" href="#auto-truncating">
-    <span class="anchorjs-icon"></span>
-  </a>
-</h2>
-{% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
-  <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
-    {% csrf_token %}
-    <p style="text-align: justify;">
-      {% blocktrans %}
-        Por favor, selecione abaixo o ente federado o qual deseja gerenciar:
-      {% endblocktrans %}
-    </p>
-    <select class="form-control" name="sistema">
-      <option value="">Selecione um ente federado</option>
-      {% for sistema in request.session.sistemas %}
-        <option value={{ sistema.id }}>{{ sistema.ente_federado__nome }}</option>
-      {% endfor %}
-    </select>
-    </br>
-    <input type="submit" class="btn btn-success" value="Confirmar" />
-  </form>
-{% else %}
-  {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
-    <div class="alert alert-info" role="alert">
-      <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
-      <a href="{% url 'adesao:gera_pdf' template='alterar_responsavel' nome_arquivo='alterar_responsavel.pdf' %}" target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
-      - Preencha com os dados do novo responsável e do prefeito.<br>
-      - Encaminhe para assinatura do prefeito. <br>
-      - Digitalize e envie para nosso email: snc@cultura.gov.br
-    </div>
-    <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e promoção das políticas públicas de cultura
-      democráticas e permanentes, pactuadas entre os entes da Federação (União, Estados, DF e Municípios) e a
-      sociedade. O SNC é organizado em regime de colaboração, de forma descentralizada e participativa, tendo por objetivo
-      promover o desenvolvimento humano, social e econômico com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
-
-    {% if request.session.sistema_cultura_selecionado %}
-      {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-
-        <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“Criar Novo Ente Federado”</b> para iniciar o cadastro de um novo
-        estado/município ou clique na aba “Alterar Novo ente Federado” para alterar informações e dados do
-        estado/município já cadastrado.
-          Clique na aba <b>“Gestor de Cultura”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no seu
-        estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da fundação de
-          cultura){% endblocktrans %}</p>
-      {% endif %}
+  <h2>{% blocktrans %}Bem Vindo ao Sistema Nacional Cultura{% endblocktrans %}
+    <a class="anchorjs-link" href="#auto-truncating">
+      <span class="anchorjs-icon"></span>
+    </a>
+  </h2>
+    {% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
+      <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
+          {% csrf_token %}
+        <p style="text-align: justify;">
+            {% blocktrans %}
+              Por favor, selecione abaixo o ente federado o qual deseja gerenciar:
+            {% endblocktrans %}
+        </p>
+        <select class="form-control" name="sistema">
+          <option value="">Selecione um ente federado</option>
+            {% for sistema in request.session.sistemas %}
+              <option value={{ sistema.id }}>{{ sistema.ente_federado__nome }}</option>
+            {% endfor %}
+        </select>
+        </br>
+        <input type="submit" class="btn btn-success" value="Confirmar"/>
+      </form>
     {% else %}
-      <p style="text-align: justify;">{% blocktrans %}Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro do seu
-        estado/município e gerar o Acordo de Cooperação Federativa e a Solicitação de Integração ao SNC.
-      {% endblocktrans %}</p>
-    {% endif %}
+        {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
+          <div class="alert alert-info" role="alert">
+            <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
+            <a href="{% url 'adesao:gera_pdf' template='alterar_responsavel' nome_arquivo='alterar_responsavel.pdf' %}"
+               target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
+            - Preencha com os dados do novo responsável e do prefeito.<br>
+            - Encaminhe para assinatura do prefeito. <br>
+            - Digitalize e envie para nosso email: snc@cidadania.gov.br
+          </div>
+          <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
+            promoção das políticas públicas de cultura
+            democráticas e permanentes, pactuadas entre os entes da Federação (União, Estados, DF e Municípios) e a
+            sociedade. O SNC é organizado em regime de colaboração, de forma descentralizada e participativa, tendo por
+            objetivo
+            promover o desenvolvimento humano, social e econômico com pleno exercício dos direitos
+            culturais.{% endblocktrans %}</p>
 
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
-    {% include "conclusao_cadastro.html" %}
-  {% elif request.session.sistema_cultura_selecionado.estado_processo == '2' %}
-    <p>
-      Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
-    </p>
+            {% if request.session.sistema_cultura_selecionado %}
+                {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
+
+                  <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“Criar Novo Ente Federado”</b> para
+                    iniciar o cadastro de um novo
+                    estado/município ou clique na aba “Alterar Novo ente Federado” para alterar informações e dados do
+                    estado/município já cadastrado.
+                    Clique na aba <b>“Gestor de Cultura”</b> para iniciar o cadastro do gestor responsável pela pasta da
+                    cultura no seu
+                    estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
+                    fundação de
+                    cultura){% endblocktrans %}</p>
+                {% endif %}
+            {% else %}
+              <p style="text-align: justify;">{% blocktrans %}Clique na aba “Criar Novo Ente Federado” para iniciar o
+                cadastro do seu
+                estado/município e gerar o Acordo de Cooperação Federativa e a Solicitação de Integração ao SNC.
+              {% endblocktrans %}</p>
+            {% endif %}
+
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
+            {% include "conclusao_cadastro.html" %}
+        {% elif request.session.sistema_cultura_selecionado.estado_processo == '2' %}
+          <p>
+            Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
+          </p>
 
           <p>
             Nossa equipe realizará os procedimentos necessários à sua adesão.
@@ -121,57 +129,60 @@
           </p>
 
 
-    <p style="text-align: justify;">
-      Você também pode inserir o nome e o e-mail dos conselheiros de
-      cultura do seu estado/município, clicando na opção “Conselheiros”.
-    </p>
+          <p style="text-align: justify;">
+            Você também pode inserir o nome e o e-mail dos conselheiros de
+            cultura do seu estado/município, clicando na opção “Conselheiros”.
+          </p>
 
-    <p style="text-align: justify;">
-      Agora você já pode iniciar o seu Plano de Trabalho, <a href="{% url 'planotrabalho:planotrabalho' request.session.sistema_cultura_selecionado.id %}">clicando aqui</a>
-      ou no menu a esquerda na opção "Plano de Trabalho"
-    </p>
+          <p style="text-align: justify;">
+            Agora você já pode iniciar o seu Plano de Trabalho, <a
+                  href="{% url 'planotrabalho:planotrabalho' request.session.sistema_cultura_selecionado.id %}">clicando
+            aqui</a>
+            ou no menu a esquerda na opção "Plano de Trabalho"
+          </p>
 
-    {% if request.session.sistema_cultura_selecionado.link_publicacao_acordo %}
-      <p style="text-align: justify;">
-        <a href="{{ request.session.sistema_cultura_selecionado.link_publicacao_acordo }}"> Clique aqui</a> para visualizar a publicação do Acordo de Cooperação no Diário Oficial da União
-      </p>
-    {% else %}
-      <p style="text-align: justify;">
-        <a href="http://portal.in.gov.br" target="_blank">Clique aqui para efetuar a pesquisa</a>
-      </p>
-    {% endif %}
+            {% if request.session.sistema_cultura_selecionado.link_publicacao_acordo %}
+              <p style="text-align: justify;">
+                <a href="{{ request.session.sistema_cultura_selecionado.link_publicacao_acordo }}"> Clique aqui</a> para
+                visualizar a publicação do Acordo de Cooperação no Diário Oficial da União
+              </p>
+            {% else %}
+              <p style="text-align: justify;">
+                <a href="http://portal.in.gov.br" target="_blank">Clique aqui para efetuar a pesquisa</a>
+              </p>
+            {% endif %}
 
-    <p>
-      <strong>EQUIPE SNC</strong>
-    </p>
-    <p>
-      Coordenação-Geral do SNC - CGSNC</br>
-      SDC / Secretaria Especial da Cultura / Ministério da Cidadania</br>
-      SCS Q. 09, Lote C, Bloco B, 10º andar</br>
-      Edifício Parque Cidade Corporate</br>
-      CEP: 70.308-200    Brasília-DF</br>
-      E-mail: snc@cultura.gov.br</br>
-    </p>
+          <p>
+            <strong>EQUIPE SNC</strong>
+          </p>
+          <p>
+            Coordenação-Geral do SNC - CGSNC</br>
+            SDC / Secretaria Especial da Cultura / Ministério da Cidadania</br>
+            SCS Q. 09, Lote C, Bloco B, 10º andar</br>
+            Edifício Parque Cidade Corporate</br>
+            CEP: 70.308-200 Brasília-DF</br>
+            E-mail: snc@cidadania.gov.br</br>
+          </p>
 
-  {% endif %}
+        {% endif %}
 
         {% if request.session.sistema_cultura_selecionado.alterado_em %}
           <p>Última atualização em: {{ request.session.sistema_cultura_selecionado.alterado_em }}</p>
         {% endif %}
 
-  {% if request.session.sistema_cultura_selecionado.alterado_por %}
-    <p>Atualizado pelo usuário de CPF: {{ request.session.sistema_cultura_selecionado.alterado_por }}</p>
-  {% endif %}
+        {% if request.session.sistema_cultura_selecionado.alterado_por %}
+          <p>Atualizado pelo usuário de CPF: {{ request.session.sistema_cultura_selecionado.alterado_por }}</p>
+        {% endif %}
 
-{% endif %}
+    {% endif %}
 
-{% if historico %}
-  {% include "historico_mudancas.html" %}
-{% endif %}
-{% if request.session.sistema_cultura_selecionado.ente_federado %}
-  {% include "dados_municipio.html" %}
-{% endif %}
-{% if request.session.sistema_gestor_cultura %}
-  {% include "dados_gestor_cultura.html" %}
-{% endif %}
+    {% if historico %}
+        {% include "historico_mudancas.html" %}
+    {% endif %}
+    {% if request.session.sistema_cultura_selecionado.ente_federado %}
+        {% include "dados_municipio.html" %}
+    {% endif %}
+    {% if request.session.sistema_gestor_cultura %}
+        {% include "dados_gestor_cidadania.html" %}
+    {% endif %}
 {% endblock content %}
