@@ -331,23 +331,23 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         has_legislacao_arquivo = self.get_valida_arquivo(sistema.legislacao)
         has_plano_arquivo = self.get_valida_arquivo(sistema.plano)
-        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
-        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
-        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
         has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
+        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
+        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
+        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
         has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
             sistema.fundo_cultura.comprovante_cnpj)
 
         # Situações do Ente Federado
         context[
             'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
-        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
-            sistema) and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
+        # and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
                                               has_plano_arquivo and not has_plano_concluido) or (
-                                              has_conselho_lei_arquivo and has_conselho_lei_concluido)
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido
@@ -358,7 +358,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context['not_has_cadastrador'] = sistema.cadastrador is None
         context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
         context['not_has_documentacao'] = sistema.estado_processo == '1' or not (
-            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
 
@@ -373,10 +373,10 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
     def get_valida_arquivo_concluido(self, field):
         return self.get_valida_arquivo(field) and field.situacao in (2, 3)
 
-    def get_valida_prazo_vencido(self, sistema):
+    def get_valida_prazo_vencido(self, sistema, ano=2):
         data_final_publicacao_acordo = None
         if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
-            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + 2,
+            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
                                                 sistema.data_publicacao_acordo.month,
                                                 sistema.data_publicacao_acordo.day)
 
