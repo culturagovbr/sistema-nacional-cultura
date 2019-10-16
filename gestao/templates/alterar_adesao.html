@@ -21,11 +21,16 @@
                   <option value="1" {% if ente.estado_processo == '1' %}selected{% endif %}>Aguardando envio da
                     documentação
                   </option>
-                    {#                                    <option value="2" {% if ente.estado_processo == '2' %}selected{% endif %}>Documentação Recebida - Aguarda Análise</option>#}
+                  <option value="2" {% if ente.estado_processo == '2' %}selected{% endif %}>Documentação Recebida -
+                    Aguarda Análise
+                  </option>
                   <option value="3" {% if ente.estado_processo == '3' %}selected{% endif %}>Diligência Documental
                   </option>
-                    {#                                    <option value="4" {% if ente.estado_processo == '4' %}selected{% endif %}>Encaminhado para assinatura do Secretário SAI</option>#}
-                    {#                                    <option value="5" {% if ente.estado_processo == '5' %}selected{% endif %}>Aguarda Publicação no DOU</option>#}
+                  <option value="4" {% if ente.estado_processo == '4' %}selected{% endif %}>Encaminhado para assinatura
+                    do Secretário SAI
+                  </option>
+                  <option value="5" {% if ente.estado_processo == '5' %}selected{% endif %}>Aguarda Publicação no DOU
+                  </option>
                   <option value="6" {% if ente.estado_processo == '6' %}selected{% endif %}>Publicado no DOU</option>
                 </select>
               </div>
