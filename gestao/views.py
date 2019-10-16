@@ -331,10 +331,10 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         has_legislacao_arquivo = self.get_valida_arquivo(sistema.legislacao)
         has_plano_arquivo = self.get_valida_arquivo(sistema.plano)
-        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
-        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
-        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
         has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
+        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
+        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
+        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
         has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
             sistema.fundo_cultura.comprovante_cnpj)
 
@@ -347,7 +347,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
                                               has_plano_arquivo and not has_plano_concluido) or (
-                                              has_conselho_lei_arquivo and has_conselho_lei_concluido)
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido
@@ -358,7 +358,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context['not_has_cadastrador'] = sistema.cadastrador is None
         context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
         context['not_has_documentacao'] = sistema.estado_processo == '1' or not (
-            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
 
