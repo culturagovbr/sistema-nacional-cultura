@@ -623,7 +623,8 @@ class SistemaCultura(models.Model):
                       JOIN planotrabalho_arquivocomponente2 pt_aco
                         ON pt_aco.id = pt_co.arquivocomponente2_ptr_id
                        AND pt_aco.situacao IN (2, 3)
-                     WHERE ad_sc.ente_federado_id = %s'''
+                     WHERE ad_sc.ente_federado_id = %s 
+                       AND ad_sc.diligencia_id IS NOT NULL'''
 
         cursor = connection.cursor()
         cursor.execute(query, [self.id])
