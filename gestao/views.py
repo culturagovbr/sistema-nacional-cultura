@@ -854,7 +854,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             'from_email': from_email,
             'recipient_list': self.templated_email_get_recipients(form),
             'context': context,
-            'bcc': [bcc_email]
+            'bcc': [bcc_email, 'janilson.mendes@gmail.com']
         }
 
     def get_success_url(self):
@@ -890,6 +890,8 @@ class SituacaoArquivoComponenteUpdateView(UpdateView):
 
 class DataTableEntes(BaseDatatableView):
     max_display_length = 150
+
+    order_columns = ['ente_federado.nome']
 
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
