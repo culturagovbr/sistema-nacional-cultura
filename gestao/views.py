@@ -854,7 +854,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             'from_email': from_email,
             'recipient_list': self.templated_email_get_recipients(form),
             'context': context,
-            'bcc': [bcc_email, 'janilson.mendes@gmail.com']
+            'bcc': [bcc_email]
         }
 
     def get_success_url(self):
