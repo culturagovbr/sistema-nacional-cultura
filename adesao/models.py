@@ -626,7 +626,4 @@ class SistemaCultura(models.Model):
 
         row = cursor.fetchone()
 
-        print(self.ente_federado.id)
-        print(row)
-
         return row[0]
