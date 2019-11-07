@@ -591,33 +591,28 @@ class SistemaCultura(models.Model):
             super().save(*args, **kwargs)
 
     def has_not_diligencias_enviadas_aprovadas(self):
-        query = '''SELECT COUNT(ad_sc.id) < 1
+        query = '''SELECT COUNT(ad_sc.id) <= 0
                       FROM adesao_sistemacultura ad_sc 
-                      
                       JOIN planotrabalho_componente pt_cl
                         ON pt_cl.arquivocomponente2_ptr_id = ad_sc.legislacao_id    
                       JOIN planotrabalho_arquivocomponente2 pt_acl
                         ON pt_acl.id = pt_cl.arquivocomponente2_ptr_id
                        AND pt_acl.situacao IN (2, 3)
-                        
                       JOIN planotrabalho_componente pt_cp
                         ON pt_cp.arquivocomponente2_ptr_id = ad_sc.plano_id    
                       JOIN planotrabalho_arquivocomponente2 pt_acp
                         ON pt_acp.id = pt_cp.arquivocomponente2_ptr_id
                        AND pt_acp.situacao IN (2, 3)
-                       
                       JOIN planotrabalho_componente pt_cc
                         ON pt_cc.arquivocomponente2_ptr_id = ad_sc.conselho_id    
                       JOIN planotrabalho_arquivocomponente2 pt_acc
                         ON pt_acc.id = pt_cc.arquivocomponente2_ptr_id
                        AND pt_acc.situacao IN (2, 3)
-                       
                       JOIN planotrabalho_componente pt_cf
                         ON pt_cf.arquivocomponente2_ptr_id = ad_sc.fundo_cultura_id    
                       JOIN planotrabalho_arquivocomponente2 pt_acf
                         ON pt_acf.id = pt_cf.arquivocomponente2_ptr_id
                        AND pt_acf.situacao IN (2, 3)
-                       
                       JOIN planotrabalho_componente pt_co
                         ON pt_co.arquivocomponente2_ptr_id = ad_sc.orgao_gestor_id    
                       JOIN planotrabalho_arquivocomponente2 pt_aco
@@ -627,6 +622,11 @@ class SistemaCultura(models.Model):
                        AND ad_sc.diligencia_id IS NOT NULL'''
 
         cursor = connection.cursor()
-        cursor.execute(query, [self.id])
+        cursor.execute(query, [self.ente_federado.id])
 
-        return cursor.fetchone()[0]
+        row = cursor.fetchone()
+
+        print(self.ente_federado.id)
+        print(row)
+
+        return row[0]

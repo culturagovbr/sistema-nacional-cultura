@@ -338,11 +338,23 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
             sistema.fundo_cultura.comprovante_cnpj)
 
+        has_gestor_termo_posse = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.termo_posse)
+        has_gestor_cpf_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.cpf_copia)
+        has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.rg_copia)
+
         # Situações do Ente Federado
+
+        print(sistema.has_not_diligencias_enviadas_aprovadas())
+        print(has_legislacao_concluido)
+        print(has_plano_concluido)
+        print(has_conselho_concluido)
+        print(has_fundo_cultura_concluido)
+        print(has_orgao_gestor_concluido)
+
         context[
             'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
-        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
-        # and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
+            sistema) and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
@@ -350,15 +362,12 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
                                               has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
-            'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido
-        context[
-            'has_cooperacao_federativa'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
+            'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
         context['has_componente_sistema_conselho'] = has_conselho_concluido and has_comprovante_cnpj_concluido
 
         context['not_has_cadastrador'] = sistema.cadastrador is None
         context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
-        context['not_has_documentacao'] = sistema.estado_processo == '1' or not (
-            has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo)
+        context['not_has_documentacao'] = not (has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
 
@@ -369,6 +378,9 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
     def get_valida_arquivo(self, field):
         return bool(field) and bool(field.arquivo)
+
+    def get_valida_documento_gestor(self, field):
+        return bool(field) and bool(field.url)
 
     def get_valida_arquivo_concluido(self, field):
         return self.get_valida_arquivo(field) and field.situacao in (2, 3)
@@ -891,7 +903,60 @@ class SituacaoArquivoComponenteUpdateView(UpdateView):
 class DataTableEntes(BaseDatatableView):
     max_display_length = 150
 
-    order_columns = ['ente_federado.nome']
+    def ordering(self, qs):
+        """ Get parameters from the request and prepare order by clause
+        """
+
+        # Number of columns that are used in sorting
+        sorting_cols = 0
+        if self.pre_camel_case_notation:
+            try:
+                sorting_cols = int(self._querydict.get('iSortingCols', 0))
+            except ValueError:
+                sorting_cols = 0
+        else:
+            sort_key = 'order[{0}][column]'.format(sorting_cols)
+            while sort_key in self._querydict:
+                sorting_cols += 1
+                sort_key = 'order[{0}][column]'.format(sorting_cols)
+
+        order = []
+        order_columns = self.get_order_columns()
+
+        for i in range(sorting_cols):
+            # sorting column
+            sort_dir = 'asc'
+            try:
+                if self.pre_camel_case_notation:
+                    sort_col = int(self._querydict.get('iSortCol_{0}'.format(i)))
+                    # sorting order
+                    sort_dir = self._querydict.get('sSortDir_{0}'.format(i))
+                else:
+                    sort_col = int(self._querydict.get('order[{0}][column]'.format(i)))
+                    # sorting order
+                    sort_dir = self._querydict.get('order[{0}][dir]'.format(i))
+            except ValueError:
+                sort_col = 0
+
+            sdir = '-' if sort_dir == 'desc' else ''
+            sortcol = order_columns[sort_col]
+
+            if isinstance(sortcol, list):
+                for sc in sortcol:
+                    order.append('{0}{1}'.format(sdir, sc.replace('.', '__')))
+            else:
+                order.append('{0}{1}'.format(sdir, sortcol.replace('.', '__')))
+
+        if order:
+            if "ente_federado" in order:
+                return qs.order_by("ente_federado__nome")
+
+            if "-ente_federado" in order:
+                return qs.order_by("-ente_federado__nome")
+
+            return qs.order_by(*order)
+
+        return qs
 
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
