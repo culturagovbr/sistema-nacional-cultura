@@ -459,8 +459,6 @@ class AlterarFuncionario(UpdateView):
         context = super(AlterarFuncionario, self).get_context_data(**kwargs)
         context["post"] = self.request.POST
 
-        print(context["post"])
-
         return context
 
     def form_valid(self, form):

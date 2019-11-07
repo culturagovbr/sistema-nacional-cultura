@@ -5,21 +5,35 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="http://{{ static }}/css/bootstrap.min.css" rel="stylesheet">
   <link href="http://{{ static }}/css/pdf.css" rel="stylesheet">
+  <style type="text/css">
+    @page {
+      @top-center {
+        content: string(title);
+      }
+    }
+
+    header {
+      top: 0;
+      left: 0;
+      width: 100%;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body style="font-family: Helvetica Neue, Arial, FreeSans, sans-serif; !important;">
-<div style="margin:0; padding:0;">
-  <center>
-    <p>
-      <img src="http://{{ static }}/static/images/brasao.png"/><br/>
-    <p><strong>Ministério da Cidadania</strong><br/>
-      Secretaria Especial da Cultura<br/>
-      Secretaria da Diversidade Cultural</p>
-    </p>
-  </center>
-</div>
-<div style="padding-top:20px;" class="content">
 
+<header>
+  <center>
+    <img src="http://{{ static }}/static/images/brasao.png"/><br/>
+    <strong>Ministério da Cidadania</strong><br/>
+    Secretaria Especial da Cultura<br/>
+    Secretaria da Diversidade Cultural
+  </center>
+</header>
+
+<div class="content">
+  <div class="row" style="clear: both; text-align: justify; font-size: 13px;">&nbsp;</div>
   <div class="col-xs-6" style="float: right; width: 48%; text-align: justify">
     <strong style="font-size: 15px;">
       ACORDO DE COOPERAÇÃO FEDERATIVA QUE ENTRE SI FIRMAM A UNIÃO,
@@ -33,17 +47,15 @@
     </strong>
   </div>
 
-  <div class="row" style="clear: both; text-align: justify; font-size: 14px;">
+  <div class="row" style="clear: both; text-align: justify; font-size: 13px;">
     <p>
-      <br/>A
-      <strong>UNIÃO</strong>, por intermédio do
-      <strong>MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA</strong>, inscrito no CNPJ/MF sob o N.°
-      5.526.783/0001-65, situado na Esplanada dos Ministérios, Bloco "A", Brasília - Distrito Federal, neste ato
-      representado pelo Secretário da Diversidade Cultural,
-      <strong>GUSTAVO CARVALHO AMARAL,</strong> residente em Brasília, carteira de identidade nº <strong> 2.356.343
-      SSP/DF</strong>,
-      CPF/MF nº <strong>023.999.361-67</strong>, nomeado pela <strong>Portaria nº1.273, de 20 de fevereiro de
-      2019</strong>, e conforme delegação de competência da Portaria Nº 47, de 17 de julho de 2009 e o
+      <br/>A <strong>UNIÃO</strong>, por intermédio do <strong>MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA
+      CULTURA</strong>, inscrito no CNPJ/MF sob o N.° 5.526.783/0001-65, situado na Esplanada dos Ministérios, Bloco
+      "A", Brasília - Distrito Federal, neste ato
+      representado pelo Secretário da Diversidade Cultural, <strong>GUSTAVO CARVALHO AMARAL,</strong> residente em
+      Brasília, carteira de identidade nº <strong> 2.356.343 SSP/DF</strong>, CPF/MF nº <strong>023.999.361-67</strong>,
+      nomeado pela <strong>Portaria nº1.273, de 20 de fevereiro de
+      2019</strong>, e conforme delegação de competência da Portaria Nº 794, de 9 de maio de 2019, e o
         {% if request.session.sistema_ente.cod_ibge > 100 %}
           <strong>MUNICÍPIO DE </strong>
         {% else %}
@@ -67,14 +79,14 @@
   </div>
   <div class="row" style="text-align: justify; padding-top: 10px;">
     <strong style="font-size: 15px;">CLÁUSULA PRIMEIRA - DO OBJETO</strong>
-    <p style="font-size: 14px">
+    <p style="font-size: 13px">
       O presente Acordo de Cooperação Federativa tem por objeto estabelecer as condições e orientar a instrumentalização
       necessária para o desenvolvimento do Sistema Nacional de Cultura - SNC com implementação coordenada e/ou conjunta
       de programas,
       projetos e ações, no âmbito da competência do Município.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA SEGUNDA - DO SISTEMA NACIONAL DE CULTURA</strong>
     <p>
       O Sistema Nacional de Cultura (SNC) se constitui num processo de articulação, gestão, informação, formação,
@@ -104,7 +116,7 @@
       democraticamente.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA TERCEIRA - DOS PRINCÍPIOS DO SNC</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       O Sistema Nacional de Cultura - SNC rege-se pelos seguintes princípios:
@@ -146,7 +158,7 @@
       l) <strong>ampliação progressiva dos recursos</strong> contidos nos orçamentos públicos para a cultura.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA QUARTA - DOS OBJETIVOS DO SNC</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       O SNC, atendendo as diretrizes previstas no Plano Nacional de Cultura, tem por objetivos:
@@ -176,7 +188,7 @@
     </p>
     <br/><br/><br/>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA QUINTA- DOS COMPROMISSOS PACTUADOS</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       Para o alcance dos objetivos propostos, os partícipes, no âmbito de suas competências, comprometem-se a promover
@@ -226,16 +238,16 @@
       Os resultados devem ser concretizados durante a vigência deste Acordo de Cooperação.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA SEXTA - DAS OBRIGAÇÕES DOS PARTÍCIPES</strong>
-    <p style="font-size: 14px">
+    <p style="font-size: 13px">
       São obrigações dos partícipes:
     </p>
     <p style="font-size: 15px; text-align: left !important;">
       <br/>
       <strong><u>I - AO MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA - incumbe:</u></strong>
     </p>
-    <div style="font-size: 14px">
+    <div style="font-size: 13px">
       <p>a) Coordenar e desenvolver o Sistema Nacional de Cultura - SNC;</p>
       <p>b) Criar condições de natureza legal, administrativa, participativa e orçamentária para desenvolvimento do
         Sistema Nacional de Cultura;</p>
@@ -265,7 +277,7 @@
     <p style="font-size: 15px; text-align: left !important;">
       <strong><u><br/>II - AO MUNICÍPIO incumbe:</u></strong>
     </p>
-    <div style="font-size: 14px">
+    <div style="font-size: 13px">
       <p>
         a) Criar, coordenar e desenvolver o Sistema Municipal de Cultura - SNC;
       </p>
@@ -344,14 +356,14 @@
       </p>
     </div>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA SÉTIMA - DA IMPLEMENTAÇÃO DE PROGRAMAS</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       A implementação coordenada e/ou conjunta de programas, projetos e ações, negociada entre as partes, será
       formalizada em instrumentos específicos, os quais serão parte integrante deste, independente de transcrição.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA OITAVA - DAS CONFERÊNCIAS</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       As Conferências de Cultura deverão ser convocadas pelo Poder Executivo, no âmbito das respectivas esferas de
@@ -364,7 +376,7 @@
       Municipais e Estaduais, que a antecederão.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA NONA - DOS CONSELHOS</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       Os Conselhos de Política Cultural constituem espaços de pactuação de políticas públicas de cultura, devendo
@@ -392,7 +404,7 @@
       representantes da sociedade civil, eleitos democraticamente.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA - DO SISTEMA NACIONAL DE INFORMAÇÕES E INDICADORES
       CULTURAIS</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
@@ -413,7 +425,7 @@
       Indicadores Culturais, conforme orientação do Ministério da Cidadania - Secretaria Especial da Cultura .
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA PRIMEIRA - DO ACOMPANHAMENTO</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">Cada partícipe designará pessoa ou órgão responsável para o
       acompanhamento deste Acordo de Cooperação, o qual terá incumbência de dar cumprimento às obrigações pactuadas,
@@ -446,7 +458,7 @@
       relativas ao Sistema Nacional de Cultura, quando for solicitado.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA SEGUNDA - DA DIVULGAÇÃO</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       Os partícipes deverão dar, de forma pública e impessoal, ampla divulgação das ações e dos resultados alcançados em
@@ -459,7 +471,7 @@
       conjunto, aplicando as regras vigentes durante os períodos eleitorais.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA TERCEIRA - DA VIGÊNCIA E MODIFICAÇÃO</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       O prazo de vigência do presente Acordo de Cooperação é por tempo indeterminado, iniciando-se a partir da data de
@@ -471,17 +483,17 @@
       entre as partes.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA QUARTA - DA RESCISÃO</strong>
     <p style="padding-top: 5px; padding-bottom: 5px">
       O presente instrumento poderá ser denunciado ou rescindido pelos partícipes a qualquer momento, ficando as partes
       responsáveis pelas obrigações assumidas durante o tempo de vigência.
     </p>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <strong style="font-size: 15px;">CLÁUSULA DÉCIMA QUINTA - DO FORO</strong>
   </div>
-  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 14px;">
+  <div class="row" style="text-align: justify; padding-top: 10px; font-size: 13px;">
     <p>
       O Foro para dirimir litígios na execução deste Acordo de Cooperação é o da Justiça Federal, Seção de Brasília,
       Distrito Federal.
@@ -498,14 +510,14 @@
   </div>
 
   <div class="row" style="padding-top: 20px">
-    <div class="col-xs-5 col-md-5" style="width: 50%; float: left; text-align:center; font-size: 14px;">
+    <div class="col-xs-5 col-md-5" style="width: 50%; float: left; text-align:center; font-size: 13px;">
       <br/>_____________________________________
       <br/><strong>GUSTAVO CARVALHO AMARAL</strong>
       <br/>Secretário da Diversidade Cultural
       <br/>Ministério da Cidadania - Secretaria
       <br/>Especial da Cultura
     </div>
-    <div class="col-xs-5 col-md-5" style="width: 50%; float: right; text-align:center; font-size: 14px;">
+    <div class="col-xs-5 col-md-5" style="width: 50%; float: right; text-align:center; font-size: 13px;">
       <br/>_____________________________________
       <br/>{{ request.session.sistema_gestor.nome|upper }}
         {% if request.session.sistema_ente.cod_ibge > 100 %}
