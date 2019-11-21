@@ -354,7 +354,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         context[
             'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
         context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
-            sistema) and has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo
+            sistema) and not (has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
