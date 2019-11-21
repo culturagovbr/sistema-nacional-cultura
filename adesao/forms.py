@@ -143,7 +143,7 @@ class CadastrarGestor(ModelForm):
 
     class Meta:
         model = Gestor
-        exclude = ('tipo_funcionario',)
+        exclude = ('tipo_funcionario', 'estado_endereco',)
 
 
 class CadastrarSede(ModelForm):
