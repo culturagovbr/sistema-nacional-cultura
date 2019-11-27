@@ -15,22 +15,22 @@ urlpatterns = [
         views.AcompanharSistemaCultura.as_view(),
         login_url='adesao:login'), name='acompanhar_adesao'),
     path('ente/<int:cod_ibge>/dados-adesao',
-        staff_member_required(views.AlterarDadosEnte.as_view()),
-        name='alterar_dados_adesao'),
+         staff_member_required(views.AlterarDadosEnte.as_view()),
+         name='alterar_dados_adesao'),
     path('alterar/<int:pk>',
-        staff_member_required(views.AlterarDadosSistemaCultura.as_view()),
-        name='alterar_sistema'),
-     path('alterar/funcionario/<int:pk>',
-        staff_member_required(views.AlterarFuncionario.as_view()),
-        name='alterar_funcionario'),
+         staff_member_required(views.AlterarDadosSistemaCultura.as_view()),
+         name='alterar_sistema'),
+    path('alterar/funcionario/<int:pk>',
+         staff_member_required(views.AlterarFuncionario.as_view()),
+         name='alterar_funcionario'),
     path('funcionario/<int:sistema>',
-        staff_member_required(views.CadastrarFuncionario.as_view()),
-        name='cadastrar_funcionario'),
+         staff_member_required(views.CadastrarFuncionario.as_view()),
+         name='cadastrar_funcionario'),
 
     # Rota para AlterarCadastrador
     path('ente/<int:cod_ibge>/alterarcadastrador',
-        staff_member_required(views.AlterarCadastradorEnte.as_view()),
-        name='alterar_cadastrador'),
+         staff_member_required(views.AlterarCadastradorEnte.as_view()),
+         name='alterar_cadastrador'),
 
     # Acompanhar e aditivar prazos dos municípios
     url(r'^acompanhar/prazo/',
@@ -40,19 +40,19 @@ urlpatterns = [
 
     # Acompanhar componentes
     path('plano-trabalho/',
-            staff_member_required(views.plano_trabalho),
-            name='plano_trabalho'),
+         staff_member_required(views.plano_trabalho),
+         name='plano_trabalho'),
     path('docs-componentes/',
-            staff_member_required(views.listar_componentes),
-            name='listar_componentes'),
+         staff_member_required(views.listar_componentes),
+         name='listar_componentes'),
     path('acompanhar/<str:componente>',
-            staff_member_required(views.AcompanharComponente.as_view()),
-            name='acompanhar_componente'),
+         staff_member_required(views.AcompanharComponente.as_view()),
+         name='acompanhar_componente'),
 
     # Detalhar usuário
     path('ente/<int:cod_ibge>',
-            staff_member_required(views.DetalharEnte.as_view()),
-            name='detalhar'),
+         staff_member_required(views.DetalharEnte.as_view()),
+         name='detalhar'),
     # re_path(r'^detalhar/municipio/(?P<pk>[0-9]+)$',
     #     staff_member_required(views.DetalharEnte.as_view()),
     #     name='detalhar'),
@@ -67,14 +67,14 @@ urlpatterns = [
 
     # UF e Município aninhados
     path("chain/ente",
-        views.EnteChain.as_view(),
-        name='ente_chain'),
+         views.EnteChain.as_view(),
+         name='ente_chain'),
 
     # Inserir de documentos de entes federados
     url(r'^inserir-documentos/ente-federado$',
         staff_member_required(views.ListarDocumentosEnteFederado.as_view()), name='inserir_entefederado'),
     path("inserir-documentos/ente-federado/alterar/<int:pk>",
-        staff_member_required(views.AlterarDocumentosEnteFederado.as_view()), name='alterar_entefederado'),
+         staff_member_required(views.AlterarDocumentosEnteFederado.as_view()), name='alterar_entefederado'),
 
     path("inserir-documentos/<str:componente>/<int:pk>", staff_member_required(
         views.InserirComponente.as_view(),
@@ -100,40 +100,39 @@ urlpatterns = [
     # ajax mudança de cadastrador
     url(r'^ajax_cadastrador_cpf$', staff_member_required(views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
 
-
     # Diligência de Componente
 
     # url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
     #     staff_member_required(views.DiligenciaComponenteView.as_view()), name="diligencia_componente"),
 
     path("<int:pk>/diligencia/add",
-        staff_member_required(views.DiligenciaGeralCreateView.as_view()),
-        name="diligencia_geral_adicionar"),
+         staff_member_required(views.DiligenciaGeralCreateView.as_view()),
+         name="diligencia_geral_adicionar"),
 
     path("<int:pk>/diligencia/<str:componente>/<str:arquivo>",
-        staff_member_required(views.DiligenciaComponenteView.as_view()),
-        name="diligencia_componente"),
+         staff_member_required(views.DiligenciaComponenteView.as_view()),
+         name="diligencia_componente"),
 
     path("<int:ente>/diligencia/<str:componente>/<str:arquivo>/<int:pk>",
          staff_member_required(
              views.AlterarDiligenciaComponenteView.as_view()),
-        name="alterar_diligencia_componente"),
+         name="alterar_diligencia_componente"),
 
     path("<int:pk>/diligencia/<str:componente>/<int:pk_componente>/situacao",
-        staff_member_required(views.SituacaoArquivoComponenteUpdateView.as_view()),
-        name="componente_situacao_atualiza"),
+         staff_member_required(views.SituacaoArquivoComponenteUpdateView.as_view()),
+         name="componente_situacao_atualiza"),
 
     path("<int:pk>/diligencia",
-        staff_member_required(views.DiligenciaGeralDetailView.as_view()),
-        name="diligencia_geral"),
+         staff_member_required(views.DiligenciaGeralDetailView.as_view()),
+         name="diligencia_geral"),
 
     path("<int:pk>/contato",
-        staff_member_required(views.CriarContato.as_view()),
-        name="criar_contato"),
+         staff_member_required(views.CriarContato.as_view()),
+         name="criar_contato"),
 
     path("ajax/consultar_cpf",
-            staff_member_required(views.ajax_consulta_cpf),
-            name="ajax-consulta-cpf"),
+         staff_member_required(views.ajax_consulta_cpf),
+         name="ajax-consulta-cpf"),
 
     # ajax leaflet
     url(r'^ajax-consulta-entes$', staff_member_required(views.ajax_consulta_entes), name='ajax_consulta_entes'),
@@ -150,4 +149,4 @@ urlpatterns = [
     url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
         name='ajax_docs_componentes'),
 
-    ]
+]

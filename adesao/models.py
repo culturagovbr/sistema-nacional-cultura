@@ -26,6 +26,7 @@ from adesao.middleware import get_current_user
 
 from itertools import tee
 
+from django.db import connection
 
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
@@ -43,33 +44,33 @@ LISTA_TIPOS_FUNCIONARIOS = (
     (2, 'Gestor'),)
 
 UFS = {
-    11: "RO",
     12: "AC",
-    13: "AM",
-    14: "RR",
-    15: "PA",
-    16: "AP",
-    17: "TO",
-    21: "MA",
-    22: "PI",
-    23: "CE",
-    24: "RN",
-    25: "PB",
-    26: "PE",
     27: "AL",
-    28: "SE",
+    13: "AM",
+    16: "AP",
     29: "BA",
-    31: "MG",
+    23: "CE",
+    53: "DF",
     32: "ES",
-    33: "RJ",
-    35: "SP",
-    41: "PR",
-    42: "SC",
-    43: "RS",
+    52: "GO",
+    21: "MA",
+    31: "MG",
     50: "MS",
     51: "MT",
-    52: "GO",
-    53: "DF"
+    15: "PA",
+    25: "PB",
+    26: "PE",
+    22: "PI",
+    41: "PR",
+    33: "RJ",
+    24: "RN",
+    11: "RO",
+    14: "RR",
+    43: "RS",
+    42: "SC",
+    28: "SE",
+    35: "SP",
+    17: "TO"
 }
 
 REGIOES = {
@@ -101,7 +102,8 @@ class EnteFederado(models.Model):
     mandatario = models.CharField(_("Nome do Mandataio"), max_length=300, null=True, blank=True)
     territorio = models.DecimalField(_("Área territorial - km²"), max_digits=15, decimal_places=3)
     populacao = models.IntegerField(_("População Estimada - pessoas"))
-    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), null=True, blank=True, max_digits=10, decimal_places=2)
+    densidade = models.DecimalField(_("Densidade demográfica - hab/km²"), null=True, blank=True, max_digits=10,
+                                    decimal_places=2)
     idh = models.DecimalField(_("IDH / IDHM"), max_digits=10, decimal_places=3, null=True, blank=True)
     receita = models.IntegerField(_("Receitas realizadas - R$ (×1000)"), null=True, blank=True)
     despesas = models.IntegerField(_("Despesas empenhadas - R$ (×1000)"), null=True, blank=True)
@@ -113,7 +115,7 @@ class EnteFederado(models.Model):
 
         uf = UFS.get(self.cod_ibge, UFS.get(int(str(self.cod_ibge)[:2])))
 
-        digits = int(math.log10(self.cod_ibge))+1
+        digits = int(math.log10(self.cod_ibge)) + 1
 
         if digits > 2 or self.cod_ibge == 53:
             return f"{self.nome}/{uf}"
@@ -140,13 +142,12 @@ class EnteFederado(models.Model):
         elif self.populacao <= 500000:
             faixa = "De 100.001 até 500.000"
         else:
-            faixa =  "Acima de 500.000"
+            faixa = "Acima de 500.000"
         return faixa
-
 
     @property
     def is_municipio(self):
-        digits = int(math.log10(self.cod_ibge))+1
+        digits = int(math.log10(self.cod_ibge)) + 1
 
         if digits > 2:
             return True
@@ -167,8 +168,8 @@ class EnteFederado(models.Model):
 class Cidade(models.Model):
     codigo_ibge = models.IntegerField(unique=True)
     uf = models.ForeignKey('Uf',
-        to_field='codigo_ibge',
-        on_delete=models.CASCADE)
+                           to_field='codigo_ibge',
+                           on_delete=models.CASCADE)
     nome_municipio = models.CharField(max_length=100)
     lat = models.FloatField()
     lng = models.FloatField()
@@ -390,6 +391,15 @@ class Funcionario(models.Model):
     tipo_funcionario = models.IntegerField(
         choices=LISTA_TIPOS_FUNCIONARIOS,
         default='0')
+    estado_endereco = models.ForeignKey('Uf',
+                                        related_name='funcionario_estado_endereco',
+                                        on_delete=models.CASCADE,
+                                        choices=UFS.items(),
+                                        null=True)
+    endereco = models.CharField(max_length=255, null=True)
+    complemento = models.CharField(max_length=255, null=True)
+    cep = models.CharField(max_length=10, null=True)
+    bairro = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.cpf
@@ -430,11 +440,13 @@ class SistemaCultura(models.Model):
     data_criacao = models.DateTimeField(default=timezone.now)
     legislacao = models.ForeignKey(Componente, on_delete=models.SET_NULL, null=True, related_name="legislacao")
     orgao_gestor = models.ForeignKey(OrgaoGestor2, on_delete=models.SET_NULL, null=True, related_name="orgao_gestor")
-    fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True, related_name="fundo_cultura")
+    fundo_cultura = models.ForeignKey(FundoDeCultura, on_delete=models.SET_NULL, null=True,
+                                      related_name="fundo_cultura")
     conselho = models.ForeignKey(ConselhoDeCultura, on_delete=models.SET_NULL, null=True, related_name="conselho")
     plano = models.ForeignKey(PlanoDeCultura, on_delete=models.SET_NULL, null=True, related_name="plano")
 
-    gestor_cultura = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True, related_name="sistema_cultura_gestor_cultura")
+    gestor_cultura = models.ForeignKey(Funcionario, on_delete=models.SET_NULL, null=True,
+                                       related_name="sistema_cultura_gestor_cultura")
     gestor = models.ForeignKey(Gestor, on_delete=models.SET_NULL, null=True)
     sede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True)
     estado_processo = models.CharField(
@@ -449,7 +461,8 @@ class SistemaCultura(models.Model):
     numero_processo = models.CharField(max_length=50, null=True, blank=True)
     localizacao = models.CharField(_("Localização do Processo"), max_length=10, blank=True, null=True)
     justificativa = models.TextField(_("Justificativa"), blank=True, null=True)
-    diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL, related_name="sistema_cultura", blank=True, null=True)
+    diligencia = models.ForeignKey("gestao.DiligenciaSimples", on_delete=models.SET_NULL,
+                                   related_name="sistema_cultura", blank=True, null=True)
     prazo = models.IntegerField(default=2)
     conferencia_nacional = models.BooleanField(blank=True, default=False)
     alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
@@ -513,7 +526,8 @@ class SistemaCultura(models.Model):
         componentes = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
         objetos = (getattr(self, componente, None) for componente in componentes)
 
-        situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if objeto is not None}
+        situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if
+                     objeto is not None}
 
         return situacoes
 
@@ -522,7 +536,7 @@ class SistemaCultura(models.Model):
         Compara os valores de determinada propriedade entre dois objetos.
         """
         return (getattr(obj_anterior, field.attname) == getattr(self, field.attname) for field in
-                          fields)
+                fields)
 
     def compara_fks(self, obj_anterior, fields):
         comparacao_fk = True
@@ -575,3 +589,41 @@ class SistemaCultura(models.Model):
                 self.atualiza_relacoes_reversas(anterior)
         else:
             super().save(*args, **kwargs)
+
+    def has_not_diligencias_enviadas_aprovadas(self):
+        query = '''SELECT COUNT(ad_sc.id) <= 0
+                      FROM adesao_sistemacultura ad_sc 
+                      JOIN planotrabalho_componente pt_cl
+                        ON pt_cl.arquivocomponente2_ptr_id = ad_sc.legislacao_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acl
+                        ON pt_acl.id = pt_cl.arquivocomponente2_ptr_id
+                       AND pt_acl.situacao IN (2, 3)
+                      JOIN planotrabalho_componente pt_cp
+                        ON pt_cp.arquivocomponente2_ptr_id = ad_sc.plano_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acp
+                        ON pt_acp.id = pt_cp.arquivocomponente2_ptr_id
+                       AND pt_acp.situacao IN (2, 3)
+                      JOIN planotrabalho_componente pt_cc
+                        ON pt_cc.arquivocomponente2_ptr_id = ad_sc.conselho_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acc
+                        ON pt_acc.id = pt_cc.arquivocomponente2_ptr_id
+                       AND pt_acc.situacao IN (2, 3)
+                      JOIN planotrabalho_componente pt_cf
+                        ON pt_cf.arquivocomponente2_ptr_id = ad_sc.fundo_cultura_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_acf
+                        ON pt_acf.id = pt_cf.arquivocomponente2_ptr_id
+                       AND pt_acf.situacao IN (2, 3)
+                      JOIN planotrabalho_componente pt_co
+                        ON pt_co.arquivocomponente2_ptr_id = ad_sc.orgao_gestor_id    
+                      JOIN planotrabalho_arquivocomponente2 pt_aco
+                        ON pt_aco.id = pt_co.arquivocomponente2_ptr_id
+                       AND pt_aco.situacao IN (2, 3)
+                     WHERE ad_sc.ente_federado_id = %s 
+                       AND ad_sc.diligencia_id IS NOT NULL'''
+
+        cursor = connection.cursor()
+        cursor.execute(query, [self.ente_federado.id])
+
+        row = cursor.fetchone()
+
+        return row[0]

@@ -36,3 +36,4 @@ snc.sln
 .tox
 
 .coverage
+/venv/

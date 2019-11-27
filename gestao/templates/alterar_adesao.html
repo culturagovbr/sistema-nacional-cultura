@@ -1,67 +1,94 @@
 <div class="modal fade" id="alterarAdesaoEnte" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Alterar adesão</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Alterar adesão</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form name="form" id="detalhe_municipio_form"
+            action="{% url 'gestao:alterar_dados_adesao' ente.ente_federado.cod_ibge %}" method="post">
+        <div class="modal-body">
+          <div class="card-body">
+              {% csrf_token %}
+            <div class="list-group-item col-md-12">
+              <div class="form-group">
+                <select id="select_situacoes" name="estado_processo" class="form-control">
+                  <option value="0" {% if ente.estado_processo == '0' %}selected{% endif %}>Aguardando preenchimento dos
+                    dados cadastrais
+                  </option>
+                  <option value="1" {% if ente.estado_processo == '1' %}selected{% endif %}>Aguardando envio da
+                    documentação
+                  </option>
+                  <option value="2" {% if ente.estado_processo == '2' %}selected{% endif %}>Documentação Recebida -
+                    Aguarda Análise
+                  </option>
+                  <option value="3" {% if ente.estado_processo == '3' %}selected{% endif %}>Diligência Documental
+                  </option>
+                  <option value="4" {% if ente.estado_processo == '4' %}selected{% endif %}>Encaminhado para assinatura
+                    do Secretário SAI
+                  </option>
+                  <option value="5" {% if ente.estado_processo == '5' %}selected{% endif %}>Aguarda Publicação no DOU
+                  </option>
+                  <option value="6" {% if ente.estado_processo == '6' %}selected{% endif %}>Publicado no DOU</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <textarea id="justificativa_situacao" name="justificativa" class="form-control d-none"
+                          style="resize:none" placeholder="Justificativa" rows="4"
+                          cols="20">{% if ente.estado_processo == '3' %} {{ ente.justificativa }} {% endif %}</textarea>
+              </div>
+              <div class="form-group">
+                <input type="text" id="data_acordo_situacao" name="data_publicacao_acordo"
+                       class="form-control date d-none"
+                       value="{% if ente.data_publicacao_acordo %} {{ ente.data_publicacao_acordo | date:'SHORT_DATE_FORMAT' }} {% endif %}"
+                       placeholder="Data de Publicação"/>
+              </div>
+
+              <div class="form-group">
+                <input type="text" id="localizacao_situacao" name="localizacao" class="form-control d-none"
+                       placeholder="Localização"
+                       value="{% if ente.estado_processo == '2' %} {{ ente.localizacao }} {% endif %}"/>
+              </div>
+
+
+              <div class="form-group">
+                <input type="text" id="link_acordo_situacao" name="link_publicacao_acordo" class="form-control d-none"
+                       placeholder="Link da Publicação"
+                       value="{% if ente.link_publicacao_acordo %} {{ ente.link_publicacao_acordo }} {% endif %}"/>
+              </div>
+
+              <div class="form-group">
+                <input type="text" id="processo_sei" name="processo_sei" class="form-control"
+                       placeholder="Número do Processo SEI"
+                       value="{% if ente.processo_sei %} {{ ente.processo_sei }} {% endif %}"/>
+              </div>
+
+              <div class="form-group">
+                <input type="text" id="data_retificacao_situacao" name="data_publicacao_retificacao"
+                       class="form-control date"
+                       value="{% if ente.data_publicacao_retificacao %} {{ ente.data_publicacao_retificacao | date:'SHORT_DATE_FORMAT' }} {% endif %}"
+                       placeholder="Data da Publicação de Retificação (opcional)"/>
+              </div>
+
+              <div class="form-group">
+                <input type="text" id="link_retificacao_situacao" name="link_publicacao_retificacao"
+                       class="form-control d-none"
+                       value="{% if ente.link_publicacao_retificacao %} {{ ente.link_publicacao_retificacao }} {% endif %}"
+                       placeholder="Link da Publicação de Retificação (opcional)"/>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <form name="form" id="detalhe_municipio_form" action="{% url 'gestao:alterar_dados_adesao' ente.ente_federado.cod_ibge %}" method="post">
-                <div class="modal-body">
-                        <div class="card-body">
-                        {% csrf_token %}
-                        <div class="list-group-item col-md-12">
-                            <div class="form-group">
-                                <select id="select_situacoes" name="estado_processo" class="form-control">
-                                    <option value="1" {% if ente.estado_processo == '0' %}selected{% endif %}>Aguardando preenchimento dos dados cadastrais</option>
-                                    <option value="1" {% if ente.estado_processo == '1' %}selected{% endif %}>Aguardando envio da documentação</option>
-                                    <option value="2" {% if ente.estado_processo == '2' %}selected{% endif %}>Documentação Recebida - Aguarda Análise</option>
-                                    <option value="3" {% if ente.estado_processo == '3' %}selected{% endif %}>Diligência Documental</option>
-                                    <option value="4" {% if ente.estado_processo == '4' %}selected{% endif %}>Encaminhado para assinatura do Secretário SAI</option>
-                                    <option value="5" {% if ente.estado_processo == '5' %}selected{% endif %}>Aguarda Publicação no DOU</option>
-                                    <option value="6" {% if ente.estado_processo == '6' %}selected{% endif %}>Publicado no DOU</option>
-                                    </select>
-                            </div>
-
-                            <div class="form-group">
-                                <textarea id="justificativa_situacao" name="justificativa" class="form-control d-none" style="resize:none" placeholder="Justificativa" rows="4" cols="20">{% if ente.estado_processo == '3' %} {{ ente.justificativa }} {% endif %}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="data_acordo_situacao" name="data_publicacao_acordo" class="form-control date d-none" value="{% if ente.data_publicacao_acordo %} {{ente.data_publicacao_acordo | date:'SHORT_DATE_FORMAT'}} {% endif %}"
-                                    placeholder="Data de Publicação"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="text" id="localizacao_situacao" name="localizacao" class="form-control d-none" placeholder="Localização"
-                                    value="{% if ente.estado_processo == '2' %} {{ente.localizacao}} {% endif %}"></input>
-                            </div>
-
-
-                            <div class="form-group">
-                                <input type="text" id="link_acordo_situacao" name="link_publicacao_acordo" class="form-control d-none" placeholder="Link da Publicação" value="{% if ente.link_publicacao_acordo %} {{ ente.link_publicacao_acordo }} {% endif %}"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="text" id="processo_sei" name="processo_sei" class="form-control" placeholder="Número do Processo SEI" value="{% if ente.processo_sei %} {{ente.processo_sei}} {% endif %}"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="text" id="data_retificacao_situacao" name="data_publicacao_retificacao" class="form-control date" value="{% if ente.data_publicacao_retificacao %} {{ente.data_publicacao_retificacao | date:'SHORT_DATE_FORMAT'}} {% endif %}" placeholder="Data da Publicação de Retificação (opcional)"></input>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="text" id="link_retificacao_situacao" name="link_publicacao_retificacao" class="form-control d-none" value="{% if ente.link_publicacao_retificacao %} {{ente.link_publicacao_retificacao}} {% endif %}" placeholder="Link da Publicação de Retificação (opcional)"></input>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-xs" title="Alterar Situação" >Salvar</button>
-                    <a href="{% url 'gestao:detalhar' ente.ente_federado.cod_ibge %}" class="btn btn-default btn-xs" value="Cancelar" >Cancelar</a>
-                </div>
-            </form>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-xs" title="Alterar Situação">Salvar</button>
+          <a href="{% url 'gestao:detalhar' ente.ente_federado.cod_ibge %}" class="btn btn-default btn-xs"
+             value="Cancelar">Cancelar</a>
         </div>
+      </form>
     </div>
+  </div>
 </div>

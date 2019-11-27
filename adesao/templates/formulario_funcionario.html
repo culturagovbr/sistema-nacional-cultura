@@ -1,108 +1,144 @@
 {% load widget_tweaks %}
 <div class="row">
   <div class="col-md-12">
-		<div class="card">
-		<div class="card-header card-header-primary">
-			<h4 class="card-title">Dados do
-        {% if view.kwargs.tipo == 'secretario' %}
-          Interlocutor
-        {% else %}
-          Responsável Indicado
-        {% endif %}
-      </h4>
-		</div>
-		<div class="card-body">
-      <form class="form-horizontal" method="post">{% csrf_token %}
-        <div class="row">
-          <div class="col-sm-6">
-          <div class="form-group">
-            <label>Nome Completo</label>
-            {% render_field form.nome class="form-control" %}
+    <div class="card">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title">Dados do
+            {% if view.kwargs.tipo == 'secretario' %}
+              Interlocutor
+            {% else %}
+              Responsável Indicado
+            {% endif %}
+        </h4>
+      </div>
+      <div class="card-body">
+        <form class="form-horizontal" method="post">{% csrf_token %}
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Nome Completo</label>
+                  {% render_field form.nome class="form-control" %}
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Cargo</label>
+                  {% render_field form.cargo class="form-control" %} {{ form.cargo.errors }}
+              </div>
+            </div>
           </div>
-          </div>
-          <div class="col-sm-6">
-          <div class="form-group">
-            <label>Cargo</label>
-            {% render_field form.cargo class="form-control" %} {{ form.cargo.errors }}
-          </div>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col-sm-4">
-          <div class="form-group {% if form.rg.errors %} has-error {% endif %}">
-            <label>RG</label>
-            {% render_field form.rg class="form-control" %}
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group {% if form.rg.errors %} has-error {% endif %}">
+                <label>RG</label>
+                  {% render_field form.rg class="form-control" %}
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group {% if form.cpf.errors %} has-error {% endif %}">
+                <label>CPF</label>
+                  {% render_field form.cpf class="form-control cpf" %}
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <label>Órgão Expeditor</label>
+                  {% render_field form.orgao_expeditor_rg class="form-control" %}
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <label>Estado</label>
+                  {% render_field form.estado_expeditor class="form-control" %}
+              </div>
+            </div>
           </div>
-          </div>
-          <div class="col-sm-4">
-          <div class="form-group {% if form.cpf.errors %} has-error {% endif %}">
-            <label>CPF</label>
-            {% render_field form.cpf class="form-control cpf" %}
-          </div>
-          </div>
-          <div class="col-sm-2">
-          <div class="form-group">
-            <label>Órgão Expeditor</label>
-            {% render_field form.orgao_expeditor_rg class="form-control" %}
-          </div>
-          </div>
-          <div class="col-sm-2">
-          <div class="form-group">
-            <label>Estado</label>
-            {% render_field form.estado_expeditor class="form-control" %}
-          </div>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col-sm-6">
-          <div class="form-group">
-            <label>Instituição</label>
-            {% render_field form.instituicao class="form-control" %}
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Instituição</label>
+                  {% render_field form.instituicao class="form-control" %}
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>E-mail Institucional</label>
+                  {% render_field form.email_institucional class="form-control" %}
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>E-mail Pessoal</label>
+                  {% render_field form.email_pessoal class="form-control" %}
+              </div>
+            </div>
           </div>
-          </div>
-          <div class="col-sm-3">
-          <div class="form-group">
-            <label>E-mail Institucional</label>
-            {% render_field form.email_institucional class="form-control" %}
-          </div>
-          </div>
-          <div class="col-sm-3">
-          <div class="form-group">
-            <label>E-mail Pessoal</label>
-            {% render_field form.email_pessoal class="form-control" %}
-          </div>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col-md-4">
-          <div class="form-group">
-            <label>Telefone Institucional</label>
-            {% render_field form.telefone_um class="form-control telefone" %}
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Telefone Institucional</label>
+                  {% render_field form.telefone_um class="form-control telefone" %}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Telefone Institucional (Opcional)</label>
+                  {% render_field form.telefone_dois class="form-control telefone" %}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Telefone Institucional (Opcional)</label>
+                  {% render_field form.telefone_tres class="form-control telefone" %}
+              </div>
+            </div>
           </div>
-          </div>
-          <div class="col-md-4">
-          <div class="form-group">
-            <label>Telefone Institucional (Opcional)</label>
-            {% render_field form.telefone_dois class="form-control telefone" %}
-          </div>
-          </div>
-          <div class="col-md-4">
-          <div class="form-group">
-            <label>Telefone Institucional (Opcional)</label>
-            {% render_field form.telefone_tres class="form-control telefone" %}
-          </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-10"></div>
-          <button type="submit" class="btn btn-primary pull-right">Salvar</button>
-          <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="form-group">
+                <label>Endereço Institucional</label>
+                  {% render_field form.endereco class="form-control" %}
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label>Complemento</label>
+                  {% render_field form.complemento class="form-control" %}
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div class="row">
+            <div class="col-md-5">
+              <div class="form-group">
+                <label>Bairro</label>
+                  {% render_field form.bairro class="form-control" %}
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>UF Institucional</label>
+                  {% render_field form.estado_endereco class="form-control" %}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>CEP</label>
+                  {% render_field form.cep class="form-control" %}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-10"></div>
+            <button type="submit" class="btn btn-primary pull-right">Salvar</button>
+            <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
+          </div>
+      </div>
       </form>
     </div>
   </div>

@@ -18,7 +18,7 @@
   </p>
 
   <p style="text-align: justify;">
-    Para efetivar a adesão, é necessário que o Acordo de Cooperação Federativa (disponível na plataforma do SNC após conclusão do cadastro do ente federado) seja enviado em arquivo PDF para o e-mail <strong>snc@cultura.gov.br</strong>, onde será inserido no Sistema Eletrônico de Informações (SEI) para assinatura eletrônica. Para tanto, o(a) <strong>Sr(a) {{ request.user.usuario.municipio.nome_prefeito }}</strong> deverá estar cadastrado no Sistema Eletrônico de Informações (SEI).
+    Para efetivar a adesão, é necessário que o Acordo de Cooperação Federativa (disponível na plataforma do SNC após conclusão do cadastro do ente federado) seja enviado em arquivo PDF para o e-mail <strong>snc@cidadania.gov.br</strong>, onde será inserido no Sistema Eletrônico de Informações (SEI) para assinatura eletrônica. Para tanto, o(a) <strong>Sr(a) {{ request.user.usuario.municipio.nome_prefeito }}</strong> deverá estar cadastrado no Sistema Eletrônico de Informações (SEI).
   </p>
 
   <p>
@@ -26,15 +26,13 @@
       <li>
         <strong>Se (a) prefeito(a)/governador(a) já possui acesso no SEI:</strong>
         <p style="text-align: justify;">
-          Envie um e-mail para o endereço <strong>snc@cultura.gov.br</strong> informando à Equipe SNC o nome completo e o e-mail do(a) prefeito(a)/governador(a) para que seja liberado o Acordo de Cooperação Federativa para assinatura eletrônica. Lembrando que tais informações não podem ser de terceiros, somente do(a) prefeito(a)/governador(a).
+          Envie um e-mail para o endereço <strong>snc@cidadania.gov.br</strong> informando à Equipe SNC o nome completo e o e-mail do(a) prefeito(a)/governador(a) para que seja liberado o Acordo de Cooperação Federativa para assinatura eletrônica. Lembrando que tais informações não podem ser de terceiros, somente do(a) prefeito(a)/governador(a).
         </p>
       </li>
       <li>
         <strong>Se o(a) prefeito(a)/governador(a) ainda não possui acesso no SEI:</strong>
         <p style="text-align: justify;">
-          Acesse o link <a href="https://sei.cultura.gov.br/acessoexterno">https://sei.cultura.gov.br/acessoexterno</a>, e solicite o cadastro.  
-          </br>
-          <a href="https://sei.cultura.gov.br/ajuda/TutorialCadastroUsuarioExterno.php"><strong>Clique Aqui</strong></a> e siga o passo-a-passo para o cadastro de usuário externo no SEI.
+          Acesse o link <a href="http://aplicacoes6.mds.gov.br/sei-usuarioexterno">http://aplicacoes6.mds.gov.br/sei-usuarioexterno</a>, e efetue o cadastro do Governador/Prefeito.
           </br>
           Após conclusão do procedimento, um e-mail será enviado pela Equipe SNC informando que o documento estará disponível para assinatura e posterior conclusão da adesão. 
         </p>

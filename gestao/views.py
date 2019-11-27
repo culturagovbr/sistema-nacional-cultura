@@ -89,6 +89,8 @@ from snc.client import Client
 
 from django.core.files.storage import FileSystemStorage
 
+from datetime import date
+
 
 def dashboard(request, **kwargs):
     return render(request, "dashboard.html")
@@ -104,7 +106,6 @@ def listar_componentes(request, **kwargs):
 
 
 def ajax_consulta_entes(request):
-
     if not request.is_ajax():
         return JsonResponse(
             data={"message": "Esta não é uma requisição AJAX"}, status=400)
@@ -114,12 +115,12 @@ def ajax_consulta_entes(request):
         Q(ente_federado__latitude__isnull=False) &
         Q(ente_federado__longitude__isnull=False)
     ).values(
-            'id',
-            'estado_processo',
-            'ente_federado__nome',
-            'ente_federado__cod_ibge',
-            'ente_federado__longitude',
-            'ente_federado__latitude',
+        'id',
+        'estado_processo',
+        'ente_federado__nome',
+        'ente_federado__cod_ibge',
+        'ente_federado__longitude',
+        'ente_federado__latitude',
     )
 
     sistemaList = [{
@@ -159,7 +160,6 @@ class EnteChain(autocomplete.Select2QuerySetView):
 
 
 def ajax_consulta_cpf(request):
-
     if not request.is_ajax():
         return JsonResponse(
             data={"message": "Esta não é uma requisição AJAX"},
@@ -238,7 +238,6 @@ class AcompanharComponente(TemplateView):
 
 
 class LookUpAnotherFieldMixin(SingleObjectMixin):
-
     lookup_field = None
 
     def get_object(self, queryset=None):
@@ -291,6 +290,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             context['informacao_cnpj'] = Client().consulta_cnpj(sistema.sede.cnpj)
 
         sistema = self.get_queryset().get(id=self.object.id)
+
         context['componentes_restantes'] = []
         componentes = {
             0: "legislacao",
@@ -319,10 +319,80 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['form'] = CadastradorEnte()
 
+        # Validação dos documentos concluidos
+        has_legislacao_concluido = self.get_valida_arquivo_concluido(sistema.legislacao)
+        has_plano_concluido = self.get_valida_arquivo_concluido(sistema.plano)
+        has_conselho_concluido = self.get_valida_arquivo_concluido(sistema.conselho)
+        has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(sistema.fundo_cultura)
+        has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(sistema.orgao_gestor)
+        has_conselho_lei_concluido = bool(sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
+        has_comprovante_cnpj_concluido = bool(sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        has_legislacao_arquivo = self.get_valida_arquivo(sistema.legislacao)
+        has_plano_arquivo = self.get_valida_arquivo(sistema.plano)
+        has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
+        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
+        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
+        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
+        has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        has_gestor_termo_posse = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.termo_posse)
+        has_gestor_cpf_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.cpf_copia)
+        has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.rg_copia)
+
+        # Situações do Ente Federado
+
+        print(sistema.has_not_diligencias_enviadas_aprovadas())
+        print(has_legislacao_concluido)
+        print(has_plano_concluido)
+        print(has_conselho_concluido)
+        print(has_fundo_cultura_concluido)
+        print(has_orgao_gestor_concluido)
+
+        context[
+            'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
+            sistema) and not (has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+
+        context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
+            has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+
+        context[
+            'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
+        context['has_componente_sistema_conselho'] = has_conselho_concluido and has_comprovante_cnpj_concluido
+
+        context['not_has_cadastrador'] = sistema.cadastrador is None
+        context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
+        context['not_has_documentacao'] = not (has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
+        context['has_formalizar_adesao'] = sistema.estado_processo == '3'
+        context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
+
         return context
 
     def get_descricao_componente(self, id):
         return LISTA_TIPOS_COMPONENTES[id][1]
+
+    def get_valida_arquivo(self, field):
+        return bool(field) and bool(field.arquivo)
+
+    def get_valida_documento_gestor(self, field):
+        return bool(field) and bool(field.url)
+
+    def get_valida_arquivo_concluido(self, field):
+        return self.get_valida_arquivo(field) and field.situacao in (2, 3)
+
+    def get_valida_prazo_vencido(self, sistema, ano=2):
+        data_final_publicacao_acordo = None
+        if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
+            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
+                                                sistema.data_publicacao_acordo.month,
+                                                sistema.data_publicacao_acordo.day)
+
+        return not sistema.conferencia_nacional and data_final_publicacao_acordo is not None and data_final_publicacao_acordo < date.today()
 
 
 class AlterarDadosSistemaCultura(AlterarSistemaCultura):
@@ -403,7 +473,6 @@ def alterar_usuario(request):
 
         form = AlterarUsuarioForm(kwargs)
         if form.is_valid():
-
             setattr(user, field_name, field_value)
             user.save()
             return JsonResponse(data={"data": {
@@ -439,7 +508,6 @@ class ListarDocumentosEnteFederado(ListView):
 
 
 class AlterarDocumentosEnteFederado(UpdateView):
-
     template_name = 'gestao/inserir_documentos/alterar_entefederado.html'
     form_class = AlterarDocumentosEnteFederadoForm
     model = Gestor
@@ -705,8 +773,9 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
-        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(componente=self.kwargs['componente'],
-                                                                                                              arquivo=self.kwargs['arquivo'])
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(
+            componente=self.kwargs['componente'],
+            arquivo=self.kwargs['arquivo'])
         return context
 
     def form_invalid(self, form):
@@ -733,7 +802,8 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     form_class = DiligenciaGeralForm
 
     templated_email_template_name = "diligencia"
-    templated_email_from_email = "naoresponda@cultura.gov.br"
+    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_bcc_email = "snc@cidadania.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
@@ -759,7 +829,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-            .ente_federado.cod_ibge)
+                .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -771,13 +841,33 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
         if self.get_sistema_cultura().cadastrador:
             recipient_list = [self.get_sistema_cultura().cadastrador.user.email,
-                          self.get_sistema_cultura().cadastrador.email_pessoal]
+                              self.get_sistema_cultura().cadastrador.email_pessoal]
 
         if self.get_sistema_cultura().gestor:
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
         return recipient_list
+
+    def templated_email_get_send_email_kwargs(self, valid, form):
+        if valid:
+            context = self.templated_email_get_context_data(form_data=form.data)
+        else:
+            context = self.templated_email_get_context_data(form_errors=form.errors)
+        try:
+            from_email = self.templated_email_from_email()
+        except TypeError:
+            from_email = self.templated_email_from_email
+
+        bcc_email = self.templated_email_bcc_email
+
+        return {
+            'template_name': self.templated_email_get_template_names(valid=valid),
+            'from_email': from_email,
+            'recipient_list': self.templated_email_get_recipients(form),
+            'context': context,
+            'bcc': [bcc_email]
+        }
 
     def get_success_url(self):
         return reverse_lazy("gestao:detalhar", kwargs={
@@ -813,6 +903,61 @@ class SituacaoArquivoComponenteUpdateView(UpdateView):
 class DataTableEntes(BaseDatatableView):
     max_display_length = 150
 
+    def ordering(self, qs):
+        """ Get parameters from the request and prepare order by clause
+        """
+
+        # Number of columns that are used in sorting
+        sorting_cols = 0
+        if self.pre_camel_case_notation:
+            try:
+                sorting_cols = int(self._querydict.get('iSortingCols', 0))
+            except ValueError:
+                sorting_cols = 0
+        else:
+            sort_key = 'order[{0}][column]'.format(sorting_cols)
+            while sort_key in self._querydict:
+                sorting_cols += 1
+                sort_key = 'order[{0}][column]'.format(sorting_cols)
+
+        order = []
+        order_columns = self.get_order_columns()
+
+        for i in range(sorting_cols):
+            # sorting column
+            sort_dir = 'asc'
+            try:
+                if self.pre_camel_case_notation:
+                    sort_col = int(self._querydict.get('iSortCol_{0}'.format(i)))
+                    # sorting order
+                    sort_dir = self._querydict.get('sSortDir_{0}'.format(i))
+                else:
+                    sort_col = int(self._querydict.get('order[{0}][column]'.format(i)))
+                    # sorting order
+                    sort_dir = self._querydict.get('order[{0}][dir]'.format(i))
+            except ValueError:
+                sort_col = 0
+
+            sdir = '-' if sort_dir == 'desc' else ''
+            sortcol = order_columns[sort_col]
+
+            if isinstance(sortcol, list):
+                for sc in sortcol:
+                    order.append('{0}{1}'.format(sdir, sc.replace('.', '__')))
+            else:
+                order.append('{0}{1}'.format(sdir, sortcol.replace('.', '__')))
+
+        if order:
+            if "ente_federado" in order:
+                return qs.order_by("ente_federado__nome")
+
+            if "-ente_federado" in order:
+                return qs.order_by("-ente_federado__nome")
+
+            return qs.order_by(*order)
+
+        return qs
+
     def get_initial_queryset(self):
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
 
@@ -839,7 +984,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
