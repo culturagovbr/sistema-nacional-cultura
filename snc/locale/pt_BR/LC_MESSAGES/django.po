@@ -77,12 +77,11 @@ msgstr "SAI - Secretaria de Articulação Institucional"
 #: templates/base.html:98
 msgid "Endereço do ministério"
 msgstr ""
-"- Edifício Parque Cidade Corporate – SCS, Quadra 09, Lote C, Torre B, 10º "
-"Andar"
+"- Esplanada dos Ministérios, bloco B, 3º andar. "
 
 #: templates/base.html:99
 msgid "Continuação do endereço do ministério"
-msgstr "CEP: 70308-200 Brasília-DF - (61) 2024-2325|2328|2036 "
+msgstr "CEP: 70.068-900 Brasília-DF - (61) 2024-2325|2328|2036 "
 
 #: templates/home.html:5
 msgid "Título da tela home"

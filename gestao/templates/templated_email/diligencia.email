@@ -1,5 +1,9 @@
-{% block subject %}SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - DILIGÊNCIA PLANO DE TRABALHO{% endblock %}
-{% block plain %}Prezado Cadastrador
+{% block subject %}
+SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - DILIGÊNCIA PLANO DE TRABALHO
+{% endblock %}
+
+{% block plain %}
+Prezado Cadastrador
 
 Uma diligência referente ao Plano de Trabalho do ente federado {{ ente_federado.nome }} acabou de ser realizada.
 O corpo da mensagem é: {{ texto_diligencia }}
@@ -14,4 +18,5 @@ Plano de Cultura: {{ situacoes.plano }}
 Atenciosamente
 
 Equipe SNC
-SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA{% endblock %}
+SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA
+{% endblock %}

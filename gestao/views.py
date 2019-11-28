@@ -343,18 +343,11 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.rg_copia)
 
         # Situações do Ente Federado
-
-        print(sistema.has_not_diligencias_enviadas_aprovadas())
-        print(has_legislacao_concluido)
-        print(has_plano_concluido)
-        print(has_conselho_concluido)
-        print(has_fundo_cultura_concluido)
-        print(has_orgao_gestor_concluido)
-
         context[
             'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
         context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
-            sistema) and not (has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
+            sistema) and not (
+                has_legislacao_arquivo and has_plano_arquivo and has_fundo_cultura_arquivo and has_conselho_lei_arquivo and has_orgao_gestor_arquivo and has_conselho_arquivo and has_comprovante_cnpj_arquivo)
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
@@ -817,12 +810,13 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         return kwargs
 
     def get_context_data(self, form=None, **kwargs):
+        sistema = self.get_sistema_cultura()
+
         context = super().get_context_data(**kwargs)
-        context['sistema_cultura'] = self.get_sistema_cultura()
-        context['situacoes'] = self.get_sistema_cultura().get_situacao_componentes()
+        context['sistema_cultura'] = sistema
+        context['situacoes'] = sistema.get_situacao_componentes()
         context['historico_diligencias'] = self.get_historico_diligencias()
-        context['historico_diligencias_componentes'] = \
-            self.get_sistema_cultura().get_componentes_diligencias()
+        context['historico_diligencias_componentes'] = sistema.get_componentes_diligencias()
 
         return context
 
@@ -847,6 +841,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
+        recipient_list.append('snc@cidadania.gov.br')
         return recipient_list
 
     def templated_email_get_send_email_kwargs(self, valid, form):
@@ -859,14 +854,18 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         except TypeError:
             from_email = self.templated_email_from_email
 
-        bcc_email = self.templated_email_bcc_email
+        sistema = self.get_sistema_cultura()
+
+        context['ente_federado'] = sistema.ente_federado
+        context['situacoes'] = sistema.get_situacao_componentes()
+        context['texto_diligencia'] = form.data['texto_diligencia']
 
         return {
             'template_name': self.templated_email_get_template_names(valid=valid),
             'from_email': from_email,
             'recipient_list': self.templated_email_get_recipients(form),
             'context': context,
-            'bcc': [bcc_email]
+            'bcc': [self.templated_email_bcc_email]
         }
 
     def get_success_url(self):
