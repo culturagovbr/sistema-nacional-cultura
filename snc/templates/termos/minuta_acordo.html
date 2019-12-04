@@ -38,12 +38,12 @@
     <strong style="font-size: 15px;">
       ACORDO DE COOPERAÇÃO FEDERATIVA QUE ENTRE SI FIRMAM A UNIÃO,
       POR INTERMÉDIO DO MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA CULTURA E O
-        {% if request.session.sistema_ente.cod_ibge > 100 %}
-          MUNICÍPIO DE
-        {% else %}
-          GOVERNO DO
-        {% endif %}
-        {{ ente_federado|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        MUNICÍPIO DE
+      {% else %}
+        GOVERNO DO
+      {% endif %}
+      {{ ente_federado|upper }}, VISANDO AO DESENVOLVIMENTO DO SISTEMA NACIONAL DE CULTURA.
     </strong>
   </div>
 
@@ -52,23 +52,23 @@
       <br/>A <strong>UNIÃO</strong>, por intermédio do <strong>MINISTÉRIO DA CIDADANIA - SECRETARIA ESPECIAL DA
       CULTURA</strong>, inscrito no CNPJ/MF sob o N.° 5.526.783/0001-65, situado na Esplanada dos Ministérios, Bloco
       "A", Brasília - Distrito Federal, neste ato
-      representado pelo Secretário da Diversidade Cultural, <strong>GUSTAVO CARVALHO AMARAL,</strong> residente em
-      Brasília, carteira de identidade nº <strong> 2.356.343 SSP/DF</strong>, CPF/MF nº <strong>023.999.361-67</strong>,
-      nomeado pela <strong>Portaria nº1.273, de 20 de fevereiro de
-      2019</strong>, e conforme delegação de competência da Portaria Nº 794, de 9 de maio de 2019, e o
-        {% if request.session.sistema_ente.cod_ibge > 100 %}
-          <strong>MUNICÍPIO DE </strong>
-        {% else %}
-          <strong>GOVERNO DO </strong>
-        {% endif %}
+      representada pela Secretária da Diversidade Cultural, <strong>JANICIA RIBEIRO SILVA,</strong> residente em
+      Brasília, carteira de identidade nº <strong> MG - 3089441</strong>, CPF/MF nº <strong>390.580.266-04</strong>,
+      nomeado pela <strong>Portaria nº1.273, de 27 de novembro de 2019</strong>, e conforme delegação de competência da
+      Portaria Nº 794, de 9 de maio de 2019, e o
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        <strong>MUNICÍPIO DE </strong>
+      {% else %}
+        <strong>GOVERNO DO </strong>
+      {% endif %}
       <strong>{{ ente_federado|upper }}</strong>,
       CNPJ/MF sob o nº <strong>{{ request.session.sistema_sede.cnpj }}</strong>, representado por
       <strong>{{ request.session.sistema_gestor.nome }}</strong>,
-        {% if request.session.sistema_ente.cod_ibge > 100 %}
-          Prefeito(a) Municipal,
-        {% else %}
-          Governador(a),
-        {% endif %}
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        Prefeito(a) Municipal,
+      {% else %}
+        Governador(a),
+      {% endif %}
       carteira de identidade nº <strong>{{ request.session.sistema_gestor.rg }}</strong>, CPF/MF nº
       <strong>{{ request.session.sistema_gestor.cpf }}</strong>, firmam o presente Acordo de Cooperação
       Federativa, que irá se reger pelas disposições do Art. 216-A da Constituição; da Lei no 8.666 de 21 de junho de
@@ -512,19 +512,19 @@
   <div class="row" style="padding-top: 20px">
     <div class="col-xs-5 col-md-5" style="width: 50%; float: left; text-align:center; font-size: 13px;">
       <br/>_____________________________________
-      <br/><strong>GUSTAVO CARVALHO AMARAL</strong>
-      <br/>Secretário da Diversidade Cultural
+      <br/><strong>JANICIA RIBEIRO SILVA</strong>
+      <br/>Secretária da Diversidade Cultural
       <br/>Ministério da Cidadania - Secretaria
       <br/>Especial da Cultura
     </div>
     <div class="col-xs-5 col-md-5" style="width: 50%; float: right; text-align:center; font-size: 13px;">
       <br/>_____________________________________
       <br/>{{ request.session.sistema_gestor.nome|upper }}
-        {% if request.session.sistema_ente.cod_ibge > 100 %}
-          <br/>Prefeito(a) do Município de {{ ente_federado }}
-        {% else %}
-          <br/>Governador(a) {{ ente_federado }}
-        {% endif %}
+      {% if request.session.sistema_ente.cod_ibge > 100 %}
+        <br/>Prefeito(a) do Município de {{ ente_federado }}
+      {% else %}
+        <br/>Governador(a) {{ ente_federado }}
+      {% endif %}
     </div>
   </div>
 
