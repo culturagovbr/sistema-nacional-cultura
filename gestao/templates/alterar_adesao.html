@@ -11,27 +11,16 @@
             action="{% url 'gestao:alterar_dados_adesao' ente.ente_federado.cod_ibge %}" method="post">
         <div class="modal-body">
           <div class="card-body">
-              {% csrf_token %}
+            {% csrf_token %}
             <div class="list-group-item col-md-12">
               <div class="form-group">
                 <select id="select_situacoes" name="estado_processo" class="form-control">
-                  <option value="0" {% if ente.estado_processo == '0' %}selected{% endif %}>Aguardando preenchimento dos
-                    dados cadastrais
-                  </option>
-                  <option value="1" {% if ente.estado_processo == '1' %}selected{% endif %}>Aguardando envio da
-                    documentação
-                  </option>
-                  <option value="2" {% if ente.estado_processo == '2' %}selected{% endif %}>Documentação Recebida -
-                    Aguarda Análise
-                  </option>
-                  <option value="3" {% if ente.estado_processo == '3' %}selected{% endif %}>Diligência Documental
-                  </option>
-                  <option value="4" {% if ente.estado_processo == '4' %}selected{% endif %}>Encaminhado para assinatura
-                    do Secretário SAI
-                  </option>
-                  <option value="5" {% if ente.estado_processo == '5' %}selected{% endif %}>Aguarda Publicação no DOU
-                  </option>
-                  <option value="6" {% if ente.estado_processo == '6' %}selected{% endif %}>Publicado no DOU</option>
+                  <option value="0"{% if ente.estado_processo == '0' %} selected{% endif %}>Aguardando preenchimento dos dados cadastrais</option>
+                  <option value="1"{% if ente.estado_processo == '1' %} selected{% endif %}>Aguardando envio da documentação</option>
+                  <option value="2"{% if ente.estado_processo == '2' %} selected{% endif %}>Aguardando renovação da adesão</option>
+                  <option value="3"{% if ente.estado_processo == '3' %} selected{% endif %}>Diligência Documental</option>
+                  <option value="4"{% if ente.estado_processo == '4' %} selected{% endif %}>Aguardando análise do Plano de Trabalho</option>
+                  <option value="6"{% if ente.estado_processo == '6' %} selected{% endif %}>Publicado no DOU</option>
                 </select>
               </div>
 
