@@ -31,12 +31,12 @@ from django.db import connection
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
     ('1', 'Aguardando envio da documentação'),
-    ('2', 'Documentação Recebida - Aguarda Análise'),
+    ('2', 'Aguardando renovação da adesão'),
     ('3', 'Diligência Documental'),
-    ('4', 'Encaminhado para assinatura do Secretário SAI'),
-    ('5', 'Aguarda Publicação no DOU'),
+    ('4', 'Aguardando análise do Plano de Trabalho'),
+    ('5', None),
     ('6', 'Publicado no DOU'),
-    ('7', 'Responsável confirmado'),)
+    ('7', None),)
 
 LISTA_TIPOS_FUNCIONARIOS = (
     (0, 'Gestor de Cultura'),
