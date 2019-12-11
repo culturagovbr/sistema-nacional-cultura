@@ -34,9 +34,9 @@ LISTA_ESTADOS_PROCESSO = (
     ('2', 'Aguardando renovação da adesão'),
     ('3', 'Diligência Documental'),
     ('4', 'Aguardando análise do Plano de Trabalho'),
-    ('5', None),
+    ('5', ''),
     ('6', 'Publicado no DOU'),
-    ('7', None),)
+    ('7', ''),)
 
 LISTA_TIPOS_FUNCIONARIOS = (
     (0, 'Gestor de Cultura'),
