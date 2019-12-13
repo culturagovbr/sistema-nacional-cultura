@@ -9,6 +9,8 @@ Uma diligência referente ao Plano de Trabalho do ente federado {{ ente_federado
 O corpo da mensagem é:
 {{ texto_diligencia|safe }}
 
+
+
 As situações dos arquivos enviados de cada componente são:
 
 Lei de Criação do Sistema de Cultura: {{ situacoes.legislacao }}
