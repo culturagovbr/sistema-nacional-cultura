@@ -6,7 +6,9 @@ SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - DILIGÊNCIA PL
 Prezado Cadastrador
 
 Uma diligência referente ao Plano de Trabalho do ente federado {{ ente_federado.nome }} acabou de ser realizada.
-O corpo da mensagem é: {{ texto_diligencia }}
+O corpo da mensagem é:
+{{ texto_diligencia|safe }}
+
 
 As situações dos arquivos enviados de cada componente são:
 
