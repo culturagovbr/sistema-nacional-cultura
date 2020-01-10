@@ -187,6 +187,7 @@ class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
             "data_adesao",
             "situacao_adesao",
             "cod_situacao_adesao",
+            "link_publicacao_acordo",
             "conferencia_nacional",
             "acoes_plano_trabalho",
             "ente_federado",
