@@ -1,16 +1,11 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Q, Count
 
 from rest_framework import filters
 from rest_framework import generics
-from rest_framework.response import Response
 
 from adesao.models import SistemaCultura
-from adesao.models import EnteFederado
-from planotrabalho.models import PlanoTrabalho
 
-# from .serializers import MunicipioSerializer as SistemaCulturaSerializer
 from .serializers import SistemaCulturaSerializer
 from .serializers import SistemaCulturaDetailSerializer
 from .serializers import PlanoTrabalhoSerializer
@@ -43,7 +38,8 @@ class SistemaCulturaAPIList(generics.ListAPIView):
 
         response = super().list(self, request)
         response.data['municipios'] = municipios.count()
-        response.data['municipios_aderidos'] = municipios.filter(estado_processo=6).count()
+        response.data['municipios_aderidos'] = municipios.filter(
+            estado_processo=6).count()
         response.data['estados'] = estados.count()
         response.data['estados_aderidos'] = estados.filter(estado_processo=6).count()
 
