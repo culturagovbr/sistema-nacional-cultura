@@ -113,7 +113,8 @@ REST_FRAMEWORK = {
         'drf_hal_json.renderers.JsonHalRenderer',
         'rest_framework_xml.renderers.XMLRenderer',
         'rest_framework_csv.renderers.CSVRenderer',
-#        'rest_framework.renderers.BrowsableAPIRenderer',
+        'apiv2.renderers.XLSRenderer',
+        'apiv2.renderers.ODSRenderer',
     ),
 
     'URL_FIELD_NAME': 'self',

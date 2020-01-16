@@ -1,16 +1,22 @@
 from adesao.models import SistemaCultura
+from django.db.models import Q
+from django.db import connection
 
 
-def preenche_planilha(planilha, ids):
+def preenche_planilha(planilha, codigos):
     planilha.write(0, 0, "Ente federado")
     planilha.write(0, 1, "UF")
     planilha.write(0, 2, "Data da adesão")
 
     ultima_linha = 0
-    sistema = SistemaCultura.sistema.filter(id__in=ids).filter(
-        ente_federado__isnull=False)
+    codigosWhere = []
+    for codigo in codigos:
+        codigosWhere.append(codigo)
 
-    for i, sistema in enumerate(sistema, start=1):
+    sistemaCultura = SistemaCultura.sistema.filter(
+        ente_federado__isnull=False).filter(pk__in=codigosWhere)
+
+    for i, sistema in enumerate(sistemaCultura, start=1):
         if sistema.ente_federado:
             nome = "Estado de " + sistema.ente_federado.nome
             if sistema.ente_federado.cod_ibge > 100 or \
