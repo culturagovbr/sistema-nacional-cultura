@@ -1107,9 +1107,10 @@ class DataTableUsuarios(BaseDatatableView):
             search_bool_field = {}
             search_lower = search.lower()
 
-            search_bool_field['is_staff'] = True if search_lower in 'administrador' else False \
+            search_bool_field['is_staff'] = True if search_lower in 'administrador'\
+                or search_lower in 'central de relacionamento' else False\
                 if search_lower in 'cadastrador' else ''
-            search_bool_field['is_active'] = True if search_lower in 'ativo' else False \
+            search_bool_field['is_active'] = True if search_lower in 'ativo' else False\
                 if search_lower in 'inativo' else ''
 
             filtros_queryset = [
@@ -1128,6 +1129,17 @@ class DataTableUsuarios(BaseDatatableView):
                 query |= filtro
 
             qs = qs.filter(query)
+
+            if search_bool_field['is_staff']\
+                    and search_lower in 'central de relacionamento':
+                ids = qs.values_list('id', flat=True)
+                qs = Usuario.objects.filter(id__in=ids).exclude(
+                    user__groups__name='usuario_scdc')
+
+            if search_bool_field['is_staff'] and search_lower in 'administrador':
+                ids = qs.values_list('id', flat=True)
+                qs = Usuario.objects.filter(id__in=ids).filter(
+                    user__groups__name='usuario_scdc')
 
         return qs
 
