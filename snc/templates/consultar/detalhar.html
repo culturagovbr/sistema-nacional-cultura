@@ -346,16 +346,18 @@
                             <i class="fa fa-times"></i> Relatório de Atividades do Órgão Gestor
                             {% endif %}
                         </div>
-                        <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
-                            {% if object.conselho.situacao == 2 or object.conselho.situacao == 3 %}
-                            <i class="fa fa-check"></i>
-                            <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff" target="_blank">
-                                Ata de Reunião de Criação do Conselho de Políticas Culturais
-                            </a>
-                            {% else %}
-                            <i class="fa fa-times"></i> Ata de reunião do Conselho de Política Cultural
-                            {% endif %}
-                        </div>
+                        {% if object.conselho.arquivo %}
+                            <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
+                                {% if object.conselho.situacao == 2 or object.conselho.situacao == 3 %}
+                                <i class="fa fa-check"></i>
+                                <a href="{{ object.conselho.arquivo.url }}" style="color:#ffffff" target="_blank">
+                                    Ata de Reunião de Criação do Conselho de Políticas Culturais
+                                </a>
+                                {% else %}
+                                <i class="fa fa-times"></i> Ata de reunião do Conselho de Política Cultural
+                                {% endif %}
+                            </div>
+                        {% endif %}
                         <div id="parent-fieldname-description" class="documentDescription" style="color:#ffffff">
                             {% if object.conselho.lei.situacao == 2 or object.conselho.lei.situacao == 3 %}
                             <i class="fa fa-check"></i>
