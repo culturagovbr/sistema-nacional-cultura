@@ -129,7 +129,7 @@ class DiligenciaForm(ModelForm):
 
 class DiligenciaComponenteForm(DiligenciaForm):
     classificacao_arquivo = forms.TypedChoiceField(
-        choices=LISTA_SITUACAO_ARQUIVO, required=False)
+        choices=LISTA_SITUACAO_ARQUIVO[1:7], required=False)
 
     def __init__(self, *args, **kwargs):
         self.tipo_componente = kwargs.pop("componente")
