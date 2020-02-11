@@ -15,7 +15,7 @@ def limpar_mascara(mascara):
 
 
 def enviar_email_conclusao(request):
-    recipient_list=[request.user.email, request.user.usuario.email_pessoal]
+    recipient_list = [request.user.email, request.user.usuario.email_pessoal]
 
     if request.session.get('sistema_gestor', False):
         recipient_list.append(request.session['sistema_gestor']['email_institucional'])
@@ -26,7 +26,7 @@ def enviar_email_conclusao(request):
         from_email='naoresponda@cidadania.gov.br',
         recipient_list=recipient_list,
         context={
-            'request':request,
+            'request': request,
         },
     )
 
@@ -58,24 +58,26 @@ def preenche_planilha(planilha):
     planilha.write(0, 8, "Situação")
     planilha.write(0, 9, "Situação da Lei do Sistema de Cultura")
     planilha.write(0, 10, "Situação do Órgão Gestor")
-    planilha.write(0, 11, "Situação do Conselho de Política Cultural")
-    planilha.write(0, 12, "Situação do Fundo de Cultura")
-    planilha.write(0, 13, "Situação do Plano de Cultura")
-    planilha.write(0, 14, "Participou da Conferência Nacional")
-    planilha.write(0, 15, "Endereço")
-    planilha.write(0, 16, "Bairro")
-    planilha.write(0, 17, "CEP")
-    planilha.write(0, 18, "Telefone")
-    planilha.write(0, 19, "Email Prefeito")
-    planilha.write(0, 20, "Email do Cadastrador")
-    planilha.write(0, 21, "Email do Gestor de Cultura")
-    planilha.write(0, 22, "Localização do processo")
-    planilha.write(0, 23, "Última atualização")
+    planilha.write(0, 11, "Situação da Ata do Conselho de Política Cultural")
+    planilha.write(0, 12, "Situação da Lei do Conselho de Política Cultural")
+    planilha.write(0, 13, "Situação do Comprovante do CNPJ do Fundo de Cultura")
+    planilha.write(0, 14, "Situação da Lei do Fundo de Cultura")
+    planilha.write(0, 15, "Situação do Plano de Cultura")
+    planilha.write(0, 16, "Participou da Conferência Nacional")
+    planilha.write(0, 17, "Endereço")
+    planilha.write(0, 18, "Bairro")
+    planilha.write(0, 19, "CEP")
+    planilha.write(0, 20, "Telefone")
+    planilha.write(0, 21, "Email Prefeito")
+    planilha.write(0, 22, "Email do Cadastrador")
+    planilha.write(0, 23, "Email do Gestor de Cultura")
+    planilha.write(0, 24, "Localização do processo")
+    planilha.write(0, 25, "Última atualização")
 
     ultima_linha = 0
 
-    for i, sistema in enumerate(SistemaCultura.objects.distinct('ente_federado__cod_ibge').order_by(
-        'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'), start=1):
+    for i, sistema in enumerate(SistemaCultura.sistema.distinct('ente_federado__cod_ibge').order_by(
+            'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'), start=1):
         if sistema.ente_federado:
             if sistema.ente_federado.cod_ibge > 100 or sistema.ente_federado.cod_ibge == 53:
                 nome = sistema.ente_federado.nome
@@ -141,18 +143,21 @@ def preenche_planilha(planilha):
         planilha.write(i, 9, verificar_anexo(sistema, "legislacao"))
         planilha.write(i, 10, verificar_anexo(sistema, "orgao_gestor"),)
         planilha.write(i, 11, verificar_anexo(sistema, "conselho"),)
-        planilha.write(i, 12, verificar_anexo(sistema, "fundo_cultura"))
-        planilha.write(i, 13, verificar_anexo(sistema, "plano"))
-        planilha.write(i, 14, "Sim" if sistema.conferencia_nacional else "Não")
-        planilha.write(i, 15, endereco)
-        planilha.write(i, 16, bairro)
-        planilha.write(i, 17, cep)
-        planilha.write(i, 18, telefone)
-        planilha.write(i, 19, email_gestor)
-        planilha.write(i, 20, email_cadastrador)
-        planilha.write(i, 21, email_gestor_cultura)
-        planilha.write(i, 22, local)
-        planilha.write(i, 23, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
+        planilha.write(i, 12, verificar_anexo(sistema.conselho, "lei"))
+        planilha.write(i, 13, verificar_anexo(
+            sistema.fundo_cultura, "comprovante_cnpj"))
+        planilha.write(i, 14, verificar_anexo(sistema, "fundo_cultura"))
+        planilha.write(i, 15, verificar_anexo(sistema, "plano"))
+        planilha.write(i, 16, "Sim" if sistema.conferencia_nacional else "Não")
+        planilha.write(i, 17, endereco)
+        planilha.write(i, 18, bairro)
+        planilha.write(i, 19, cep)
+        planilha.write(i, 20, telefone)
+        planilha.write(i, 21, email_gestor)
+        planilha.write(i, 22, email_cadastrador)
+        planilha.write(i, 23, email_gestor_cultura)
+        planilha.write(i, 24, local)
+        planilha.write(i, 25, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
 
         ultima_linha = i
 
@@ -161,16 +166,19 @@ def preenche_planilha(planilha):
 
 def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado'] = model_to_dict(sistema_cultura, exclude=['data_criacao', 'alterado_em',
-        'data_publicacao_acordo', 'data_publicacao_retificacao', 'oficio_prorrogacao_prazo', 'oficio_cadastrador'])
-    request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime("%d/%m/%Y às %H:%M:%S")
+                                                                                             'data_publicacao_acordo', 'data_publicacao_retificacao', 'oficio_prorrogacao_prazo', 'oficio_cadastrador'])
+    request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime(
+        "%d/%m/%Y às %H:%M:%S")
 
     if sistema_cultura.alterado_por:
         request.session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura.alterado_por.user.username
     request.session['sistema_situacao'] = sistema_cultura.get_estado_processo_display()
-    request.session['sistema_ente'] = model_to_dict(sistema_cultura.ente_federado, fields=['nome', 'cod_ibge'])
+    request.session['sistema_ente'] = model_to_dict(
+        sistema_cultura.ente_federado, fields=['nome', 'cod_ibge'])
 
     if sistema_cultura.gestor:
-        request.session['sistema_gestor'] = model_to_dict(sistema_cultura.gestor, exclude=['termo_posse', 'rg_copia', 'cpf_copia'])
+        request.session['sistema_gestor'] = model_to_dict(
+            sistema_cultura.gestor, exclude=['termo_posse', 'rg_copia', 'cpf_copia'])
     else:
         if request.session.get('sistema_gestor', False):
             request.session['sistema_gestor'].clear()
@@ -182,9 +190,31 @@ def atualiza_session(sistema_cultura, request):
             request.session['sistema_sede'].clear()
 
     if sistema_cultura.gestor_cultura:
-        request.session['sistema_gestor_cultura'] = model_to_dict(sistema_cultura.gestor_cultura)
+        request.session['sistema_gestor_cultura'] = model_to_dict(
+            sistema_cultura.gestor_cultura)
+        request.session['sistema_gestor_cultura']['estado_expeditor_sigla'] = sistema_cultura.gestor_cultura.estado_expeditor.sigla
+
     else:
         if request.session.get('sistema_gestor_cultura', False):
             request.session['sistema_gestor_cultura'].clear()
 
     request.session.modified = True
+
+
+def ir_para_estado_envio_documentacao(request):
+    ente_federado = request.session.get('sistema_ente', False)
+    gestor_cultura = request.session.get('sistema_gestor_cultura', False)
+    sistema = request.session.get('sistema_cultura_selecionado', False)
+
+    if ente_federado and \
+            gestor_cultura and \
+            sistema and int(sistema['estado_processo']) < 1:
+        sistema = SistemaCultura.sistema.get(id=sistema['id'])
+        sistema.estado_processo = "1"
+        sistema.save()
+
+        sistema_atualizado = SistemaCultura.sistema.get(
+            ente_federado__cod_ibge=ente_federado['cod_ibge'])
+        atualiza_session(sistema_atualizado, request)
+
+        enviar_email_conclusao(request)

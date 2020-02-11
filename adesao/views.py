@@ -39,6 +39,7 @@ from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 from adesao.utils import atualiza_session, preenche_planilha
+from adesao.utils import ir_para_estado_envio_documentacao
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
@@ -57,9 +58,6 @@ def fale_conosco(request):
 
 @login_required
 def home(request):
-    ente_federado = request.session.get('sistema_ente', False)
-    gestor_cultura = request.session.get('sistema_gestor_cultura', False)
-    sistema = request.session.get('sistema_cultura_selecionado', False)
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
     sistemas_cultura = SistemaCultura.sistema.filter(cadastrador=request.user.usuario)
@@ -67,7 +65,8 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(sistemas_cultura.values('id', 'ente_federado__nome'))
+    request.session['sistemas'] = list(
+        sistemas_cultura.values('id', 'ente_federado__nome'))
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")
@@ -75,15 +74,8 @@ def home(request):
     if sistemas_cultura.count() == 1:
         atualiza_session(sistemas_cultura[0], request)
 
-    if ente_federado and gestor_cultura and sistema and int(sistema['estado_processo']) < 1:
-        sistema = SistemaCultura.sistema.get(id=sistema['id'])
-        sistema.estado_processo = "1"
-        sistema.save()
+    ir_para_estado_envio_documentacao(request)
 
-        sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=ente_federado['cod_ibge'])
-        atualiza_session(sistema_atualizado, request)
-
-        enviar_email_conclusao(request)
     return render(request, "home.html", {"historico": historico})
 
 
@@ -112,11 +104,14 @@ def ativar_usuario(request, codigo):
     return render(request, "confirmar_email.html")
 
 
+@login_required
 def sucesso_usuario(request):
     return render(request, "usuario/mensagem_sucesso.html")
 
 
+@login_required
 def sucesso_funcionario(request, **kwargs):
+    ir_para_estado_envio_documentacao(request)
     return render(request, "mensagem_sucesso.html")
 
 
@@ -141,8 +136,10 @@ def exportar_csv(request):
             "Situação",
             "Situação da Lei do Sistema de Cultura",
             "Situação do Órgão Gestor",
-            "Situação do Conselho de Política Cultural",
-            "Situação do Fundo de Cultura",
+            "Situação da Ata do Conselho de Política Cultural",
+            "Situação da Lei do Conselho de Política Cultural",
+            "Situação do Comprovante do CNPJ do Fundo de Cultura",
+            "Situação da Lei do Fundo de Cultura",
             "Situação do Plano de Cultura",
             "Participou da Conferência Nacional",
             "Endereço",
@@ -155,7 +152,7 @@ def exportar_csv(request):
     )
 
     for sistema in SistemaCultura.objects.distinct('ente_federado__cod_ibge').order_by(
-        'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'):
+            'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'):
         if sistema.ente_federado:
             if sistema.ente_federado.cod_ibge > 100 or sistema.ente_federado.cod_ibge == 53:
                 nome = sistema.ente_federado.nome
@@ -210,6 +207,8 @@ def exportar_csv(request):
                 verificar_anexo(sistema, "legislacao"),
                 verificar_anexo(sistema, "orgao_gestor"),
                 verificar_anexo(sistema, "conselho"),
+                verificar_anexo(sistema.conselho, "lei"),
+                verificar_anexo(sistema.fundo_cultura, "comprovante_cnpj"),
                 verificar_anexo(sistema, "fundo_cultura"),
                 verificar_anexo(sistema, "plano"),
                 "Sim" if sistema.conferencia_nacional else "Não",
@@ -289,6 +288,7 @@ def selecionar_tipo_ente(request):
     return render(request, "prefeitura/selecionar_tipo_ente.html")
 
 
+@login_required
 def sucesso_municipio(request):
     return render(request, "prefeitura/mensagem_sucesso_prefeitura.html")
 
@@ -323,7 +323,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
 
             if not self.request.session.get('sistemas', False):
                 self.request.session['sistemas'] = list()
-                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
+                sistema_atualizado = SistemaCultura.sistema.get(
+                    ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
@@ -343,7 +344,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CadastrarSistemaCultura, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
+            context['form_sistema'] = CadastrarSistemaCulturaForm(
+                self.request.POST, self.request.FILES)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES)
             context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES,
                                                      logged_user=self.request.user)
@@ -365,7 +367,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         context = super().templated_email_get_context_data(**kwargs)
         context["object"] = self.object
         context["cadastrador"] = self.request.user.usuario
-        context["sistema_atualizado"] = SistemaCultura.sistema.get(ente_federado__id=self.object.ente_federado.id)
+        context["sistema_atualizado"] = SistemaCultura.sistema.get(
+            ente_federado__id=self.object.ente_federado.id)
 
         return context
 
@@ -405,13 +408,15 @@ class AlterarSistemaCultura(UpdateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES,
                                                                   instance=self.object)
-            context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES, instance=self.object.sede)
+            context['form_sede'] = CadastrarSede(
+                self.request.POST, self.request.FILES, instance=self.object.sede)
             context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor,
                                                      logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
             context['form_sede'] = CadastrarSede(instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor, logged_user=self.request.user)
+            context['form_gestor'] = CadastrarGestor(
+                instance=self.object.gestor, logged_user=self.request.user)
 
         return context
 
@@ -430,7 +435,8 @@ class CadastrarFuncionario(CreateView):
         setattr(sistema, 'gestor_cultura', form.save())
         sistema.save()
 
-        sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
+        sistema_atualizado = SistemaCultura.sistema.get(
+            ente_federado__id=sistema.ente_federado.id)
         atualiza_session(sistema_atualizado, self.request)
 
         return super(CadastrarFuncionario, self).form_valid(form)
@@ -465,11 +471,13 @@ class AlterarFuncionario(UpdateView):
         funcionario = form.instance
 
         if funcionario:
-            sistema = getattr(funcionario, 'sistema_cultura_gestor_cultura').all().first()
+            sistema = getattr(
+                funcionario, 'sistema_cultura_gestor_cultura').all().first()
             sistema.save()
             funcionario.save()
 
-        sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
+        sistema_atualizado = SistemaCultura.sistema.get(
+            ente_federado__id=sistema.ente_federado.id)
         atualiza_session(sistema_atualizado, self.request)
 
         return super(AlterarFuncionario, self).form_valid(form)
@@ -532,8 +540,8 @@ class RelatorioAderidos(ListView):
 
         municipios_by_uf = (
             Municipio.objects.values("estado_id")
-                .filter(usuario__estado_processo="6", cidade_id__isnull=False)
-                .annotate(municipios_aderiram=Count("estado_id"))
+            .filter(usuario__estado_processo="6", cidade_id__isnull=False)
+            .annotate(municipios_aderiram=Count("estado_id"))
         )
 
         for estado in municipios_by_uf:

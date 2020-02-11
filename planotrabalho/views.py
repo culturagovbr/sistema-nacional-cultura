@@ -260,7 +260,7 @@ class AlterarConselhoCultura(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AlterarConselhoCultura, self).get_form_kwargs()
-        sistema_id = self.object.conselho.last().id
+        sistema_id = self.object.conselho.first().id
         self.sistema = SistemaCultura.objects.get(id=sistema_id)
         kwargs['sistema'] = self.sistema
         kwargs['logged_user'] = self.request.user
