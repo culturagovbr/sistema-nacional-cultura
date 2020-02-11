@@ -1,4 +1,3 @@
-
 {% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
 <link rel="stylesheet" href="/static/css/leaflet.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/MarkerCluster.css" />
@@ -6,50 +5,52 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
 
 <style>
-.info {
+  .info {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
     background: white;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-}
-.info h4 {
+  }
+
+  .info h4 {
     margin: 0 0 5px;
     color: #777;
-}
+  }
 
-.legend {
+  .legend {
     line-height: 18px;
     color: #555;
-}
-.legend i {
+  }
+
+  .legend i {
     width: 18px;
     height: 18px;
     float: left;
     margin-right: 8px;
     opacity: 0.7;
-}
+  }
 
-.leaflet-button-icon{
-  font-size: 1.5em;
-}
+  .leaflet-button-icon {
+    font-size: 1.5em;
+  }
 </style>
 
-<menu data-target="inicio" ></menu>
+<menu data-target="inicio"></menu>
 
-  <div class="row">
-    <div class="col-lg-12 col-md-12">
-        <div class="card">
-            <div class="card-header card-header-danger">
-                <div >Mapa da Adesão</div>
-            </div>
-            <div class="card-body">
-                <div id="mapid1" style="width: 100%; height: 600px; border-radius: 4px;"></div>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="card-header card-header-danger">
+        <div>Mapa da Adesão</div>
+      </div>
+      <div class="card-body">
+        <div id="mapid1" style="width: 100%; height: 600px; border-radius: 4px;"></div>
+      </div>
     </div>
   </div>
+</div>
 
 {% endblock content %}
 
@@ -60,202 +61,207 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
 <script>
-$(document).ready(function(){
+  $(document).ready(function () {
 
-  var lat = -2.885310540095;
-  var lng = -40.1182414711655;
-  var markers = []
+    var lat = -2.885310540095;
+    var lng = -40.1182414711655;
+    var markers = []
 
-  var colorGrade = [
-    {
-      id: 0,
-      color: '#FFEDA0',
-      label: 'Aguardando preenchimento dos dados cadastrais'
+    var colorGrade = [
+      {
+        id: 0,
+        color: '#FFEDA0',
+        label: 'Aguardando preenchimento dos dados cadastrais'
 
-    },
-    {
-      id: 1,
-      color: '#FED976',
-      label: 'Aguardando envio da documentação'
-    },
-    {
-      id: 2,
-      color:'#FEB24C',
-      label:'Aguardando renovação da adesão',
-    },
-    {
-      id: 3,
-      color: '#FD8D3C',
-      label: 'Diligência Documental'
-    },
-    {
-      id: 4,
-      color: '#FC4E2A',
-      label: 'Aguardando análise do Plano de Trabalho'
-    },
-    {
-      id: 5,
-      color: '#D3D3D3',
-      label: ''
-    },
-    {
-      id: 6,
-      color: '#BD0026',
-      label: 'Publicado no DOU'
-    },
-  ]
-
-
-  var mymap = L.map('mapid1').setView([lat, lng], 4);
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-
-    maxZoom: 12,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
-    id: 'mapbox.light',
-  }).addTo(mymap);
+      },
+      {
+        id: 1,
+        color: '#FED976',
+        label: 'Aguardando envio da documentação'
+      },
+      {
+        id: 2,
+        color: '#FEB24C',
+        label: 'Aguardando renovação da adesão',
+      },
+      {
+        id: 3,
+        color: '#FD8D3C',
+        label: 'Diligência Documental'
+      },
+      {
+        id: 4,
+        color: '#FC4E2A',
+        label: 'Aguardando análise do Plano de Trabalho'
+      },
+      {
+        id: 5,
+        color: '#D3D3D3',
+        label: ''
+      },
+      {
+        id: 6,
+        color: '#BD0026',
+        label: 'Publicado no DOU'
+      },
+    ]
 
 
-  $.ajax({
-    type: 'GET',
-    url: '{% url 'gestao:ajax_consulta_entes' %}',
-    data: {},
-    dataType: 'json',
-    success: function (entes) {
-      var clusters = new L.markerClusterGroup();
-      entes.forEach(function(ente){
-        // console.log(ente)
+    var mymap = L.map('mapid1').setView([lat, lng], 4);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+      maxZoom: 12,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+      id: 'mapbox.light',
+    }).addTo(mymap);
+
+
+    $.ajax({
+      type: 'GET',
+      url: '{% url 'gestao:ajax_consulta_entes' %}',
+      data: {},
+      dataType: 'json',
+      success: function (entes) {
+        var clusters = new L.markerClusterGroup();
+        entes.forEach(function (ente) {
+          let lat = ente.latitude || -15.7801;
+          let long = ente.longitude || -47.9292;
           var marker = new L.marker(
-              new L.LatLng(ente.latitude, ente.longitude),
-              {
-                  title: 'Clique para ver mais.',
-                  riseOnHover: false,
-                  enteObject: ente
-              }
+            new L.LatLng(lat, long),
+            {
+              title: 'Clique para ver mais.',
+              riseOnHover: false,
+              enteObject: ente
+            }
           ).bindPopup(ente.nome)
-          .on('click', function(e){
-            mymap.setView(e.latlng, 13);
-          });
+            .on('click', function (e) {
+              mymap.setView(e.latlng, 13);
+            });
 
           markers.push(marker);
 
           clusters.addLayer(marker);
-      });
-      mymap.addLayer(clusters);
-    }
-  });
-
-  if(!localStorage.getItem('geoJson')){
-    $.ajax({
-      type: 'GET',
-      url: 'https://servicodados.ibge.gov.br/api/v2/malhas/?resolucao=5&formato=application/vnd.geo+json',
-      data: {},
-      dataType: 'json',
-      success: function (data) {
-        data.features.forEach(function(enteGeoJson, key){
-          for(let i = 0; i < markers.length; i++){
-            if(markers[i].options.enteObject.cod_ibge == enteGeoJson.properties.codarea){
-              data.features[key].properties['enteObject'] = markers[i].options.enteObject;
-              continue;
-            }
-          }
         });
-        localStorage.setItem('geoJson', LZString.compress(JSON.stringify(data)));
-
-        geojson = L.geoJson(data, {
-          style: style,
-          onEachFeature: onEachFeature
-        }).addTo(mymap);
+        mymap.addLayer(clusters);
       }
     });
-  }else{
-    var geoJsonString = LZString.decompress(localStorage.getItem('geoJson'));
-    geojson = L.geoJson(JSON.parse(geoJsonString), {
+
+    if (!localStorage.getItem('geoJson')) {
+      $.ajax({
+        type: 'GET',
+        url: 'https://servicodados.ibge.gov.br/api/v2/malhas/?resolucao=5&formato=application/vnd.geo+json',
+        data: {},
+        dataType: 'json',
+        success: function (data) {
+          let cod_ibge_df = 53;
+          let cod_ibge_brasilia = 5300108;
+          data.features.forEach(function (enteGeoJson, key) {
+            for (let i = 0; i < markers.length; i++) {
+              if (markers[i].options.enteObject.cod_ibge == enteGeoJson.properties.codarea) {
+                data.features[key].properties['enteObject'] = markers[i].options.enteObject;
+              }
+              if (enteGeoJson.properties.codarea == cod_ibge_brasilia &&
+                markers[i].options.enteObject.cod_ibge == cod_ibge_df) {
+                data.features[key].properties['enteObject'] = markers[i].options.enteObject
+              }
+              continue;
+            }
+          });
+          localStorage.setItem('geoJson', LZString.compress(JSON.stringify(data)));
+
+          geojson = L.geoJson(data, {
+            style: style,
+            onEachFeature: onEachFeature
+          }).addTo(mymap);
+        }
+      });
+    } else {
+      var geoJsonString = LZString.decompress(localStorage.getItem('geoJson'));
+      geojson = L.geoJson(JSON.parse(geoJsonString), {
         style: style,
         onEachFeature: onEachFeature
       }).addTo(mymap);
-  }
-
-  function getColor(situacao) {
-    return colorGrade[situacao].color;
-  }
-
-  function style(feature) {
-    let color = '#D3D3D3';
-    if (feature.properties.hasOwnProperty('enteObject')) {
-      color = getColor(feature.properties.enteObject.estado_processo);
     }
-    return {
+
+    function getColor(situacao) {
+      return colorGrade[situacao].color;
+    }
+
+    function style(feature) {
+      let color = '#D3D3D3';
+      if (feature.properties.hasOwnProperty('enteObject')) {
+        color = getColor(feature.properties.enteObject.estado_processo);
+      }
+      return {
         fillColor: color,
         weight: 2,
         opacity: 1,
         color: 'white',
         dashArray: '3',
         fillOpacity: 0.7
-    };
-  }
-
-  function highlightFeature(e) {
-    var layer = e.target;
-    info.update(layer.feature.properties);
-
-    if (layer.feature.properties.hasOwnProperty('enteObject')) {
-      color = getColor(layer.feature.properties.enteObject.estado_processo);
-      layer.setStyle({
-        weight: 5,
-        color: '#666',
-        dashArray: '',
-        fillOpacity: 0.7
-      });
+      };
     }
 
+    function highlightFeature(e) {
+      var layer = e.target;
+      info.update(layer.feature.properties);
 
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      if (layer.feature.properties.hasOwnProperty('enteObject')) {
+        color = getColor(layer.feature.properties.enteObject.estado_processo);
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+        });
+      }
+
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
         layer.bringToFront();
+      }
     }
-  }
 
-  function resetHighlight(e) {
-    geojson.resetStyle(e.target);
-    info.update();
-  }
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+      info.update();
+    }
 
-  function zoomToFeature(e) {
-    mymap.fitBounds(e.target.getBounds());
-  }
+    function zoomToFeature(e) {
+      mymap.fitBounds(e.target.getBounds());
+    }
 
-  function onEachFeature(feature, layer) {
-    layer.on({
+    function onEachFeature(feature, layer) {
+      layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
         click: zoomToFeature
-    });
-  }
+      });
+    }
 
-  var info = L.control();
+    var info = L.control();
 
-  info.onAdd = function (map) {
+    info.onAdd = function (map) {
       this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
       this.update();
       return this._div;
-  };
+    };
 
-  info.update = function (props) {
-    console.log(props)
-    this._div.innerHTML = '<h4>Dados do Ente Federado</h4>' +  (props && props.hasOwnProperty('enteObject') ?
-      '<b>Nome:</b> '+ props.enteObject.nome + ' - ' + props.enteObject.sigla + '</br>' +
-      '<b>Situação:</b> '+ colorGrade[props.enteObject.estado_processo].label
-      : 'Passe o mouse sob um ente aderido');
+    info.update = function (props) {
+      this._div.innerHTML = '<h4>Dados do Ente Federado</h4>' + (props && props.hasOwnProperty('enteObject') ?
+        '<b>Nome:</b> ' + props.enteObject.nome + ' - ' + props.enteObject.sigla + '</br>' +
+        '<b>Situação:</b> ' + colorGrade[props.enteObject.estado_processo].label
+        : 'Passe o mouse sob um ente aderido');
 
-  };
-  info.addTo(mymap);
+    };
+    info.addTo(mymap);
 
-  var legend = L.control({position: 'bottomright'});
+    var legend = L.control({ position: 'bottomright' });
 
-  legend.onAdd = function (mymap) {
+    legend.onAdd = function (mymap) {
 
       var div = L.DomUtil.create('div', 'info legend'),
-          grades = [1, 2, 3, 4, 5, 6, 7],
-          labels = [];
+        grades = [1, 2, 3, 4, 5, 6, 7],
+        labels = [];
 
       for (var i = 0; i < colorGrade.length; i++) {
         if (colorGrade[i].label) {
@@ -267,28 +273,28 @@ $(document).ready(function(){
 
 
       return div;
-  };
+    };
 
-  legend.addTo(mymap);
+    legend.addTo(mymap);
 
-  L.easyButton( '<span class="leaflet-button-icon">&#x21bb;</span>', function(){
-    localStorage.clear();
-    location.reload();
-  }).addTo(mymap);
-
-
+    L.easyButton('<span class="leaflet-button-icon">&#x21bb;</span>', function () {
+      localStorage.clear();
+      location.reload();
+    }).addTo(mymap);
 
 
 
 
-  var names = {
+
+
+    var names = {
       labels: ['S', 'T', 'W', 'T', 'F', 'S', 'S'],
       series: [
         [12, 17, 7, 17, 23, 18, 38]
       ]
     };
 
-  var options = {
+    var options = {
       lineSmooth: Chartist.Interpolation.cardinal({
         tension: 0
       }),
@@ -308,7 +314,7 @@ $(document).ready(function(){
 
 
     var dataWebsiteViewsChart = {
-      labels: [0,100, 1000, 5000, 10000, 50000],
+      labels: [0, 100, 1000, 5000, 10000, 50000],
       series: [
         [
           5000,
@@ -321,27 +327,27 @@ $(document).ready(function(){
     };
     var optionsWebsiteViewsChart = {
       lineSmooth: Chartist.Interpolation.cardinal({
-          tension: 0
-        }),
-        low: 0,
-        high: 50000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-        chartPadding: {
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0
-        },
+        tension: 0
+      }),
+      low: 0,
+      high: 50000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      },
       // plugins: [
       //   Chartist.plugins.tooltip()
       // ]
     };
-      var responsiveOptions = [
+    var responsiveOptions = [
 
-      ];
-     var aa = Chartist.Bar('#situacoes', dataWebsiteViewsChart, optionsWebsiteViewsChart, responsiveOptions);
-      md.startAnimationForBarChart(aa);
+    ];
+    var aa = Chartist.Bar('#situacoes', dataWebsiteViewsChart, optionsWebsiteViewsChart, responsiveOptions);
+    md.startAnimationForBarChart(aa);
 
- });
+  });
 </script>
 
 

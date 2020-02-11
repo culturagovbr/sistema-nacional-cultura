@@ -1,6 +1,4 @@
 import json
-import re
-import base64
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
@@ -9,7 +7,6 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 from django.http import QueryDict
 
-from django.shortcuts import redirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
@@ -132,6 +129,19 @@ def ajax_consulta_entes(request):
         'latitude': ente['ente_federado__latitude'],
         'longitude': ente['ente_federado__longitude'],
     } for ente in queryset]
+
+    cod_ibge_df = 53
+    sistema_cultura_df = SistemaCultura.sistema.get(
+        ente_federado__cod_ibge=cod_ibge_df)
+    sistemaList.append({
+        'id': sistema_cultura_df.id,
+        'estado_processo': sistema_cultura_df.estado_processo,
+        'nome': sistema_cultura_df.ente_federado.nome,
+        'sigla': get_uf_by_mun_cod(sistema_cultura_df.ente_federado.cod_ibge),
+        'cod_ibge': sistema_cultura_df.ente_federado.cod_ibge,
+        'latitude': sistema_cultura_df.ente_federado.latitude,
+        'longitude': sistema_cultura_df.ente_federado.longitude,
+    })
 
     entes = json.dumps(sistemaList, cls=DjangoJSONEncoder)
     return HttpResponse(entes, content_type='application/json')
