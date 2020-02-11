@@ -379,7 +379,9 @@ class Funcionario(models.Model):
         verbose_name='CPF')
     rg = models.CharField(max_length=50, verbose_name='RG')
     orgao_expeditor_rg = models.CharField(max_length=50)
-    estado_expeditor = models.IntegerField(choices=UFS.items())
+    estado_expeditor = models.ForeignKey('Uf',
+                                         on_delete=models.CASCADE,
+                                         choices=UFS.items())
     nome = models.CharField(max_length=100)
     cargo = models.CharField(max_length=100, null=True, blank=True)
     instituicao = models.CharField(max_length=100, null=True, blank=True)
@@ -592,33 +594,33 @@ class SistemaCultura(models.Model):
 
     def has_not_diligencias_enviadas_aprovadas(self):
         query = '''SELECT COUNT(ad_sc.id) <= 0
-                      FROM adesao_sistemacultura ad_sc 
+                      FROM adesao_sistemacultura ad_sc
                       JOIN planotrabalho_componente pt_cl
-                        ON pt_cl.arquivocomponente2_ptr_id = ad_sc.legislacao_id    
+                        ON pt_cl.arquivocomponente2_ptr_id = ad_sc.legislacao_id
                       JOIN planotrabalho_arquivocomponente2 pt_acl
                         ON pt_acl.id = pt_cl.arquivocomponente2_ptr_id
                        AND pt_acl.situacao IN (2, 3)
                       JOIN planotrabalho_componente pt_cp
-                        ON pt_cp.arquivocomponente2_ptr_id = ad_sc.plano_id    
+                        ON pt_cp.arquivocomponente2_ptr_id = ad_sc.plano_id
                       JOIN planotrabalho_arquivocomponente2 pt_acp
                         ON pt_acp.id = pt_cp.arquivocomponente2_ptr_id
                        AND pt_acp.situacao IN (2, 3)
                       JOIN planotrabalho_componente pt_cc
-                        ON pt_cc.arquivocomponente2_ptr_id = ad_sc.conselho_id    
+                        ON pt_cc.arquivocomponente2_ptr_id = ad_sc.conselho_id
                       JOIN planotrabalho_arquivocomponente2 pt_acc
                         ON pt_acc.id = pt_cc.arquivocomponente2_ptr_id
                        AND pt_acc.situacao IN (2, 3)
                       JOIN planotrabalho_componente pt_cf
-                        ON pt_cf.arquivocomponente2_ptr_id = ad_sc.fundo_cultura_id    
+                        ON pt_cf.arquivocomponente2_ptr_id = ad_sc.fundo_cultura_id
                       JOIN planotrabalho_arquivocomponente2 pt_acf
                         ON pt_acf.id = pt_cf.arquivocomponente2_ptr_id
                        AND pt_acf.situacao IN (2, 3)
                       JOIN planotrabalho_componente pt_co
-                        ON pt_co.arquivocomponente2_ptr_id = ad_sc.orgao_gestor_id    
+                        ON pt_co.arquivocomponente2_ptr_id = ad_sc.orgao_gestor_id
                       JOIN planotrabalho_arquivocomponente2 pt_aco
                         ON pt_aco.id = pt_co.arquivocomponente2_ptr_id
                        AND pt_aco.situacao IN (2, 3)
-                     WHERE ad_sc.ente_federado_id = %s 
+                     WHERE ad_sc.ente_federado_id = %s
                        AND ad_sc.diligencia_id IS NOT NULL'''
 
         cursor = connection.cursor()

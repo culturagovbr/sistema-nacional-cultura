@@ -192,8 +192,29 @@ def atualiza_session(sistema_cultura, request):
     if sistema_cultura.gestor_cultura:
         request.session['sistema_gestor_cultura'] = model_to_dict(
             sistema_cultura.gestor_cultura)
+        request.session['sistema_gestor_cultura']['estado_expeditor_sigla'] = sistema_cultura.gestor_cultura.estado_expeditor.sigla
+
     else:
         if request.session.get('sistema_gestor_cultura', False):
             request.session['sistema_gestor_cultura'].clear()
 
     request.session.modified = True
+
+
+def ir_para_estado_envio_documentacao(request):
+    ente_federado = request.session.get('sistema_ente', False)
+    gestor_cultura = request.session.get('sistema_gestor_cultura', False)
+    sistema = request.session.get('sistema_cultura_selecionado', False)
+
+    if ente_federado and \
+            gestor_cultura and \
+            sistema and int(sistema['estado_processo']) < 1:
+        sistema = SistemaCultura.sistema.get(id=sistema['id'])
+        sistema.estado_processo = "1"
+        sistema.save()
+
+        sistema_atualizado = SistemaCultura.sistema.get(
+            ente_federado__cod_ibge=ente_federado['cod_ibge'])
+        atualiza_session(sistema_atualizado, request)
+
+        enviar_email_conclusao(request)
