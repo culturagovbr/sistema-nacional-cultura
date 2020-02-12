@@ -180,6 +180,9 @@ class CadastrarFuncionarioForm(ModelForm):
     def clean_estado_endereco(self):
         return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_endereco']))
 
+    def clean_estado_expeditor(self):
+        return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_expeditor']))
+
     class Meta:
         model = Funcionario
         exclude = ('tipo_funcionario',)
