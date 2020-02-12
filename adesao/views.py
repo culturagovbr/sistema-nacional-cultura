@@ -474,9 +474,18 @@ class GeraPDF(WeasyTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
+        ente_federado = self.request.session.get('sistema_ente', False)
+        gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
+        sistema = self.request.session.get('sistema_cultura_selecionado', False)
+
+        if not ente_federado or \
+                not gestor_cultura or \
+                not sistema or \
+                int(sistema['estado_processo']) == 0:
+            raise Http404()
+
         context["request"] = self.request
         context["static"] = self.request.get_host()
-
         if self.kwargs['template'] != 'alterar_responsavel':
             context['ente_federado'] = get_object_or_404(EnteFederado,
                                                          pk=context['request'].session['sistema_cultura_selecionado'][
