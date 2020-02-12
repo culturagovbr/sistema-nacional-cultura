@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^home/', views.home, name='home'),
     url(r'^usuario/$', views.CadastrarUsuario.as_view(), name='usuario'),
     url(r'^faleconosco/$', views.fale_conosco, name='faleconosco'),
+    url(r'^erro-impressao/$', views.erro_impressao, name='erro_impressao'),
 
     # Cadastro e alteração de prefeitura
     url(r'^municipio/selecionar$', views.selecionar_tipo_ente,
@@ -33,7 +34,7 @@ urlpatterns = [
     url(r'^sucesso-cadastro-prefeitura/$',
         views.sucesso_municipio,
         name='sucesso_municipio'),
-    
+
     # Cadastro e alteração de responsável
     path('sucesso-cadastro-funcionario/',
         views.sucesso_funcionario,
