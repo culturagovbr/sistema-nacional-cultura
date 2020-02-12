@@ -56,6 +56,10 @@ def fale_conosco(request):
     return render(request, "fale_conosco.html")
 
 
+def erro_impressao(request):
+    return render(request, "erro_impressao.html")
+
+
 @login_required
 def home(request):
     historico = Historico.objects.filter(usuario=request.user.usuario)
