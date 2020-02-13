@@ -78,7 +78,6 @@ class FundoComponenteSerializer(hal_serializers.HalModelSerializer):
     situacao = serializers.CharField(source='get_situacao_display')
     cod_situacao = serializers.CharField(source='situacao')
 
-
     class Meta:
         model = FundoDeCultura
         fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj')
@@ -90,8 +89,23 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
     criacao_plano_cultura = ComponenteSCSerializer(source='plano')
     criacao_fundo_cultura = FundoComponenteSerializer(source='fundo_cultura')
     criacao_conselho_cultural = ComponenteSCSerializer(source='conselho')
-    # _embedded = serializers.SerializerMethodField(method_name='get_embedded')
+    criacao_conselho_cultural_lei = serializers.SerializerMethodField()
     self = HalHyperlinkedIdentityField(view_name='api:planotrabalho-detail')
+
+    def get_criacao_conselho_cultural_lei(self, obj):
+        if getattr(obj.conselho, 'lei', None):
+            return ComponenteSCSerializer(
+                instance=obj.conselho.lei,
+                context=self.context
+                ).data
+        return None
+
+    def to_representation(self, instance):
+        context = super(PlanoTrabalhoSCSerializer, self).to_representation(instance)
+        context['_embedded']['criacao_conselho_cultural_lei'] = context['criacao_conselho_cultural_lei']
+        del context['criacao_conselho_cultural_lei']
+
+        return context
 
     class Meta:
         model = SistemaCultura
@@ -99,6 +113,7 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
             'id',
             'self',
             'criacao_lei_sistema',
+            'criacao_conselho_cultural_lei',
             'criacao_orgao_gestor',
             'criacao_plano_cultura',
             'criacao_fundo_cultura',
@@ -142,7 +157,7 @@ class SedeSerializer(hal_serializers.HalModelSerializer):
             "cep": obj.cep,
             "bairro": obj.bairro,
             "complemento": obj.complemento
-            }
+        }
 
 
 class EnteFederadoSerializer(hal_serializers.HalModelSerializer):
@@ -216,7 +231,7 @@ class SistemaCulturaDetailSerializer(PlanoTrabalhoSCSerializer):
             "criacao_fundo_cultura",
             "criacao_plano_cultura",
             "sistema_cultura_local"
-            )
+        )
 
     def to_representation(self, instance):
         context = super(SistemaCulturaDetailSerializer, self).\
