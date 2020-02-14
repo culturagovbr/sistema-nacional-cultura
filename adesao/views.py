@@ -479,13 +479,17 @@ class GeraPDF(WeasyTemplateView):
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
         ente_federado = self.request.session.get('sistema_ente', False)
+        sistema_sede = self.request.session.get('sistema_sede', False)
+        sistema_gestor = self.request.session.get('sistema_gestor', False)
         gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
         sistema = self.request.session.get('sistema_cultura_selecionado', False)
 
         if not ente_federado or \
                 not gestor_cultura or \
                 not sistema or \
-                int(sistema['estado_processo']) == 0:
+                int(sistema['estado_processo']) == 0 or \
+                len(sistema_sede['cnpj']) != 18 or \
+                not sistema_gestor['cpf']:
             raise Http404()
 
         context["request"] = self.request
