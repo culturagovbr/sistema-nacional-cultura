@@ -127,8 +127,8 @@ class CriarPlanoForm(ModelForm):
     local_monitoramento = forms.CharField(required=False)
     participou_curso = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                             (False, 'Não')]))
-    ano_inicio_curso = forms.IntegerField(required=False)
-    ano_termino_curso = forms.IntegerField(required=False)
+    ano_inicio_curso = forms.IntegerField(required=False, max_value=2100, min_value=1900)
+    ano_termino_curso = forms.IntegerField(required=False, max_value=2100, min_value=1900)
     esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
         widget=forms.CheckboxSelectMultiple)
     tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
