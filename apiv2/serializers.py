@@ -142,10 +142,8 @@ class PlanoTrabalhoSerializer(PlanoTrabalhoSCSerializer):
             'id',
             'self',
             'criacao_lei_sistema',
-            'criacao_orgao_gestor',
-            'criacao_plano_cultura',
-            'criacao_fundo_cultura',
-            'criacao_conselho_cultural')
+            'criacao_conselho_cultural_ata',
+            'criacao_conselho_cultural_lei')
 
 
 class SedeSerializer(hal_serializers.HalModelSerializer):
@@ -241,9 +239,10 @@ class SistemaCulturaDetailSerializer(PlanoTrabalhoSCSerializer):
             "id",
             "criacao_lei_sistema",
             "criacao_orgao_gestor",
-            "criacao_conselho_cultural",
-            "criacao_fundo_cultura",
+            "criacao_conselho_cultural_ata",
+            "criacao_conselho_cultural_lei",
             "criacao_plano_cultura",
+            "criacao_fundo_cultura_cnpj",
             "sistema_cultura_local"
         )
 
