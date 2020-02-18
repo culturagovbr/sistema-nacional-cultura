@@ -489,28 +489,32 @@ class AlterarFuncionario(UpdateView):
 
 class GeraPDF(WeasyTemplateView):
 
+    # def __init__(self):
+
+    def dispatch(self, request, *args, **kwargs):
+        self.ente_federado = self.request.session.get('sistema_ente', False)
+        self.sistema_sede = self.request.session.get('sistema_sede', False)
+        self.sistema_gestor = self.request.session.get('sistema_gestor', False)
+        self.gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
+        self.sistema = self.request.session.get('sistema_cultura_selecionado', False)
+
+        if not self.ente_federado or \
+                not self.gestor_cultura or \
+                not self.sistema or \
+                int(self.sistema['estado_processo']) == 0 or \
+                len(self.sistema_sede['cnpj']) != 18 or \
+                not self.sistema_gestor['cpf']:
+            return redirect('adesao:erro_impressao')
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
-        ente_federado = self.request.session.get('sistema_ente', False)
-        sistema_sede = self.request.session.get('sistema_sede', False)
-        sistema_gestor = self.request.session.get('sistema_gestor', False)
-        gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
-        sistema = self.request.session.get('sistema_cultura_selecionado', False)
-
-        if not ente_federado or \
-                not gestor_cultura or \
-                not sistema or \
-                int(sistema['estado_processo']) == 0 or \
-                len(sistema_sede['cnpj']) != 18 or \
-                not sistema_gestor['cpf']:
-            raise Http404()
-
         context["request"] = self.request
         context["static"] = self.request.get_host()
         if self.kwargs['template'] != 'alterar_responsavel':
-            context['ente_federado'] = get_object_or_404(EnteFederado,
-                                                         pk=context['request'].session['sistema_cultura_selecionado'][
-                                                             'ente_federado'])
+            context['ente_federado'] = get_object_or_404(
+                EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
 
         return context
 
