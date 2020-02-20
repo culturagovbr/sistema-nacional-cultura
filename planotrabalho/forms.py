@@ -46,16 +46,16 @@ SETORIAIS = (
     ('19', 'Patrimônio Material'),
     ('20', 'Teatro'),
     ('21', 'Outros')
-    )
+)
 
 
 class CriarComponenteForm(ModelForm):
     componentes = {
-            "legislacao": 0,
-            "orgao_gestor": 1,
-            "fundo_cultura": 2,
-            "conselho": 3,
-            "plano": 4,
+        "legislacao": 0,
+        "orgao_gestor": 1,
+        "fundo_cultura": 2,
+        "conselho": 3,
+        "plano": 4,
     }
 
     arquivo = forms.FileField(required=True, widget=FileInput)
@@ -106,36 +106,39 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
 class CriarPlanoForm(ModelForm):
 
-    exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+    exclusivo_cultura = forms.NullBooleanField(
+        required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), (False, 'Não')]))
     arquivo = forms.FileField(widget=FileInput, label="Arquivo da Lei")
     data_publicacao = forms.DateField(required=True)
     possui_anexo = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                            (False, 'Não')]))
     anexo_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
-    anexo_lei = forms.FileField(required=False, widget=FileInput, label="Arquivo de Anexo")
+                                                                                            (False, 'Não')]))
+    anexo_lei = forms.FileField(
+        required=False, widget=FileInput, label="Arquivo de Anexo")
     periodicidade = forms.ChoiceField(choices=LISTA_PERIODICIDADE)
-    ultimo_ano_vigencia = forms.IntegerField()
+    ultimo_ano_vigencia = forms.IntegerField(max_value=2100, min_value=1900)
     possui_metas = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                            (False, 'Não')]))
     metas_na_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
-    arquivo_metas = forms.FileField(required=False, widget=FileInput, label="Arquivo com as metas")
-    monitorado = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                            (False, 'Não')]))
+    arquivo_metas = forms.FileField(
+        required=False, widget=FileInput, label="Arquivo com as metas")
+    monitorado = forms.NullBooleanField(
+        required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), (False, 'Não')]))
     local_monitoramento = forms.CharField(required=False)
     participou_curso = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
-    ano_inicio_curso = forms.IntegerField(required=False)
-    ano_termino_curso = forms.IntegerField(required=False)
-    esfera_federacao_curso = forms.MultipleChoiceField(required=False, choices=LISTA_ESFERAS_FEDERACAO,
-        widget=forms.CheckboxSelectMultiple)
-    tipo_oficina = forms.MultipleChoiceField(required=False, choices=LISTA_CURSOS,
-        widget=forms.CheckboxSelectMultiple)
+                                                                                                (False, 'Não')]))
+    ano_inicio_curso = forms.IntegerField(
+        required=False, max_value=2100, min_value=1900)
+    ano_termino_curso = forms.IntegerField(
+        required=False, max_value=2100, min_value=1900)
+    esfera_federacao_curso = forms.MultipleChoiceField(
+        required=False, choices=LISTA_ESFERAS_FEDERACAO, widget=forms.CheckboxSelectMultiple)
+    tipo_oficina = forms.MultipleChoiceField(
+        required=False, choices=LISTA_CURSOS, widget=forms.CheckboxSelectMultiple)
     perfil_participante = forms.MultipleChoiceField(required=False, choices=LISTA_PERFIL_PARTICIPANTE_CURSOS,
-        widget=forms.CheckboxSelectMultiple)
-
+                                                    widget=forms.CheckboxSelectMultiple)
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -152,7 +155,7 @@ class CriarPlanoForm(ModelForm):
             })
             self.fields['arquivo_metas'].widget = FileUploadWidget(attrs={
                 'label': 'Arquivo com as metas'
-           })
+            })
 
     def clean_exclusivo_cultura(self):
         if self.cleaned_data['exclusivo_cultura'] is None:
@@ -230,7 +233,8 @@ class CriarPlanoForm(ModelForm):
         elif not self.cleaned_data.get('participou_curso', None):
             self.cleaned_data['ano_termino_curso'] = None
         elif self.cleaned_data['ano_termino_curso'] <= self.cleaned_data['ano_inicio_curso']:
-            raise forms.ValidationError("O ano de término não pode ser menor ou igual ao ano de início")
+            raise forms.ValidationError(
+                "O ano de término não pode ser menor ou igual ao ano de início")
 
         return self.cleaned_data['ano_termino_curso']
 
@@ -317,7 +321,7 @@ class CriarPlanoForm(ModelForm):
     class Meta:
         model = PlanoDeCultura
         fields = ('exclusivo_cultura', 'ultimo_ano_vigencia', 'periodicidade',
-            'arquivo', 'data_publicacao')
+                  'arquivo', 'data_publicacao')
 
 
 class CriarFundoForm(ModelForm):
@@ -326,9 +330,9 @@ class CriarFundoForm(ModelForm):
     arquivo = forms.FileField(required=False, widget=FileInput)
     data_publicacao = forms.DateField(required=False)
     mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                         (False, 'Não')]))
     possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                           (False, 'Não')]))
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -367,7 +371,8 @@ class CriarFundoForm(ModelForm):
                 if not self.sistema.legislacao.arquivo or self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
             except (ValueError, AttributeError) as e:
-                raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
+                raise forms.ValidationError(
+                    "Você não possui a lei do sistema cadastrada")
         elif self.data.get('mesma_lei', None) is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
@@ -390,7 +395,6 @@ class CriarFundoForm(ModelForm):
             self.cleaned_data['comprovante'] = None
 
         return self.cleaned_data['comprovante']
-
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarFundoForm, self).save(commit=False)
@@ -434,17 +438,20 @@ class CriarFundoForm(ModelForm):
 
 
 class CriarConselhoForm(ModelForm):
-    arquivo_lei = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
-    data_publicacao_lei = forms.DateField(required=False, label="Data de publicação da Lei")
+    arquivo_lei = forms.FileField(
+        required=False, widget=FileInput, label="Arquivo da Lei")
+    data_publicacao_lei = forms.DateField(
+        required=False, label="Data de publicação da Lei")
     arquivo = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
     mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]), label="Lei é a mesma do sistema")
+                                                                                         (False, 'Não')]), label="Lei é a mesma do sistema")
     possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                          (False, 'Não')]))
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]))
+                                                                                                 (False, 'Não')]))
     paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                            (False, 'Não')]), label="Paritário")
+                                                                                         (False, 'Não')]), label="Paritário")
+
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         logged_user = kwargs.pop('logged_user')
@@ -495,7 +502,8 @@ class CriarConselhoForm(ModelForm):
                 if not self.sistema.legislacao.arquivo or self.sistema.legislacao.arquivo.url:
                     return self.cleaned_data['mesma_lei']
             except (ValueError, AttributeError) as e:
-                raise forms.ValidationError("Você não possui a lei do sistema cadastrada")
+                raise forms.ValidationError(
+                    "Você não possui a lei do sistema cadastrada")
         elif self.data.get('mesma_lei', None) is None:
             raise forms.ValidationError("Este campo é obrigatório")
 

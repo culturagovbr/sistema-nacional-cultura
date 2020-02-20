@@ -39,6 +39,7 @@ from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 from adesao.utils import atualiza_session, preenche_planilha
+from adesao.utils import ir_para_estado_envio_documentacao
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
@@ -55,11 +56,12 @@ def fale_conosco(request):
     return render(request, "fale_conosco.html")
 
 
+def erro_impressao(request):
+    return render(request, "erro_impressao.html")
+
+
 @login_required
 def home(request):
-    ente_federado = request.session.get('sistema_ente', False)
-    gestor_cultura = request.session.get('sistema_gestor_cultura', False)
-    sistema = request.session.get('sistema_cultura_selecionado', False)
     historico = Historico.objects.filter(usuario=request.user.usuario)
     historico = historico.order_by("-data_alteracao")
     sistemas_cultura = SistemaCultura.sistema.filter(cadastrador=request.user.usuario)
@@ -75,15 +77,8 @@ def home(request):
     if sistemas_cultura.count() == 1:
         atualiza_session(sistemas_cultura[0], request)
 
-    if ente_federado and gestor_cultura and sistema and int(sistema['estado_processo']) < 1:
-        sistema = SistemaCultura.sistema.get(id=sistema['id'])
-        sistema.estado_processo = "1"
-        sistema.save()
+    ir_para_estado_envio_documentacao(request)
 
-        sistema_atualizado = SistemaCultura.sistema.get(ente_federado__cod_ibge=ente_federado['cod_ibge'])
-        atualiza_session(sistema_atualizado, request)
-
-        enviar_email_conclusao(request)
     return render(request, "home.html", {"historico": historico})
 
 
@@ -112,11 +107,14 @@ def ativar_usuario(request, codigo):
     return render(request, "confirmar_email.html")
 
 
+@login_required
 def sucesso_usuario(request):
     return render(request, "usuario/mensagem_sucesso.html")
 
 
+@login_required
 def sucesso_funcionario(request, **kwargs):
+    ir_para_estado_envio_documentacao(request)
     return render(request, "mensagem_sucesso.html")
 
 
@@ -289,6 +287,7 @@ def selecionar_tipo_ente(request):
     return render(request, "prefeitura/selecionar_tipo_ente.html")
 
 
+@login_required
 def sucesso_municipio(request):
     return render(request, "prefeitura/mensagem_sucesso_prefeitura.html")
 
@@ -356,8 +355,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
-                          gestor_pessoal, gestor_institucional]
+        recipient_list = [self.request.user.email,
+                          self.request.user.usuario.email_pessoal, gestor_pessoal, gestor_institucional]
 
         return recipient_list
 
@@ -389,6 +388,7 @@ class AlterarSistemaCultura(UpdateView):
             sistema.sede = sede
             sistema.gestor = gestor
             sistema.save()
+            atualiza_session(sistema, self.request)
 
             return redirect(self.get_success_url())
         else:
@@ -477,15 +477,30 @@ class AlterarFuncionario(UpdateView):
 
 class GeraPDF(WeasyTemplateView):
 
+    def dispatch(self, request, *args, **kwargs):
+        self.ente_federado = self.request.session.get('sistema_ente', False)
+        self.sistema_sede = self.request.session.get('sistema_sede', False)
+        self.sistema_gestor = self.request.session.get('sistema_gestor', False)
+        self.gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
+        self.sistema = self.request.session.get('sistema_cultura_selecionado', False)
+
+        if not self.ente_federado or \
+                not self.gestor_cultura or \
+                not self.sistema or \
+                int(self.sistema['estado_processo']) == 0 or \
+                len(self.sistema_sede['cnpj']) != 18 or \
+                not self.sistema_gestor['cpf']:
+            return redirect('adesao:erro_impressao')
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(GeraPDF, self).get_context_data(**kwargs)
         context["request"] = self.request
         context["static"] = self.request.get_host()
-
         if self.kwargs['template'] != 'alterar_responsavel':
-            context['ente_federado'] = get_object_or_404(EnteFederado,
-                                                         pk=context['request'].session['sistema_cultura_selecionado'][
-                                                             'ente_federado'])
+            context['ente_federado'] = get_object_or_404(
+                EnteFederado, pk=context['request'].session['sistema_cultura_selecionado']['ente_federado'])
 
         return context
 

@@ -1,6 +1,4 @@
 import json
-import re
-import base64
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
@@ -9,7 +7,6 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 from django.http import QueryDict
 
-from django.shortcuts import redirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
@@ -132,6 +129,19 @@ def ajax_consulta_entes(request):
         'latitude': ente['ente_federado__latitude'],
         'longitude': ente['ente_federado__longitude'],
     } for ente in queryset]
+
+    cod_ibge_df = 53
+    sistema_cultura_df = SistemaCultura.sistema.get(
+        ente_federado__cod_ibge=cod_ibge_df)
+    sistemaList.append({
+        'id': sistema_cultura_df.id,
+        'estado_processo': sistema_cultura_df.estado_processo,
+        'nome': sistema_cultura_df.ente_federado.nome,
+        'sigla': get_uf_by_mun_cod(sistema_cultura_df.ente_federado.cod_ibge),
+        'cod_ibge': sistema_cultura_df.ente_federado.cod_ibge,
+        'latitude': sistema_cultura_df.ente_federado.latitude,
+        'longitude': sistema_cultura_df.ente_federado.longitude,
+    })
 
     entes = json.dumps(sistemaList, cls=DjangoJSONEncoder)
     return HttpResponse(entes, content_type='application/json')
@@ -323,9 +333,12 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         has_legislacao_concluido = self.get_valida_arquivo_concluido(sistema.legislacao)
         has_plano_concluido = self.get_valida_arquivo_concluido(sistema.plano)
         has_conselho_concluido = self.get_valida_arquivo_concluido(sistema.conselho)
-        has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(sistema.fundo_cultura)
-        has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(sistema.orgao_gestor)
-        has_conselho_lei_concluido = bool(sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
+        has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura)
+        has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(
+            sistema.orgao_gestor)
+        has_conselho_lei_concluido = bool(
+            sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
         has_comprovante_cnpj_concluido = bool(sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
             sistema.fundo_cultura.comprovante_cnpj)
 
@@ -334,13 +347,17 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
         has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
         has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
-        has_conselho_lei_arquivo = bool(sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
+        has_conselho_lei_arquivo = bool(
+            sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
         has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
             sistema.fundo_cultura.comprovante_cnpj)
 
-        has_gestor_termo_posse = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.termo_posse)
-        has_gestor_cpf_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.cpf_copia)
-        has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(sistema.gestor.rg_copia)
+        has_gestor_termo_posse = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.termo_posse)
+        has_gestor_cpf_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.cpf_copia)
+        has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.rg_copia)
 
         # Situações do Ente Federado
         context[
@@ -350,8 +367,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
-                                              has_plano_arquivo and not has_plano_concluido) or (
-                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+            has_plano_arquivo and not has_plano_concluido) or (
+            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
@@ -359,7 +376,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['not_has_cadastrador'] = sistema.cadastrador is None
         context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
-        context['not_has_documentacao'] = not (has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
+        context['not_has_documentacao'] = not (
+            has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
 
@@ -379,10 +397,16 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
     def get_valida_prazo_vencido(self, sistema, ano=2):
         data_final_publicacao_acordo = None
+
         if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
-            data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
-                                                sistema.data_publicacao_acordo.month,
-                                                sistema.data_publicacao_acordo.day)
+            try:
+                data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
+                                                    sistema.data_publicacao_acordo.month,
+                                                    sistema.data_publicacao_acordo.day)
+            except ValueError:
+                data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
+                                                    sistema.data_publicacao_acordo.month,
+                                                    sistema.data_publicacao_acordo.day - 1)
 
         return not sistema.conferencia_nacional and data_final_publicacao_acordo is not None and data_final_publicacao_acordo < date.today()
 
@@ -822,7 +846,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-                .ente_federado.cod_ibge)
+            .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -982,7 +1006,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                        else False
+                    else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
@@ -1093,9 +1117,10 @@ class DataTableUsuarios(BaseDatatableView):
             search_bool_field = {}
             search_lower = search.lower()
 
-            search_bool_field['is_staff'] = True if search_lower in 'administrador' else False \
+            search_bool_field['is_staff'] = True if search_lower in 'administrador'\
+                or search_lower in 'central de relacionamento' else False\
                 if search_lower in 'cadastrador' else ''
-            search_bool_field['is_active'] = True if search_lower in 'ativo' else False \
+            search_bool_field['is_active'] = True if search_lower in 'ativo' else False\
                 if search_lower in 'inativo' else ''
 
             filtros_queryset = [
@@ -1114,6 +1139,17 @@ class DataTableUsuarios(BaseDatatableView):
                 query |= filtro
 
             qs = qs.filter(query)
+
+            if search_bool_field['is_staff']\
+                    and search_lower in 'central de relacionamento':
+                ids = qs.values_list('id', flat=True)
+                qs = Usuario.objects.filter(id__in=ids).exclude(
+                    user__groups__name='usuario_scdc')
+
+            if search_bool_field['is_staff'] and search_lower in 'administrador':
+                ids = qs.values_list('id', flat=True)
+                qs = Usuario.objects.filter(id__in=ids).filter(
+                    user__groups__name='usuario_scdc')
 
         return qs
 
