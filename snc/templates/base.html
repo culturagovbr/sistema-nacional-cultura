@@ -189,48 +189,53 @@
                             <span>Criar Novo Ente Federado</span>
                           </a>
                         </li>
-                        {% if request.session.sistema_cultura_selecionado %}
-                          {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                              <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                <span>Alterar Ente Federado</span>
-                              </a>
-                            </li>
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                              {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
-                                <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                              {% else %}
-                                <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                          {% if request.session.sistema_cultura_selecionado %}
+                            {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
+                              <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                                <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                  <span>Alterar Ente Federado</span>
+                                </a>
+                              </li>
+                              
+                              {% if request.session.sistema_sede.cnpj != ' '  %}
+                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
+                                  {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
+                                    <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                  {% else %}
+                                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                  {% endif %}
+                                    <span>Gestor de Cultura</span>
+                                  </a>
+                                </li>
                               {% endif %}
-                                <span>Gestor de Cultura</span>
-                              </a>
-                            </li>
                           {% endif %}
-                          {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
-                            {% if request.session.sistema_gestor_cultura %}
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:gera_pdf' template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
-                                <span>Acordo de Cooperação</span>
-                              </a>
-                            </li>
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:gera_pdf' template='solicitacao' nome_arquivo='solicitacao.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
-                                <span>Termo de Solicitação</span>
-                              </a>
-                            </li>
-                            {% else %}
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:erro_impressao'%}" title=""
-                                class="state-published navTreeFolderish contenttype-folder">
-                                <span>Acordo de Cooperação</span>
-                              </a>
-                            </li>
-                            <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                              <a href="{% url 'adesao:erro_impressao'%}" title=""
-                                class="state-published navTreeFolderish contenttype-folder">
-                                <span>Termo de Solicitação</span>
-                              </a>
-                            </li>
+                          {% if request.session.sistema_gestor_cultura.cpf != ''  %}
+                            {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
+                              {% if request.session.sistema_gestor_cultura %}
+                              <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                                <a href="{% url 'adesao:gera_pdf' template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+                                  <span>Acordo de Cooperação</span>
+                                </a>
+                              </li>
+                              <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                                <a href="{% url 'adesao:gera_pdf' template='solicitacao' nome_arquivo='solicitacao.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
+                                  <span>Termo de Solicitação</span>
+                                </a>
+                              </li>
+                              {% else %}
+                              <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                                <a href="{% url 'adesao:erro_impressao'%}" title=""
+                                  class="state-published navTreeFolderish contenttype-folder">
+                                  <span>Acordo de Cooperação</span>
+                                </a>
+                              </li>
+                              <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                                <a href="{% url 'adesao:erro_impressao'%}" title=""
+                                  class="state-published navTreeFolderish contenttype-folder">
+                                  <span>Termo de Solicitação</span>
+                                </a>
+                              </li>
+                              {% endif %}
                             {% endif %}
                           {% endif %}
                           {% if request.session.sistema_cultura_selecionado.estado_processo == '6' %}

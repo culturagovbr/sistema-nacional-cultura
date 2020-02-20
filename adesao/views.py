@@ -362,8 +362,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def templated_email_get_recipients(self, form):
         gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
         gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal,
-                          gestor_pessoal, gestor_institucional]
+        recipient_list = [self.request.user.email,
+                          self.request.user.usuario.email_pessoal, gestor_pessoal, gestor_institucional]
 
         return recipient_list
 
@@ -396,6 +396,7 @@ class AlterarSistemaCultura(UpdateView):
             sistema.sede = sede
             sistema.gestor = gestor
             sistema.save()
+            atualiza_session(sistema, self.request)
 
             return redirect(self.get_success_url())
         else:
