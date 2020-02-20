@@ -490,8 +490,6 @@ class AlterarFuncionario(UpdateView):
 
 class GeraPDF(WeasyTemplateView):
 
-    # def __init__(self):
-
     def dispatch(self, request, *args, **kwargs):
         self.ente_federado = self.request.session.get('sistema_ente', False)
         self.sistema_sede = self.request.session.get('sistema_sede', False)
