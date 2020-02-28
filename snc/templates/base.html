@@ -196,21 +196,20 @@
                                   <span>Alterar Ente Federado</span>
                                 </a>
                               </li>
-
-                               {% if request.session.sistema_sede.cnpj !=  ''   %}
-                              {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
-                              {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
-
-                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                                  {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
-                                    <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                  {% else %}
-                                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              {% if request.session.sistema_sede.cnpj !=  '' %}
+                                {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
+                                  {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
+                                    <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
+                                      {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
+                                        <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                      {% else %}
+                                        <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                      {% endif %}
+                                        <span>Gestor de Cultura</span>
+                                      </a>
+                                    </li>
                                   {% endif %}
-                                    <span>Gestor de Cultura</span>
-                                  </a>
-                                </li>
-                              {% endif %}
+                                {% endif %}
                               {% endif %}
                           {% endif %}
                           {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
