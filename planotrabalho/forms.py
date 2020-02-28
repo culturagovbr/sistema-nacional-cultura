@@ -531,6 +531,10 @@ class CriarConselhoForm(ModelForm):
             conselho.situacao = 1
             conselho.arquivo = None
             conselho.save()
+        else:
+            conselho.situacao = 0
+            conselho.arquivo = None
+            conselho.save()
 
         conselho.arquivo = self.cleaned_data['arquivo']
         conselho.data_publicacao = self.cleaned_data['data_publicacao']

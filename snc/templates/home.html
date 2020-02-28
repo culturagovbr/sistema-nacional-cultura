@@ -39,8 +39,23 @@
 
             {% if request.session.sistema_cultura_selecionado %}
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                  <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“Criar Novo Ente Federado”</b> para
-                    iniciar o cadastro de um novo estado/município ou clique na aba “Alterar Novo ente Federado” para
+                  <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“
+                   {% endblocktrans %}
+                   <a href="{% url 'adesao:cadastrar_sistema' %}" >
+                    {% blocktrans %}
+                      Criar Novo Ente Federado               
+                    {% endblocktrans %}
+                    </a>
+                  {% blocktrans %}
+                  ”</b> para
+                    iniciar o cadastro de um novo estado/município ou clique na aba “
+                     {% endblocktrans %}
+                   <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" >
+                    {% blocktrans %}
+                      Alterar Novo ente Federado              
+                    {% endblocktrans %}
+                    </a>
+                  {% blocktrans %}” para
                     alterar informações e dados do estado/município já cadastrado. <br/><br/>Clique na aba
                     <b>“Gestor de Cultura”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
                     seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da

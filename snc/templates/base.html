@@ -196,7 +196,7 @@
                                   <span>Alterar Ente Federado</span>
                                 </a>
                               </li>
-                              
+                               {% if request.session.sistema_sede.cnpj !=  ''   %}
                               {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
                                   {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
@@ -207,6 +207,7 @@
                                     <span>Gestor de Cultura</span>
                                   </a>
                                 </li>
+                              {% endif %}
                               {% endif %}
                           {% endif %}
                           {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
