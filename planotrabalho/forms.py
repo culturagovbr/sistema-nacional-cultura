@@ -528,7 +528,7 @@ class CriarConselhoForm(ModelForm):
         conselho.tipo = 3
 
         if 'arquivo' in self.changed_data:
-            conselho.situacao = 1
+            conselho.situacao = 0
             conselho.arquivo = None
             conselho.save()
         else:
