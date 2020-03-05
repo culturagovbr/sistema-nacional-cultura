@@ -56,7 +56,6 @@ coverage = "*"
 ipython = "*"
 rows = {version = "*",extras = ["ods"]}
 django-debug-toolbar = "*"
-autopep8 = "*"
 
 [requires]
 python_version = "3.6"
