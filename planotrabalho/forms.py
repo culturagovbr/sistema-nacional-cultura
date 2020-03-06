@@ -532,7 +532,7 @@ class CriarConselhoForm(ModelForm):
             conselho.arquivo = None
             conselho.save()
         else:
-            conselho.situacao = 10
+            conselho.situacao = 0
             conselho.arquivo = None
             conselho.save()
 
