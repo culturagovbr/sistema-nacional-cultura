@@ -23,7 +23,12 @@
 
                 {% if has_prazo_vencido %}
                   <i class="material-icons" style="color: #000000; cursor:help;"
-                     title="Plano de trabalho com o prazo expirado, sem nenhum componente inserido.">report_problem</i>
+                     title="Plano de trabalho com o prazo expirado.">report_problem</i>
+                {% endif %}
+
+                {% if has_nenhum_componente_inserido %}
+                  <i class="material-icons" style="color: #7b59c0; cursor:help;"
+                     title="Plano de trabalho sem nenhum componente inserido.">folder_open</i>
                 {% endif %}
 
                 {% if has_pendente_analise %}
