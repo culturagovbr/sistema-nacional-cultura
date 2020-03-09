@@ -196,16 +196,20 @@
                                   <span>Alterar Ente Federado</span>
                                 </a>
                               </li>
-                              {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
-                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
-                                  {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
-                                    <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                  {% else %}
-                                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                              {% if request.session.sistema_sede.cnpj !=  '' %}
+                                {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
+                                  {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
+                                    <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-c">
+                                      {% if request.session.sistema_cultura_selecionado.gestor_cultura %}
+                                        <a href="{% url 'adesao:alterar_funcionario' pk=request.session.sistema_cultura_selecionado.gestor_cultura %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                      {% else %}
+                                        <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                      {% endif %}
+                                        <span>Gestor de Cultura</span>
+                                      </a>
+                                    </li>
                                   {% endif %}
-                                    <span>Gestor de Cultura</span>
-                                  </a>
-                                </li>
+                                {% endif %}
                               {% endif %}
                           {% endif %}
                           {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
@@ -336,14 +340,15 @@
                             <a href="#" class="tile">Aviso Importante</a> </span>
                             <span class="portletTopRight"></span>
                         </dt>
-
-
-
-
-
+                        
+                        {% comment %} <dd class="portletFooter">
+                            <span class="portletBottomLeft"></span>
+                            <a href="#">para concluir sua adesão, clique em 'Acordo de Cooperação' no Menu Principal</a>
+                            <span class="portletBottomRight"></span>
+                        </dd> {% endcomment %}
                         <dd class="portletFooter">
                             <span class="portletBottomLeft"></span>
-                            <a href="#">Seu prazo para o envio é de até 60 dias corridos.</a>
+                            <a href="#">O prazo para o envio do Acordo é de até 60 dias corridos.</a>
                             <span class="portletBottomRight"></span>
                         </dd>
                     </dl>
@@ -389,7 +394,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-
         $('.errors-field').each((index, element) => {
           let field_name = '';
           let field_error = '';
@@ -486,7 +490,15 @@
         //   'pattern': '({{99}}){{99999}}-{{9999}}',
         //   'persistent': false,
         // });
-
+      $( ".cep" ).focusout(function() {
+        var cepteste = $(".cep").val();
+        if(cepteste.length != 10 ){
+          $(".cep").val('');
+          $("#hiddencep").show();
+        }else{
+          $("#hiddencep").hide();
+        }
+      });
         $(".telefone").mask('(00)00000-0000')
 
         {% endverbatim %}
