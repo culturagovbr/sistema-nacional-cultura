@@ -360,15 +360,19 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             sistema.gestor.rg_copia)
 
         # Situações do Ente Federado
-        context[
-            'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
-        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
-            sistema) and not (len(['componentes_restantes']) > 0)
+        context['has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() \
+                                              and has_legislacao_concluido and has_plano_concluido \
+                                              and has_conselho_concluido and has_fundo_cultura_concluido \
+                                              and has_orgao_gestor_concluido
+
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
+
+        context['has_nenhum_componente_inserido'] = not (len(['componentes_restantes']) > 0)
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
-            has_plano_arquivo and not has_plano_concluido) or (
-            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
@@ -846,7 +850,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-            .ente_federado.cod_ibge)
+                .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -1006,7 +1010,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
@@ -1117,10 +1121,10 @@ class DataTableUsuarios(BaseDatatableView):
             search_bool_field = {}
             search_lower = search.lower()
 
-            search_bool_field['is_staff'] = True if search_lower in 'administrador'\
-                or search_lower in 'central de relacionamento' else False\
+            search_bool_field['is_staff'] = True if search_lower in 'administrador' \
+                                                    or search_lower in 'central de relacionamento' else False \
                 if search_lower in 'cadastrador' else ''
-            search_bool_field['is_active'] = True if search_lower in 'ativo' else False\
+            search_bool_field['is_active'] = True if search_lower in 'ativo' else False \
                 if search_lower in 'inativo' else ''
 
             filtros_queryset = [
@@ -1140,8 +1144,8 @@ class DataTableUsuarios(BaseDatatableView):
 
             qs = qs.filter(query)
 
-            if search_bool_field['is_staff']\
-                    and search_lower in 'central de relacionamento':
+            if search_bool_field['is_staff'] \
+                and search_lower in 'central de relacionamento':
                 ids = qs.values_list('id', flat=True)
                 qs = Usuario.objects.filter(id__in=ids).exclude(
                     user__groups__name='usuario_scdc')
