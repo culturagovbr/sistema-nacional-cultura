@@ -79,14 +79,6 @@
             </a>
           </li>
           {% endif %}
-          {% if request.user|has_group:"usuario_scdc" %}
-          <li class="nav-item" id="menu-plano">
-            <a class="nav-link" href="{% url 'gestao:acompanhar_adesao' %}">
-              <i class="material-icons">location_ons</i>
-              <p>Plano de Trabalho2</p>
-            </a>
-          </li>
-          {% endif %}
         </ul>
       </div>
     </div>
