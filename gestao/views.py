@@ -1120,12 +1120,19 @@ class DataTableEntes(BaseDatatableView):
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
         custom_search = self.request.POST.get('columns[0][search][value]', None)
-        print(self.request.POST.get('columns[7][search][value]'))
         componentes_search = self.request.POST.get('columns[1][search][value]', None)
         situacoes_search = self.request.POST.get('columns[2][search][value]', None)
-        tipo_ente_search = self.request.POST.get('columns[3][search][value]', None)
         pendente_componentes_search = self.request.POST.get(
-            'columns[7][search][value]', None)
+            'columns[3][search][value]', None)
+        tipo_ente_search = self.request.POST.get('columns[5][search][value]', None)
+        # pendente_search =  self.request.POST.get('columns[7][search][value]', None)
+
+
+        print ('filtros:')
+        for i in range(1,5):
+            print(i, self.request.POST.get('columns['+str(i)+'][search][value]', None))
+
+
 
         if search:
             query = Q()
@@ -1180,11 +1187,14 @@ class DataTableEntes(BaseDatatableView):
             }
 
             pendente_componentes_search = pendente_componentes_search.split(',')
+            print(pendente_componentes_search)
 
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
+                print('componente filtrado',nome_componente)
                 kwargs = {'{0}__situacao__in'.format(nome_componente): [1, 4, 5, 6]}
                 qs = qs.filter(**kwargs)
+
 
         if situacoes_search:
             situacoes_search = situacoes_search.split(',')
@@ -1213,6 +1223,7 @@ class DataTableEntes(BaseDatatableView):
                 ),
                 escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")
                        ) if item.data_publicacao_acordo else '',
+                escape(item.get_situacao_componentes())
             ])
         return json_data
 

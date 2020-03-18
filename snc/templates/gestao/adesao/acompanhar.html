@@ -31,6 +31,7 @@ li a.selected {
                           <th>Município/Estado</th>
                           <th>Situação</th>
                           <th>Data da Adesão</th>
+                          <th>Pendentes</th>
                           <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
                       </tr>
@@ -68,7 +69,7 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  var colunasParaExportacao = [0,1,2,3];
+  var colunasParaExportacao = [0,1,2,3, 7];
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -140,11 +141,16 @@ $(document).ready(function(){
           name: "data_publicacao_acordo",
           render: (data) => data[6]
         },
+
+        {
+          data: null,
+          name: "pendente",
+          render: (data) => data[7]
+        },
         {
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            console.log(data)
             if (data[6].length != 0){
               return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
@@ -204,7 +210,7 @@ $(document).ready(function(){
       `);
 
       $('#filtro-pendente').html(`
-        <select title="filtrar Pendentes" data-style="btn btn-danger btn-sm" data-class="selectpicker" multiple>
+        <select title="filtrar pendentes" data-style="btn btn-danger btn-sm" data-class="selectpicker" multiple>
           <option value="0">Criação do sistema</option>
           <option value="1">Órgão Gestor</option>
           <option value="2">Fundo de Cultura</option>
@@ -237,27 +243,36 @@ $(document).ready(function(){
 
       $('#filtro-componente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
+        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(1).search(pesquisa_filtro).draw()
       });
 
        $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
+        console.log('filtro-situacao select');
+        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(2).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-pendente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+          console.log('#filtro-pendente select');
         var pesquisa_filtro = $(this).val();
-        tabela.columns(7).search(pesquisa_filtro).draw()
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(3).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+               console.log('#filtro-situacao-compenente teste select');
         var pesquisa_filtro = $(this).val();
-        tabela.columns(8).search(pesquisa_filtro).draw()
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(4).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        tabela.columns(3).search(pesquisa_filtro).draw()
+        console.log('#filtro-tipo-ente')
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(5).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-estados').html(`
