@@ -45,6 +45,12 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='fundo_cultura__data_publicacao', lookup_expr=('gte'))
     data_fundo_cultura_max = filters.DateFilter(
         field_name='fundo_cultura__data_publicacao', lookup_expr=('lte'))
+    data_fundo_cultura_cnpj_min = filters.DateFilter(
+        field_name='fundo_cultura__comprovante_cnpj__data_envio', lookup_expr=('gte'))
+    data_fundo_cultura_cnpj_max = filters.DateFilter(
+        field_name='fundo_cultura__comprovante_cnpj__data_envio', lookup_expr=('lte'))
+
+
     data_plano_min = filters.DateFilter(
         field_name='plano__data_publicacao', lookup_expr=('gte'))
     data_plano_max = filters.DateFilter(
