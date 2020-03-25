@@ -37,6 +37,10 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='conselho__data_publicacao', lookup_expr=('gte'))
     data_conselho_max = filters.DateFilter(
         field_name='conselho__data_publicacao', lookup_expr=('lte'))
+    data_conselho_lei_min = filters.DateFilter(
+        field_name='conselho__lei__data_publicacao', lookup_expr=('gte'))
+    data_conselho_lei_max = filters.DateFilter(
+        field_name='conselho__lei__data_publicacao', lookup_expr=('lte'))
     data_fundo_cultura_min = filters.DateFilter(
         field_name='fundo_cultura__data_publicacao', lookup_expr=('gte'))
     data_fundo_cultura_max = filters.DateFilter(
