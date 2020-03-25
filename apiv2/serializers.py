@@ -8,6 +8,8 @@ from adesao.models import Cidade
 from planotrabalho.models import Componente
 from planotrabalho.models import Conselheiro
 from planotrabalho.models import FundoDeCultura
+from planotrabalho.models import PlanoDeCultura
+
 
 from adesao.models import SistemaCultura
 from adesao.models import EnteFederado
@@ -21,7 +23,7 @@ class ComponenteSCSerializer(hal_serializers.HalModelSerializer):
 
     class Meta:
         model = Componente
-        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo')
+        fields = ('cod_situacao', 'situacao', 'data_envio', 'data_publicacao', 'arquivo')
 
 
 class ConselheirosSerializer(hal_serializers.HalModelSerializer):
@@ -87,6 +89,7 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
     criacao_lei_sistema = ComponenteSCSerializer(source='legislacao')
     criacao_orgao_gestor = ComponenteSCSerializer(source='orgao_gestor')
     criacao_plano_cultura = ComponenteSCSerializer(source='plano')
+    criacao_plano_metas = serializers.SerializerMethodField()
     criacao_conselho_cultural_ata = ComponenteSCSerializer(source='conselho')
     criacao_conselho_cultural_lei = serializers.SerializerMethodField()
     criacao_fundo_cultura = FundoComponenteSerializer(source='fundo_cultura')
@@ -112,12 +115,22 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
             ).data
         return None
 
+    def get_criacao_plano_metas(self, obj):
+        if getattr(obj.plano, 'metas', None):
+            return ComponenteSCSerializer(
+                instance=obj.plano.metas,
+                context=self.context
+            ).data
+        return None
+
     def to_representation(self, instance):
         context = super(PlanoTrabalhoSCSerializer, self).to_representation(instance)
         context['_embedded']['criacao_conselho_cultural_lei'] = context['criacao_conselho_cultural_lei']
         del context['criacao_conselho_cultural_lei']
         context['_embedded']['criacao_fundo_cultura_cnpj'] = context['criacao_fundo_cultura_cnpj']
         del context['criacao_fundo_cultura_cnpj']
+        context['_embedded']['criacao_plano_metas'] = context['criacao_plano_metas']
+        del context['criacao_plano_metas']
         return context
 
     class Meta:
@@ -128,6 +141,7 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
             'criacao_lei_sistema',
             'criacao_orgao_gestor',
             'criacao_plano_cultura',
+            'criacao_plano_metas',
             'criacao_fundo_cultura',
             'criacao_fundo_cultura_cnpj',
             'criacao_conselho_cultural_lei',
@@ -242,6 +256,7 @@ class SistemaCulturaDetailSerializer(PlanoTrabalhoSCSerializer):
             "criacao_conselho_cultural_ata",
             "criacao_conselho_cultural_lei",
             "criacao_plano_cultura",
+            "criacao_plano_metas",
             "criacao_fundo_cultura_cnpj",
             "sistema_cultura_local"
         )
