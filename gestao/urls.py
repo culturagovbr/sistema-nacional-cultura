@@ -53,6 +53,9 @@ urlpatterns = [
     path('ente/<int:cod_ibge>',
          staff_member_required(views.DetalharEnte.as_view()),
          name='detalhar'),
+    path('plano/<int:cod_ibge>',
+         staff_member_required(views.DetalharPlano.as_view()),
+         name='detalhar'),
     # re_path(r'^detalhar/municipio/(?P<pk>[0-9]+)$',
     #     staff_member_required(views.DetalharEnte.as_view()),
     #     name='detalhar'),
@@ -98,7 +101,8 @@ urlpatterns = [
         login_url='adesao:login'), name='alterar_componente'),
 
     # ajax mudança de cadastrador
-    url(r'^ajax_cadastrador_cpf$', staff_member_required(views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
+    url(r'^ajax_cadastrador_cpf$', staff_member_required(
+        views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
 
     # Diligência de Componente
 
@@ -135,7 +139,8 @@ urlpatterns = [
          name="ajax-consulta-cpf"),
 
     # ajax leaflet
-    url(r'^ajax-consulta-entes$', staff_member_required(views.ajax_consulta_entes), name='ajax_consulta_entes'),
+    url(r'^ajax-consulta-entes$', staff_member_required(views.ajax_consulta_entes),
+        name='ajax_consulta_entes'),
 
     # ajax datatable
     url(r'^datatable-entes$', staff_member_required(views.DataTableEntes.as_view()),

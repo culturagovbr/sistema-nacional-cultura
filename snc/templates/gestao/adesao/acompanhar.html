@@ -31,7 +31,8 @@ li a.selected {
                           <th>Município/Estado</th>
                           <th>Situação</th>
                           <th>Data da Adesão</th>
-                          <th>Prefeito/Governador</th>
+                          <th>Pendentes</th>
+                          <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
                       </tr>
                   </thead>
@@ -68,7 +69,7 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  var colunasParaExportacao = [0,1,2,3];
+  var colunasParaExportacao = [0,1,2,3, 7];
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -83,7 +84,9 @@ $(document).ready(function(){
       <'col-sm-auto col-md-auto'<"#filtro-estados">>
       <"#filtro-tipo-ente">
       <"#filtro-componente.col-sm-auto col-md-auto">
-      <"#filtro-situacao.col-sm-auto col-md-auto">>
+      <"#filtro-situacao.col-sm-auto col-md-auto">
+      <"#filtro-pendente.col-sm-auto col-md-auto">
+      <"#filtro-situacao-compenente.col-sm-auto col-md-auto">>
       <'row'<'col-sm-auto col-md-12'tr>>
       <'row'<'col-sm-12 col-md-5'i>
       <'col-sm-12 col-md-7'p>>`,
@@ -138,14 +141,22 @@ $(document).ready(function(){
           name: "data_publicacao_acordo",
           render: (data) => data[6]
         },
+
+        {
+          data: null,
+          name: "pendente",
+          render: (data) => data[7]
+        },
         {
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            if (data[5].length > 0){
-              return `<a href="${data[5]}" target="_blank">${data[2]}</a>`
+            if (data[6].length != 0){
+              return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
+                        <i class="material-icons">gavel</i>
+                      </a>`
             }
-            return data[2]
+            return ''
           }
         },
         {
@@ -198,7 +209,29 @@ $(document).ready(function(){
         </select>
       `);
 
-       $('#filtro-tipo-ente').html(`
+      $('#filtro-pendente').html(`
+        <select title="filtrar pendentes" data-style="btn btn-danger btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Criação do sistema</option>
+          <option value="1">Órgão Gestor</option>
+          <option value="2">Fundo de Cultura</option>
+          <option value="3">Conselho Cultural</option>
+          <option value="4">Plano Cultura</option>
+        </select>
+      `);
+
+
+        $('#filtro-situacao-compenente').html(`
+          <select title="filtrar situação" data-style="btn btn-warning btn-sm" data-class="selectpicker" multiple>
+            <option value="1">Avaliando anexo</option>
+            <option value="2">Concluída</option>
+            <option value="3">Arquivo aprovado com ressalvas</option>
+            <option value="4">Arquivo danificado</option>
+            <option value="5">Arquivo incompleto</option>
+            <option value="6">Arquivo incorreto</option>
+          </select>
+        `);
+
+        $('#filtro-tipo-ente').html(`
         <select id="input-tipo-ente" class="form-control form-control-sm">
           <option value="" selected>Todos</option>
           <option value="estado" >Estados</option>
@@ -206,21 +239,40 @@ $(document).ready(function(){
         </select>
       `);
 
-      $('#filtro-componente select, #filtro-situacao select').selectpicker();
+      $('#filtro-componente select, #filtro-situacao select , #filtro-pendente select , #filtro-situacao-compenente select').selectpicker();
 
       $('#filtro-componente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
+        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(1).search(pesquisa_filtro).draw()
       });
 
-      $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+       $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
+        console.log('filtro-situacao select');
+        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(2).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-pendente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+          console.log('#filtro-pendente select');
+        var pesquisa_filtro = $(this).val();
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(3).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+               console.log('#filtro-situacao-compenente teste select');
+        var pesquisa_filtro = $(this).val();
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(4).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        tabela.columns(3).search(pesquisa_filtro).draw()
+        console.log('#filtro-tipo-ente')
+        console.log('pesquisa_filtro', pesquisa_filtro);
+        tabela.columns(5).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-estados').html(`
@@ -229,6 +281,7 @@ $(document).ready(function(){
         </select>
       `);
 
+      $('.filter-option-inner-inner').attr('style', 'color:#fff');
       $.ajax({
         type: 'OPTIONS',
         url: '/api/v2/sistemadeculturalocal/',
