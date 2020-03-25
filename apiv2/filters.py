@@ -45,6 +45,10 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='plano__data_publicacao', lookup_expr=('gte'))
     data_plano_max = filters.DateFilter(
         field_name='plano__data_publicacao', lookup_expr=('lte'))
+    data_plano_meta_min = filters.DateFilter(
+        field_name='plano__metas__data_envio', lookup_expr=('gte'))
+    data_plano_meta_max = filters.DateFilter(
+        field_name='plano__metas__data_envio', lookup_expr=('lte'))
     situacao_lei_sistema = filters.ModelMultipleChoiceFilter(
         queryset=Componente.objects.all(),
         field_name='legislacao__situacao',
