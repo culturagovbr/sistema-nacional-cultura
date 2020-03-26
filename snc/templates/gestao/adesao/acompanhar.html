@@ -68,7 +68,7 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  var colunasParaExportacao = [0,1,2,3,7,8];
+  var colunasParaExportacao = [0,1,2,3,7];
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -144,8 +144,8 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            
-            if (data[6].length != 0 && (data[7].length > 3 && data[7].length != 243) ){
+            console.log(data);
+            if (data[6].length != 0 && (data[6].length > 3 && data[6].length != 243) ){
               return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
                       </a>`

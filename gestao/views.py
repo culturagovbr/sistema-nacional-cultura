@@ -1243,8 +1243,7 @@ class DataTableEntes(BaseDatatableView):
                     item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
                 ),
                 escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")
-                       ) if item.data_publicacao_acordo else '',
-                escape(item.get_situacao_componentes())
+                       ) if item.data_publicacao_acordo else ''
             ])
         return json_data
 
