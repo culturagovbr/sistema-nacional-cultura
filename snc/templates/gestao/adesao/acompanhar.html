@@ -33,7 +33,6 @@ li a.selected {
                           <th>Data da Adesão</th>
                           <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
-                          <th>&nbsp</th>
                       </tr>
                   </thead>
               </table>
@@ -165,14 +164,6 @@ $(document).ready(function(){
             </a>
           `
         },
-        {
-          data: null,
-          name: "pendente",
-          orderable: false,
-          render: (data) => `
-            ${data[7]}
-          `
-        },
     ],
     searching: true,
     processing: true,
@@ -246,35 +237,26 @@ $(document).ready(function(){
 
       $('#filtro-componente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(1).search(pesquisa_filtro).draw()
       });
 
        $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        console.log('filtro-situacao select');
-        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(2).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-pendente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
-          console.log('#filtro-pendente select');
         var pesquisa_filtro = $(this).val();
-        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(3).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
-        console.log('#filtro-situacao-compenente teste select');
         var pesquisa_filtro = $(this).val();
-        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(3).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        console.log('#filtro-tipo-ente')
-        console.log('pesquisa_filtro', pesquisa_filtro);
         tabela.columns(5).search(pesquisa_filtro).draw()
       });
 
