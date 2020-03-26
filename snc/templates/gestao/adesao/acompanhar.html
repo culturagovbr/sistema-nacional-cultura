@@ -144,7 +144,8 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            
+            console.log(data)
+            console.log(data[7].length)
             if (data[6].length != 0 && (data[7].length > 3 && data[7].length != 243) ){
               return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
@@ -220,8 +221,8 @@ $(document).ready(function(){
             <option value="2">Concluída</option>
             <option value="3">Arquivo aprovado com ressalvas</option>
             <option value="4">Arquivo danificado</option>
-            <option value="4">Arquivo incompleto</option>
-            <option value="4">Arquivo incorreto</option>
+            <option value="5">Arquivo incompleto</option>
+            <option value="6">Arquivo incorreto</option>
           </select>
         `);
 
