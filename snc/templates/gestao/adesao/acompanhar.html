@@ -31,7 +31,6 @@ li a.selected {
                           <th>Município/Estado</th>
                           <th>Situação</th>
                           <th>Data da Adesão</th>
-                          <th>Pendentes</th>
                           <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
                       </tr>
@@ -140,12 +139,6 @@ $(document).ready(function(){
           data: null,
           name: "data_publicacao_acordo",
           render: (data) => data[6]
-        },
-
-        {
-          data: null,
-          name: "pendente",
-          render: (data) => data[7]
         },
         {
           data: null,
