@@ -31,7 +31,6 @@ li a.selected {
                           <th>Município/Estado</th>
                           <th>Situação</th>
                           <th>Data da Adesão</th>
-                          <th>Pendentes</th>
                           <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
                       </tr>
@@ -69,7 +68,7 @@ li a.selected {
 {% block js%}
 <script type="text/javascript">
 $(document).ready(function(){
-  var colunasParaExportacao = [0,1,2,3, 7];
+  var colunasParaExportacao = [0,1,2,3,7,8];
 
   var tabela = $('#tabela-ente').DataTable({
     order: [0, 'asc'],
@@ -141,17 +140,14 @@ $(document).ready(function(){
           name: "data_publicacao_acordo",
           render: (data) => data[6]
         },
-
-        {
-          data: null,
-          name: "pendente",
-          render: (data) => data[7]
-        },
         {
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            if (data[6].length != 0){
+            if(data[7].length == 243){
+              console.log(document.getElementById(this))
+            }
+            if (data[6].length != 0 && (data[7].length > 3 && data[7].length != 243) ){
               return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
                       </a>`
@@ -262,10 +258,10 @@ $(document).ready(function(){
       });
 
       $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
-               console.log('#filtro-situacao-compenente teste select');
+        console.log('#filtro-situacao-compenente teste select');
         var pesquisa_filtro = $(this).val();
         console.log('pesquisa_filtro', pesquisa_filtro);
-        tabela.columns(4).search(pesquisa_filtro).draw()
+        tabela.columns(3).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
