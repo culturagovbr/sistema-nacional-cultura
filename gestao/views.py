@@ -1210,7 +1210,6 @@ class DataTableEntes(BaseDatatableView):
                 nome_componente = componentes.get(int(id))
                 print('componente filtrado', nome_componente)
                 kwargs = {'{0}__situacao__in'.format(nome_componente): [4]}
-
                 qs = qs.filter(**kwargs).exclude(arquivo=None)
 
         if situacoes_search:
