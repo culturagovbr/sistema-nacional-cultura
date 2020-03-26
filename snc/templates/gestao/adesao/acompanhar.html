@@ -33,6 +33,7 @@ li a.selected {
                           <th>Data da Adesão</th>
                           <th>Avaliação Pendentes</th>
                           <th>&nbsp</th>
+                          <th>&nbsp</th>
                       </tr>
                   </thead>
               </table>
@@ -162,6 +163,14 @@ $(document).ready(function(){
             <a rel="tooltip" title="" href="/gestao/ente/${data[4]}" class="btn btn-primary btn-link btn-sm" target="_blank">
               <i class="material-icons">zoom_in</i>
             </a>
+          `
+        },
+        {
+          data: null,
+          name: "pendente",
+          orderable: false,
+          render: (data) => `
+            ${data[7]}
           `
         },
     ],
