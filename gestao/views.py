@@ -1195,7 +1195,7 @@ class DataTableEntes(BaseDatatableView):
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
                 print('componente filtrado', nome_componente)
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [1]}
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [1,4,5,6]}
                 qs = qs.filter(**kwargs).exclude()
 
 
