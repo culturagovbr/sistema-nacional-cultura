@@ -211,12 +211,12 @@ class GestorSerializer(hal_serializers.HalModelSerializer):
 class GestorCulturaSerializer(hal_serializers.HalModelSerializer):
     nome_gestor_cultura = serializers.CharField(source='nome')
     cargo_gestor_cultura = serializers.CharField(source='cargo')
-    email = serializers.CharField(source='email_institucional')
+    email_institucional = serializers.CharField()
     telefone = serializers.CharField(source='telefone_um')
 
     class Meta:
         model = Gestor
-        fields = ("nome", "cargo", "email_institucional", "telefone_um")
+        fields = ("nome_gestor_cultura", "cargo_gestor_cultura", "email_institucional", "telefone")
 
 
 class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
@@ -244,6 +244,7 @@ class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
             "acoes_plano_trabalho",
             "ente_federado",
             "governo",
+            "cultura",
             "conselho",
             "sede")
 
