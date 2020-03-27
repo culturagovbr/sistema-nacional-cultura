@@ -368,8 +368,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
-            has_plano_arquivo and not has_plano_concluido) or (
-            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
@@ -491,9 +491,9 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
 
         # Situações do Ente Federado
         context['has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() \
-            and has_legislacao_concluido and has_plano_concluido \
-            and has_conselho_concluido and has_fundo_cultura_concluido \
-            and has_orgao_gestor_concluido
+                                              and has_legislacao_concluido and has_plano_concluido \
+                                              and has_conselho_concluido and has_fundo_cultura_concluido \
+                                              and has_orgao_gestor_concluido
 
         context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
 
@@ -502,8 +502,8 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
-            has_plano_arquivo and not has_plano_concluido) or (
-            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
@@ -981,7 +981,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
-            .ente_federado.cod_ibge)
+                .ente_federado.cod_ibge)
 
         return historico_diligencias
 
@@ -1144,7 +1144,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
@@ -1187,6 +1187,7 @@ class DataTableEntes(BaseDatatableView):
 
             pendente_componentes_search = pendente_componentes_search.split(',')
 
+
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
                 kwargs_exclude = {'{0}__situacao__in'.format(nome_componente): [
@@ -1196,14 +1197,6 @@ class DataTableEntes(BaseDatatableView):
                 qs = qs.filter(**kwargs_pendentes).exclude(**kwargs_exclude)
 
         if situacao_componentes_search:
-            situacoes_arquivos = {
-                2: "Concluída",
-                3: "Arquivo aprovado com ressalvas",
-                4: "Arquivo danificado",
-                5: "Arquivo incompleto",
-                6: "Arquivo incorreto",
-            }
-
             componentes = {
                 0: "legislacao",
                 1: "orgao_gestor",
@@ -1214,12 +1207,15 @@ class DataTableEntes(BaseDatatableView):
 
             situacao_componentes_search = situacao_componentes_search.split(',')
 
-            for id in situacao_componentes_search:
-                nome_componente = componentes.get(int(id))
-                situacoes = situacoes_arquivos.get(int(id))
-                kwargs = {'{0}__situacao'.format(nome_componente): [0, 1, 2, 3, 4]}
-                kwargs = {'{0}__arquivo'.format(situacoes): [2, 3, 4, 5, 6]}
-                qs = qs.filter(**kwargs).exclude(arquivo=None)
+            kwargs_legislacao = {'{0}__situacao__in'.format(componentes.get(0)): situacao_componentes_search}
+            kwargs_orgao_gestor = {'{0}__situacao__in'.format(componentes.get(1)): situacao_componentes_search}
+            kwargs_fundo_cultura = {'{0}__situacao__in'.format(componentes.get(2)): situacao_componentes_search}
+            kwargs_conselho = {'{0}__situacao__in'.format(componentes.get(3)): situacao_componentes_search}
+            kwargs_plano = {'{0}__situacao__in'.format(componentes.get(4)): situacao_componentes_search}
+
+            qs = qs.filter(Q(**kwargs_legislacao) | Q(**kwargs_orgao_gestor) | Q(**kwargs_fundo_cultura) | Q(
+                **kwargs_conselho) | Q(
+                **kwargs_plano)).exclude()
 
         if situacoes_search:
             situacoes_search = situacoes_search.split(',')
@@ -1300,7 +1296,7 @@ class DataTableUsuarios(BaseDatatableView):
             search_lower = search.lower()
 
             search_bool_field['is_staff'] = True if search_lower in 'administrador' \
-                or search_lower in 'central de relacionamento' else False \
+                                                    or search_lower in 'central de relacionamento' else False \
                 if search_lower in 'cadastrador' else ''
             search_bool_field['is_active'] = True if search_lower in 'ativo' else False \
                 if search_lower in 'inativo' else ''
@@ -1323,7 +1319,7 @@ class DataTableUsuarios(BaseDatatableView):
             qs = qs.filter(query)
 
             if search_bool_field['is_staff'] \
-                    and search_lower in 'central de relacionamento':
+                and search_lower in 'central de relacionamento':
                 ids = qs.values_list('id', flat=True)
                 qs = Usuario.objects.filter(id__in=ids).exclude(
                     user__groups__name='usuario_scdc')

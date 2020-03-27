@@ -253,7 +253,7 @@ $(document).ready(function(){
 
       $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
         var pesquisa_filtro = $(this).val();
-        tabela.columns(3).search(pesquisa_filtro).draw()
+        tabela.columns(4).search(pesquisa_filtro).draw()
       });
 
       $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
