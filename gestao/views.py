@@ -368,8 +368,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
-            has_plano_arquivo and not has_plano_concluido) or (
-            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+                                              has_plano_arquivo and not has_plano_concluido) or (
+                                              has_conselho_lei_arquivo and not has_conselho_lei_concluido)
 
         context[
             'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
@@ -497,7 +497,8 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
 
         context['has_prazo_vencido'] = self.get_valida_prazo_vencido(sistema)
 
-        context['has_nenhum_componente_inserido'] = not (len(['componentes_restantes']) > 0)
+        context['has_nenhum_componente_inserido'] = not (
+            len(['componentes_restantes']) > 0)
 
         context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
             has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
@@ -1132,7 +1133,6 @@ class DataTableEntes(BaseDatatableView):
             'columns[4][search][value]', None)
         tipo_ente_search = self.request.POST.get('columns[5][search][value]', None)
 
-
         if search:
             query = Q()
             filtros_queryset = [
@@ -1144,7 +1144,7 @@ class DataTableEntes(BaseDatatableView):
 
                 contem_pesquisa = \
                     True if search.lower() in tupla_estado_processo[1].lower() \
-                    else False
+                        else False
                 if contem_pesquisa:
                     estados_para_pesquisa.append(
                         Q(estado_processo=tupla_estado_processo[0])
@@ -1187,11 +1187,14 @@ class DataTableEntes(BaseDatatableView):
 
             pendente_componentes_search = pendente_componentes_search.split(',')
 
+
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [4,5,6]}
-                qs = qs.filter(**kwargs).exclude()
-
+                kwargs_exclude = {'{0}__situacao__in'.format(nome_componente): [
+                    0, 1, 2, 3]}
+                kwargs_pendentes = {'{0}__situacao__in'.format(nome_componente): [
+                    4, 5, 6]}
+                qs = qs.filter(**kwargs_pendentes).exclude(**kwargs_exclude)
 
         if situacao_componentes_search:
             componentes = {
@@ -1204,10 +1207,15 @@ class DataTableEntes(BaseDatatableView):
 
             situacao_componentes_search = situacao_componentes_search.split(',')
 
-            for id in situacao_componentes_search:
-                nome_componente = componentes.get(int(id))
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [4]}
-                qs = qs.filter(**kwargs).exclude(arquivo=None)
+            kwargs_legislacao = {'{0}__situacao__in'.format(componentes.get(0)): situacao_componentes_search}
+            kwargs_orgao_gestor = {'{0}__situacao__in'.format(componentes.get(1)): situacao_componentes_search}
+            kwargs_fundo_cultura = {'{0}__situacao__in'.format(componentes.get(2)): situacao_componentes_search}
+            kwargs_conselho = {'{0}__situacao__in'.format(componentes.get(3)): situacao_componentes_search}
+            kwargs_plano = {'{0}__situacao__in'.format(componentes.get(4)): situacao_componentes_search}
+
+            qs = qs.filter(Q(**kwargs_legislacao) | Q(**kwargs_orgao_gestor) | Q(**kwargs_fundo_cultura) | Q(
+                **kwargs_conselho) | Q(
+                **kwargs_plano)).exclude()
 
         if situacoes_search:
             situacoes_search = situacoes_search.split(',')
