@@ -1128,14 +1128,9 @@ class DataTableEntes(BaseDatatableView):
         situacoes_search = self.request.POST.get('columns[2][search][value]', None)
         pendente_componentes_search = self.request.POST.get(
             'columns[3][search][value]', None)
+        situacao_componentes_search = self.request.POST.get(
+            'columns[4][search][value]', None)
         tipo_ente_search = self.request.POST.get('columns[5][search][value]', None)
-        # pendente_search =  self.request.POST.get('columns[7][search][value]', None)
-
-
-        print ('filtros:')
-        for i in range(1,5):
-            print(i, self.request.POST.get('columns['+str(i)+'][search][value]', None))
-
 
 
         if search:
@@ -1191,14 +1186,28 @@ class DataTableEntes(BaseDatatableView):
             }
 
             pendente_componentes_search = pendente_componentes_search.split(',')
-            print(pendente_componentes_search)
 
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
-                print('componente filtrado',nome_componente)
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [1, 4, 5, 6]}
-                qs = qs.filter(**kwargs)
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [4,5,6]}
+                qs = qs.filter(**kwargs).exclude()
 
+
+        if situacao_componentes_search:
+            componentes = {
+                0: "legislacao",
+                1: "orgao_gestor",
+                2: "fundo_cultura",
+                3: "conselho",
+                4: "plano",
+            }
+
+            situacao_componentes_search = situacao_componentes_search.split(',')
+
+            for id in situacao_componentes_search:
+                nome_componente = componentes.get(int(id))
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [4]}
+                qs = qs.filter(**kwargs).exclude(arquivo=None)
 
         if situacoes_search:
             situacoes_search = situacoes_search.split(',')
@@ -1228,155 +1237,6 @@ class DataTableEntes(BaseDatatableView):
                 escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")
                        ) if item.data_publicacao_acordo else '',
                 escape(item.get_situacao_componentes())
-            ])
-        return json_data
-
-
-class DataTablePlanoTrabalho(BaseDatatableView):
-    max_display_length = 150
-
-    def ordering(self, qs):
-        """ Get parameters from the request and prepare order by clause
-        """
-
-        # Number of columns that are used in sorting
-        sorting_cols = 0
-        if self.pre_camel_case_notation:
-            try:
-                sorting_cols = int(self._querydict.get('iSortingCols', 0))
-            except ValueError:
-                sorting_cols = 0
-        else:
-            sort_key = 'order[{0}][column]'.format(sorting_cols)
-            while sort_key in self._querydict:
-                sorting_cols += 1
-                sort_key = 'order[{0}][column]'.format(sorting_cols)
-
-        order = []
-        order_columns = self.get_order_columns()
-
-        for i in range(sorting_cols):
-            # sorting column
-            sort_dir = 'asc'
-            try:
-                if self.pre_camel_case_notation:
-                    sort_col = int(self._querydict.get('iSortCol_{0}'.format(i)))
-                    # sorting order
-                    sort_dir = self._querydict.get('sSortDir_{0}'.format(i))
-                else:
-                    sort_col = int(self._querydict.get('order[{0}][column]'.format(i)))
-                    # sorting order
-                    sort_dir = self._querydict.get('order[{0}][dir]'.format(i))
-            except ValueError:
-                sort_col = 0
-
-            sdir = '-' if sort_dir == 'desc' else ''
-            sortcol = order_columns[sort_col]
-
-            if isinstance(sortcol, list):
-                for sc in sortcol:
-                    order.append('{0}{1}'.format(sdir, sc.replace('.', '__')))
-            else:
-                order.append('{0}{1}'.format(sdir, sortcol.replace('.', '__')))
-
-        if order:
-            if "ente_federado" in order:
-                return qs.order_by("ente_federado__nome")
-
-            if "-ente_federado" in order:
-                return qs.order_by("-ente_federado__nome")
-
-            return qs.order_by(*order)
-
-        return qs
-
-    def get_initial_queryset(self):
-        sistema = SistemaCultura.sistema.values_list('id', flat=True)
-
-        return SistemaCultura.objects.filter(id__in=sistema).filter(
-            ente_federado__isnull=False)
-
-        return SistemaCultura.objects.filter(id__in=sistema)
-
-    def filter_queryset(self, qs):
-        search = self.request.POST.get('search[value]', None)
-        custom_search = self.request.POST.get('columns[0][search][value]', None)
-        componentes_search = self.request.POST.get('columns[1][search][value]', None)
-        situacoes_search = self.request.POST.get('columns[2][search][value]', None)
-        situacoes_componente_search = self.request.POST.get(
-            'columns[2][search][value]', None)
-        tipo_ente_search = self.request.POST.get('columns[3][search][value]', None)
-
-        if search:
-            query = Q()
-            filtros_queryset = [
-                Q(ente_federado__nome__unaccent__icontains=search),
-                Q(gestor__nome__unaccent__icontains=search),
-            ]
-            estados_para_pesquisa = []
-            for tupla_estado_processo in LISTA_ESTADOS_PROCESSO:
-
-                contem_pesquisa = \
-                    True if search.lower() in tupla_estado_processo[1].lower() \
-                        else False
-                if contem_pesquisa:
-                    estados_para_pesquisa.append(
-                        Q(estado_processo=tupla_estado_processo[0])
-                    )
-
-            filtros_queryset.extend(estados_para_pesquisa)
-
-            for filtro in filtros_queryset:
-                query |= filtro
-
-            qs = qs.filter(query)
-
-        if custom_search:
-            qs = qs.filter(ente_federado__cod_ibge__startswith=custom_search)
-
-        if componentes_search:
-            componentes = {
-                0: "legislacao",
-                1: "orgao_gestor",
-                2: "fundo_cultura",
-                3: "conselho",
-                4: "plano",
-            }
-
-            componentes_search = componentes_search.split(',')
-
-            for id in componentes_search:
-                nome_componente = componentes.get(int(id))
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [2, 3]}
-                qs = qs.filter(**kwargs)
-
-        if situacoes_search:
-            situacoes_search = situacoes_search.split(',')
-            qs = qs.filter(estado_processo__in=situacoes_search)
-
-        if tipo_ente_search:
-            if tipo_ente_search == 'municipio':
-                qs = qs.filter(ente_federado__cod_ibge__gte=99)
-            elif tipo_ente_search == 'estado':
-                qs = qs.filter(ente_federado__cod_ibge__lte=99)
-
-        return qs
-
-    def prepare_results(self, qs):
-        json_data = []
-
-        for item in qs:
-            json_data.append([
-                escape(item.id),
-                escape(item.ente_federado),
-                escape(item.gestor.nome) if item.gestor else '',
-                escape(item.get_estado_processo_display()),
-                escape(item.ente_federado.cod_ibge) if item.ente_federado else '',
-                escape(
-                    item.gestor.termo_posse.url if item.gestor and item.gestor.termo_posse else ''
-                ),
-                escape(item.data_publicacao_acordo.strftime("%d/%m/%Y")
-                       ) if item.data_publicacao_acordo else '',
             ])
         return json_data
 
@@ -1497,73 +1357,73 @@ class DataTableUsuarios(BaseDatatableView):
         return json_data
 
 
-# class DataTablePlanoTrabalho(BaseDatatableView):
-#     @method_decorator(user_passes_test(scdc_user_group_required))
-#     def dispatch(self, *args, **kwargs):
-#         return super(DataTablePlanoTrabalho, self).dispatch(*args, **kwargs)
+class DataTablePlanoTrabalho(BaseDatatableView):
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(DataTablePlanoTrabalho, self).dispatch(*args, **kwargs)
 
-#     def get_initial_queryset(self):
-#         sistemas = SistemaCultura.sistema.values_list('id', flat=True)
-#         sistemas = SistemaCultura.objects.filter(id__in=sistemas, estado_processo='6')
-#         componente = self.request.POST.get('componente', None)
+    def get_initial_queryset(self):
+        sistemas = SistemaCultura.sistema.values_list('id', flat=True)
+        sistemas = SistemaCultura.objects.filter(id__in=sistemas, estado_processo='6')
+        componente = self.request.POST.get('componente', None)
 
-#         if componente == 'conselho':
-#             sistemas = sistemas.filter((Q(conselho__lei__situacao=1)
-#                                         & ~Q(conselho__lei__arquivo='')) |
-#                                        (Q(conselho__situacao=1) & ~Q(conselho__arquivo='')))
-#         else:
-#             kwargs = {'{0}__situacao'.format(componente): 1}
-#             sistemas = sistemas.filter(**kwargs)
-#             kwargs = {'{0}__arquivo'.format(componente): ''}
-#             sistemas = sistemas.exclude(**kwargs)
+        if componente == 'conselho':
+            sistemas = sistemas.filter((Q(conselho__lei__situacao=1)
+                                        & ~Q(conselho__lei__arquivo='')) |
+                                       (Q(conselho__situacao=1) & ~Q(conselho__arquivo='')))
+        else:
+            kwargs = {'{0}__situacao'.format(componente): 1}
+            sistemas = sistemas.filter(**kwargs)
+            kwargs = {'{0}__arquivo'.format(componente): ''}
+            sistemas = sistemas.exclude(**kwargs)
 
-#         return sistemas
+        return sistemas
 
-#     def filter_queryset(self, qs):
-#         search = self.request.POST.get('search[value]', None)
-#         componente = self.request.POST.get('componente', None)
+    def filter_queryset(self, qs):
+        search = self.request.POST.get('search[value]', None)
+        componente = self.request.POST.get('componente', None)
 
-#         where = Q(ente_federado__nome__unaccent__icontains=search)
-#         where |= Q(sede__cnpj__contains=search)
+        where = Q(ente_federado__nome__unaccent__icontains=search)
+        where |= Q(sede__cnpj__contains=search)
 
-#         if componente == 'fundo_cultura':
-#             where |= Q(fundo_cultura__cnpj__contains=search)
+        if componente == 'fundo_cultura':
+            where |= Q(fundo_cultura__cnpj__contains=search)
 
-#         if search:
-#             qs = qs.filter(where)
+        if search:
+            qs = qs.filter(where)
 
-#         return qs
+        return qs
 
-#     def prepare_results(self, qs):
-#         json_data = []
-#         componente = self.request.POST.get('componente', None)
-#         for item in qs:
-#             json_response = [
-#                 item.id,
-#                 item.ente_federado.__str__(),
-#                 escape(item.sede.cnpj) if item.sede else '',
-#                 getattr(item, componente).arquivo.url if getattr(
-#                     item, componente).arquivo else '',
-#                 componente,
-#             ]
-#             if (componente == 'fundo_cultura'):
-#                 json_response[2] = [
-#                     escape(item.sede.cnpj) if item.sede else '',
-#                     escape(item.fundo_cultura.cnpj) if item.fundo_cultura.cnpj else '',
-#                 ]
-#                 if getattr(item.fundo_cultura, 'comprovante_cnpj', None):
-#                     json_response.append(
-#                         item.fundo_cultura.comprovante_cnpj.arquivo.url
-#                     )
+    def prepare_results(self, qs):
+        json_data = []
+        componente = self.request.POST.get('componente', None)
+        for item in qs:
+            json_response = [
+                item.id,
+                item.ente_federado.__str__(),
+                escape(item.sede.cnpj) if item.sede else '',
+                getattr(item, componente).arquivo.url if getattr(
+                    item, componente).arquivo else '',
+                componente,
+            ]
+            if (componente == 'fundo_cultura'):
+                json_response[2] = [
+                    escape(item.sede.cnpj) if item.sede else '',
+                    escape(item.fundo_cultura.cnpj) if item.fundo_cultura.cnpj else '',
+                ]
+                if getattr(item.fundo_cultura, 'comprovante_cnpj', None):
+                    json_response.append(
+                        item.fundo_cultura.comprovante_cnpj.arquivo.url
+                    )
 
-#             if getattr(getattr(item, componente), 'lei', None):
-#                 json_response.append(
-#                     getattr(item, componente).lei.arquivo.url
-#                 )
+            if getattr(getattr(item, componente), 'lei', None):
+                json_response.append(
+                    getattr(item, componente).lei.arquivo.url
+                )
 
-#             json_data.append(json_response)
+            json_data.append(json_response)
 
-#         return json_data
+        return json_data
 
 
 class DataTableListarDocumentos(BaseDatatableView):
