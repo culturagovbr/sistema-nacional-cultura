@@ -196,6 +196,7 @@ class EnteFederadoSerializer(hal_serializers.HalModelSerializer):
             "territorio",
             "populacao",
             "idh",
+            "pib",
             "is_municipio",
             "sigla")
 
