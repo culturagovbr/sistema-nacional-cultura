@@ -1131,11 +1131,7 @@ class DataTableEntes(BaseDatatableView):
         situacao_componentes_search = self.request.POST.get(
             'columns[4][search][value]', None)
         tipo_ente_search = self.request.POST.get('columns[5][search][value]', None)
-        # pendente_search =  self.request.POST.get('columns[7][search][value]', None)
 
-        print('filtros:')
-        for i in range(1, 5):
-            print(i, self.request.POST.get('columns['+str(i)+'][search][value]', None))
 
         if search:
             query = Q()
@@ -1190,12 +1186,10 @@ class DataTableEntes(BaseDatatableView):
             }
 
             pendente_componentes_search = pendente_componentes_search.split(',')
-            print(pendente_componentes_search)
 
             for id in pendente_componentes_search:
                 nome_componente = componentes.get(int(id))
-                print('componente filtrado', nome_componente)
-                kwargs = {'{0}__situacao__in'.format(nome_componente): [1]}
+                kwargs = {'{0}__situacao__in'.format(nome_componente): [4,5,6]}
                 qs = qs.filter(**kwargs).exclude()
 
 
@@ -1209,11 +1203,9 @@ class DataTableEntes(BaseDatatableView):
             }
 
             situacao_componentes_search = situacao_componentes_search.split(',')
-            print(situacao_componentes_search)
 
             for id in situacao_componentes_search:
                 nome_componente = componentes.get(int(id))
-                print('componente filtrado', nome_componente)
                 kwargs = {'{0}__situacao__in'.format(nome_componente): [4]}
                 qs = qs.filter(**kwargs).exclude(arquivo=None)
 
