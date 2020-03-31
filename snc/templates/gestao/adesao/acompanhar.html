@@ -144,7 +144,6 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            console.log(data)
             if(data[7].length == 243 || data[7].length == 245){
               return ''
             }
@@ -187,7 +186,7 @@ $(document).ready(function(){
 
       $('#filtro-componente').html(`
         <select title="filtrar concluídos" data-style="btn btn-info btn-sm" data-class="selectpicker" multiple>
-          <option value="0">Criação do Sistema1</option>
+          <option value="0">Criação do Sistema</option>
           <option value="1">Órgão Gestor</option>
           <option value="2">Fundo de Cultura</option>
           <option value="3">Conselho Cultural</option>
