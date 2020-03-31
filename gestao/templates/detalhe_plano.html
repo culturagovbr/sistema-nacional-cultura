@@ -21,8 +21,9 @@
                           <div class="card-icon">
                             <i class="material-icons">list_alt</i>
                           </div>
-                          <p class="card-category">Criação do Sistema - Lei</p>
-                          <p class="card-category">Data de inserção: {{ ente.legislacao.data_publicacao }}</p>
+                         
+                          <p class="card-category">Criação do Sistema - Lei </p>
+                          <p class="card-category">Data de inserção: {{ ente.legislacao.data_envio }}</p>
                           <h3 class="card-title">
                               {% if ente.legislacao.situacao == 1 %}
                                   {% if ente.legislacao.diligencia %}
@@ -74,7 +75,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Órgão Gestor - Ato normativo</p>
-                          <p class="card-category">Data de inserção: {{ ente.orgao_gestor.data_publicacao}}</p>
+                          <p class="card-category">Data de inserção: {{ ente.orgao_gestor.data_envio}}</p>
                           <h3 class="card-title">
                               {% if ente.orgao_gestor.situacao == 1 %}
                                   {% if ente.orgao_gestor.diligencia %}
@@ -126,7 +127,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Fundo de Cultura - Lei</p>
-                          <p class="card-category">Data de inserção: {{ ente.fundo_cultura.data_publicacao}}</p>
+                          <p class="card-category">Data de inserção: {{ ente.fundo_cultura.data_envio}}</p>
                           <h3 class="card-title">
                               {% if ente.fundo_cultura.situacao == 1 %}
                                   {% if ente.fundo_cultura.diligencia %}
@@ -178,7 +179,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Plano de Cultura - Lei</p>
-                          <p class="card-category">Data de inserção: {{ ente.plano.data_publicacao}}</p>
+                          <p class="card-category">Data de inserção: {{ ente.plano.data_envio}}</p>
                           <h3 class="card-title">
                               {% if ente.plano.situacao == 1 %}
                                   {% if ente.plano.diligencia %}
@@ -330,7 +331,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Conselho Cultural - Ata</p>
-                          <p class="card-category">Data de inserção: {{ ente.conselho.data_publicacao}}</p>
+                          <p class="card-category">Data de inserção: {{ ente.conselho.data_envio}}</p>
                           <h3 class="card-title">
                               {% if ente.conselho.situacao == 1 %}
                                   {% if ente.conselho.diligencia %}
@@ -381,7 +382,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Fundo Cultural - Comprovante CNPJ</p>
-                          <p class="card-category">Data de inserção: {{ ente.fundo_cultura.comprovante_cnpj.data_publicacao}}</p>
+                          <p class="card-category">Data de inserção: {{ ente.fundo_cultura.comprovante_cnpj.data_envio}}</p>
                           <h3 class="card-title">
                               {% if ente.fundo_cultura.comprovante_cnpj.situacao == 1 %}
                                   {% if ente.fundo_cultura.comprovante_cnpj.diligencia %}
@@ -433,7 +434,7 @@
                             <i class="material-icons">list_alt</i>
                           </div>
                           <p class="card-category">Conselho Cultural - Lei</p>
-                          <p class="card-category">Data de inserção: {{ ente.conselho.lei.data_publicacao }}</p>
+                          <p class="card-category">Data de inserção: {{ ente.conselho.lei.data_envio }}</p>
                           <h3 class="card-title">
                               {% if ente.conselho.lei.situacao == 1 %}
                                   {% if ente.conselho.lei.diligencia %}

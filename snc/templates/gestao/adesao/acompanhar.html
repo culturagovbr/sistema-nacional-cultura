@@ -144,7 +144,8 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            if(data[7].length == 243){
+            console.log(data)
+            if(data[7].length == 243 || data[7].length == 245){
               return ''
             }
             if (data[6].length != 0 && (data[7].length > 3 && data[7].length != 243) ){
@@ -190,7 +191,7 @@ $(document).ready(function(){
           <option value="1">Órgão Gestor</option>
           <option value="2">Fundo de Cultura</option>
           <option value="3">Conselho Cultural</option>
-          <option value="4">Plano Cultura</option>
+          <option value="4">Plano de Cultura</option>
         </select>
       `);
 
@@ -211,7 +212,7 @@ $(document).ready(function(){
           <option value="1">Órgão Gestor</option>
           <option value="2">Fundo de Cultura</option>
           <option value="3">Conselho Cultural</option>
-          <option value="4">Plano Cultura</option>
+          <option value="4">Plano de Cultura</option>
         </select>
       `);
 
