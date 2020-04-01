@@ -1191,11 +1191,11 @@ class DataTableEntes(BaseDatatableView):
                 nome_componente = componentes.get(int(id))
                 kwargs_exclude = {'{0}__situacao__in'.format(nome_componente): [
                     0, 2, 3, 4, 5, 6]}
-                kwargs_pendentes = {'{0}__situacao__in'.format(nome_componente): [
-                    1]}
+                kwargs_pendentes = {'{0}__situacao__in'.format(nome_componente): [1]}
                 kwargs_arquivos = {'{0}__arquivo'.format(nome_componente): ''}
                 qs = qs.filter(**kwargs_pendentes).exclude(
-                    **kwargs_exclude).exclude(**kwargs_arquivos)
+                    **kwargs_exclude)
+                qs = qs.exclude(**kwargs_arquivos)
 
         if situacao_componentes_search:
             componentes = {
