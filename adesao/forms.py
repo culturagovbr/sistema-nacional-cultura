@@ -125,18 +125,17 @@ class CadastrarGestor(ModelForm):
         content_types=content_types,
         max_upload_size=52428800)
 
-
     def __init__(self, *args, **kwargs):
         logged_user = kwargs.pop('logged_user')
         super(CadastrarGestor, self).__init__(*args, **kwargs)
-
+        print('teste')
         if logged_user.is_staff:
             self.fields['rg_copia'].widget = FileUploadWidget(attrs={
                 'label': 'Cópia do RG'
             })
             self.fields['cpf_copia'].widget = FileUploadWidget(attrs={
                 'label': 'Cópia do CPF'
-                })
+            })
             self.fields['termo_posse'].widget = FileUploadWidget(attrs={
                 'label': 'Cópia do Termo de Posse'
             })
