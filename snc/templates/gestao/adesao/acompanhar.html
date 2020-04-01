@@ -144,6 +144,7 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
+            console.log(data)
             if(data[7].length == 243 || data[7].length == 245){
               return ''
             }
