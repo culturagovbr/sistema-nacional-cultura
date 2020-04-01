@@ -196,6 +196,7 @@ class EnteFederadoSerializer(hal_serializers.HalModelSerializer):
             "territorio",
             "populacao",
             "idh",
+            "pib",
             "is_municipio",
             "sigla")
 
@@ -208,12 +209,23 @@ class GestorSerializer(hal_serializers.HalModelSerializer):
         model = Gestor
         fields = ("email_institucional", "nome_prefeito", "termo_posse_prefeito")
 
+class GestorCulturaSerializer(hal_serializers.HalModelSerializer):
+    nome_gestor_cultura = serializers.CharField(source='nome')
+    cargo_gestor_cultura = serializers.CharField(source='cargo')
+    email_institucional = serializers.CharField()
+    telefone = serializers.CharField(source='telefone_um')
+
+    class Meta:
+        model = Gestor
+        fields = ("nome_gestor_cultura", "cargo_gestor_cultura", "email_institucional", "telefone")
+
 
 class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
     self = HalHyperlinkedIdentityField(view_name='api:sistemacultura-detail')
     acoes_plano_trabalho = serializers.SerializerMethodField()
     ente_federado = EnteFederadoSerializer()
     governo = GestorSerializer(source='gestor')
+    cultura = GestorCulturaSerializer(source='gestor_cultura')
     situacao_adesao = serializers.CharField(source='get_estado_processo_display')
     cod_situacao_adesao = serializers.CharField(source='estado_processo')
     data_adesao = serializers.DateField(source='data_publicacao_acordo')
@@ -233,6 +245,7 @@ class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
             "acoes_plano_trabalho",
             "ente_federado",
             "governo",
+            "cultura",
             "conselho",
             "sede")
 
