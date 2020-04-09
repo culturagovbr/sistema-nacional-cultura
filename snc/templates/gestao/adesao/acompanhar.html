@@ -144,7 +144,7 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            console.log(data[7].length)
+            console.log(data)
             if(data[7].length == 243 || data[7].length == 245 || data[7].length == 93){
               return ''
             }
@@ -269,6 +269,12 @@ $(document).ready(function(){
       `);
 
       $('.filter-option-inner-inner').attr('style', 'color:#fff');
+      $( "#filtro-pendente select" ).change(function() {
+        $('#filtro-situacao option[value="6"]').prop("selected", true).on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+          var pesquisa_filtro = $(this).val();
+          tabela.columns(2).search(pesquisa_filtro).draw()
+        });
+      });
       $.ajax({
         type: 'OPTIONS',
         url: '/api/v2/sistemadeculturalocal/',
