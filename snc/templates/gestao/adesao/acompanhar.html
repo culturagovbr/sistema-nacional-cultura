@@ -144,16 +144,45 @@ $(document).ready(function(){
           data: null,
           name: "gestor__nome",
           render: (data) => {
-            console.log(data)
-            if(data[7].length == 243 || data[7].length == 245 || data[7].length == 93){
-              return ''
+            
+            var str =  data[7];
+            for (i = 0; i < data[7].length; i++) {
+              var str = str.replace("&#39", "");
+              var str = str.replace(";", "");
+              var str = str.replace("{", "");
+              var str = str.replace("}", "");
             }
-            if (data[6].length != 0 && (data[7].length > 3 && data[7].length != 243) ){
-              return `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
+           
+            str = str.split(",")
+            var countlink  = 0
+            for (i = 0; i < str.length; i++) {
+                var link  = ''
+                var arrstr = str[i].split(":")
+                if(arrstr[0] == 'legislacao' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+                if(arrstr[0] == ' fundo_cultura' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+                if(arrstr[0] == ' conselho' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }if(arrstr[0] == ' plano' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+
+                if(countlink > 0 &&  countlink < 7  && (data[7].length != 243 && data[7].length != 237 )){
+                   return  `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
                       </a>`
+                }else{
+                   return ''
+                }
+                
             }
-            return ''
+
+            
+
+            
           }
         },
         {
