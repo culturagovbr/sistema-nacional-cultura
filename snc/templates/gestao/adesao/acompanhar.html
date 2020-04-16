@@ -169,7 +169,8 @@ $(document).ready(function(){
                 }if(arrstr[0] == ' plano' && arrstr[1] == ' Avaliando anexo'){
                     countlink++
                 }
-
+                console.log(countlink)
+                console.log((data[7].length != 243 && data[7].length != 237 ))
                 if(countlink > 0 &&  countlink < 7  && (data[7].length != 243 && data[7].length != 237 )){
                    return  `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
                         <i class="material-icons">gavel</i>
