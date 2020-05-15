@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block js %}
+<script type="text/javascript">
+  // Verificação do ente federado
+  document.querySelector('select[name="ente_federado"]').onchange = function () {
+    //alert($('#id_ente_federado option:selected').text());
+    var ente_federado = $('#id_ente_federado option:selected').val();
+    //alert('/ajax/validate_username/?ente=' + ente);
+    var form = $(this).closest("form");
+    $.ajax({
+      url: '{% url "adesao:validate_username" %}',
+      data: {
+        'codigo_ibge_form': ente_federado
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.validacao) {
+          //alert(data.error_message);
+          document.getElementById("aviso").style.display = "block";
+          //desabilita o botão se o conteúdo do input ficar em branco
+          document.getElementById("btn_salvar").disabled = true;
+        } else {
+          //alert("nada");
+          document.getElementById("aviso").style.display = "none";
+          //habilita o botão
+          document.getElementById("btn_salvar").disabled = false;
+          // libera o check verde de sucesso
+          //document.getElementById("check").style.display = "block";
+        }
+      }
+    });
+  };
+
+  // Verificação do CNPJ
+  function BuscaCNPJ(CNPJ) {
+    CNPJ = CNPJ.replace(/[^\d]+/g, '');
+    $.ajax({
+      type: "GET",
+      url: "https://www.receitaws.com.br/v1/cnpj/" + CNPJ,
+      dataType: "jsonp",
+      // função para de sucesso
+      success: function (data) {
+        if (data != null) {
+          //alert(data)
+          // Nome fantasia
+          $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data.nome);
+          document.getElementById("razao_social").style.display = "block";
+
+          $("input[name='telefone_um']").val(data.telefone);
+          $("input[name='email_institucional']").val(data.email);
+
+          //var cep = data.cep.replace(/[^\d]+/g, '');
+          $("input[name='cep']").val(data.cep);
+          //pesquisacep(cep, '');
+          //BuscaCep(cep, '');
+          $("input[name='id_endereco']").val(data.numero);
+          $("input[name='id_bairro']").val(data.complemento);
+        } else {
+          $("#erro-cnpj").html("<div class='Erro'>" +
+            "Mensagem: <b>" + data.status + ":</b> <b>" + data.message +
+            " </div>");
+        }
+      }
+    });
+  };
+
+  // Pesquisar CEP
+  function limpa_formulário_cep() {
+    //Limpa valores do formulário de cep.
+    document.getElementById('id_endereco').value = ("");
+    document.getElementById('id_bairro').value = ("");
+  }
+
+  function meu_callback(conteudo) {
+    if (!("erro" in conteudo)) {
+      document.getElementById('id_endereco').value = (conteudo.logradouro);
+      document.getElementById('id_bairro').value = (conteudo.bairro);
+    } else {
+      //CEP não Encontrado.
+      limpa_formulário_cep();
+      alert("CEP não encontrado.");
+    }
+  }
+
+  function pesquisacep(valor) {
+
+    //Nova variável "cep" somente com dígitos.
+    var cep = valor.replace(/\D/g, '');
+
+    //Verifica se campo cep possui valor informado.
+    if (cep != "") {
+
+      //Expressão regular para validar o CEP.
+      var validacep = /^[0-9]{8}$/;
+
+      //Valida o formato do CEP.
+      if (validacep.test(cep)) {
+
+        //Preenche os campos com "..." enquanto consulta webservice.
+        document.getElementById('id_endereco').value = "...";
+        document.getElementById('id_bairro').value = "...";
+
+        //Cria um elemento javascript.
+        var script = document.createElement('script');
+
+        //Sincroniza com o callback.
+        script.src = 'https://viacep.com.br/ws/' + cep + '/json/?callback=meu_callback';
+
+        //Insere script no documento e carrega o conteúdo.
+        document.body.appendChild(script);
+
+      } //end if.
+      else {
+        //cep é inválido.
+        limpa_formulário_cep();
+        alert("Formato de CEP inválido.");
+      }
+    } //end if.
+    else {
+      //cep sem valor, limpa formulário.
+      limpa_formulário_cep();
+    }
+  };
+
+  // Valida Cnpj
+  function _cnpj(valor) {
+
+    cnpj = valor.replace(/[^\d]+/g, '');
+
+    if (cnpj == '') return false;
+
+    if (cnpj.length != 14)
+      return false;
+
+    if (cnpj == "00000000000000" ||
+      cnpj == "11111111111111" ||
+      cnpj == "22222222222222" ||
+      cnpj == "33333333333333" ||
+      cnpj == "44444444444444" ||
+      cnpj == "55555555555555" ||
+      cnpj == "66666666666666" ||
+      cnpj == "77777777777777" ||
+      cnpj == "88888888888888" ||
+      cnpj == "99999999999999")
+      return false;
+
+    tamanho = cnpj.length - 2
+    numeros = cnpj.substring(0, tamanho);
+    digitos = cnpj.substring(tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+        pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0)) return false;
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+        pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+      return false;
+
+    return true;
+  }
+
+  // Validando o cnpj e já buscando os dados via API
+  function validarCNPJ(valor1, valor2) {
+    if (!_cnpj(valor1.value)) {
+      document.getElementById("cnpj_invalido").style.display = "block";
+      valor1.value = "";
+      $("#id_cnpj").focus();
+      document.getElementById("razao_social").style.display = "none";
+    } else {
+      BuscaCNPJ(valor2.value);
+      document.getElementById("cnpj_invalido").style.display = "none";
+      $("#id_cpf").focus();
+
+    }
+  }
+
+  // Formata o cnpj
+  function mascaraMutuario(o, f) {
+    v_obj = o
+    v_fun = f
+    setTimeout('execmascara()', 1)
+  }
+
+  function execmascara() {
+    v_obj.value = v_fun(v_obj.value)
+  }
+
+  function cpfCnpj(v) {
+
+    //Remove tudo o que nÃ£o Ã© dÃ­gito
+    v = v.replace(/\D/g, "")
+
+    if (v.length < 14) { //CPF
+
+      //Coloca um ponto entre o terceiro e o quarto dÃ­gitos
+      v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+      //Coloca um ponto entre o terceiro e o quarto dÃ­gitos
+      //de novo (para o segundo bloco de nÃºmeros)
+      v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+      //Coloca um hÃ­fen entre o terceiro e o quarto dÃ­gitos
+      v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+
+    } else { //CNPJ
+
+      //Coloca ponto entre o segundo e o terceiro dÃ­gitos
+      v = v.replace(/^(\d{2})(\d)/, "$1.$2")
+
+      //Coloca ponto entre o quinto e o sexto dÃ­gitos
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+
+      //Coloca uma barra entre o oitavo e o nono dÃ­gitos
+      v = v.replace(/\.(\d{3})(\d)/, ".$1/$2")
+
+      //Coloca um hÃ­fen depois do bloco de quatro dÃ­gitos
+      v = v.replace(/(\d{4})(\d)/, "$1-$2")
+
+    }
+
+    return v
+
+  }
+</script>
+<style>
+  #aviso {
+    display: none;
+    border: 1px solid #721c24;
+    background: #f8d7da;
+    color: #721c24;
+    margin-top: 29px;
+    margin-bottom: -29px
+  }
+
+  #aviso_cnpj {
+    display: none;
+    border: 1px solid #721c24;
+    background: #f8d7da;
+    color: #721c24;
+    margin-top: 29px;
+    margin-bottom: -29px
+  }
+
+  #cnpj_invalido {
+    display: none;
+    border: 1px solid #721c24;
+    background: #f8d7da;
+    color: #721c24;
+    margin-top: 29px;
+    margin-bottom: -29px
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div align="center">
+  <h3>Cadastro de Ente Federado</h3>
+  <p>Preencha o formulário abaixo com os dados do município ou estado.</p>
+</div>
+<div style="float: right; padding-bottom: 25px">
+  <span style="color:#ff0000;">( * ) Campo(s) Obrigatório(s)</span>
+</div>
+<br>
+<form class="form-horizontal" method="post" enctype="multipart/form-data" id="form1"
+      data-validate-username-url="{% url 'adesao:validate_username' %}" action="{%url 'adesao:cadastrar_sistema' %}">
+  {% csrf_token %}
+
+  <span id="aviso" class="alert alert-danger" role="alert">
+    O Ente Federado já está cadastrado!
+    <br>
+    Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
+  </span>
+  <span id="aviso_cnpj" class="alert alert-danger" role="alert">
+    O CNPJ já está cadastrado! <br>
+    Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
+ </span>
+  <span id="cnpj_invalido" class="alert alert-danger" role="alert">CNPJ Inválido!</span>
+
+  <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DADOS ENTE FEDERADO
+    </legend>
+    <div class="form-group">
+      <label for="ente_federado" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span
+        style="color:red;font-size:10px">*</span></label>
+      <div class="col-sm-2">
+        {% render_field form_sistema.ente_federado class="form-control" %}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cnpj" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou Município) <span
+        style="color:red;font-size:10px">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" name="cnpj" maxlength="18" class="form-control" required id="id_cnpj"
+               onBlur="validarCNPJ(this, this);" onkeypress='mascaraMutuario(this, cpfCnpj)'>
+        <input type="text" name="razao_social" maxlength="18" class="form-control" id="razao_social"
+               style="display:none; border: 1px solid #155724; color:#155724; font-size: 12px; background: #d4edda; margin-top: 3px; padding: 3px">
+      </div>
+    </div>
+  </fieldset>
+  <div class="row">
+    {{form.media}}
+    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DADOS DO
+        PREFEITO/GOVERNADOR
+      </legend>
+      <div class="form-group">
+        <label for="id_cpf" class="col-sm-4 control-label">CPF do Prefeito/Governador <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-4">
+          {% render_field form_gestor.cpf class="form-control cpf" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="rg" class="col-sm-4 control-label">RG do Prefeito/Governador<span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-3">
+          {% render_field form_gestor.rg class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="orgao_expeditor_rg" class="col-sm-4 control-label">Órgão Expeditor<span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-3">
+          {% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="estado_expeditor" class="col-sm-4 control-label">UF <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-2">
+          {% render_field form_gestor.estado_expeditor class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="nome" class="col-sm-4 control-label">Nome do Prefeito/Governador <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-8">
+          {% render_field form_gestor.nome class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email_institucional" class="col-sm-4 control-label">E-mail Institucional <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-8">
+          {% render_field form_gestor.email_institucional class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email_pessoal" class="col-sm-4 control-label">E-mail Pessoal </label>
+        <div class="col-sm-8">
+          {% render_field form_gestor.email_pessoal class="form-control" %}
+        </div>
+      </div>
+    </fieldset>
+
+
+    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">ENDEREREÇO DO
+        PREFEITO/GOVERNADOR
+      </legend>
+      <div class="form-group">
+        <label for="cep" class="col-sm-4 control-label">CEP <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-4">
+          <input type="text" name="cep" maxlength="10" class="form-control" required="" id="id_cep"
+                 onchange="pesquisacep(this.value, '')">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Endereço Institucional <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-8">
+          <textarea name="endereco" cols="40" rows="10" class="form-control" required="" id="id_endereco"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-offset-1 col-sm-3 control-label">Complemento
+          <span style="color:red;font-size:10px"></span></label>
+        <div class="col-sm-3">
+          {% render_field form_sede.complemento class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Bairro <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-4">
+          {% render_field form_sede.bairro class="form-control" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-offset-1 col-sm-3 control-label">Site Institucional</label>
+        <div class="col-sm-4">
+          {% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-offset-1 col-sm-3 control-label">1º Telefone Institucional <span
+          style="color:red;font-size:10px">*</span></label>
+        <div class="col-sm-4">
+          {% render_field form_sede.telefone_um class="form-control telefone" %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-offset-1 col-sm-3 control-label">2º Telefone Institucional </label>
+        <div class="col-sm-4">
+          {% render_field form_sede.telefone_dois class="form-control telefone" %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-offset-1 col-sm-3 control-label">3º Telefone Institucional</label>
+        <div class="col-sm-4">
+          {% render_field form_sede.telefone_tres class="form-control telefone" %}
+        </div>
+      </div>
+
+
+    </fieldset>
+
+
+    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DOCUMENTOS DO
+        PREFEITO/GOVERNADOR
+      </legend>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-4">
+          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+            <legend style="font-size: 12px; font-weight: bold;">Termo de Posse <span
+              style="color:red;font-size:10px">*</span></legend>
+            <span class="btn btn-default btn-file">
+            <input type="file" name="termo_posse" id="id_termo_posse" required value="{{request.POST.termo_posse}}"/>
+            </span>
+          </fieldset>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-4">
+
+          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+            <legend><strong>Cópia do CPF <span style="color:red;font-size:10px">*</span></strong></legend>
+            <span class="btn btn-default btn-file">
+              <input type="file" name="cpf_copia" id="id_cpf_copia" required value="{{request.POST.cpf_copia}}"/>
+            </span>
+          </fieldset>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-4">
+          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+            <legend style="font-size: 12px; font-weight: bold;">Cópia do RG <span
+              style="color:red;font-size:10px">*</span></legend>
+            <span class="btn btn-default btn-file">
+              <input type="file" name="rg_copia" id="id_rg_copia" required value="{{request.POST.rg_copia}}"/>
+            </span>
+          </fieldset>
+        </div>
+      </div>
+    </fieldset>
+
+  </div>
+  <div style="margin-top: 15px">&nbsp;</div>
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-10">
+      <a class="btn btn-warning" href="{% url 'adesao:home' %}"
+         style="border:1px solid #f6a800;border-radius:4px;display:inline-block;cursor:pointer;font-family:Verdana;font-weight:bold;font-size:13px;padding:6px 10px;text-decoration:none; background: #f6a800; color: white"/>Cancelar</a>
+      <input type="submit" class="btn btn-success" value="Salvar" id="btn_salvar"
+             style="border:1px solid #1659bf;border-radius:4px;display:inline-block;cursor:pointer;font-family:Verdana;font-weight:bold;font-size:13px;padding:6px 10px;text-decoration:none; background: #0a6ebd; color: white"/>
+    </div>
+  </div>
+</form>
+{% endblock content %}

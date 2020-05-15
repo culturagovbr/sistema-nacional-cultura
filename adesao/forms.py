@@ -114,17 +114,9 @@ class CadastrarUsuarioForm(UserCreationForm):
 
 class CadastrarGestor(ModelForm):
     cpf = BRCPFField()
-    termo_posse = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=52428800)
-    rg_copia = RestrictedFileField(
-
-        content_types=content_types,
-        max_upload_size=52428800)
-    cpf_copia = RestrictedFileField(
-        content_types=content_types,
-        max_upload_size=52428800)
-
+    termo_posse = RestrictedFileField(content_types=content_types, max_upload_size=52428800)
+    rg_copia = RestrictedFileField(content_types=content_types, max_upload_size=52428800)
+    cpf_copia = RestrictedFileField(content_types=content_types, max_upload_size=52428800)
 
     def __init__(self, *args, **kwargs):
         logged_user = kwargs.pop('logged_user')
@@ -136,7 +128,7 @@ class CadastrarGestor(ModelForm):
             })
             self.fields['cpf_copia'].widget = FileUploadWidget(attrs={
                 'label': 'Cópia do CPF'
-                })
+            })
             self.fields['termo_posse'].widget = FileUploadWidget(attrs={
                 'label': 'Cópia do Termo de Posse'
             })
@@ -150,7 +142,7 @@ class CadastrarGestor(ModelForm):
 
 
 class CadastrarSede(ModelForm):
-    cnpj = BRCNPJField()
+    # cnpj = BRCNPJField()
 
     class Meta:
         model = Sede
@@ -165,11 +157,11 @@ class CadastrarSistemaCulturaForm(ModelForm):
         if 'ente_federado' in self.changed_data:
             sistema_cultura = SistemaCultura.sistema.filter(
                 ente_federado=self.cleaned_data['ente_federado'])
-
+            '''
             if sistema_cultura:
                 self.add_error(
                     'ente_federado', 'Este ente federado já foi cadastrado!')
-
+            '''
     class Meta:
         model = SistemaCultura
         fields = ('ente_federado', 'conferencia_nacional')

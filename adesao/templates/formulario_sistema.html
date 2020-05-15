@@ -3,8 +3,10 @@
   {{form.media}}
 
   <div class="form-group">
-    <label for="{{ form_gestor.cpf.id_for_label }}" class="col-sm-4 control-label">CPF do Gestor (Prefeito ou Governador) </label>
-    {% comment %} <label for="{{ form_gestor.cpf.id_for_label }}" class="col-sm-4 control-label">CPF do Gestor (Prefeito ou Governador) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.cpf.id_for_label }}" class="col-sm-4 control-label">CPF do Gestor (Prefeito ou
+      Governador) <span style="color:red;font-size:10px">*</span></label>
+    {% comment %} <label for="{{ form_gestor.cpf.id_for_label }}" class="col-sm-4 control-label">CPF do Gestor (Prefeito
+    ou Governador) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-4">
       {% render_field form_gestor.cpf class="form-control cpf" %}
@@ -13,8 +15,10 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_gestor.rg.id_for_label }}" class="col-sm-4 control-label">RG do Gestor (Prefeito ou Governador)  </label>
-    {% comment %} <label for="{{ form_gestor.rg.id_for_label }}" class="col-sm-4 control-label">RG do Gestor (Prefeito ou Governador)  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.rg.id_for_label }}" class="col-sm-4 control-label">RG do Gestor (Prefeito ou Governador)
+      <span style="color:red;font-size:10px">*</span></label>
+    {% comment %} <label for="{{ form_gestor.rg.id_for_label }}" class="col-sm-4 control-label">RG do Gestor (Prefeito
+    ou Governador) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-3">
       {% render_field form_gestor.rg class="form-control" %}
@@ -23,58 +27,73 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão Expeditor  </label>
-    {% comment %} <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão Expeditor  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão Expeditor <span
+      style="color:red;font-size:10px">*</span></label>
+    {% comment %} <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão
+    Expeditor <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-3">
       {% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
     </div>
   </div>
-
   <div class="form-group">
-    <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF  </label>
-    {% comment %} <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF <span
+      style="color:red;font-size:10px">*</span></label>
+    {% comment %} <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF <span
+    style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-2">
       {% render_field form_gestor.estado_expeditor class="form-control" %}
     </div>
   </div>
 
+
   <div class="form-group">
     <div class="col-sm-offset-4 col-sm-4">
-      <span class="btn btn-default btn-file">
-        <strong>Termo de Posse  </strong>
+
+      <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+        <legend style="font-size: 12px; font-weight: bold;">Termo de Posse <span style="color:red;font-size:10px">*</span></legend>
+        <span class="btn btn-default btn-file">
         {% comment %} <strong>Termo de Posse  <span style="color:red;font-size:10px">*</span></strong> {% endcomment %}
         <p>{% render_field form_gestor.termo_posse %}</p>
       </span>
+      </fieldset>
+
+
     </div>
   </div>
 
   <div class="form-group">
     <div class="col-sm-offset-4 col-sm-4">
-      <span class="btn btn-default btn-file">
-        <strong>Cópia do CPF  </strong>
+
+      <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+        <legend><strong>Cópia do CPF <span style="color:red;font-size:10px">*</span></strong></legend>
+
+        <span class="btn btn-default btn-file">
         {% comment %} <strong>Cópia do CPF  <span style="color:red;font-size:10px">*</span></strong> {% endcomment %}
         <p>{% render_field form_gestor.cpf_copia %}</p>
       </span>
+      </fieldset>
     </div>
-
   </div>
 
   <div class="form-group">
     <div class="col-sm-offset-4 col-sm-4">
-      <span class="btn btn-default btn-file">
-        <strong>Cópia do RG  </strong>
+      <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+        <legend style="font-size: 12px; font-weight: bold;">Cópia do RG <span style="color:red;font-size:10px">*</span></legend>
+        <span class="btn btn-default btn-file">
         {% comment %} <span>Cópia do RG  <span style="color:red;font-size:10px">*</span></span> {% endcomment %}
         <p>{% render_field form_gestor.rg_copia %}</p>
       </span>
+      </fieldset>
     </div>
-
   </div>
 
   <div class="form-group">
-    <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor (Prefeito ou Governador)  </label>
-    {% comment %} <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor (Prefeito ou Governador)  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor (Prefeito ou
+      Governador) </label>
+    {% comment %} <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor
+    (Prefeito ou Governador) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-8">
       {% render_field form_gestor.nome class="form-control" %}
@@ -83,8 +102,11 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail Institucional  </label>
-    {% comment %} <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail Institucional  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail
+      Institucional </label>
+    {% comment %} <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail
+    Institucional <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+
 
     <div class="col-sm-8">
       {% render_field form_gestor.email_institucional class="form-control" %}
@@ -93,7 +115,7 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_gestor.email_pessoal.id_for_label }}" class="col-sm-4 control-label">E-mail Pessoal  </label>
+    <label for="{{ form_gestor.email_pessoal.id_for_label }}" class="col-sm-4 control-label">E-mail Pessoal </label>
 
     <div class="col-sm-8">
       {% render_field form_gestor.email_pessoal class="form-control" %}
@@ -102,41 +124,20 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou Município)  </label>
-    {% comment %} <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou Município)  <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou
+      Município) </label>
+    {% comment %} <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado
+    (Estado ou Município) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
     <div class="col-sm-4">
       {% render_field form_sede.cnpj class="form-control cnpj" %}
     </div>
   </div>
 
-  <div class="form-group">
-    <label for="{{ form_sede.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional  <span style="color:red;font-size:10px"></span></label>
-    <div class="col-sm-8">
-      {% render_field form_sede.endereco class="form-control" %}
-    </div>
-  </div>
 
-  <div class="form-group">
-    <label for="{{ form_sede.complemento.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Complemento  <span style="color:red;font-size:10px"></span></label>
-
-    <div class="col-sm-3">
-      {% render_field form_sede.complemento class="form-control" %}
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="{{ form_sede.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro  <span style="color:red;font-size:10px"></span></label>
-
-    <div class="col-sm-4">
-      {% render_field form_sede.bairro class="form-control" %}
-
-    </div>
-
-  </div>
-
-  <div class="form-group">
-    <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP  </label>
-{% comment %} <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP  <span id="hiddencep" style="display:none;color:red;"> (CEP
+    <div class="form-group">
+    <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP </label>
+    {% comment %} <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span
+    id="hiddencep" style="display:none;color:#ff0000;"> (CEP
     inválido)</span> <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-4">
@@ -145,8 +146,41 @@
 
   </div>
 
+
+
   <div class="form-group">
-    <label for="{{ form_sede.endereco_eletronico.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Endereço Eletrônico (Agenda Digital)</label>
+    <label for="{{ form_sede.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional <span
+      style="color:red;font-size:10px"></span></label>
+    <div class="col-sm-8">
+      {% render_field form_sede.endereco class="form-control" %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form_sede.complemento.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Complemento
+      <span style="color:red;font-size:10px"></span></label>
+
+    <div class="col-sm-3">
+      {% render_field form_sede.complemento class="form-control" %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form_sede.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro <span
+      style="color:red;font-size:10px"></span></label>
+
+    <div class="col-sm-4">
+      {% render_field form_sede.bairro class="form-control" %}
+
+    </div>
+
+  </div>
+
+
+
+  <div class="form-group">
+    <label for="{{ form_sede.endereco_eletronico.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Endereço
+      Eletrônico (Agenda Digital)</label>
 
     <div class="col-sm-4">
       {% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
@@ -156,7 +190,8 @@
 
   <div class="form-group">
 
-    <label for="{{ form_sede.telefone_um.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Telefone Institucional (máximo 3)  <span style="color:red;font-size:10px"></span></label>
+    <label for="{{ form_sede.telefone_um.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Telefone
+      Institucional (máximo 3) <span style="color:red;font-size:10px"></span></label>
 
     <div class="col-sm-4">
       {% render_field form_sede.telefone_um class="form-control telefone" %}
