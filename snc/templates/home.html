@@ -4,6 +4,11 @@
       <span class="anchorjs-icon"></span>
     </a>
   </h2>
+
+
+
+
+
     {% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
       <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
           {% csrf_token %}
@@ -31,6 +36,15 @@
             - Encaminhe para assinatura do prefeito. <br>
             - Digitalize e envie para nosso email: snc@cidadania.gov.br
           </div>
+
+
+<div role="alert" style="color: #383d41; background-color: #e2e3e5; border-color: #d6d8db; position: relative; padding: .75rem 1.25rem; margin-bottom: 1rem;border: 1px solid transparent; border-radius: .25rem;">
+<strong>ATENÇÃO!</strong>
+  <br> Caso o Acordo ainda não esteja disponível no menu à esquerda, clique em "Alterar ente federado" e preencha (ou atualize) as informações pendentes.
+</div>
+
+
+
           <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
             promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
             (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
