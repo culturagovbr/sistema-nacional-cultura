@@ -38,25 +38,26 @@
     CNPJ = CNPJ.replace(/[^\d]+/g, '');
     $.ajax({
       type: "GET",
-      url: "https://www.receitaws.com.br/v1/cnpj/" + CNPJ,
+      url: "http://10.0.1.74:8080/infoconv-proxy/api/cnpj/perfil3?listaCNPJ=" + CNPJ,
       dataType: "jsonp",
       // função para de sucesso
       success: function (data) {
         if (data != null) {
           //alert(data)
+          console.log(data['0'])
           // Nome fantasia
-          $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data.nome);
+          $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data['0']['nomeEmpresarial']);
           document.getElementById("razao_social").style.display = "block";
 
-          $("input[name='telefone_um']").val(data.telefone);
-          $("input[name='email_institucional']").val(data.email);
+          $("input[name='telefone_um']").val(data['0']['telefone1']);
+          $("input[name='email_institucional']").val(data['0']['email']);
 
           //var cep = data.cep.replace(/[^\d]+/g, '');
-          $("input[name='cep']").val(data.cep);
+          $("input[name='cep']").val(data['0']['cep']);
           //pesquisacep(cep, '');
           //BuscaCep(cep, '');
-          $("input[name='id_endereco']").val(data.numero);
-          $("input[name='id_bairro']").val(data.complemento);
+          $("input[name='id_endereco']").val(data['0']['logradouro']);
+          $("input[name='id_bairro']").val(data['0']['complemento']);
         } else {
           $("#erro-cnpj").html("<div class='Erro'>" +
             "Mensagem: <b>" + data.status + ":</b> <b>" + data.message +
