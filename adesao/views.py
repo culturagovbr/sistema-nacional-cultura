@@ -374,8 +374,8 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
     def templated_email_get_recipients(self, form):
-        gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
-        gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
+        gestor_pessoal = self.request.session.get('sistema_gestor', 'email_pessoal')
+        gestor_institucional = self.request.session.get('sistema_gestor', 'email_institucional')
         recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal, gestor_pessoal,
                           gestor_institucional]
 
