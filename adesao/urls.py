@@ -60,5 +60,7 @@ urlpatterns = [
 
     # consulta cnpj
     url(r'^ajax/validate_cnpj/$', views.validate_cnpj, name='validate_cnpj'),
+    # valida cnpj
+    url(r'^ajax/search_cnpj/$', views.search_cnpj, name='search_cnpj'),
 
 ]

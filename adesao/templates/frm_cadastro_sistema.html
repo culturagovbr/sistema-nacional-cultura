@@ -37,14 +37,17 @@
   function BuscaCNPJ(CNPJ) {
     CNPJ = CNPJ.replace(/[^\d]+/g, '');
     $.ajax({
-      type: "GET",
-      url: "http://infoconv.turismo.gov.br/infoconv-proxy/api/cnpj/perfil3?listaCNPJ=" + CNPJ,
-      dataType: "jsonp",
+      url: '{% url "adesao:search_cnpj" %}',
+      data: {
+        'cnpj': cnpj
+      },
+      dataType: "json",
       // função para de sucesso
       success: function (data) {
+        console.log(data);
         if (data != null) {
-          //alert(data)
-          console.log(data['0'])
+          alert(data);
+          console.log(data['0']);
           // Nome fantasia
           $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data['0']['nomeEmpresarial']);
           document.getElementById("razao_social").style.display = "block";

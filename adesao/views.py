@@ -1,6 +1,7 @@
 import csv
 import http
 import json
+import requests
 
 import xlwt
 import xlsxwriter
@@ -689,3 +690,17 @@ def validate_cnpj(request):
         data['error_message'] = 'O cnpj já existe'
 
     return JsonResponse(data)
+
+
+def search_cnpj(request):
+    """
+    Função que busca o cnpj informado na base do infoconv
+    :param request:
+    :return:
+    """
+    cnpj = request.GET.get('cnpj', None)
+    url = "http://infoconv.turismo.gov.br/infoconv-proxy/api/cnpj/perfil3?listaCNPJ={0}".format(cnpj)
+    response = requests.get(url)
+    data = response.json()
+
+    return JsonResponse(data, safe=False)
