@@ -67,8 +67,6 @@ urlpatterns = [
         {'template_name': 'registration/mudar_senha_gestao_concluido.html'},
         name='password_change_done_gestao'),
 
-    path(r'^ajax/search_cnpj/$', views.search_cnpj, name='search_cnpj'),
-
     # url(r'^ckeditor/', include('ckeditor.urls')),
     url(r'^exportar/dados.csv', views.exportar_csv, name='exportar_csv'),
     url(r'^exportar/dados.ods', views.exportar_ods, name='exportar_ods'),
