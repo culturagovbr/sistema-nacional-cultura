@@ -694,9 +694,8 @@ def validate_cnpj(request):
 
 def search_cnpj(request):
     """
-    Função que busca o cnpj informado na base do infoconv
-    :param request:
-    :return:
+    Função que busca o cnpj informado na base do infoconv e devolve para o template
+    :return: json data
     """
     cnpj = request.GET.get('cnpj', None)
     url = "http://infoconv.turismo.gov.br/infoconv-proxy/api/cnpj/perfil3?listaCNPJ={0}".format(cnpj)
