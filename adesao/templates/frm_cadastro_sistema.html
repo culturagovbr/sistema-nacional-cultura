@@ -44,9 +44,8 @@
       dataType: "json",
       // função para de sucesso
       success: function (data) {
-        console.log(data);
         if (data != null) {
-          alert(data);
+          //alert(data);
           console.log(data['0']);
           // Nome fantasia
           $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data['0']['nomeEmpresarial']);
