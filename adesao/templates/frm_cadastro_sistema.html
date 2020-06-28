@@ -37,7 +37,7 @@
   function BuscaCNPJ(CNPJ) {
     CNPJ = CNPJ.replace(/[^\d]+/g, '');
     $.ajax({
-      url: "{% url 'adesao:search_cnpj' %}",
+      url: '{% url "adesao:buscacnpj" %}',
       data: {
         'cnpj': cnpj
       },
@@ -45,8 +45,6 @@
       // função para de sucesso
       success: function (data) {
         if (data != null) {
-          //alert(data);
-          console.log(data['0']);
           // Nome fantasia
           $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data['0']['nomeEmpresarial']);
           document.getElementById("razao_social").style.display = "block";
