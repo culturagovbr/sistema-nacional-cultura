@@ -692,7 +692,7 @@ def validate_cnpj(request):
     return JsonResponse(data)
 
 
-def buscacnpj(request):
+def search_cnpj(request):
     """
     Função que busca o cnpj informado na base do infoconv e devolve para o template
     :return: json data
