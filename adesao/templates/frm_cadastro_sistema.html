@@ -37,7 +37,7 @@
   function BuscaCNPJ(CNPJ) {
     CNPJ = CNPJ.replace(/[^\d]+/g, '');
     $.ajax({
-      url: '{% url "adesao:search_cnpj" %}',
+      url: "{% url 'adesao:search_cnpj' %}",
       data: {
         'cnpj': cnpj
       },
