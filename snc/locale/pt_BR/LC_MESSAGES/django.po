@@ -67,8 +67,8 @@ msgid "Sair"
 msgstr "Sair"
 
 #: templates/base.html:96
-msgid "Secretaria Especial da Cultura / Ministério da Cidadania"
-msgstr "Secretaria Especial da Cultura / Ministério da Cidadania"
+msgid "Secretaria Especial da Cultura / Ministério da Turismo"
+msgstr "Secretaria Especial da Cultura / Ministério da Turismo"
 
 #: templates/base.html:97
 msgid "Nome da secretaria"
@@ -85,7 +85,7 @@ msgstr "CEP: 70.068-900 Brasília-DF - (61) 2024-2325|2328|2036 "
 
 #: templates/home.html:5
 msgid "Título da tela home"
-msgstr "Bem vindo ao Sistema Nacional de Cultura"
+msgstr "Bem-vindo ao Sistema Nacional de Cultura"
 
 msgid "Primeiro parágrafo da mensagem da tela home"
 msgstr ""
