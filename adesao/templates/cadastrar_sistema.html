@@ -5,13 +5,19 @@
 <div align="center">
   <h3>Cadastro de Ente Federado</h3>
   <p>Preencha o formulário abaixo com os dados do município ou estado.</p>
+
+</div>
+<div style="float: right; padding-bottom: 25px">
+ <span style="color:#FF0000;">( * ) Campo(s) Obrigatório(s)</span>
 </div>
 
-<form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+<br>
+<form class="form-horizontal" method="post" enctype="multipart/form-data" id="form1">
+  {% csrf_token %}
 	{% if not form_sistema.instance.ente_federado %}
 		<div class="form-group">
-		    <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município) </label>
-		    {% comment %} <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+		    <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span style="color:red;font-size:10px">*</span></label>
+		    {% comment %} <label for="{{ form_sistema.ente_federado.id_for_label }}" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span style="color:#ff0000;font-size:10px">*</span></label> {% endcomment %}
 
 		    <div class="col-sm-2">
 		        {% render_field form_sistema.ente_federado class="form-control" %}
@@ -19,11 +25,11 @@
 		</div>
 	{% else %}
 		<div class="form-group">
-		    <label class="col-sm-4 control-label">Ente Federado (Estado ou Município) </label>
+		    <label class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span style="color:red;font-size:10px">*</span></label>
 		    {% comment %} <label class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
 		    <div class="col-sm-2">
-		    	<select name="ente_federado" class="form-control"  id="id_ente_federado">
+		    	<select name="ente_federado" class="form-control" id="id_ente_federado">
 		    		<option value="{{object.ente_federado.id}}" selected="">{{object.ente_federado}}</option>
 		        </select>
 		    </div>
@@ -34,7 +40,7 @@
 
 	<div class="form-group">
 	    <div class="col-sm-offset-3 col-sm-10">
-	      <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
+	      <a class="btn btn-danger" href="{% url 'adesao:home' %}">Cancelar</a>
 	      <input type="submit" class="btn btn-success" value="Salvar" />
 	    </div>
   	</div>

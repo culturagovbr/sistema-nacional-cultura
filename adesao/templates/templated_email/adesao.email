@@ -1,4 +1,4 @@
-{% block subject %}SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - SOLICITAÇÃO NOVA ADESÃO{% endblock %}
+{% block subject %}SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DO TURISMO - SNC - SOLICITAÇÃO NOVA ADESÃO{% endblock %}
 {% block plain %}Prezado Gestor,
 
 Um novo ente federado acabou de se cadastrar e fazer a solicitação de nova adesão.
@@ -14,4 +14,4 @@ Telefone de Contato: {{form_data.telefone_um}}
 Link da Adesão: http://snc.cultura.gov.br/gestao/detalhar/{{sistema_atualizado.ente_federado.cod_ibge}}
 
 Equipe SNC
-SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA{% endblock %}
+SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DO TURISMO{% endblock %}

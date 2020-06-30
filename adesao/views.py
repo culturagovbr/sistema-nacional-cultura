@@ -1,4 +1,8 @@
 import csv
+import http
+import json
+import requests
+
 import xlwt
 import xlsxwriter
 
@@ -31,8 +35,10 @@ from adesao.models import (
     Uf,
     Cidade,
     Funcionario,
-    EnteFederado
+    EnteFederado,
+    Sede,
 )
+
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
@@ -43,6 +49,16 @@ from adesao.utils import ir_para_estado_envio_documentacao
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
+
+# Verificacao Json
+from django.http import JsonResponse
+from .models import EnteFederado
+from localflavor.br.forms import BRCNPJField
+from apiv2 import serializers
+from rest_framework.renderers import JSONRenderer
+from rest_framework import serializers
+
+app_name = "adesao"
 
 
 # Create your views here.
@@ -156,7 +172,7 @@ def exportar_csv(request):
     )
 
     for sistema in SistemaCultura.objects.distinct('ente_federado__cod_ibge').order_by(
-            'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'):
+        'ente_federado__cod_ibge', 'ente_federado__nome', '-alterado_em'):
         if sistema.ente_federado:
             if sistema.ente_federado.cod_ibge > 100 or sistema.ente_federado.cod_ibge == 53:
                 nome = sistema.ente_federado.nome
@@ -300,7 +316,8 @@ def sucesso_municipio(request):
 class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     form_class = CadastrarSistemaCulturaForm
     model = SistemaCultura
-    template_name = "cadastrar_sistema.html"
+    # template_name = "cadastrar_sistema.html"
+    template_name = "frm_cadastro_sistema.html"
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
@@ -327,8 +344,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
 
             if not self.request.session.get('sistemas', False):
                 self.request.session['sistemas'] = list()
-                sistema_atualizado = SistemaCultura.sistema.get(
-                    ente_federado__id=sistema.ente_federado.id)
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
@@ -348,8 +364,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(CadastrarSistemaCultura, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['form_sistema'] = CadastrarSistemaCulturaForm(
-                self.request.POST, self.request.FILES)
+            context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES)
             context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES)
             context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES,
                                                      logged_user=self.request.user)
@@ -360,10 +375,10 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
     def templated_email_get_recipients(self, form):
-        gestor_pessoal = self.request.session['sistema_gestor']['email_pessoal']
-        gestor_institucional = self.request.session['sistema_gestor']['email_institucional']
-        recipient_list = [self.request.user.email,
-                          self.request.user.usuario.email_pessoal, gestor_pessoal, gestor_institucional]
+        gestor_pessoal = self.request.session.get('sistema_gestor', 'email_pessoal')
+        gestor_institucional = self.request.session.get('sistema_gestor', 'email_institucional')
+        recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal, gestor_pessoal,
+                          gestor_institucional]
 
         return recipient_list
 
@@ -371,8 +386,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         context = super().templated_email_get_context_data(**kwargs)
         context["object"] = self.object
         context["cadastrador"] = self.request.user.usuario
-        context["sistema_atualizado"] = SistemaCultura.sistema.get(
-            ente_federado__id=self.object.ente_federado.id)
+        context["sistema_atualizado"] = SistemaCultura.sistema.get(ente_federado__id=self.object.ente_federado.id)
 
         return context
 
@@ -413,15 +427,13 @@ class AlterarSistemaCultura(UpdateView):
         if self.request.POST:
             context['form_sistema'] = CadastrarSistemaCulturaForm(self.request.POST, self.request.FILES,
                                                                   instance=self.object)
-            context['form_sede'] = CadastrarSede(
-                self.request.POST, self.request.FILES, instance=self.object.sede)
+            context['form_sede'] = CadastrarSede(self.request.POST, self.request.FILES, instance=self.object.sede)
             context['form_gestor'] = CadastrarGestor(self.request.POST, self.request.FILES, instance=self.object.gestor,
                                                      logged_user=self.request.user)
         else:
             context['form_sistema'] = CadastrarSistemaCulturaForm(instance=self.object)
             context['form_sede'] = CadastrarSede(instance=self.object.sede)
-            context['form_gestor'] = CadastrarGestor(
-                instance=self.object.gestor, logged_user=self.request.user)
+            context['form_gestor'] = CadastrarGestor(instance=self.object.gestor, logged_user=self.request.user)
 
         return context
 
@@ -498,11 +510,11 @@ class GeraPDF(WeasyTemplateView):
         self.sistema = self.request.session.get('sistema_cultura_selecionado', False)
 
         if not self.ente_federado or \
-                not self.gestor_cultura or \
-                not self.sistema or \
-                int(self.sistema['estado_processo']) == 0 or \
-                len(self.sistema_sede['cnpj']) != 18 or \
-                not self.sistema_gestor['cpf']:
+            not self.gestor_cultura or \
+            not self.sistema or \
+            int(self.sistema['estado_processo']) == 0 or \
+            len(self.sistema_sede['cnpj']) != 18 or \
+            not self.sistema_gestor['cpf']:
             return redirect('adesao:erro_impressao')
 
         return super().dispatch(request, *args, **kwargs)
@@ -560,8 +572,8 @@ class RelatorioAderidos(ListView):
 
         municipios_by_uf = (
             Municipio.objects.values("estado_id")
-            .filter(usuario__estado_processo="6", cidade_id__isnull=False)
-            .annotate(municipios_aderiram=Count("estado_id"))
+                .filter(usuario__estado_processo="6", cidade_id__isnull=False)
+                .annotate(municipios_aderiram=Count("estado_id"))
         )
 
         for estado in municipios_by_uf:
@@ -637,3 +649,57 @@ class ConsultarPlanoTrabalhoEstado(ListView):
         return Usuario.objects.filter(
             municipio__estado__isnull=False, municipio__cidade__isnull=True
         )
+
+
+# Função na qual realizo a consulta para verificar se o Ente Federado já está cadastrado
+def validate_username(request):
+    # Recuperando o ente-federado
+    codigo_ibge = request.GET.get('codigo_ibge_form', None)
+    # Retirando os tres ultimos caracteres  /DF
+    # municipio = codigo_ibge[:-3]
+
+    '''
+    data = {
+        'ibge': codigo_ibge
+    }
+    '''
+    # Realizando a consulta no model EnteFederado pelo nome do Ente Federado
+    data = {
+        # 'validacao': EnteFederado.objects.filter(nome=codigo_ibge).exists()
+        # 'validacao': EnteFederado.objects.filter(nome=municipio).exists(),
+        'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
+        # 'municipio': codigo_ibge
+    }
+
+    if data['validacao']:
+        data['error_message'] = 'O ente federado já existe'
+
+    return JsonResponse(data)
+
+
+# Função na qual realizo a consulta para verificar o cnpj
+def validate_cnpj(request):
+    # Recuperando o cnpj
+    vcnpj = request.GET.get('cnpj', None)
+
+    data = {
+        'validacao': Municipio.objects.filter(cnpj_prefeitura=vcnpj).exists(),
+    }
+
+    if data['validacao']:
+        data['error_message'] = 'O cnpj já existe'
+
+    return JsonResponse(data)
+
+
+def search_cnpj(request):
+    """
+    Função que busca o cnpj informado na base do infoconv e devolve para o template
+    :return: json data
+    """
+    cnpj = request.GET.get('cnpj', None)
+    url = "http://infoconv.turismo.gov.br/infoconv-proxy/api/cnpj/perfil3?listaCNPJ={0}".format(cnpj)
+    response = requests.get(url)
+    data = response.json()
+
+    return JsonResponse(data, safe=False)
