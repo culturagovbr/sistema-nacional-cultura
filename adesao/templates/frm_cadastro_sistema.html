@@ -17,7 +17,7 @@
       dataType: 'json',
       success: function (data) {
         if (data.validacao) {
-          //alert(data.error_message);
+          alert(data.error_message);
           document.getElementById("aviso").style.display = "block";
           //desabilita o botão se o conteúdo do input ficar em branco
           document.getElementById("btn_salvar").disabled = true;
@@ -281,7 +281,7 @@
   {% csrf_token %}
 
   <span id="aviso" class="alert alert-danger" role="alert">
-    O Ente Federado já está cadastrado!
+    O Ente Federado já está cadastrado! 
     <br>
     Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
   </span>

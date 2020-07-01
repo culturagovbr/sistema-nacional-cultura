@@ -670,7 +670,7 @@ def validate_username(request):
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
         # 'municipio': codigo_ibge
     }
-
+    print(data['validacao'])
     if data['validacao']:
         data['error_message'] = 'O ente federado já existe'
 

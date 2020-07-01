@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
-  <h2>{% blocktrans %}Bem-vindo ao Sistema Nacional Cultura{% endblocktrans %}
+  <h2>{% blocktrans %}Bem-Vindo ao Sistema Nacional Cultura{% endblocktrans %}
     <a class="anchorjs-link" href="#auto-truncating">
       <span class="anchorjs-icon"></span>
     </a>
@@ -28,13 +28,15 @@
       </form>
     {% else %}
         {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
-          <div class="alert alert-info" role="alert">
+          <div>
+            <p>
             <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
             <a href="{% url 'adesao:gera_pdf' template='alterar_responsavel' nome_arquivo='alterar_responsavel.pdf' %}"
                target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
             - Preencha com os dados do novo responsável e do prefeito.<br>
             - Encaminhe para assinatura do prefeito. <br>
             - Digitalize e envie para nosso email: snc@cidadania.gov.br
+            </p>
           </div>
 
 
@@ -76,9 +78,7 @@
                     fundação de cultura){% endblocktrans %}</p>
                 {% endif %}
             {% else %}
-              <p style="text-align: justify;">{% blocktrans %}Clique na aba <b>“Criar Novo Ente Federado”</b> para
-                iniciar o cadastro do seu estado/município e gerar o Acordo de Cooperação Federativa e a Solicitação de
-                Integração ao SNC.
+              <p style="text-align: justify;">{% blocktrans %}Clique em <b>“Criar Novo Ente Federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
               {% endblocktrans %}</p>
             {% endif %}
 
