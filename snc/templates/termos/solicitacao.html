@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
-<body align="justify">
+<center align="justify">
   <div class="row" style="margin:0; padding:0;">
     <center>
       <div class="col-xs-9 col-xs-offset-1">
@@ -141,12 +141,15 @@
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Declaração de Responsabilidade (Prefeito)</strong>
+      <strong>Declaração de Responsabilidade do Governador ou Prefeito</strong>
     </center>
     <div class="col-xs-12">
-      <hr style="background-color:black;" /> <p>Venho, por meio deste, solicitar a integração deste município ao Sistema Nacional de Cultura, através da assinatura do Acordo de Cooperação Federativa, estando ciente de que esta solicitação
+      <hr style="background-color:black;" /> <p>Solicito a integração deste município ao Sistema Nacional de Cultura, através da assinatura do Acordo de Cooperação Federativa, Ressalto que estou ciente de que esta solicitação
       <strong>deve ser acompanhada dos documentos básicos</strong> sem os quais a análise e a tramitação do processo ficarão prejudicadas,
-      <strong><u>responsabilizando-me, sob as penas da lei, pela autenticidade dos documentos apresentados e pela veracidade das informações prestadas.</u></strong></p>
+      <strong><u>Responsabilizo-me, pela veracidade das informações e pelos documentos
+                 apresentados, e que estou ciente de que qualquer inexatidão dos itens
+                 informados poderá sujeitar-me às penalidades previstas no artigo 299 do
+                 Código Penal Brasileiro, sem prejuízo de outras medidas administrativas cabíveis.</u></strong></p>
     </div>
   </div>
 
@@ -157,24 +160,31 @@
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
-      <p>Autorizo a divulgação das informações de interesse público referentes ao município, prefeito, interlocutor e responsável pelo acompanhamento do acordo na plataforma do Sistema Nacional de Informações e Indicadores Culturais (SNIIC), quais sejam:
-      a) Município: nome, CNPJ, endereço, telefone e e-mail institucional; b) Informações do Prefeito: nome, e-mail institucional; c) Informações do Interlocutor: nome, Instituição, cargo/função, e-mail, endereço e telefone institucional; d) Informações
-      do Responsável pelo acompanhamento do Acordo: nome, Instituição, cargo/função, e-mail, endereço e telefone institucional;<br></p>
+      <p>Autorizo a divulgação das informações de interesse público contidas na
+         Plataforma do Sistema Nacional de Cultura, observada a Lei Geral de
+         Proteção de Dados Pessoais (Lei nº 13.709, de 14 de agosto de 2018) e a Lei
+         de Acesso à Informação (Lei nº 12.527, de 18 de novembro de 2011).<br></p>
     </div>
   </div>
 
   <div class="row">
     <div class="col-xs-12">
       <p>
-        <br>___________________________ , ________ de ____________________ de 20_____
+        <center>
+          <br>______________________________________________
+        </center>
       </p>
+      </center>
       <p>
-        <strong>Nome Completo: {{request.session.sistema_gestor.nome}}</strong>
+        <center>
+        <strong>{{request.session.sistema_gestor.nome}}</strong>
         <br>
-        <strong>Prefeito do Município: {{request.session.sistema_ente.nome}}</strong>
+        <strong>Prefeito (a) do Município de {{request.session.sistema_ente.nome}}</strong>
+        </center>
       </p>
+
     </div>
   </div>
-</body>
+  </body>
 
 </html>
