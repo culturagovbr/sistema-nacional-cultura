@@ -30,75 +30,103 @@
     <hr style="background-color:black;" />
     {% if request.session.sistema_ente.cod_ibge > 100 %}
       <div class="col-xs-6">
-        Município: {{ request.session.sistema_ente.nome }}
+        <center>
+          Município: {{ request.session.sistema_ente.nome }} / {{ request.session.sistema_gestor_cultura.estado_expeditor_sigla }}
+        </center>
       </div>
     {% else %}
       <div class="col-xs-6">
+       <center>
         Estado: {{ request.session.sistema_ente.nome }}
+       <center>
       </div>
     {% endif %}
     <div class="col-xs-6">
+     <center>
       CNPJ: {{ request.session.sistema_sede.cnpj }}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       CEP: {{ request.session.sistema_sede.cep }}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       Logradouro: {{ request.session.sistema_sede.endereco }}
+      <center>
     </div>
     <div class="col-xs-6">
+     <center>
       Complemento: {{ request.session.sistema_sede.complemento }}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       Bairro: {{ request.session.sistema_sede.bairro }}
+     <center>
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-6">
+     <center>
       Telefone Institucional: {{ request.session.sistema_sede.telefone_um }}; {{ request.session.sistema_sede.telefone_dois }}; {{ request.session.sistema_sede.telefone_tres }}
+     <center>
     </div>
   </div>
 
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Informações do Prefeito</strong>
+      <strong>Informações do(a) Prefeito(a)</strong>
     </center>
     <hr style="background-color:black;" />
-    <div class="col-xs-12">
+    <div class="col-xs-6">
+     <center>
       CPF: {{request.session.sistema_gestor.cpf}}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       Nome Completo: {{request.session.sistema_gestor.nome}}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       RG: {{request.session.sistema_gestor.rg}}
+     <center>
     </div>
     <div class="col-xs-6">
+     <center>
       Órgão Expeditor: {{request.session.sistema_gestor.orgao_expeditor_rg}}
+     <center>
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-6">
+     <center>
       Email Institucional: {{request.session.sistema_gestor.email_institucional}}
+     <center>
     </div>
   </div>
 
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Informações do Gestor de Cultura</strong>
+      <strong>Informações do(a) Gestor(a) de Cultura</strong>
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
+     <center>
       CPF: {{request.session.sistema_gestor_cultura.cpf}}
+     </center>
     </div>
     <div class="col-xs-12">
       Nome Completo: {{request.session.sistema_gestor_cultura.nome}}
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12">
       RG: {{request.session.sistema_gestor_cultura.rg}}
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12">
       Órgão Expeditor: {{request.session.sistema_gestor_cultura.orgao_expeditor_rg}}
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12">
       UF: {{request.session.sistema_gestor_cultura.estado_expeditor_sigla}}
     </div>
     <div class="col-xs-12">
@@ -110,7 +138,7 @@
     <div class="col-xs-12">
       Email Institucional: {{request.session.sistema_gestor_cultura.email_institucional}}
     </div>
-    <div class="col-xs-10">
+    <div class="col-xs-12">
       Telefone Institucional: {{request.session.sistema_gestor_cultura.telefone_um}}; {{request.session.sistema_gestor_cultura.telefone_dois}}; {{request.session.sistema_gestor_cultura.telefone_tres}}
     </div>
   </div>
@@ -119,7 +147,7 @@
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Informações do Cadastrador</strong>
+      <strong>Informações do(a) Cadastrador(a)</strong>
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
@@ -141,10 +169,10 @@
   <div class="row">
     <hr style="background-color:black;" />
     <center>
-      <strong>Declaração de Responsabilidade do Governador ou Prefeito</strong>
+      <strong>Declaração de Responsabilidade do Governador(a) ou Prefeito(a)</strong>
     </center>
     <div class="col-xs-12">
-      <hr style="background-color:black;" /> <p>Solicito a integração deste município ao Sistema Nacional de Cultura, através da assinatura do Acordo de Cooperação Federativa, Ressalto que estou ciente de que esta solicitação
+      <hr style="background-color:black;" /> <p>Solicito a integração deste estado ou município ao Sistema Nacional de Cultura, por meio da assinatura do Acordo de Cooperação Federativa. Ressalto que estou ciente de que esta solicitação
       <strong>deve ser acompanhada dos documentos básicos</strong> sem os quais a análise e a tramitação do processo ficarão prejudicadas,
       <strong><u>Responsabilizo-me, pela veracidade das informações e pelos documentos
                  apresentados, e que estou ciente de que qualquer inexatidão dos itens
