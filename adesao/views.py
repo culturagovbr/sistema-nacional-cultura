@@ -88,6 +88,14 @@ def home(request):
     request.session['sistemas'] = list(
         sistemas_cultura.values('id', 'ente_federado__nome'))
 
+    #tentar usar zip aqui.
+   #  ente_federados_set 
+   # ente_federados_set = set()
+   # for item in SistemaCultura.objects.all():
+   #     ente_federados_set.add(item.id,str(item.ente_federado))
+
+   # request.session['sistemas'] = ente_federados_set 
+
     if request.user.is_staff:
         return redirect("gestao:dashboard")
 
@@ -658,6 +666,17 @@ def validate_username(request):
     # Retirando os tres ultimos caracteres  /DF
     # municipio = codigo_ibge[:-3]
 
+    #ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    #print("Codigo IBGE" + codigo_ibge)
+    nome_cadastrador = ""
+
+    for item in SistemaCultura.objects.all():
+        print(item.ente_federado.pk)
+        print (item.cadastrador.nome_usuario)
+        if item.ente_federado.pk == int(codigo_ibge):
+            print (item.cadastrador.nome_usuario)
+            nome_cadastrador = item.cadastrador.nome_usuario
+
     '''
     data = {
         'ibge': codigo_ibge
@@ -670,9 +689,9 @@ def validate_username(request):
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
         # 'municipio': codigo_ibge
     }
-    print(data['validacao'])
     if data['validacao']:
         data['error_message'] = 'O ente federado já existe'
+        data['cadastrador'] = nome_cadastrador,
 
     return JsonResponse(data)
 

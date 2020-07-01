@@ -7,6 +7,7 @@
   document.querySelector('select[name="ente_federado"]').onchange = function () {
     //alert($('#id_ente_federado option:selected').text());
     var ente_federado = $('#id_ente_federado option:selected').val();
+
     //alert('/ajax/validate_username/?ente=' + ente);
     var form = $(this).closest("form");
     $.ajax({
@@ -17,7 +18,8 @@
       dataType: 'json',
       success: function (data) {
         if (data.validacao) {
-          alert(data.error_message);
+          conteudo = "O Ente Federado já está cadastrado pelo usuário " + data.cadastrador + " <br>Caso queira trocar de responsável pelo ente federado, <a targer='top' href='#'>clique aqui</a>. ";
+          document.getElementById("aviso").innerHTML = conteudo;
           document.getElementById("aviso").style.display = "block";
           //desabilita o botão se o conteúdo do input ficar em branco
           document.getElementById("btn_salvar").disabled = true;
@@ -281,9 +283,9 @@
   {% csrf_token %}
 
   <span id="aviso" class="alert alert-danger" role="alert">
-    O Ente Federado já está cadastrado! 
+    O Ente Federado já está cadastrado pelo usuário 
     <br>
-    Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
+    Caso queira trocar de responsável pelo ente federado, <a targer="top" href="mailto:snc@cidadania.gov.br">clique aqui</a>. 
   </span>
   <span id="aviso_cnpj" class="alert alert-danger" role="alert">
     O CNPJ já está cadastrado! <br>

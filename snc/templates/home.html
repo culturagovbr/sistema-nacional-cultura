@@ -1,14 +1,19 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
+  {% if not request.session.sistema_cultura_selecionado.estado_processo != '0' %}
   <h2>{% blocktrans %}Bem-Vindo ao Sistema Nacional Cultura{% endblocktrans %}
     <a class="anchorjs-link" href="#auto-truncating">
       <span class="anchorjs-icon"></span>
     </a>
   </h2>
-
-
-
-
-
+  {% else %}
+  <h2>{% blocktrans %}Adesão ao Sistema Nacional Cultura{% endblocktrans %}
+    <a class="anchorjs-link" href="#auto-truncating">
+      <span class="anchorjs-icon"></span>
+    </a>
+  </h2>
+  {% include "conclusao_cadastro.html" %}
+  {% endif %}
+  {% if not request.session.sistema_cultura_selecionado.estado_processo != '0' %}
     {% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
       <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
           {% csrf_token %}
@@ -27,7 +32,8 @@
         <input type="submit" class="btn btn-success" value="Confirmar"/>
       </form>
     {% else %}
-        {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
+        {% if request.session.sistema_cultura_selecionado.estado_processo or not request.session.sistema_cultura_selecionado %}
+          {% if not request.session.sistema_cultura_selecionado.ente_federado %}
           <div>
             <p>
             <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
@@ -40,10 +46,10 @@
           </div>
 
 
-<div role="alert" style="color: #383d41; background-color: #e2e3e5; border-color: #d6d8db; position: relative; padding: .75rem 1.25rem; margin-bottom: 1rem;border: 1px solid transparent; border-radius: .25rem;">
-<strong>ATENÇÃO!</strong>
-  <br> Caso o Acordo ainda não esteja disponível no menu à esquerda, clique em "Alterar ente federado" e preencha (ou atualize) as informações pendentes.
-</div>
+          <div role="alert" style="color: #383d41; background-color: #e2e3e5; border-color: #d6d8db; position: relative; padding: .75rem 1.25rem; margin-bottom: 1rem;border: 1px solid transparent; border-radius: .25rem;">
+          <strong>ATENÇÃO!</strong>
+            <br> Caso o Acordo ainda não esteja disponível no menu à esquerda, clique em "Alterar ente federado" e preencha (ou atualize) as informações pendentes.
+          </div>
 
 
 
@@ -52,30 +58,42 @@
             (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
             descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
             com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
+        {% endif %}
 
             {% if request.session.sistema_cultura_selecionado %}
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                  <p style="text-align: justify;">{% blocktrans %} Clique na aba <b>“
-                   {% endblocktrans %}
+                  
+                <p style="text-align: justify;"> 
+                  {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
+                
                    <a href="{% url 'adesao:cadastrar_sistema' %}" >
-                    {% blocktrans %}
+                  {% blocktrans %}
                       Criar Novo Ente Federado               
-                    {% endblocktrans %}
+                  {% endblocktrans %}
                     </a>
                   {% blocktrans %}
-                  ”</b> para
-                    iniciar o cadastro de um novo estado/município ou clique na aba “
-                     {% endblocktrans %}
+                  ”</b> para iniciar o cadastro de um novo estado/município"
+                  {% endblocktrans %}
+                  <p style="text-align: justify;">{% blocktrans %} Clique na aba {% endblocktrans %}<b>“
+
                    <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" >
-                    {% blocktrans %}
+                  {% blocktrans %}
                       Alterar Novo ente Federado              
-                    {% endblocktrans %}
+                   {% endblocktrans %}
                     </a>
-                  {% blocktrans %}” para
-                    alterar informações e dados do estado/município já cadastrado. <br/><br/>Clique na aba
-                    <b>“Gestor de Cultura”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
+                  {% blocktrans %}  
+                  "</b> para alterar informações e dados do estado/município já cadastrado. 
+                  {% endblocktrans %}
+                  <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
+                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
+                    {% blocktrans %}
+                    Gestor de Cultura              
+                    {% endblocktrans %}
+                   </a>
+                    {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
                     seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
-                    fundação de cultura){% endblocktrans %}</p>
+                    fundação de cultura)
+                    {% endblocktrans %}</p>
                 {% endif %}
             {% else %}
               <p style="text-align: justify;">{% blocktrans %}Clique em <b>“Criar Novo Ente Federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
@@ -206,4 +224,5 @@
     {% if request.session.sistema_gestor_cultura %}
         {% include "dados_gestor_cultura.html" %}
     {% endif %}
+  {%  endif %}
 {% endblock content %}
