@@ -153,7 +153,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 # EMAIL CONFIGURATION
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cidadania.gov.br')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@turismo.gov.br')
 EMAIL_USE_TLS = True
 EMAIL_HOST = env('EMAIL_HOST', default='mailapp.cultura.gov.br')
 EMAIL_PORT = env('EMAIL_PORT', default=25)

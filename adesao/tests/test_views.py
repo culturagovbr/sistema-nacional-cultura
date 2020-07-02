@@ -69,15 +69,15 @@ http://snc.cultura.gov.br/adesao/ativar/usuario/{usuario.codigo_ativacao}
 Atenciosamente,
 
 Equipe SNC
-Secretaria Especial da Cultura / Ministério da Cidadania
+Secretaria Especial da Cultura / Ministério do Turismo
 """
 
     assert len(mail.outbox) == 1
     assert (
         mail.outbox[0].subject
-        == "Secretaria Especial da Cultura / Ministério da Cidadania - SNC - CREDENCIAIS DE ACESSO"
+        == "Secretaria Especial da Cultura / Ministério do Turismo - SNC - CREDENCIAIS DE ACESSO"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@turismo.gov.br"
     assert mail.outbox[0].to == ["email@email.com", "email@pessoal.com"]
     assert mail.outbox[0].body == texto
 
@@ -147,14 +147,14 @@ Telefone de Contato: {sistema.sede.telefone_um}
 Link da Adesão: http://snc.cultura.gov.br/gestao/detalhar/{sistema.ente_federado.cod_ibge}
 
 Equipe SNC
-SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA"""
+Secretaria Especial da Cultura / Ministério do Turismo"""
 
     assert len(mail.outbox) == 1
     assert (
         mail.outbox[0].subject
-        == "SECRETARIA ESPECIAL DA CULTURA / MINISTÉRIO DA CIDADANIA - SNC - SOLICITAÇÃO NOVA ADESÃO"
+        == "Secretaria Especial da Cultura / Ministério do Turismo - SNC - SOLICITAÇÃO NOVA ADESÃO"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@turismo.gov.br"
     assert mail.outbox[0].to == [user.email, usuario.email_pessoal, sistema.gestor.email_pessoal,
         sistema.gestor.email_institucional]
     assert mail.outbox[0].body == texto
@@ -519,7 +519,7 @@ Os documentos devem ser enviados à SAI/Minc pelos correios para o seguinte ende
 Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
-SDC / Secretaria Especial da Cultura / Ministério da Cidadania
+SDC / Secretaria Especial da Cultura / Ministério do Turismo
 SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
@@ -541,7 +541,7 @@ Seu prazo para o envio é de até 60 dias corridos.
         mail.outbox[0].subject
         == "Sistema Nacional de Cultura - Solicitação de Adesão ao SNC"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@turismo.gov.br"
     assert mail.outbox[0].to == [login.user.email, login.email_pessoal,
         sistema_cultura_atualizado.gestor.email_institucional,
         sistema_cultura_atualizado.gestor.email_pessoal]
@@ -573,7 +573,7 @@ Os documentos devem ser enviados à SAI/Minc pelos correios para o seguinte ende
 Equipe SNC
 
 Coordenação-Geral do SNC - CGSNC
-SDC / Secretaria Especial da Cultura / Ministério da Cidadania
+SDC / Secretaria Especial da Cultura / Ministério do Turismo
 SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
@@ -595,7 +595,7 @@ Seu prazo para o envio é de até 60 dias corridos.
         mail.outbox[0].subject
         == "Sistema Nacional de Cultura - Solicitação de Adesão ao SNC"
     )
-    assert mail.outbox[0].from_email == "naoresponda@cidadania.gov.br"
+    assert mail.outbox[0].from_email == "naoresponda@turismo.gov.br"
     assert mail.outbox[0].to == [login.user.email, login.email_pessoal]
     assert mail.outbox[0].body == texto
 

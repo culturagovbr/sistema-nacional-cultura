@@ -67,8 +67,8 @@ msgid "Sair"
 msgstr "Sair"
 
 #: templates/base.html:96
-msgid "Secretaria Especial da Cultura / Ministério da Turismo"
-msgstr "Secretaria Especial da Cultura / Ministério da Turismo"
+msgid "Secretaria Especial da Cultura / Ministério do Turismo"
+msgstr "Secretaria Especial da Cultura / Ministério do Turismo"
 
 #: templates/base.html:97
 msgid "Nome da secretaria"
@@ -98,9 +98,8 @@ msgstr ""
 
 msgid "Segundo parágrafo da mensagem da tela home"
 msgstr ""
-"Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro do seu estado/município e  "
-"gerar o Acordo de Cooperação Federativa e a Solicitação de "
-"Integração ao SNC."
+"Clique em "Criar Novo Ente Federado" no menu principal para iniciar o cadastro "
+"do seu estado ou município na plataforma do SNC."
 "Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro de um novo"
 "estado/município ou clique na aba “Alterar Novo ente Federado” para alterar"
 "informações e dados do estado/município já cadastrado."
@@ -207,11 +206,11 @@ msgid "Data final para sanção da Lei do Plano de Cultura:"
 msgstr "Data final para sanção da Lei do Plano de Cultura:"
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:4
-msgid "Cadastro/Alteração Realizado com Sucesso!"
+msgid "Cadastro Realizado com Sucesso!"
 msgstr ""
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:5
-msgid "O Ente Federado foi cadastrado/alterado com sucesso."
+msgid "O Ente Federado foi cadastrado com sucesso."
 msgstr ""
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:6
@@ -219,7 +218,7 @@ msgid "Próximo"
 msgstr ""
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:7
-msgid "Inicial"
+msgid "OK"
 msgstr ""
 
 #: templates/prefeitura/selecionar_tipo_ente.html:6

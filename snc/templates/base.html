@@ -81,7 +81,7 @@
         <div id="logo">
           <a href="{% url 'adesao:index' %}" title="#">
             <span id="portal-title">Sistema Nacional de Cultura</span>
-            <span id="portal-description" style="color:#FC0">Secretaria Especial da Cultura / Ministério da Cidadania</span>
+            <span id="portal-description" style="color:#FC0">Secretaria Especial da Cultura / Ministério do Turismo</span>
           </a>
 
         </div>
@@ -140,7 +140,7 @@
           <div id="viewlet-above-content">
             <div id="portal-breadcrumbs">
               <span id="breadcrumbs-you-are-here">
-                Seja bem-Vind@
+                Seja Bem-Vindo
               </span>
               <span id="breadcrumbs-home">
                 <a href="{% url 'adesao:home' %}">{{ request.user.usuario.nome_usuario }}</a>
@@ -320,30 +320,34 @@
 
             <!-- Column 2 -->
             {% if request.session.sistema_cultura_selecionado.estado_processo == '1' %}
-            <div id="portal-column-two" class="cell width-1:4 position-3:4">
+              {% if not request.session.sistema_cultura_selecionado.estado_processo != '0' %}
+                <div id="portal-column-two" class="cell width-1:4 position-3:4">
 
-                <div id="" class="portletWrapper kssattr-portlethash">
-                    <dl class="portlet portletNews">
-                        <dt class="portletHeader">
-                            <span class="portletTopLeft">
-                            <a href="#" class="tile">Aviso Importante</a> </span>
-                            <span class="portletTopRight"></span>
-                        </dt>
-                        
-                        {% comment %} <dd class="portletFooter">
-                            <span class="portletBottomLeft"></span>
-                            <a href="#">para concluir sua adesão, clique em 'Acordo de Cooperação' no Menu Principal</a>
-                            <span class="portletBottomRight"></span>
-                        </dd> {% endcomment %}
-                        <dd class="portletFooter">
-                            <span class="portletBottomLeft"></span>
-                            <a href="#">O prazo para o envio do Acordo é de até 60 dias corridos.</a>
-                            <span class="portletBottomRight"></span>
-                        </dd>
-                    </dl>
+                    <div id="" class="portletWrapper kssattr-portlethash">
+                        <dl class="portlet portletNews">
+                            <dt class="portletHeader">
+                                <span class="portletTopLeft">
+                                <a href="#" class="tile">Aviso Importante</a> </span>
+                                {{ request.session.sistema_cultura_selecionado.estado_processo }}
+                                {{ request.session.sistema_cultura_selecionado.gestor_cultura }}
+                                <span class="portletTopRight"></span>
+                            </dt>
+                            
+                            {% comment %} <dd class="portletFooter">
+                                <span class="portletBottomLeft"></span>
+                                <a href="#">para concluir sua adesão, clique em 'Acordo de Cooperação' no Menu Principal</a>
+                                <span class="portletBottomRight"></span>
+                            </dd> {% endcomment %}
+                            <dd class="portletFooter">
+                                <span class="portletBottomLeft"></span>
+                                <a href="#">O prazo para o envio do Acordo é de até 60 dias corridos.</a>
+                                <span class="portletBottomRight"></span>
+                            </dd>
+                        </dl>
+                    </div>
+
                 </div>
-
-            </div>
+              {% endif %}
             {% endif %}
 
         </div>
@@ -368,8 +372,7 @@
       </div>
       <div id="extra-footer">
         <p>
-          Secretaria Especial da Cultura / Ministério da Cidadania -
-          <a href="#">MinC - 2018</a>
+          Secretaria Especial da Cultura / Ministério do Turismo
         </p>
       </div>
 
