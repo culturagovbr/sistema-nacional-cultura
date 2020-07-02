@@ -86,17 +86,14 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(
-        sistemas_cultura.values('id', 'ente_federado__nome'))
+    sistema_ente_federados = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
+    for item in sistemas_cultura:
+        for item2 in sistema_ente_federados:
+            if item2['ente_federado__nome'] in str(item.ente_federado):
+                item2['ente_federado__nome'] = str(item.ente_federado)
 
-    #tentar usar zip aqui.
-   #  ente_federados_set 
-   # ente_federados_set = set()
-   # for item in SistemaCultura.objects.all():
-   #     ente_federados_set.add(item.id,str(item.ente_federado))
-
-   # request.session['sistemas'] = ente_federados_set 
+    request.session['sistemas'] = sistema_ente_federados
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")

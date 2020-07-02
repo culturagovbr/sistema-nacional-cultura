@@ -174,7 +174,15 @@ def atualiza_session(sistema_cultura, request):
         request.session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura.alterado_por.user.username
     request.session['sistema_situacao'] = sistema_cultura.get_estado_processo_display()
     request.session['sistema_ente'] = model_to_dict(
-        sistema_cultura.ente_federado, fields=['nome', 'cod_ibge'])
+        sistema_cultura.ente_federado, fields=['nome', 'cod_ibge',])
+
+    for item in request.session['sistemas']:
+        for item2 in request.session['sistema_ente']:
+            print(item['ente_federado__nome'])
+            print(request.session['sistema_ente'][item2])
+            if str(request.session['sistema_ente'][item2]) in str(item['ente_federado__nome']):
+                request.session['sistema_ente'][item2] = str(item['ente_federado__nome'])
+
 
     if sistema_cultura.gestor:
         request.session['sistema_gestor'] = model_to_dict(
