@@ -172,6 +172,19 @@ class CadastrarSistemaCulturaForm(ModelForm):
 class CadastrarFuncionarioForm(ModelForm):
     cpf = BRCPFField()
 
+    rg  = forms.CharField(required=True)
+    orgao_expeditor_rg = forms.CharField(required=True)
+   # estado_expeditor = forms.CharField(required=True)
+    nome = forms.CharField(required=True)
+    cargo = forms.CharField(required=True)
+    instituicao = forms.CharField(required=True)
+    telefone_um = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    endereco = forms.CharField(required=True)
+    complemento = forms.CharField(required=False)
+    cep = forms.CharField(required=True)
+    bairro = forms.CharField(required=True)
+
     def clean_estado_endereco(self):
         return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_endereco']))
 
