@@ -221,22 +221,11 @@
                                     <span>Acordo de Cooperação</span>
                                   </a>
                                 </li>
-                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                                  <a href="{% url 'adesao:gera_pdf' template='solicitacao' nome_arquivo='solicitacao.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank'">
-                                    <span>Termo de Solicitação</span>
-                                  </a>
-                                </li>
                                 {% else %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                                   <a href="{% url 'adesao:erro_impressao'%}" title=""
                                     class="state-published navTreeFolderish contenttype-folder">
                                     <span>Acordo de Cooperação</span>
-                                  </a>
-                                </li>
-                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                                  <a href="{% url 'adesao:erro_impressao'%}" title=""
-                                    class="state-published navTreeFolderish contenttype-folder">
-                                    <span>Termo de Solicitação</span>
                                   </a>
                                 </li>
                                 {% endif %}
