@@ -1,19 +1,12 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
-  {% if not request.session.sistema_cultura_selecionado.estado_processo != '0' %}
-  <h2>{% blocktrans %}Bem-Vindo ao Sistema Nacional Cultura{% endblocktrans %}
-    <a class="anchorjs-link" href="#auto-truncating">
-      <span class="anchorjs-icon"></span>
-    </a>
-  </h2>
-  {% else %}
-  <h2>{% blocktrans %}Adesão ao Sistema Nacional Cultura{% endblocktrans %}
-    <a class="anchorjs-link" href="#auto-truncating">
-      <span class="anchorjs-icon"></span>
-    </a>
-  </h2>
-  {% include "conclusao_cadastro.html" %}
-  {% endif %}
-  {% if not request.session.sistema_cultura_selecionado.estado_processo != '0' %}
+
+    {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or  not request.session.sistema_cultura_selecionado.estado_processo %}
+      <h2>{% blocktrans %}Bem-vindo ao Sistema Nacional Cultura{% endblocktrans %}
+        <a class="anchorjs-link" href="#auto-truncating">
+          <span class="anchorjs-icon"></span>
+        </a>
+      </h2>
+    {% endif %}
     {% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
       <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
           {% csrf_token %}
@@ -32,37 +25,9 @@
         <input type="submit" class="btn btn-success" value="Confirmar"/>
       </form>
     {% else %}
-        {% if request.session.sistema_cultura_selecionado.estado_processo or not request.session.sistema_cultura_selecionado %}
-          {% if not request.session.sistema_cultura_selecionado.ente_federado %}
-          <div>
-            <p>
-            <strong>Caso o seu município já esteja cadastrado, e não possui acesso ao sistema:</strong><br><br>
-            <a href="{% url 'adesao:gera_pdf' template='alterar_responsavel' nome_arquivo='alterar_responsavel.pdf' %}"
-               target="_blank">- Imprima o modelo de ofício, que pode ser encontrado clicando aqui</a><br>
-            - Preencha com os dados do novo responsável e do prefeito.<br>
-            - Encaminhe para assinatura do prefeito. <br>
-            - Digitalize e envie para nosso email: snc@cidadania.gov.br
-            </p>
-          </div>
-
-
-          <div role="alert" style="color: #383d41; background-color: #e2e3e5; border-color: #d6d8db; position: relative; padding: .75rem 1.25rem; margin-bottom: 1rem;border: 1px solid transparent; border-radius: .25rem;">
-          <strong>ATENÇÃO!</strong>
-            <br> Caso o Acordo ainda não esteja disponível no menu à esquerda, clique em "Alterar ente federado" e preencha (ou atualize) as informações pendentes.
-          </div>
-
-
-
-          <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
-            promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
-            (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
-            descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
-            com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
-        {% endif %}
-
+        {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
             {% if request.session.sistema_cultura_selecionado %}
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                  
                 <p style="text-align: justify;"> 
                   {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
                 
@@ -90,14 +55,15 @@
                     Gestor de Cultura              
                     {% endblocktrans %}
                    </a>
-                    {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
+                    ”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
                     seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                     fundação de cultura)
-                    {% endblocktrans %}</p>
                 {% endif %}
             {% else %}
+
               <p style="text-align: justify;">{% blocktrans %}Clique em <b>“Criar Novo Ente Federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
               {% endblocktrans %}</p>
+           
             {% endif %}
 
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
@@ -165,43 +131,26 @@
             Equipe SNC
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <p style="text-align: justify;">
-            Parabéns! Seu Acordo de Cooperação Federativa foi publicado no Diário Oficial da União (DOU).
-          </p>
-
-
-          <p style="text-align: justify;">
-            Você também pode inserir o nome e o e-mail dos conselheiros de
-            cultura do seu estado/município, clicando na opção “Conselheiros”.
-          </p>
-
-          <p style="text-align: justify;">
-            Agora você já pode iniciar o seu Plano de Trabalho, <a
-                  href="{% url 'planotrabalho:planotrabalho' request.session.sistema_cultura_selecionado.id %}">clicando
-            aqui</a>
-            ou no menu a esquerda na opção "Plano de Trabalho"
-          </p>
-
-            {% if request.session.sistema_cultura_selecionado.link_publicacao_acordo %}
-              <p style="text-align: justify;">
-                <a href="{{ request.session.sistema_cultura_selecionado.link_publicacao_acordo }}"> Clique aqui</a> para
-                visualizar a publicação do Acordo de Cooperação no Diário Oficial da União
-              </p>
-            {% else %}
-              <p style="text-align: justify;">
-                <a href="http://portal.in.gov.br" target="_blank">Clique aqui para efetuar a pesquisa</a>
-              </p>
-            {% endif %}
-
-          <p>
-            <strong>EQUIPE SNC</strong>
-          </p>
-          <p>
-            Secretaria Especial da Cultura <br />
-            Esplanada dos Ministérios, bloco B, 3º andar. <br />
-            CEP: 70.068-900 Brasília-DF <br />
-            E-mail: snc@cidadania.gov.br
-          </p>
+          <h2>{% blocktrans %}Bem-vindo ao Plano de Trabalho{% endblocktrans %}
+            <a class="anchorjs-link" href="#auto-truncating">
+              <span class="anchorjs-icon"></span>
+            </a>
+          </h2>
+          <p style="text-align: justify;">{% blocktrans %}
+            Você está no ambiente do Plano de Trabalho. Nesta fase, é preciso inserir as informações de cada um dos componentes do sistema de cultura local e anexar as comprovações de suas implementações. 
+            {% endblocktrans %}</p>
+           <p style="text-align: justify;">{% blocktrans %}
+             Clique em "Enviar Comprovação" em cada componente abaixo e salve as informações.
+             {% endblocktrans %}</p> 
+           <p style="text-align: justify;">{% blocktrans %}
+             Tais arquivos serão validados pela Equipe do Sistema Nacional de Cultura (SNC) e será enviada uma mensagem para o seu e-mail cadastrado após conclusão do procedimento. 
+             {% endblocktrans %}</p>
+            <p style="text-align: justify;">{% blocktrans %}
+            ATENÇÃO! É importante manter suas informações sempre atualizadas. Lembramos que são de responsabilidade do ente federado, sob as penas da lei, a autenticidade dos documentos apresentados e a veracidade das informações prestadas.
+            {% endblocktrans %}</p>
+            <p style="text-align: justify;">{% blocktrans %}
+            Em caso de dúvida, clique no tutorial “Como preencher o Plano de Trabalho”, disponível em http://portalsnc.cultura.gov.br. 
+            {% endblocktrans %}</p>
 
         {% endif %}
 
@@ -224,5 +173,4 @@
     {% if request.session.sistema_gestor_cultura %}
         {% include "dados_gestor_cultura.html" %}
     {% endif %}
-  {%  endif %}
 {% endblock content %}

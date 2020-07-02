@@ -88,6 +88,7 @@ def home(request):
     request.session['sistemas'] = list(
         sistemas_cultura.values('id', 'ente_federado__nome'))
 
+
     #tentar usar zip aqui.
    #  ente_federados_set 
    # ente_federados_set = set()
