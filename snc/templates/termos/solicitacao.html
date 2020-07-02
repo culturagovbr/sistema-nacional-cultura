@@ -5,7 +5,7 @@
   <link href="http://{{static}}/static/css/bootstrap-3.2.0.min.css" rel="stylesheet">
   <link href="http://{{static}}/static/css/pdf.css" rel="stylesheet">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
+
 
 <center align="justify">
   <div class="row" style="margin:0; padding:0;">
@@ -18,6 +18,7 @@
       </div>
     </center>
   </div>
+  </head>
   <div class="row">
     <hr style="background-color:black;" />
     <center>
@@ -173,7 +174,7 @@
     </center>
     <div class="col-xs-12">
       <hr style="background-color:black;" /> <p>Solicito a integração deste estado ou município ao Sistema Nacional de Cultura, por meio da assinatura do Acordo de Cooperação Federativa. Ressalto que estou ciente de que esta solicitação
-      <strong>deve ser acompanhada dos documentos básicos</strong> sem os quais a análise e a tramitação do processo ficarão prejudicadas,
+      <strong>deve ser acompanhada dos documentos básicos</strong> sem os quais a análise e a tramitação do processo ficarão prejudicadas.
       <strong><u>Responsabilizo-me, pela veracidade das informações e pelos documentos
                  apresentados, e que estou ciente de que qualquer inexatidão dos itens
                  informados poderá sujeitar-me às penalidades previstas no artigo 299 do
@@ -207,7 +208,7 @@
         <center>
         <strong>{{request.session.sistema_gestor.nome}}</strong>
         <br>
-        <strong>Prefeito (a) do Município de {{request.session.sistema_ente.nome}}</strong>
+        <strong>Prefeito (a) do Município de {{ ente_federado }}</strong>
         </center>
       </p>
 

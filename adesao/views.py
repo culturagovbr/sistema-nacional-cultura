@@ -89,6 +89,15 @@ def home(request):
     request.session['sistemas'] = list(
         sistemas_cultura.values('id', 'ente_federado__nome'))
 
+
+    #tentar usar zip aqui.
+   #  ente_federados_set 
+   # ente_federados_set = set()
+   # for item in SistemaCultura.objects.all():
+   #     ente_federados_set.add(item.id,str(item.ente_federado))
+
+   # request.session['sistemas'] = ente_federados_set 
+
     if request.user.is_staff:
         return redirect("gestao:dashboard")
 
@@ -287,7 +296,7 @@ class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
     templated_email_template_name = "usuario"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -322,7 +331,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -659,6 +668,17 @@ def validate_username(request):
     # Retirando os tres ultimos caracteres  /DF
     # municipio = codigo_ibge[:-3]
 
+    #ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    #print("Codigo IBGE" + codigo_ibge)
+    nome_cadastrador = ""
+
+    for item in SistemaCultura.objects.all():
+        print(item.ente_federado.pk)
+        print (item.cadastrador.nome_usuario)
+        if item.ente_federado.pk == int(codigo_ibge):
+            print (item.cadastrador.nome_usuario)
+            nome_cadastrador = item.cadastrador.nome_usuario
+
     '''
     data = {
         'ibge': codigo_ibge
@@ -671,9 +691,9 @@ def validate_username(request):
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
         # 'municipio': codigo_ibge
     }
-
     if data['validacao']:
         data['error_message'] = 'O ente federado já existe'
+        data['cadastrador'] = nome_cadastrador,
 
     return JsonResponse(data)
 

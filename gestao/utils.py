@@ -42,7 +42,7 @@ def enviar_email_aprovacao_plano(user, message_txt, message_html):
     Thread(target=send_mail, args=(
         'Sistema Nacional de Cultura - Aprovação do Plano de Trabalho',
         message_txt,
-        'naoresponda@cidadania.gov.br',
+        'naoresponda@turismo.gov.br',
         [user.email],),
         kwargs={'fail_silently': 'False', 'html_message': message_html}
         ).start()

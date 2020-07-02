@@ -5,21 +5,10 @@
   </div>
 
   <form class="form-horizontal" method="post">{% csrf_token %}
-    <div class="form-group {% if form.rg.errors %} has-error {% endif %}">
-      <label for="{{ form.rg.id_for_label }}" class="col-sm-3 control-label">RG </label>
-      {% comment %} <label for="{{ form.rg.id_for_label }}" class="col-sm-3 control-label">RG <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
-      <div class="col-sm-4">
-          {% render_field form.rg class="form-control" %}
-          {% if form.rg.errors %}
-            <span class="help-block">{{ form.rg.errors }}</span>
-          {% endif %}
-      </div>
-    </div>
+    
 
     <div class="form-group {% if form.cpf.errors %} has-error {% endif %}">
-      <label for="{{ form.cpf.id_for_label }}" class="col-sm-3 control-label">CPF </label>
-      {% comment %} <label for="{{ form.cpf.id_for_label }}" class="col-sm-3 control-label">CPF <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+      <label for="{{ form.cpf.id_for_label }}" class="col-sm-3 control-label">CPF <span style="color:red;font-size:10px">*</span></label>
 
       <div class="col-sm-4">
           {% render_field form.cpf class="form-control cpf" %}
@@ -30,10 +19,21 @@
 
     </div>
 
-    <div class="form-group {% if form.orgao_expeditor_rg.errors %} has-error {% endif %}">
-      <label for="{{ form.orgao_expeditor_rg.id_for_label }}" class="col-sm-3 control-label">Órgão Expeditor </label>
-      {% comment %} <label for="{{ form.orgao_expeditor_rg.id_for_label }}" class="col-sm-3 control-label">Órgão Expeditor <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+    <div class="form-group {% if form.rg.errors %} has-error {% endif %}">
+      <label for="{{ form.rg.id_for_label }}" class="col-sm-3 control-label">RG <span style="color:red;font-size:10px">*</span</label>
 
+      <div class="col-sm-4">
+          {% render_field form.rg class="form-control" %}
+          {% if form.rg.errors %}
+            <span class="help-block">{{ form.rg.errors }}</span>
+          {% endif %}
+      </div>
+
+    </div>
+
+    <div class="form-group {% if form.orgao_expeditor_rg.errors %} has-error {% endif %}">
+      <label for="{{ form.orgao_expeditor_rg.id_for_label }}" class="col-sm-3 control-label">Órgão Expeditor <span style="color:red;font-size:10px">*</span</label>
+      
       <div class="col-sm-2">
           {% render_field form.orgao_expeditor_rg class="form-control" %}
           {% if form.orgao_expeditor_rg.errors %}
@@ -43,9 +43,8 @@
     </div>
 
     <div class="form-group {% if form.estado_expeditor.errors %} has-error {% endif %}">
-      <label for="{{ form.estado_expeditor.id_for_label }}" class="col-sm-3 control-label">Estado </label>
-      {% comment %} <label for="{{ form.estado_expeditor.id_for_label }}" class="col-sm-3 control-label">Estado <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
+      <label for="{{ form.estado_expeditor.id_for_label }}" class="col-sm-3 control-label">Estado <span style="color:red;font-size:10px">*</span</label>
+     
       <div class="col-sm-4">
           {% render_field form.estado_expeditor class="form-control" %}
           {% if form.estado_expeditor.errors %}
@@ -55,9 +54,8 @@
     </div>
 
     <div class="form-group {% if form.nome.errors %} has-error {% endif %}">
-      <label for="{{ form.nome.id_for_label }}" class="col-sm-3 control-label">Nome Completo </label>
-      {% comment %} <label for="{{ form.nome.id_for_label }}" class="col-sm-3 control-label">Nome Completo <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
+      <label for="{{ form.nome.id_for_label }}" class="col-sm-3 control-label">Nome Completo <span style="color:red;font-size:10px">*</span</label>
+     
       <div class="col-sm-9">
           {% render_field form.nome class="form-control" %}
           {% if form.nome.errors %}
@@ -68,7 +66,7 @@
     </div>
 
     <div class="form-group {% if form.cargo.errors %} has-error {% endif %}">
-      <label for="{{ form.cargo.id_for_label }}" class="col-sm-3 control-label">Cargo</label>
+      <label for="{{ form.cargo.id_for_label }}" class="col-sm-3 control-label">Cargo <span style="color:red;font-size:10px">*</span</label>
 
       <div class="col-sm-9">
           {% render_field form.cargo class="form-control" %} {{ form.cargo.errors }}
@@ -79,7 +77,7 @@
     </div>
 
     <div class="form-group {% if form.instituicao.errors %} has-error {% endif %}">
-      <label for="{{ form.instituicao.id_for_label }}" class="col-sm-3 control-label">Instituição</label>
+      <label for="{{ form.instituicao.id_for_label }}" class="col-sm-3 control-label">Instituição <span style="color:red;font-size:10px">*</span</label>
 
       <div class="col-sm-9">
           {% render_field form.instituicao class="form-control" %}
@@ -117,10 +115,8 @@
     <div class="form-group {% if form.telefone_um.errors %} has-error {% endif %}">
 
       <label for="{{ form.telefone_um.id_for_label }}" class="col-sm-3 control-label">Telefone Institucional (máximo
-        3) </label>
-        {% comment %} <label for="{{ form.telefone_um.id_for_label }}" class="col-sm-3 control-label">Telefone Institucional (máximo
-        3) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
+        3) <span style="color:red;font-size:10px">*</span</label>
+     
       <div class="col-sm-4">
         <div class="input-group input-group-sm">
             {% render_field form.telefone_um class="form-control telefone" %}
@@ -155,17 +151,7 @@
     </div>
 
     <div class="form-group">
-      {% comment %} <label for="{{ form.estado_endereco.id_for_label }}" class="col-sm-4 control-label">UF Institucional <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-      <label for="{{ form.estado_endereco.id_for_label }}" class="col-sm-4 control-label">UF Institucional </label>
-
-      <div class="col-sm-4">
-          {% render_field form.estado_endereco class="form-control" %}
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="{{ form.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional </label>
-      {% comment %} <label for="{{ form.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+      <label for="{{ form.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional <span style="color:red;font-size:10px">*</span</label>
       <div class="col-sm-8">
           {% render_field form.endereco class="form-control" %}
       </div>
@@ -174,27 +160,30 @@
     <div class="form-group">
       <label for="{{ form.complemento.id_for_label }}"
              class="col-sm-offset-1 col-sm-3 control-label">Complemento </label>
-             {% comment %} class="col-sm-offset-1 col-sm-3 control-label">Complemento <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
       <div class="col-sm-3">
           {% render_field form.complemento class="form-control" %}
       </div>
     </div>
 
     <div class="form-group">
-      <label for="{{ form.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro </label>
-      {% comment %} <label for="{{ form.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
-
+      <label for="{{ form.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro <span style="color:red;font-size:10px">*</span</label>
+  
       <div class="col-sm-4">
           {% render_field form.bairro class="form-control" %}
       </div>
     </div>
 
     <div class="form-group">
-      <label for="{{ form.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP </label>
-    {% comment %} <label for="{{ form.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span id="hiddencep" style="display:none;color:red;"> (CEP
-    inválido)</span> <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+      <label for="{{ form.estado_endereco.id_for_label }}" class="col-sm-4 control-label">UF Institucional <span style="color:red;font-size:10px">*</span</label>
 
+      <div class="col-sm-4">
+          {% render_field form.estado_endereco class="form-control" %}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span style="color:red;font-size:10px">*</span</label>
+  
       <div class="col-sm-4">
           {% render_field form.cep class="form-control cep" %}
       </div>
