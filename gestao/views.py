@@ -953,7 +953,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
     form_class = DiligenciaGeralForm
 
     templated_email_template_name = "diligencia"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
     templated_email_bcc_email = "snc@cidadania.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
