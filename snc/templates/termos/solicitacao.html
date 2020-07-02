@@ -31,7 +31,7 @@
     {% if request.session.sistema_ente.cod_ibge > 100 %}
       <div class="col-xs-6">
         <center>
-          Município: {{ request.session.sistema_ente.nome }} / {{ request.session.sistema_gestor_cultura.estado_expeditor_sigla }}
+          Município: {{ ente_federado }}
         </center>
       </div>
     {% else %}

@@ -58,6 +58,7 @@ from apiv2 import serializers
 from rest_framework.renderers import JSONRenderer
 from rest_framework import serializers
 
+
 app_name = "adesao"
 
 
@@ -503,7 +504,7 @@ class AlterarFuncionario(UpdateView):
 class GeraPDF(WeasyTemplateView):
 
     def dispatch(self, request, *args, **kwargs):
-        self.ente_federado = self.request.session.get('sistema_ente', False)
+        self.ente_federado = self.request.session.get('sistema_ente', True)
         self.sistema_sede = self.request.session.get('sistema_sede', False)
         self.sistema_gestor = self.request.session.get('sistema_gestor', False)
         self.gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
