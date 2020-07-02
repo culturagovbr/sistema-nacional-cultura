@@ -1,5 +1,4 @@
 {% extends "base.html" %} {% load i18n %} {% block content %}
-
     {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or  not request.session.sistema_cultura_selecionado.estado_processo %}
       <h2>{% blocktrans %}Bem-vindo ao Sistema Nacional Cultura{% endblocktrans %}
         <a class="anchorjs-link" href="#auto-truncating">
@@ -7,6 +6,7 @@
         </a>
       </h2>
     {% endif %}
+
     {% if request.session.sistemas and not request.session.sistema_cultura_selecionado %}
       <form action="{% url 'adesao:define_sistema_sessao' %}" class="form-horizontal" method="post">
           {% csrf_token %}
