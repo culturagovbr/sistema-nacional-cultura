@@ -86,17 +86,14 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(
-        sistemas_cultura.values('id', 'ente_federado__nome'))
+    sistema_ente_federados = list(sistemas_cultura.values('id', 'ente_federado__nome'))
 
+    for item in sistemas_cultura:
+        for item2 in sistema_ente_federados:
+            if item2['ente_federado__nome'] in str(item.ente_federado):
+                item2['ente_federado__nome'] = str(item.ente_federado)
 
-    #tentar usar zip aqui.
-   #  ente_federados_set 
-   # ente_federados_set = set()
-   # for item in SistemaCultura.objects.all():
-   #     ente_federados_set.add(item.id,str(item.ente_federado))
-
-   # request.session['sistemas'] = ente_federados_set 
+    request.session['sistemas'] = sistema_ente_federados
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")
@@ -353,16 +350,24 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
             sistema = form_sistema.save()
 
             if not self.request.session.get('sistemas', False):
+                print('SISTEMA SELECIONADO 1 ')
                 self.request.session['sistemas'] = list()
                 sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
+                    print('SISTEMA SELECIONADO 2 ')
                     self.request.session['sistema_cultura_selecionado'].clear()
                     self.request.session.modified = True
+                print('SISTEMA SELECIONADO 3 ')
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id = sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
 
+            print('SISTEMA SELECIONADO 4 ')
+            
             self.request.session['sistemas'].append(
                 {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
 
             return super(CadastrarSistemaCultura, self).form_valid(form)
         else:
@@ -673,10 +678,7 @@ def validate_username(request):
     nome_cadastrador = ""
 
     for item in SistemaCultura.objects.all():
-        print(item.ente_federado.pk)
-        print (item.cadastrador.nome_usuario)
         if item.ente_federado.pk == int(codigo_ibge):
-            print (item.cadastrador.nome_usuario)
             nome_cadastrador = item.cadastrador.nome_usuario
 
     '''

@@ -55,11 +55,17 @@
                     Gestor de Cultura              
                     {% endblocktrans %}
                    </a>
-                    ”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
+                    {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
                     seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                     fundação de cultura)
+                    {% endblocktrans %}</p>
                 {% endif %}
             {% else %}
+              <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
+              promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
+              (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
+              descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
+              com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
 
               <p style="text-align: justify;">{% blocktrans %}Clique em <b>“Criar Novo Ente Federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
               {% endblocktrans %}</p>
@@ -131,27 +137,124 @@
             Equipe SNC
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-          <h2>{% blocktrans %}Bem-vindo ao Plano de Trabalho{% endblocktrans %}
-            <a class="anchorjs-link" href="#auto-truncating">
-              <span class="anchorjs-icon"></span>
-            </a>
-          </h2>
-          <p style="text-align: justify;">{% blocktrans %}
-            Você está no ambiente do Plano de Trabalho. Nesta fase, é preciso inserir as informações de cada um dos componentes do sistema de cultura local e anexar as comprovações de suas implementações. 
-            {% endblocktrans %}</p>
-           <p style="text-align: justify;">{% blocktrans %}
-             Clique em "Enviar Comprovação" em cada componente abaixo e salve as informações.
-             {% endblocktrans %}</p> 
-           <p style="text-align: justify;">{% blocktrans %}
-             Tais arquivos serão validados pela Equipe do Sistema Nacional de Cultura (SNC) e será enviada uma mensagem para o seu e-mail cadastrado após conclusão do procedimento. 
-             {% endblocktrans %}</p>
-            <p style="text-align: justify;">{% blocktrans %}
-            ATENÇÃO! É importante manter suas informações sempre atualizadas. Lembramos que são de responsabilidade do ente federado, sob as penas da lei, a autenticidade dos documentos apresentados e a veracidade das informações prestadas.
-            {% endblocktrans %}</p>
-            <p style="text-align: justify;">{% blocktrans %}
-            Em caso de dúvida, clique no tutorial “Como preencher o Plano de Trabalho”, disponível em http://portalsnc.cultura.gov.br. 
-            {% endblocktrans %}</p>
-
+        <h1>  Bem-vindo ao Plano de Trabalho  </h1>
+        <p style="text-align: justify;">
+          Você está no ambiente do Plano de Trabalho. Nesta fase, é preciso inserir as informações de cada um dos componentes do sistema de cultura local e anexar as comprovações de suas implementações.
+        </p>
+        <p style="text-align: justify;">
+          Clique em "Enviar Comprovação" em cada componente abaixo e salve as informações.
+        </p>
+        <p style="text-align: justify;">
+          Tais arquivos serão validados pela Equipe do Sistema Nacional de Cultura (SNC) e será enviada uma mensagem para o seu e-mail cadastrado após conclusão do procedimento.
+        </p>
+        <p style="text-align: justify;">
+          ATENÇÃO! É importante manter suas informações sempre atualizadas. Lembramos que são de responsabilidade do ente federado, sob as penas da lei, a autenticidade dos documentos apresentados e a veracidade das informações prestadas.
+        </p>
+        <p style="text-align: justify;">
+          Em caso de dúvida, clique no tutorial “Como preencher o Plano de Trabalho”, disponível em http://portalsnc.cultura.gov.br.
+        </p>
+      
+        <ul class="list-group">
+      
+          <li class="list-group-item">
+            <p>
+              <strong>I. Lei de Criação do Sistema de Cultura</strong>
+            </p>
+              {% if not sistema.legislacao.arquivo %}
+                <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_legislacao' %}">Enviar
+                  Comprovação</a>
+                </br>
+                </br>
+              {% else %}
+                <strong>Situação da Lei: </strong>{{ sistema.legislacao.get_situacao_display|default:"Não possui" }}</br>
+                <br/>
+                <a class="btn btn-warning" style="color:#FFF"
+                   href="{% url 'planotrabalho:alterar_legislacao' pk=sistema.legislacao.id %}">Editar Componente</a>
+                <br/>
+                </br>
+              {% endif %}
+          </li>
+          <li class="list-group-item">
+            <p>
+              <strong>II. Órgão Gestor</strong>
+            </p>
+              {% if not sistema.orgao_gestor.arquivo %}
+                <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_orgao' %}">Enviar
+                  Comprovação</a>
+                </br>
+                </br>
+              {% else %}
+                <strong>Situação da Lei: </strong>{{ sistema.orgao_gestor.get_situacao_display|default:"Não possui" }}</br>
+                <br/>
+                <a class="btn btn-warning" style="color:#FFF"
+                   href="{% url 'planotrabalho:alterar_orgao' pk=sistema.orgao_gestor.id %}">Editar Componente</a>
+                <br/>
+                </br>
+              {% endif %}
+          </li>
+          <li class="list-group-item">
+            <p>
+              <strong>III. Conselho de Política Cultural</strong>
+            </p>
+              {% if not sistema.conselho.arquivo and not sistema.conselho.lei %}
+                <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_conselho' %}">Enviar
+                  Comprovação</a>
+                </br>
+                </br>
+              {% else %}
+                <strong>Situação da Lei: </strong>{{ sistema.conselho.lei.get_situacao_display|default:"Não possui" }}</br>
+                <strong>Situação da Ata: </strong>{{ sistema.conselho.get_situacao_display|default:"Não possui" }}</br>
+                </br>
+                <a class="btn btn-warning" style="color:#FFF"
+                   href="{% url 'planotrabalho:alterar_conselho' pk=sistema.conselho.id %}">Editar Componente</a>
+                </br>
+                </br>
+              {% endif %}
+          </li>
+          <li class="list-group-item">
+            <p>
+              <strong>IV. Fundo de Cultura</strong>
+            </p>
+              {% if not sistema.fundo_cultura.arquivo and not sistema.fundo_cultura.comprovante_cnpj %}
+                <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_fundo_cultura' %}">Enviar
+                  Comprovação</a>
+                </br>
+                </br>
+              {% else %}
+                <strong>Situação da Lei: </strong>{{ sistema.fundo_cultura.get_situacao_display|default:"Não possui" }}</br>
+                <strong>Situação do Comprovante do CNPJ: </strong>
+                  {{ sistema.fundo_cultura.comprovante_cnpj.get_situacao_display|default:"Não possui" }}</br>
+                </br>
+                <a class="btn btn-warning" style="color:#FFF"
+                   href="{% url 'planotrabalho:alterar_fundo_cultura' pk=sistema.fundo_cultura.id %}">Editar Componente</a>
+                </br>
+                </br>
+              {% endif %}
+          </li>
+          <li class="list-group-item">
+            <p>
+              <strong>V. Plano de Cultura</strong>
+            </p>
+              {% if not sistema.plano.situacao and not sistema.plano.anexo and not sistema.plano.metas %}
+                <a class="btn btn-success" style="color:#FFF" href="{% url 'planotrabalho:cadastrar_plano' %}">Enviar
+                  Comprovação</a>
+                </br>
+                </br>
+              {% else %}
+                <strong>Situação da Lei: </strong>{{ sistema.plano.get_situacao_display|default:"Não possui" }}</br>
+                <strong>Situação do Anexo da Lei: </strong>
+                  {{ sistema.plano.anexo.get_situacao_display|default:"Não possui" }}</br>
+                <strong>Situação do Arquivo com as Metas: </strong>
+                  {{ sistema.plano.metas.get_situacao_display|default:"Não possui" }}</br>
+                </br>
+                <a class="btn btn-warning" style="color:#FFF"
+                   href="{% url 'planotrabalho:alterar_plano' pk=sistema.plano.id %}">Editar Componente</a>
+                </br>
+              {% endif %}
+          </li>
+      
+        </ul>
+      
         {% endif %}
 
         {% if request.session.sistema_cultura_selecionado.alterado_em %}
