@@ -171,15 +171,15 @@ class CadastrarSistemaCulturaForm(ModelForm):
 
 class CadastrarFuncionarioForm(ModelForm):
     cpf = BRCPFField()
-
-    rg  = forms.CharField(required=True)
+    rg = forms.CharField(required=True)
     orgao_expeditor_rg = forms.CharField(required=True)
-   # estado_expeditor = forms.CharField(required=True)
+    # estado_expeditor = forms.CharField(required=True)
     nome = forms.CharField(required=True)
     cargo = forms.CharField(required=True)
     instituicao = forms.CharField(required=True)
     telefone_um = forms.CharField(required=True)
-    email = forms.CharField(required=True)
+    email_institucional = forms.CharField(required=True)
+    email_pessoal = forms.CharField(required=True)
     endereco = forms.CharField(required=True)
     complemento = forms.CharField(required=False)
     cep = forms.CharField(required=True)
