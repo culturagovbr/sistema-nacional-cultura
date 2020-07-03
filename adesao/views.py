@@ -664,20 +664,26 @@ class ConsultarPlanoTrabalhoEstado(ListView):
 # Função na qual realizo a consulta para verificar se o Ente Federado já está cadastrado
 def validate_username(request):
     # Recuperando o ente-federado
-    codigo_ibge = request.GET.get('codigo_ibge_form', None)
+    # codigo_ibge = request.GET.get('codigo_ibge_form', None)
     # Retirando os tres ultimos caracteres  /DF
     # municipio = codigo_ibge[:-3]
 
-    #ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
-    #print("Codigo IBGE" + codigo_ibge)
-    nome_cadastrador = ""
+    # ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    # print("Codigo IBGE" + codigo_ibge)
+    # nome_cadastrador = ""
 
-    for item in SistemaCultura.objects.all():
-        print(item.ente_federado.pk)
-        print (item.cadastrador.nome_usuario)
-        if item.ente_federado.pk == int(codigo_ibge):
-            print (item.cadastrador.nome_usuario)
-            nome_cadastrador = item.cadastrador.nome_usuario
+    # for item in SistemaCultura.objects.all():
+    #    print(item.ente_federado.pk)
+    #    print (item.cadastrador.nome_usuario)
+    #    if item.ente_federado.pk == int(codigo_ibge):
+    #        print (item.cadastrador.nome_usuario)
+    #        nome_cadastrador = item.cadastrador.nome_usuario
+
+    codigo_ibge = request.GET.get('codigo_ibge_form', None)
+    nome_cadastrador = ''
+    ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    if ente_federado:
+        nome_cadastrador = ente_federado.cadastrador.nome_usuario
 
     '''
     data = {
@@ -688,7 +694,8 @@ def validate_username(request):
     data = {
         # 'validacao': EnteFederado.objects.filter(nome=codigo_ibge).exists()
         # 'validacao': EnteFederado.objects.filter(nome=municipio).exists(),
-        'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
+        'validacao': SistemaCultura.objects.filter(
+                                    ente_federado_id=codigo_ibge).exists()
         # 'municipio': codigo_ibge
     }
     if data['validacao']:
