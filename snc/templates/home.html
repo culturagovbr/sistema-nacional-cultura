@@ -50,12 +50,7 @@
                   "</b> para alterar informações e dados do estado/município já cadastrado. 
                   {% endblocktrans %}
                   <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
-                    <a href="#">
-                    {% blocktrans %}
-                    Gestor de Cultura              
-                    {% endblocktrans %}
-                  <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
-                    <a href="{% url 'adesao:cadastrar_funcionario' pk=request.session.sistema_cultura_selecionado.id %}">
+                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
                     {% blocktrans %}
                     Gestor de Cultura              
                     {% endblocktrans %}

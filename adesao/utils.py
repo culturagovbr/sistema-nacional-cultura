@@ -170,8 +170,6 @@ def atualiza_session(sistema_cultura, request):
     request.session['sistema_cultura_selecionado']['alterado_em'] = sistema_cultura.alterado_em.strftime(
         "%d/%m/%Y às %H:%M:%S")
 
-    request.session['sistema_cultura_selecionado']['estado_processo'] = 6
-
     if sistema_cultura.alterado_por:
         request.session['sistema_cultura_selecionado']['alterado_por'] = sistema_cultura.alterado_por.user.username
     request.session['sistema_situacao'] = sistema_cultura.get_estado_processo_display()
