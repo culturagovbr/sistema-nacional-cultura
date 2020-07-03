@@ -350,16 +350,24 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
             sistema = form_sistema.save()
 
             if not self.request.session.get('sistemas', False):
+                print('SISTEMA SELECIONADO 1 ')
                 self.request.session['sistemas'] = list()
                 sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
+                    print('SISTEMA SELECIONADO 2 ')
                     self.request.session['sistema_cultura_selecionado'].clear()
                     self.request.session.modified = True
+                print('SISTEMA SELECIONADO 3 ')
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id = sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
 
+            print('SISTEMA SELECIONADO 4 ')
+            
             self.request.session['sistemas'].append(
                 {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
 
             return super(CadastrarSistemaCultura, self).form_valid(form)
         else:
