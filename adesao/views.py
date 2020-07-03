@@ -670,10 +670,7 @@ def validate_username(request):
     nome_cadastrador = ""
 
     for item in SistemaCultura.objects.all():
-        print(item.ente_federado.pk)
-        print (item.cadastrador.nome_usuario)
         if item.ente_federado.pk == int(codigo_ibge):
-            print (item.cadastrador.nome_usuario)
             nome_cadastrador = item.cadastrador.nome_usuario
 
     '''

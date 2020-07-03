@@ -3,7 +3,7 @@
 {% block content %}
 <h3>{% blocktrans %}Cadastro Realizado com Sucesso!{% endblocktrans %}</h3>
 <p>{% blocktrans %}O Ente Federado foi cadastrado com sucesso.{% endblocktrans %}</p>
-<a class="btn btn-success" href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
+<a class="btn btn-success" href="{% url 'adesao:cadastrar_funcionario' pk=request.session.sistema_cultura_selecionado.id %}">
   {% blocktrans %}Gestor de Cultura{% endblocktrans %}
 </a>
 {% endblock content %}
