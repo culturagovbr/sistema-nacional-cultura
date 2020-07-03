@@ -56,7 +56,7 @@ urlpatterns = [
 
     # Ajax/consultar Entederado
     # url(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
-    path(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
+    url(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
 
     # consulta cnpj
     url(r'^ajax/validate_cnpj/$', views.validate_cnpj, name='validate_cnpj'),
