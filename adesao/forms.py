@@ -179,14 +179,12 @@ class CadastrarFuncionarioForm(ModelForm):
     cargo = forms.CharField(required=True)
     instituicao = forms.CharField(required=True)
     telefone_um = forms.CharField(required=True)
-
+    email_institucional = forms.EmailField(required=True)
+    email_pessoal = forms.EmailField(required=False)
     endereco = forms.CharField(required=True)
     complemento = forms.CharField(required=False)
     cep = forms.CharField(required=True)
     bairro = forms.CharField(required=True)
-
-    email_institucional = forms.CharField(required=True)
-    email_pessoal = forms.CharField(required=False)
 
     def clean_estado_endereco(self):
         return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_endereco']))
