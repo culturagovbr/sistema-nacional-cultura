@@ -86,8 +86,14 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(
-        sistemas_cultura.values('id', 'ente_federado__nome'))
+    sistema_ente_federados = list(sistemas_cultura.values('id', 'ente_federado__nome'))
+
+    for item in sistemas_cultura:
+        for item2 in sistema_ente_federados:
+            if item2['ente_federado__nome'] in str(item.ente_federado):
+                item2['ente_federado__nome'] = str(item.ente_federado)
+
+    request.session['sistemas'] = sistema_ente_federados
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")
@@ -287,7 +293,7 @@ class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
     templated_email_template_name = "usuario"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -322,7 +328,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -344,16 +350,24 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
             sistema = form_sistema.save()
 
             if not self.request.session.get('sistemas', False):
+                print('SISTEMA SELECIONADO 1 ')
                 self.request.session['sistemas'] = list()
                 sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
+                    print('SISTEMA SELECIONADO 2 ')
                     self.request.session['sistema_cultura_selecionado'].clear()
                     self.request.session.modified = True
+                print('SISTEMA SELECIONADO 3 ')
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id = sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
 
+            print('SISTEMA SELECIONADO 4 ')
+            
             self.request.session['sistemas'].append(
                 {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
 
             return super(CadastrarSistemaCultura, self).form_valid(form)
         else:
@@ -659,6 +673,14 @@ def validate_username(request):
     # Retirando os tres ultimos caracteres  /DF
     # municipio = codigo_ibge[:-3]
 
+    #ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    #print("Codigo IBGE" + codigo_ibge)
+    nome_cadastrador = ""
+
+    for item in SistemaCultura.objects.all():
+        if item.ente_federado.pk == int(codigo_ibge):
+            nome_cadastrador = item.cadastrador.nome_usuario
+
     '''
     data = {
         'ibge': codigo_ibge
@@ -671,9 +693,9 @@ def validate_username(request):
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
         # 'municipio': codigo_ibge
     }
-
     if data['validacao']:
         data['error_message'] = 'O ente federado já existe'
+        data['cadastrador'] = nome_cadastrador,
 
     return JsonResponse(data)
 
