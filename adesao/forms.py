@@ -186,7 +186,7 @@ class CadastrarFuncionarioForm(ModelForm):
     bairro = forms.CharField(required=True)
 
     email_institucional = forms.CharField(required=True)
-    email_pessoal = forms.CharField(required=True)
+    email_pessoal = forms.CharField(required=False)
 
     def clean_estado_endereco(self):
         return Uf.objects.get(codigo_ibge=int(self.cleaned_data['estado_endereco']))
