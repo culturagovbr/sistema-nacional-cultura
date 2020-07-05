@@ -504,12 +504,28 @@ class AlterarFuncionario(UpdateView):
 class GeraPDF(WeasyTemplateView):
 
     def dispatch(self, request, *args, **kwargs):
+        '''
         self.ente_federado = self.request.session.get('sistema_ente', True)
         self.sistema_sede = self.request.session.get('sistema_sede', False)
         self.sistema_gestor = self.request.session.get('sistema_gestor', False)
         self.gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
         self.sistema = self.request.session.get('sistema_cultura_selecionado', False)
+        '''
 
+        try:
+            sistema = SistemaCultura.objects.get(id=self.kwargs['pk'])
+            ente_federado = sistema.ente_federado
+            self.sistema = sistema
+            sistema_sede = sistema.sede
+            sistema_gestor = sistema.gestor
+            gestor_cultura = sistema.gestor_cultura
+            if not sistema or not sistema.ente_federado or not sistema.gestor_cultura or \
+               not self.sistema.gestor.cpf or sistema.estado_processo == 0:
+               return redirect('adesao:erro_impressao')
+        except Exception as e:
+           return redirect('adesao:erro_impressao')
+
+        '''
         if not self.ente_federado or \
             not self.gestor_cultura or \
             not self.sistema or \
@@ -517,7 +533,7 @@ class GeraPDF(WeasyTemplateView):
             len(self.sistema_sede['cnpj']) != 18 or \
             not self.sistema_gestor['cpf']:
             return redirect('adesao:erro_impressao')
-
+        '''
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
