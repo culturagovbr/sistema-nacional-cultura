@@ -217,7 +217,7 @@
                               {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
                                 {% if request.session.sistema_gestor_cultura %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
-                                  <a href="{% url 'adesao:gera_pdf' template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+                                  <a href="{% url 'adesao:gera_pdf' pk=request.session.sistema_cultura_selecionado.id template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
                                     <span>Acordo de Cooperação</span>
                                   </a>
                                 </li>
