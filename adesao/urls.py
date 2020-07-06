@@ -48,7 +48,7 @@ urlpatterns = [
     path('sistema', login_required(views.define_sistema_sessao), name='define_sistema_sessao'),
 
     # Minuta de acordo e termo de solicitação
-    path('termo/<str:template>/<str:nome_arquivo>', login_required(views.GeraPDF.as_view()), name='gera_pdf'),
+    path('termo/<int:pk>/<str:template>/<str:nome_arquivo>', login_required(views.GeraPDF.as_view()), name='gera_pdf'),
 
     # Consulta
     path('consultar/<str:tipo>', views.ConsultarEnte.as_view(), name='consultar'),
@@ -56,7 +56,8 @@ urlpatterns = [
 
     # Ajax/consultar Entederado
     # url(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
-    path(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
+    #path(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
+    url(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
 
     # consulta cnpj
     url(r'^ajax/validate_cnpj/$', views.validate_cnpj, name='validate_cnpj'),
