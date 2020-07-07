@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
@@ -99,6 +99,8 @@ class CadastrarOrgaoGestor(CadastrarComponente):
 
     def form_valid(self, form):
         obj=super().form_valid(form)
+
+        return HttpResponseRedirect('/adesao/home/')
 
 
 

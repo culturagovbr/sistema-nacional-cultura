@@ -117,7 +117,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
             orgao_gestor.cnpj = self.cleaned_data['cnpj']
             orgao_gestor.comprovante = self.cleaned_data['comprovante']
-            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.arquivo = None
             orgao_gestor.banco = self.cleaned_data['banco']
             orgao_gestor.agencia = self.cleaned_data['agencia']
             orgao_gestor.conta = self.cleaned_data['conta']

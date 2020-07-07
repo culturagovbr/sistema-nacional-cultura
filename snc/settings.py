@@ -12,15 +12,15 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from django.contrib.messages import constants as messages
 
 import environ
-import os
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+
 env = environ.Env(
     DEBUG=(bool, False),
     SENTRY_DSN=(str, None),
-)
+    )
 
 env.read_env()
 
@@ -29,16 +29,16 @@ ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
 RECEIVER_EMAIL = env("RECEIVER_EMAIL", default="none@email.com")
 # DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = True  # env("DEBUG", default=False)
+DEBUG = env("DEBUG", default=False)
 
 # SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!')
 
 # Allowed Hosts
-# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['localhost'])
-ALLOWED_HOSTS = ['*']  # ['127.0.0.1', 'localhost']
-# INTERNAL_IPS = ("127.0.0.1",)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['localhost'])
+
+INTERNAL_IPS = ("127.0.0.1",)
 
 # APP CONFIGURATION
 
@@ -153,7 +153,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 # EMAIL CONFIGURATION
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@cidadania.gov.br')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='naoresponda@turismo.gov.br')
 EMAIL_USE_TLS = True
 EMAIL_HOST = env('EMAIL_HOST', default='mailapp.cultura.gov.br')
 EMAIL_PORT = env('EMAIL_PORT', default=25)
@@ -179,29 +179,12 @@ MANAGERS = ADMINS
 
 # DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
-'''
 DATABASES = {
     'default': env.db("DATABASE_URL", default="postgres://postgres:postgres123@localhost/dbsnc"),
 }
-'''
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'OPTIONS': {
-            'options': '-c search_path=snc'
-        },
-        'NAME': 'dbminc_snc',
-        'USER': 'rodrigo.machado',
-        'PASSWORD': '@m010283',
-        'HOST': '10.0.0.229',
-        'PORT': '5432',
-        'ATOMIC_REQUESTS': True,
-    }
-}
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
-# DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # GENERAL CONFIGURATION
 # Local time zone for this installation. Choices can be found here:
@@ -327,8 +310,7 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'Custom',
         'toolbar_Custom': [
             ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
-             'JustifyRight', 'JustifyBlock'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Link', 'Unlink'],
             ['RemoveFormat', 'Source']
         ]
@@ -338,34 +320,13 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-RECEITA_URL = env("RECEITA_URL",
-                  default='http://sistemasweb.cultura.gov.br/minc-pessoa/servicos/pessoa_juridica/consultar/')
+RECEITA_URL = env("RECEITA_URL", default='http://sistemasweb.cultura.gov.br/minc-pessoa/servicos/pessoa_juridica/consultar/')
 RECEITA_USER = env("RECEITA_USER", default='')
 RECEITA_PASSWORD = env("RECEITA_PASSWORD", default='')
 
 if env("SENTRY_DSN"):
     sentry_sdk.init(
-        dsn=env("SENTRY_DSN"),
-        integrations=[DjangoIntegration()],
-        send_default_pii=True
-    )
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': str(ROOT_DIR.path('snc/templates/debug.log')),
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-
+            dsn=env("SENTRY_DSN"),
+            integrations=[DjangoIntegration()],
+            send_default_pii=True
+            )
