@@ -224,3 +224,13 @@ def ir_para_estado_envio_documentacao(request):
         atualiza_session(sistema_atualizado, request)
 
         enviar_email_conclusao(request)
+
+def concatenacao_municipi_uf(sistemas_cultura):
+    sistema_ente_federados = list(sistemas_cultura.values('id', 'ente_federado__nome'))
+
+    for item in sistemas_cultura:
+        for item2 in sistema_ente_federados:
+            if item2['ente_federado__nome'] in str(item.ente_federado):
+                item2['ente_federado__nome'] = str(item.ente_federado)
+
+    return sistema_ente_federados
