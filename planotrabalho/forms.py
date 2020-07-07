@@ -5,7 +5,7 @@ from django.forms.widgets import FileInput
 
 from snc.forms import RestrictedFileField, BRCNPJField
 
-from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
+from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural, BANCOS
 from .models import FundoCultura, Componente
 from .models import FundoDeCultura, PlanoDeCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
@@ -21,7 +21,6 @@ from gestao.forms import content_types
 from adesao.utils import limpar_mascara
 
 from snc.widgets import FileUploadWidget
-
 
 SETORIAIS = (
     ('0', '-- Selecione um Segmento --'),
@@ -98,6 +97,39 @@ class CriarComponenteForm(ModelForm):
 
 class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
+    possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                                                           (False, 'Não')]))
+    cnpj = BRCNPJField(required=False)
+    comprovante = forms.FileField(required=False, widget=FileInput)
+    arquivo = forms.FileField(required=False, widget=FileInput)
+    banco = forms.ChoiceField(required=False, choices=BANCOS)
+    agencia = forms.CharField(required=False)
+    conta = forms.CharField(required=False)
+
+    def save(self, commit=True, *args, **kwargs):
+        orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            orgao_gestor.situacao = 1
+
+        if commit:
+            orgao_gestor.tipo = self.componentes.get(self.tipo_componente)
+            orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.cnpj = self.cleaned_data['cnpj']
+            orgao_gestor.comprovante = self.cleaned_data['comprovante']
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.banco = self.cleaned_data['banco']
+            orgao_gestor.agencia = self.cleaned_data['agencia']
+            orgao_gestor.conta = self.cleaned_data['conta']
+            orgao_gestor.save()
+            sistema_cultura = getattr(orgao_gestor, self.tipo_componente)
+            sistema_cultura.add(self.sistema)
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.save()
+            setattr(self.sistema, self.tipo_componente, orgao_gestor)
+            self.sistema.save()
+
+        return orgao_gestor
 
     class Meta:
         model = OrgaoGestor2
@@ -105,7 +137,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
 
 class CriarPlanoForm(ModelForm):
-
     exclusivo_cultura = forms.NullBooleanField(
         required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), (False, 'Não')]))
     arquivo = forms.FileField(widget=FileInput, label="Arquivo da Lei")
@@ -176,7 +207,8 @@ class CriarPlanoForm(ModelForm):
         return self.cleaned_data['anexo_na_lei']
 
     def clean_anexo_lei(self):
-        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and self.cleaned_data['anexo_lei'] is None:
+        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and \
+            self.cleaned_data['anexo_lei'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['anexo_lei']
@@ -194,7 +226,8 @@ class CriarPlanoForm(ModelForm):
         return self.cleaned_data['metas_na_lei']
 
     def clean_arquivo_metas(self):
-        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and self.cleaned_data['arquivo_metas'] is None:
+        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and \
+            self.cleaned_data['arquivo_metas'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo_metas']
@@ -444,13 +477,15 @@ class CriarConselhoForm(ModelForm):
         required=False, label="Data de publicação da Lei")
     arquivo = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
     mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                                                         (False, 'Não')]), label="Lei é a mesma do sistema")
+                                                                                         (False, 'Não')]),
+                                       label="Lei é a mesma do sistema")
     possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                           (False, 'Não')]))
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                                  (False, 'Não')]))
     paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                                                         (False, 'Não')]), label="Paritário")
+                                                                                         (False, 'Não')]),
+                                       label="Paritário")
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')

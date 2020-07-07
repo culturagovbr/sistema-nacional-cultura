@@ -1,6 +1,5 @@
 import json
 
-
 from django.shortcuts import redirect
 from django.http import Http404
 from django.http import HttpResponse
@@ -97,6 +96,10 @@ class CadastrarOrgaoGestor(CadastrarComponente):
         kwargs['tipo'] = 'orgao_gestor'
 
         return kwargs
+
+    def form_valid(self, form):
+        obj=super().form_valid(form)
+
 
 
 class CadastrarFundoDeCultura(CadastrarComponente):
@@ -207,6 +210,16 @@ class AlterarOrgaoGestor(UpdateView):
 
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
             kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
+
+        if self.sistema.orgao_gestor.cnpj:
+            kwargs['initial']['possui_cnpj'] = True
+            kwargs['initial']['cnpj'] = self.sistema.orgao_gestor.cnpj
+            kwargs['initial']['banco'] = self.sistema.orgao_gestor.banco
+            kwargs['initial']['agencia'] = self.sistema.orgao_gestor.agencia
+            kwargs['initial']['conta'] = self.sistema.orgao_gestor.conta
+
+        else:
+            kwargs['initial']['possui_cnpj'] = False
 
         return kwargs
 

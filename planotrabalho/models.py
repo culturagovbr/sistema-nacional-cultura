@@ -74,6 +74,11 @@ LISTA_ESFERAS_FEDERACAO = (
     (2, "Municipal"),
 )
 
+BANCOS = (
+    (0, "001 - BANCODO BRASIL S.A"),
+    (1, "104 - CAIXA ECONOMICA FEDERAL"),
+)
+
 
 def upload_to_componente(instance, filename):
     name = ''
@@ -184,6 +189,22 @@ class Componente(ArquivoComponente2):
 class OrgaoGestor2(Componente):
     perfil = models.IntegerField(
         choices=LISTA_PERFIS_ORGAO_GESTOR, null=True, blank=True)
+    cnpj = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ',
+        blank=True,
+        null=True,
+        default=None)
+    comprovante_cnpj = models.ForeignKey(
+        'ArquivoComponente2',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='comprovantes_orgao_gestor')
+
+    banco = models.CharField(max_length=20, verbose_name='Banco', choices=BANCOS, null=True, blank=True)
+    agencia = models.CharField(max_length=4, verbose_name='Agência', null=True, blank=True)
+    conta = models.CharField(max_length=20, verbose_name='Conta Corrente com dígito', null=True, blank=True)
 
 
 class FundoDeCultura(Componente):
