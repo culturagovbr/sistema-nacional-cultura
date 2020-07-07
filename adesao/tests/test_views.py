@@ -523,7 +523,7 @@ SDC / Secretaria Especial da Cultura / Ministério do Turismo
 SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
-E-mail: snc@cidadania.gov.br
+E-mail: snc@turismo.gov.br
 
 Seu prazo para o envio é de até 60 dias corridos.
 """
@@ -577,7 +577,7 @@ SDC / Secretaria Especial da Cultura / Ministério do Turismo
 SCS Q. 09, Lote C, Bloco B, 10º andar
 Edifício Parque Cidade Corporate
 CEP: 70.308-200    Brasília-DF
-E-mail: snc@cidadania.gov.br
+E-mail: snc@turismo.gov.br
 
 Seu prazo para o envio é de até 60 dias corridos.
 """
