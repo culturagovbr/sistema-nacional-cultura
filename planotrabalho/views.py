@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import redirect
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, request
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView

@@ -87,7 +87,23 @@
         <p>{% render_field form.comprovante %}</p>
       {% endif %}
     </div>
+     <label for="{{ form.comprovante.id_for_label }}">
+        Banco
+    </label>
+        {% render_field form.banco class="form-control" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Agência
+    </label>
+        {% render_field form.agencia class="form-control date half-width" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Conta Corrente
+    </label>
+        {% render_field form.conta class="form-control date half-width" %}
+    <br/>
   </div>
+
 
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>

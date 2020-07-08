@@ -201,6 +201,7 @@ class OrgaoGestor2(Componente):
         blank=True,
         null=True,
         related_name='comprovantes_orgao_gestor')
+    comprovante_cnpj_orgao = models.FileField(upload_to='media/', blank=True, null=True)
 
     banco = models.CharField(max_length=20, verbose_name='Banco', choices=BANCOS, null=True, blank=True)
     agencia = models.CharField(max_length=4, verbose_name='Agência', null=True, blank=True)
@@ -220,6 +221,10 @@ class FundoDeCultura(Componente):
         blank=True,
         null=True,
         related_name='comprovantes')
+
+    banco = models.CharField(max_length=20, verbose_name='Banco', choices=BANCOS, null=True, blank=True)
+    agencia = models.CharField(max_length=4, verbose_name='Agência', null=True, blank=True)
+    conta = models.CharField(max_length=20, verbose_name='Conta Corrente com dígito', null=True, blank=True)
 
 
 class ConselhoDeCultura(Componente):

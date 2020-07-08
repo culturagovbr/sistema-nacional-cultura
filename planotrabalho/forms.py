@@ -100,7 +100,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                            (False, 'Não')]))
     cnpj = BRCNPJField(required=False)
-    comprovante = forms.FileField(required=False, widget=FileInput)
+    #comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
     banco = forms.ChoiceField(required=False, choices=BANCOS)
     agencia = forms.CharField(required=False)
@@ -116,16 +116,14 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
             orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
             orgao_gestor.cnpj = self.cleaned_data['cnpj']
-            orgao_gestor.comprovante = self.cleaned_data['comprovante']
-            orgao_gestor.arquivo = None
+            orgao_gestor.comprovante_cnpj_orgao = self.cleaned_data['comprovante_cnpj_orgao']
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
             orgao_gestor.banco = self.cleaned_data['banco']
             orgao_gestor.agencia = self.cleaned_data['agencia']
             orgao_gestor.conta = self.cleaned_data['conta']
             orgao_gestor.save()
             sistema_cultura = getattr(orgao_gestor, self.tipo_componente)
             sistema_cultura.add(self.sistema)
-            orgao_gestor.arquivo = self.cleaned_data['arquivo']
-            orgao_gestor.save()
             setattr(self.sistema, self.tipo_componente, orgao_gestor)
             self.sistema.save()
 
@@ -133,7 +131,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
     class Meta:
         model = OrgaoGestor2
-        fields = ('perfil', 'arquivo', 'data_publicacao',)
+        fields = ('perfil', 'arquivo', 'data_publicacao', 'comprovante_cnpj_orgao')
 
 
 class CriarPlanoForm(ModelForm):
@@ -366,6 +364,9 @@ class CriarFundoForm(ModelForm):
                                                                                          (False, 'Não')]))
     possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                            (False, 'Não')]))
+    banco = forms.ChoiceField(required=False, choices=BANCOS)
+    agencia = forms.CharField(required=False)
+    conta = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')

@@ -1,6 +1,9 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+from django.conf import settings
+from django.views.static import serve
+from django.conf.urls.static import static
 
 from . import views
 
@@ -58,3 +61,9 @@ urlpatterns = [
         login_required(views.DesabilitarConselheiro.as_view()),
         name="remover_conselheiro"),
     ]
+
+if settings.DEBUG:
+	urlpatterns += [
+        url(r'^media/(?P<path>.*)$',
+        serve, { 'document_root':
+        settings.MEDIA_ROOT,}), ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
