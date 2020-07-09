@@ -2,6 +2,8 @@ import datetime
 from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import FileInput
+from django.forms import CharField
+from django.forms import TextInput
 
 from snc.forms import RestrictedFileField, BRCNPJField
 
@@ -93,6 +95,7 @@ class CriarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
+        localized_fields = ('data_publicacao',)
 
 
 class CriarOrgaoGestorForm(CriarComponenteForm):
@@ -103,8 +106,8 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     #comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
     banco = forms.ChoiceField(required=False, choices=BANCOS)
-    agencia = forms.CharField(required=False)
-    conta = forms.CharField(required=False)
+    agencia = forms.CharField(required=False, max_length=4) 
+    conta = forms.CharField(required=False, max_length=20)
 
     def save(self, commit=True, *args, **kwargs):
         orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
@@ -129,9 +132,25 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
         return orgao_gestor
 
+    def clean_agencia(self):
+        cleaned_data = self.clean()
+        num_agencia = cleaned_data.get('agencia')
+        if not num_agencia.isdigit(): 
+            self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        return num_agencia
+
+    def clean_conta(self):
+        cleaned_data = self.clean()
+        num_conta = cleaned_data.get('conta')
+        if not num_conta.isdigit(): 
+            self.add_error('conta', "Digite apenas digitos no número da conta.")
+        return num_conta
+
+
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao', 'comprovante_cnpj_orgao')
+
 
 
 class CriarPlanoForm(ModelForm):

@@ -433,8 +433,6 @@
               `);
             }
 
-
-
             let error_message = '<b>' + field_name + '</b> -  ' + field_error;
             $.toast({
               heading: 'Erro',
@@ -454,6 +452,12 @@
             $('#ente_form').submit();
           }
         });
+
+        // Mascaras formulário Cadastro Gestor Plano de Trabalho
+        $("form input[name='data_publicacao']").mask('99/99/9999');
+        $("form input[name='agencia']").mask('9999');
+        $("form input[name='conta']").mask('################99-9');
+       
         $("body").prepend('<div id="overlay" style="height: 100%; width: 100%; opacity: 0.3; z-index: 100; position: fixed; background: url({% static "img/spinner.gif"%}) no-repeat center center; background-color: gray; display: none;"></div>');
 
         // $(".date").datepicker({
