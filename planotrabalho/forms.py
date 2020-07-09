@@ -135,14 +135,14 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     def clean_agencia(self):
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
-        if not num_agencia.isdigit(): 
+        if not num_agencia.isdigit() and not str(num_agencia) == '': 
             self.add_error('agencia', "Digite apenas digitos no número da agência.")
         return num_agencia
 
     def clean_conta(self):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
-        if not num_conta.isdigit(): 
+        if not num_conta.isdigit() and not str(num_conta) == '': 
             self.add_error('conta', "Digite apenas digitos no número da conta.")
         return num_conta
 

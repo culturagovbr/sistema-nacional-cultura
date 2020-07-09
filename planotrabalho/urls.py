@@ -14,6 +14,8 @@ urlpatterns = [
         login_required(views.PlanoTrabalho.as_view()),
         name='planotrabalho'),
 
+    path('<int:pk>',login_required(views.PlanoTrabalho.as_view()),
+        name='plano_trabalho'),
     path('componente/plano',
         login_required(views.CadastrarPlanoDeCultura.as_view()),
         name='cadastrar_plano'),
