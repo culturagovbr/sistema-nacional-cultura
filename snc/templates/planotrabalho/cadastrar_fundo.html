@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
 <div id="form-type" data-form-type="{{is_edit}}"></div>
-<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
+<form id="form" method="post" class="componente-fundo-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -122,15 +122,18 @@
 </div>
 
 {% endblock content %}
-{% block js%}
+{% block js %}
+
 <script type="text/javascript">
-  $(document).ready(function(){
+var formularioComponente = $('form.componente-fundo-form');
+
+  $(document).ready(function () {
 
     $('#form').submit(function(){
       $("#form :disabled").removeAttr('disabled');
     });
 
-    var formularioComponente = $('form.componente-form');
+
     if ($('#form-type').data('form-type') === 'True'){
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
@@ -150,7 +153,6 @@
       formularioComponente.submit();
     });
 
-
     if($('#id_mesma_lei_1').is(":checked")){
       $('#lei_data_form').css('display', 'block');
     }
@@ -165,7 +167,7 @@
       $('#cnpj_form').css('display', 'none');
     }
 
-    })
+  });
 
     $('input[name=possui_cnpj]').change(function() {
       if(this.value=='True') {
@@ -174,8 +176,8 @@
       else {
         $('#cnpj_form').fadeOut();
       }
-    })
-  });
+    });
+
 
 </script>
 {% endblock js%}

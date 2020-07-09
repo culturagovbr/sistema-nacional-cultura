@@ -384,8 +384,8 @@ class CriarFundoForm(ModelForm):
     possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                            (False, 'Não')]))
     banco = forms.ChoiceField(required=False, choices=BANCOS)
-    agencia = forms.CharField(required=False)
-    conta = forms.CharField(required=False)
+    agencia = forms.CharField(required=False,  max_length=4)
+    conta = forms.CharField(required=False, max_length=20)
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -449,6 +449,20 @@ class CriarFundoForm(ModelForm):
 
         return self.cleaned_data['comprovante']
 
+    def clean_agencia(self):
+        cleaned_data = self.clean()
+        num_agencia = cleaned_data.get('agencia')
+        if not num_agencia.isdigit():
+            self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        return num_agencia
+
+    def clean_conta(self):
+        cleaned_data = self.clean()
+        num_conta = cleaned_data.get('conta')
+        if not num_conta.isdigit():
+            self.add_error('conta', "Digite apenas digitos no número da conta.")
+        return num_conta
+
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarFundoForm, self).save(commit=False)
         FUNDO_CULTURA = 2
@@ -471,6 +485,10 @@ class CriarFundoForm(ModelForm):
         componente.save()
 
         if self.cleaned_data['possui_cnpj']:
+            componente.banco = self.cleaned_data['banco']
+            componente.agencia = self.cleaned_data['agencia']
+            componente.conta = self.cleaned_data['conta']
+            componente.save()
             if 'comprovante' in self.changed_data:
                 componente.comprovante_cnpj = ArquivoComponente2()
                 componente.comprovante_cnpj.situacao = 1

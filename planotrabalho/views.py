@@ -109,6 +109,11 @@ class CadastrarFundoDeCultura(CadastrarComponente):
     form_class = CriarFundoForm
     template_name = 'planotrabalho/cadastrar_fundo.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(CadastrarFundoDeCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
+
 
 class CadastrarConselhoDeCultura(CadastrarComponente):
     model = ConselhoDeCultura
@@ -254,6 +259,10 @@ class AlterarFundoCultura(UpdateView):
         if self.object.comprovante_cnpj:
             kwargs['initial']['possui_cnpj'] = True
             kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
+            kwargs['initial']['banco'] = self.object.banco
+            kwargs['initial']['agencia'] = self.object.agencia
+            kwargs['initial']['conta'] = self.object.conta
+
         else:
             kwargs['initial']['possui_cnpj'] = False
 
@@ -262,6 +271,7 @@ class AlterarFundoCultura(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(AlterarFundoCultura, self).get_context_data(**kwargs)
         context['is_edit'] = True
+        context['editado'] = True
         return context
 
     def get_success_url(self):
