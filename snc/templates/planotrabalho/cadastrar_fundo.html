@@ -6,7 +6,7 @@
 <form id="form" method="post" class="componente-fundo-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
-    <strong>Estruturação dos Componentes</strong>
+    <strong>Lei de criação do Fundo de Cultura</strong>
   </h3>
 
   <div class="form-group">
@@ -38,7 +38,7 @@
 
     <div class="form-group">
       <label for="{{ form.arquivo.id_for_label }}">
-        Lei de criação do Fundo Estadual/Municipal de Cultura e CNPJ
+        Lei de criação do Fundo de Cultura
       </label>
       {% if form.arquivo.value %}
         <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
@@ -53,7 +53,7 @@
 
   <div class="form-group">
     <label for="{{ form.possui_cnpj.id_for_label }}">
-       O fundo possui cnpj?</br>
+      O Fundo de Cultura possui ?</br>
     </label>
     {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
       {% render_field form.possui_cnpj class="radio" %}
@@ -109,12 +109,15 @@
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
     - Elaborar minuta (proposta) de regulamentação do fundo e de outros mecanismos de financiamento;<br>
     - Encaminhar para discussão a minuta para avaliação e aprovação;<br>
-    - Publicar no Diário Oficial a regulamentação do fundo e dos outros mecanismos de financiamento<br>
+    - Publicar no Diário Oficial a regulamentação do fundo e dos outros mecanismos de financiamento;<br>
+    - Registrar CNPJ do Fundo de Cultura;<br>
+    - Abrir conta bancária vinculada ao CNPJ do Fundo de Cultura.<br>
     <strong>Atenção:&nbsp</strong><br>
-    - O CNPJ do Fundo de Cultura deve ser matriz e exclusivo para a cultura<br>
-    - O número do CNPJ do Fundo de Cultura deve ser diferente do CNPJ do estado/DF/município<br>
+    - O Cadastro Nacional da Pessoa Jurídica (CNPJ) do Fundo de Cultura deve ser matriz e exclusivo para a cultura.<br>
+    - O número do CNPJ do Fundo de Cultura deve ser diferente do CNPJ do Fundo de Cultura deve ser diferente do CNPJ do estado, distrito federal ou município.<br>
+    - A conta bancária informada deve estar vinculada ao CNPJ do Fundo de Cultura.<br>
     <strong>Observação:&nbsp</strong><br>
-    - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a><br>
+    - Manuais disponíveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a><br>
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
   </div>
 
