@@ -283,8 +283,8 @@ class CriarPlanoForm(ModelForm):
         elif not self.cleaned_data.get('participou_curso', None):
             self.cleaned_data['ano_termino_curso'] = None
         elif self.cleaned_data['ano_termino_curso'] < self.cleaned_data['ano_inicio_curso']:
-            raise forms.ValidationError(
-                "O ano de término não pode ser menor que ano de início")
+            raise forms.ValidationError("O ano de término não pode ser menor que o ano de início")
+
 
         return self.cleaned_data['ano_termino_curso']
 
