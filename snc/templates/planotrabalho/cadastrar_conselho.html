@@ -130,8 +130,11 @@
 </form>
 </div>
 
+{% endblock content %}
+{% block js %}
 
 <script type="text/javascript">
+  $("form input[name='data_publicacao']").mask('99/99/9999');
   $(document).ready(function(){
 
     $('#form').submit(function(){
@@ -222,4 +225,4 @@
   });
 
 </script>
-{% endblock content %}
+{% endblock js%}

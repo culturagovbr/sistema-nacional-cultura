@@ -954,7 +954,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@turismo.gov.br"
-    templated_email_bcc_email = "snc@cidadania.gov.br"
+    templated_email_bcc_email = "snc@turismo.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
@@ -999,7 +999,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
-        recipient_list.append('snc@cidadania.gov.br')
+        recipient_list.append('snc@turismo.gov.br')
         return recipient_list
 
     def templated_email_get_send_email_kwargs(self, valid, form):

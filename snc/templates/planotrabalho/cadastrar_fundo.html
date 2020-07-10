@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
 <div id="form-type" data-form-type="{{is_edit}}"></div>
-<form id="form" method="post" class="componente-form" enctype="multipart/form-data">
+<form id="form" method="post" class="componente-fundo-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
     <strong>Estruturação dos Componentes</strong>
@@ -87,7 +87,23 @@
         <p>{% render_field form.comprovante %}</p>
       {% endif %}
     </div>
+     <label for="{{ form.comprovante.id_for_label }}">
+        Banco
+    </label>
+        {% render_field form.banco class="form-control" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Agência
+    </label>
+        {% render_field form.agencia class="form-control date half-width" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Conta Corrente
+    </label>
+        {% render_field form.conta class="form-control date half-width" %}
+    <br/>
   </div>
+
 
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
@@ -106,15 +122,18 @@
 </div>
 
 {% endblock content %}
-{% block js%}
+{% block js %}
+
 <script type="text/javascript">
-  $(document).ready(function(){
+var formularioComponente = $('form.componente-fundo-form');
+
+  $(document).ready(function () {
 
     $('#form').submit(function(){
       $("#form :disabled").removeAttr('disabled');
     });
 
-    var formularioComponente = $('form.componente-form');
+
     if ($('#form-type').data('form-type') === 'True'){
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
@@ -134,7 +153,6 @@
       formularioComponente.submit();
     });
 
-
     if($('#id_mesma_lei_1').is(":checked")){
       $('#lei_data_form').css('display', 'block');
     }
@@ -149,14 +167,7 @@
       $('#cnpj_form').css('display', 'none');
     }
 
-    $('input[name=mesma_lei]').change(function() {
-      if(this.value=='False') {
-        $('#lei_data_form').fadeIn();
-      }
-      else {
-        $('#lei_data_form').fadeOut();
-      }
-    })
+  });
 
     $('input[name=possui_cnpj]').change(function() {
       if(this.value=='True') {
@@ -165,8 +176,8 @@
       else {
         $('#cnpj_form').fadeOut();
       }
-    })
-  });
+    });
+
 
 </script>
 {% endblock js%}
