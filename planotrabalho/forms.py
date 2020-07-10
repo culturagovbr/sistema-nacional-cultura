@@ -283,8 +283,8 @@ class CriarPlanoForm(ModelForm):
         elif not self.cleaned_data.get('participou_curso', None):
             self.cleaned_data['ano_termino_curso'] = None
         elif self.cleaned_data['ano_termino_curso'] < self.cleaned_data['ano_inicio_curso']:
-            raise forms.ValidationError(
-                "O ano de término não pode ser menor que o ano de início")
+            raise forms.ValidationError("O ano de término não pode ser menor que o ano de início")
+
 
         return self.cleaned_data['ano_termino_curso']
 
@@ -566,7 +566,9 @@ class CriarConselhoForm(ModelForm):
     def clean_data_publicacao_lei(self):
         if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao_lei']:
             raise forms.ValidationError("Este campo é obrigatório")
-
+        if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A data de publicação de lei não pode ser maior que a de hoje")
         return self.cleaned_data['data_publicacao_lei']
 
     def clean_mesma_lei(self):
@@ -593,7 +595,9 @@ class CriarConselhoForm(ModelForm):
             raise forms.ValidationError("Este campo é obrigatório")
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
-
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A data de assinatura da ata não pode ser maior que a de hoje")
         return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):

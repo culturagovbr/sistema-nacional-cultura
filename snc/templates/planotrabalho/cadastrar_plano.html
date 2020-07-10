@@ -221,7 +221,16 @@
 
 </form>
 </div>
+
+{% endblock content %}
+{% block js %}
+
 <script type="text/javascript">
+  $("form input[name='ano_inicio_curso']").mask('9999');
+  $("form input[name='ano_termino_curso']").mask('9999');
+  $("form input[name='ultimo_ano_vigencia']").mask('9999');
+  
+  
   $(document).ready(function(){
 
     $('#form').submit(function(){
@@ -367,4 +376,4 @@
 
   });
 </script>
-{% endblock content %}
+{% endblock js%}
