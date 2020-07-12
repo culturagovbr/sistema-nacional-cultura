@@ -37,10 +37,11 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
+    RequerimentoTrocaCadastrador
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
+from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm, TrocaCadastradorForm
 from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
@@ -395,6 +396,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
 
+
 class AlterarSistemaCultura(UpdateView):
     form_class = CadastrarSistemaCulturaForm
     model = SistemaCultura
@@ -723,3 +725,14 @@ def search_cnpj(request):
     data = response.json()
 
     return JsonResponse(data, safe=False)
+
+@login_required
+def sucesso_troca_cadastrador(request):
+    return render(request, "mensagem_sucesso_troca_cadastrador.html")
+
+
+class TrocaCadastrador(CreateView):
+    template_name = "troca_cadastrador.html"
+    model = RequerimentoTrocaCadastrador
+    fields = ['ente_federado', 'oficio']
+    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
