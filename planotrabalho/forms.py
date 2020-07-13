@@ -73,6 +73,12 @@ class CriarComponenteForm(ModelForm):
                 'label': 'Componente'
             })
 
+    def clean_data_publicacao(self):
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A data de publicação de lei do sistema não pode ser maior que a de hoje")
+        return self.cleaned_data['data_publicacao']
+
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
