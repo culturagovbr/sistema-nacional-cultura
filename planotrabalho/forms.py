@@ -140,6 +140,8 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         return orgao_gestor
 
     def clean_agencia(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
         if not num_agencia.isdigit() and not str(num_agencia) == '': 
@@ -147,6 +149,8 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         return num_agencia
 
     def clean_conta(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
         num_conta = num_conta.replace('-','')
@@ -395,6 +399,8 @@ class CriarFundoForm(ModelForm):
     agencia = forms.CharField(required=False,  max_length=4)
     conta = forms.CharField(required=False, max_length=20)
 
+    termo_responsabilidade = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         logged_user = kwargs.pop('logged_user')
@@ -475,6 +481,14 @@ class CriarFundoForm(ModelForm):
         if not num_conta.isdigit():
             self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
         return num_conta
+
+    def clean_termo_responsabilidade(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        print(cleaned_data.get('termo_responsabilidade', None))
+        if cleaned_data.get('termo_responsabilidade', None) == False:
+            raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarFundoForm, self).save(commit=False)
