@@ -29,12 +29,12 @@
       Normativo que cria a estrutura do Órgão Gestor de Cultura no âmbito do estado ou município
     </label>
     {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-    {% if form.sistema.orgao_gestor.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
-    {% else %}
-    <p>{% render_field form.arquivo %}</p>
+      <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+      {% if form.sistema.orgao_gestor.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+      {% endif %}
+      {% else %}
+      <p>{% render_field form.arquivo %}</p>
     {% endif %}
   </div>
 
@@ -75,12 +75,8 @@
       </label>
       {% if form.comprovante_cnpj_orgao.value %}
         <p><a href="{{ form.comprovante_cnpj_orgao.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-        {% if form.sistema.sistema.fundo_cultura.comprovante.situacao != 2 %}
-          <p>Modificar: {% render_field form.comprovante_cnpj_orgao %}</p>
-        {% endif %}
-      {% else %}
-        <p>{% render_field form.comprovante_cnpj_orgao %}</p>
       {% endif %}
+      <p>{% render_field form.comprovante_cnpj_orgao %}</p>
     </div>
     <label for="{{ form.comprovante.id_for_label }}">
         Banco
