@@ -143,6 +143,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     def clean_conta(self):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
+        num_conta = num_conta.replace('-','')
         if not num_conta.isdigit() and not str(num_conta) == '': 
             self.add_error('conta', "Digite apenas digitos no número da conta.")
         return num_conta
@@ -460,8 +461,9 @@ class CriarFundoForm(ModelForm):
     def clean_conta(self):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
+        num_conta = num_conta.replace('-','')
         if not num_conta.isdigit():
-            self.add_error('conta', "Digite apenas digitos no número da conta.")
+            self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
         return num_conta
 
     def save(self, commit=True, *args, **kwargs):
