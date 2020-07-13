@@ -1,0 +1,288 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<style>
+li a.selected {
+    background-color: rgba(0,0,0,0.1);
+}
+
+@media (max-width: 1780px){
+  .col-lg-custom {
+      flex: 0 0 50%;
+      max-width: 17% ;
+  }
+}
+
+.card-body {
+   overflow: inherit;
+}
+</style>
+<menu data-target="troca-cadastrador" ></menu>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-default">
+          <div class="card-header card-plain card-header-primary">
+              <h4 class="card-title">SOLICITAÇÕES DE CADASTRADOR</h4>
+              <p class="card-category">Análise de Ofício para alterar o responsável de Ente Federado</p>
+          </div>
+          <div class="card-body table-responsive">
+              <table id="tabela-ente" class="datatable table table-hover">
+                  <thead>
+                      <tr>
+                          <th>Município/Estado</th>
+                          <th>Solicitante</th>
+                          <th>Data Solicitação</th>
+                          <th>Situação</th>
+                          <th>&nbsp</th>
+                      </tr>
+                  </thead>
+              </table>
+          </div>
+        </div>
+      </div>
+</div>
+
+<div class="modal fade" id="modal-exportacao" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Selecione um modo de exportação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="list-group">
+              <a href="#" class="export list-group-item list-group-item-action" id="print" data-dismiss="modal">Impressão</a>
+              <a href="#" class="export list-group-item list-group-item-action" id="pdf" data-dismiss="modal">PDF</a>
+              <a href="#" class="export list-group-item list-group-item-action" id="excel" data-dismiss="modal">EXCEL</a>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block js%}
+<script type="text/javascript">
+$(document).ready(function(){
+  var colunasParaExportacao = [0,1,2,3,7];
+
+  var tabela = $('#tabela-ente').DataTable({
+    order: [0, 'asc'],
+    aLengthMenu: [
+        [10, 25, 50, 100, -1],
+        [10, 25, 50, 100, "Todos"]
+    ],
+    dom:
+      `<'row'<'col-md-auto col-lg-3 col-lg-custom'l>
+      <'col-md-2 col-lg-auto col-sm-auto'B>
+      <'col-sm-auto col-md-auto'f>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">>
+      <"#filtro-tipo-ente">
+      <"#filtro-componente.col-sm-auto col-md-auto">
+      <"#filtro-situacao.col-sm-auto col-md-auto">
+      <"#filtro-pendente.col-sm-auto col-md-auto">
+      <"#filtro-situacao-compenente.col-sm-auto col-md-auto">>
+      <'row'<'col-sm-auto col-md-12'tr>>
+      <'row'<'col-sm-12 col-md-5'i>
+      <'col-sm-12 col-md-7'p>>`,
+    buttons: [
+      {
+        extend: 'excel',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao
+        }
+      },
+      {
+        extend: 'pdf',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao,
+            rows: null,
+            selected: false,
+        }
+      },
+      {
+        extend: 'print',
+        className: 'd-none',
+        exportOptions: {
+            columns: colunasParaExportacao
+        }
+      },
+      {
+        text: '<i class="material-icons">save_alt</i>',
+        className: 'btn btn-dark btn-sm',
+        action: (e, dt, node, config) => {
+          $('#modal-exportacao').modal('show')
+        }
+      }
+    ],
+    language:{
+            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+          },
+    columns: [
+        {
+          data: null,
+          name: "ente_federado",
+          render: (data) => data[1]
+        },
+        {
+          data: null,
+          name: "estado_processo",
+          render: (data) => data[3]
+        },
+        {
+          data: null,
+          name: "data_publicacao_acordo",
+          render: (data) => data[6]
+        },
+        {
+          data: null,
+          name: "gestor__nome",
+          render: (data) => {
+            
+            var str =  data[7];
+            for (i = 0; i < data[7].length; i++) {
+              var str = str.replace("&#39", "");
+              var str = str.replace(";", "");
+              var str = str.replace("{", "");
+              var str = str.replace("}", "");
+            }
+           
+            str = str.split(",")
+            var countlink  = 0
+            for (i = 0; i < str.length; i++) {
+                var link  = ''
+                var arrstr = str[i].split(":")
+                if(arrstr[0] == 'legislacao' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+                if(arrstr[0] == ' fundo_cultura' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+                if(arrstr[0] == ' conselho' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }if(arrstr[0] == ' plano' && arrstr[1] == ' Avaliando anexo'){
+                    countlink++
+                }
+                console.log(countlink)
+                console.log((data[7].length != 243 && data[7].length != 237 ))
+                if(countlink > 0 &&  countlink < 7  && (data[7].length != 243 && data[7].length != 237 )){
+                   return  `<a rel="tooltip" title="" href="/gestao/plano/${data[4]}" class="btn btn-info center btn-sm" target="_blank">
+                        <i class="material-icons">gavel</i>
+                      </a>`
+                }else{
+                   return ''
+                }
+                
+            }
+
+            
+
+            
+          }
+        },
+        {
+          width: '5%',
+          data: null,
+          name: "id",
+          orderable: false,
+          render: (data) => `
+            <a rel="tooltip" title="" href="/gestao/solicitacao-cadastrador/${data[4]}" class="btn btn-primary btn-link btn-sm" target="_blank">
+              <i class="material-icons">zoom_in</i>
+            </a>
+          `
+        },
+    ],
+    searching: true,
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: "{% url 'gestao:ajax_entes' %}",
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+      },
+      type: "POST",
+    },
+    initComplete: () => {
+      $('.export').each((chave, tipoExportacao) => {
+        $(`#${tipoExportacao.id}`).on('click', (e) => {
+          $(`.buttons-${e.target.id}`).trigger('click')
+        });
+      });
+
+      $('#filtro-situacao').html(`
+        <select title="filtrar situação" data-style="btn btn-success btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Pendente de Análise</option>
+          <option value="1">Aprovado</option>
+          <option value="2">Rejeitado</option>
+        </select>
+      `);
+
+      $('#filtro-componente select, #filtro-situacao select , #filtro-pendente select , #filtro-situacao-compenente select').selectpicker();
+
+      $('#filtro-componente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(1).search(pesquisa_filtro).draw()
+      });
+
+       $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(2).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-pendente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(3).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-situacao-compenente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(4).search(pesquisa_filtro).draw()
+      });
+
+      $('#filtro-tipo-ente select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(5).search(pesquisa_filtro).draw()
+      });
+
+
+      $('.filter-option-inner-inner').attr('style', 'color:#fff');
+      $( "#filtro-pendente select" ).change(function() {
+        $('#filtro-situacao option[value="6"]').prop("selected", true).on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+          var pesquisa_filtro = $(this).val();
+          tabela.columns(2).search(pesquisa_filtro).draw()
+        });
+      });
+      $.ajax({
+        type: 'OPTIONS',
+        url: '/api/v2/sistemadeculturalocal/',
+        dataType: 'json',
+        success: function (response) {
+          var estados = response.estado.choices;
+          var select_estados = $('#input-estados');
+          estados.forEach(estado => {
+            select_estados
+              .append(`<option value="${estado.id}">${estado.description}</option>`);
+          });
+
+          select_estados.on('change', (option_selecionado)=>{
+            estado_selecionado_id = option_selecionado.target.value
+            tabela.columns(0).search(estado_selecionado_id).draw()
+          });
+
+          var urlSearchParam = new URLSearchParams(window.location.search).get('q');
+          if (urlSearchParam) {
+            tabela.search(urlSearchParam).draw();
+          }
+        }
+      });
+    }
+  });
+});
+</script>
+{% endblock js %}

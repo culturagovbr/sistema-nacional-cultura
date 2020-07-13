@@ -71,6 +71,13 @@
             </a>
           </li>
 
+          <li class="nav-item" id="menu-troca-cadastrador">
+            <a class="nav-link" href="{% url 'gestao:acompanhar_troca_cadastrador' %}">
+              <i class="material-icons">place</i>
+              <p>Solicitações de Cadastrador</p>
+            </a>
+          </li>
+
           {% if request.user|has_group:"usuario_scdc" %}
           <li class="nav-item" id="menu-plano">
             <a class="nav-link" href="{% url 'gestao:plano_trabalho' %}">
