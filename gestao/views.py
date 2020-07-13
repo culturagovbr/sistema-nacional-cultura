@@ -246,6 +246,9 @@ class AcompanharSistemaCultura(TemplateView):
 class AcompanharComponente(TemplateView):
     template_name = 'gestao/planotrabalho/acompanhar.html'
 
+class AcompanharTrocaCadastrador(TemplateView):
+    template_name = 'gestao/troca-cadastrador/acompanhar.html'
+
 
 class LookUpAnotherFieldMixin(SingleObjectMixin):
     lookup_field = None
@@ -1466,3 +1469,140 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data
+
+class DetalharSolicitacaoCadastrador(DetailView, LookUpAnotherFieldMixin):
+    model = SistemaCultura
+    context_object_name = "ente"
+    template_name = "detalhe_solicitacao_cadastrador.html"
+    pk_url_kwarg = "cod_ibge"
+    lookup_field = "ente_federado__cod_ibge"
+    queryset = SistemaCultura.sistema.all()
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        sistema = context['object']
+        context['historico'] = sistema.historico_cadastradores()[:10]
+        context['historico_contatos'] = sistema.contatos.all()
+        if sistema.sede:
+            context['informacao_cnpj'] = Client().consulta_cnpj(sistema.sede.cnpj)
+
+        sistema = self.get_queryset().get(id=self.object.id)
+
+        context['componentes_restantes'] = []
+        componentes = {
+            0: "legislacao",
+            1: "orgao_gestor",
+            2: "fundo_cultura",
+            3: "conselho",
+            4: "plano",
+        }
+
+        for componente_id, componente_nome in componentes.items():
+            componente_sistema = getattr(sistema, componente_nome, None)
+            arquivo_componente = getattr(componente_sistema, 'arquivo', None)
+            descricao = ''
+            if not arquivo_componente:
+                descricao = self.get_descricao_componente(componente_id)
+                if componente_nome == 'fundo_cultura':
+                    descricao += ' (Lei e Comprovante do CNPJ)'
+
+                if componente_nome == 'conselho':
+                    descricao += ' (Lei e Ata)'
+
+                context['componentes_restantes'].append({
+                    'nome': componente_nome,
+                    'descricao': descricao
+                })
+
+        context['form'] = CadastradorEnte()
+
+        # Validação dos documentos concluidos
+        has_legislacao_concluido = self.get_valida_arquivo_concluido(sistema.legislacao)
+        has_plano_concluido = self.get_valida_arquivo_concluido(sistema.plano)
+        has_conselho_concluido = self.get_valida_arquivo_concluido(sistema.conselho)
+        has_fundo_cultura_concluido = self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura)
+        has_orgao_gestor_concluido = self.get_valida_arquivo_concluido(
+            sistema.orgao_gestor)
+        has_conselho_lei_concluido = bool(
+            sistema.conselho) and self.get_valida_arquivo_concluido(sistema.conselho.lei)
+        has_comprovante_cnpj_concluido = bool(sistema.fundo_cultura) and self.get_valida_arquivo_concluido(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        has_legislacao_arquivo = self.get_valida_arquivo(sistema.legislacao)
+        has_plano_arquivo = self.get_valida_arquivo(sistema.plano)
+        has_conselho_arquivo = self.get_valida_arquivo(sistema.conselho)
+        has_fundo_cultura_arquivo = self.get_valida_arquivo(sistema.fundo_cultura)
+        has_orgao_gestor_arquivo = self.get_valida_arquivo(sistema.orgao_gestor)
+        has_conselho_lei_arquivo = bool(
+            sistema.conselho) and self.get_valida_arquivo(sistema.conselho.lei)
+        has_comprovante_cnpj_arquivo = bool(sistema.fundo_cultura) and self.get_valida_arquivo(
+            sistema.fundo_cultura.comprovante_cnpj)
+
+        has_gestor_termo_posse = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.termo_posse)
+        has_gestor_cpf_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.cpf_copia)
+        has_gestor_rg_copia = bool(sistema.gestor) and self.get_valida_documento_gestor(
+            sistema.gestor.rg_copia)
+
+        # Situações do Ente Federado
+        context[
+            'has_analise_nao_correcao'] = sistema.has_not_diligencias_enviadas_aprovadas() and has_legislacao_concluido and has_plano_concluido and has_conselho_concluido and has_fundo_cultura_concluido and has_orgao_gestor_concluido
+        context['has_prazo_vencido'] = self.get_valida_prazo_vencido(
+            sistema) and not (len(['componentes_restantes']) > 0)
+
+        context['has_pendente_analise'] = (has_legislacao_arquivo and not has_legislacao_concluido) or (
+            has_fundo_cultura_arquivo and not has_fundo_cultura_concluido) or (
+            has_plano_arquivo and not has_plano_concluido) or (
+            has_conselho_lei_arquivo and not has_conselho_lei_concluido)
+
+        context[
+            'has_componente_sistema'] = has_legislacao_concluido and has_plano_concluido and has_fundo_cultura_concluido and has_conselho_lei_concluido and has_orgao_gestor_concluido
+        context['has_componente_sistema_conselho'] = has_conselho_concluido and has_comprovante_cnpj_concluido
+
+        context['not_has_cadastrador'] = sistema.cadastrador is None
+        context['not_has_dados_cadastrais'] = sistema.estado_processo == '0'
+        context['not_has_documentacao'] = not (
+            has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
+        context['has_formalizar_adesao'] = sistema.estado_processo == '3'
+        context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
+
+        return context
+
+    def get_descricao_componente(self, id):
+        return LISTA_TIPOS_COMPONENTES[id][1]
+
+    def get_valida_arquivo(self, field):
+        return bool(field) and bool(field.arquivo)
+
+    def get_valida_documento_gestor(self, field):
+        return bool(field) and bool(field.url)
+
+    def get_valida_arquivo_concluido(self, field):
+        return self.get_valida_arquivo(field) and field.situacao in (2, 3)
+
+    def get_valida_prazo_vencido(self, sistema, ano=2):
+        data_final_publicacao_acordo = None
+
+        if not sistema.conferencia_nacional and sistema.data_publicacao_acordo is not None:
+            try:
+                data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
+                                                    sistema.data_publicacao_acordo.month,
+                                                    sistema.data_publicacao_acordo.day)
+            except ValueError:
+                data_final_publicacao_acordo = date(sistema.data_publicacao_acordo.year + ano,
+                                                    sistema.data_publicacao_acordo.month,
+                                                    sistema.data_publicacao_acordo.day - 1)
+
+        return not sistema.conferencia_nacional and data_final_publicacao_acordo is not None and data_final_publicacao_acordo < date.today()
+
+class AnalisarSolicitacaoCadastrador(AlterarSistemaCultura):
+    template_name = "alterar_solicitacao_cadastrador.html"
+
+    def get_success_url(self):
+        sistema = SistemaCultura.objects.get(id=self.kwargs['pk'])
+        return reverse_lazy(
+            'gestao:detalhar',
+            kwargs={'cod_ibge': sistema.ente_federado.cod_ibge})

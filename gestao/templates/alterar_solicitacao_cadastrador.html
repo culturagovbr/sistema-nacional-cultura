@@ -1,0 +1,25 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %} {% load widget_tweaks %}
+  <div class="row">
+      {{ form.media }}
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title">Analise de Solicitação</h4>
+        </div>
+        <div class="card-body">
+          <form class="form-horizontal" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <select name="ente_federado" class="form-control d-none" id="id_ente_federado">
+              <option value="{{ object.ente_federado.id }}" selected="">{{ object.ente_federado }}</option>
+            </select>
+              {% include "formulario_solicitacao_troca_cadastrador.html" %}
+
+            <button type="submit" class="btn btn-success pull-right">Aprovar</button>
+            <button type="submit" class="btn btn-danger pull-right">Rejeitar</button>
+            <a class="btn btn-secondary pull-right" href="{% url 'gestao:solicitacao_cadastrador' object.ente_federado.cod_ibge %}">Cancelar</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
