@@ -458,6 +458,8 @@ class CriarFundoForm(ModelForm):
         return self.cleaned_data['comprovante']
 
     def clean_agencia(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
         if not num_agencia.isdigit():
@@ -465,6 +467,8 @@ class CriarFundoForm(ModelForm):
         return num_agencia
 
     def clean_conta(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
         num_conta = num_conta.replace('-','')
