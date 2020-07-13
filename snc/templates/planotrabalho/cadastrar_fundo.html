@@ -53,7 +53,7 @@
 
   <div class="form-group">
     <label for="{{ form.possui_cnpj.id_for_label }}">
-      O Fundo de Cultura possui ?</br>
+      O Fundo de Cultura possui CNPJ?</br>
     </label>
     {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
       {% render_field form.possui_cnpj class="radio" %}
