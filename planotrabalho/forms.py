@@ -105,6 +105,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     cnpj = BRCNPJField(required=False)
     #comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
+    comprovante_cnpj_orgao = forms.FileField(required=False, widget=FileInput)
     banco = forms.ChoiceField(required=False, choices=BANCOS)
     agencia = forms.CharField(required=False, max_length=4) 
     conta = forms.CharField(required=False, max_length=20)
