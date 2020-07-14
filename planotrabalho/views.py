@@ -273,7 +273,6 @@ class AlterarFundoCultura(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(AlterarFundoCultura, self).get_context_data(**kwargs)
         context['is_edit'] = True
-        context['editado'] = True
         return context
 
     def get_success_url(self):

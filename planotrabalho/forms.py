@@ -123,7 +123,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         if 'arquivo' in self.changed_data:
             orgao_gestor.situacao = 1
 
-        if commit:
+        if self.cleaned_data['possui_cnpj']:
             orgao_gestor.tipo = self.componentes.get(self.tipo_componente)
             orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
@@ -138,6 +138,10 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
             sistema_cultura.add(self.sistema)
             setattr(self.sistema, self.tipo_componente, orgao_gestor)
             self.sistema.save()
+        else:
+            orgao_gestor.comprovante_cnpj_orgao = None
+            orgao_gestor.cnpj = None
+            orgao_gestor.save()
 
         return orgao_gestor
 

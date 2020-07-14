@@ -38,8 +38,8 @@ class BRCNPJField(BRCNPJField):
 
         if data:
             consulta = Client().consulta_cnpj(cnpj)
-            '''
+
             if not consulta:
                 raise forms.ValidationError('CNPJ Inválido')
-            '''
+
         return data
