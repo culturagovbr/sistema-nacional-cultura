@@ -224,6 +224,7 @@ class AlterarOrgaoGestor(UpdateView):
             kwargs['initial']['banco'] = self.sistema.orgao_gestor.banco
             kwargs['initial']['agencia'] = self.sistema.orgao_gestor.agencia
             kwargs['initial']['conta'] = self.sistema.orgao_gestor.conta
+            kwargs['initial']['termo_responsabilidade'] = True
 
         else:
             kwargs['initial']['possui_cnpj'] = False
@@ -262,6 +263,7 @@ class AlterarFundoCultura(UpdateView):
             kwargs['initial']['banco'] = self.object.banco
             kwargs['initial']['agencia'] = self.object.agencia
             kwargs['initial']['conta'] = self.object.conta
+            kwargs['initial']['termo_responsabilidade'] = True
 
         else:
             kwargs['initial']['possui_cnpj'] = False
@@ -271,7 +273,6 @@ class AlterarFundoCultura(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(AlterarFundoCultura, self).get_context_data(**kwargs)
         context['is_edit'] = True
-        context['editado'] = True
         return context
 
     def get_success_url(self):

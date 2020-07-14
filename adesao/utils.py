@@ -58,21 +58,26 @@ def preenche_planilha(planilha):
     planilha.write(0, 8, "Situação")
     planilha.write(0, 9, "Situação da Lei do Sistema de Cultura")
     planilha.write(0, 10, "Situação do Órgão Gestor")
-    planilha.write(0, 11, "Situação da Ata do Conselho de Política Cultural")
-    planilha.write(0, 12, "Situação da Lei do Conselho de Política Cultural")
-    planilha.write(0, 13, "Situação do Comprovante do CNPJ do Fundo de Cultura")
-    planilha.write(0, 14, "Situação da Lei do Fundo de Cultura")
-    planilha.write(0, 15, "Situação do Plano de Cultura")
-    planilha.write(0, 16, "Participou da Conferência Nacional")
-    planilha.write(0, 17, "Endereço")
-    planilha.write(0, 18, "Bairro")
-    planilha.write(0, 19, "CEP")
-    planilha.write(0, 20, "Telefone")
-    planilha.write(0, 21, "Email Prefeito")
-    planilha.write(0, 22, "Email do Cadastrador")
-    planilha.write(0, 23, "Email do Gestor de Cultura")
-    planilha.write(0, 24, "Localização do processo")
-    planilha.write(0, 25, "Última atualização")
+    planilha.write(0, 11,"CNPJ do Órgão Gestor de Cultura")
+    planilha.write(0, 12,"Situação do Comprovante do CNPJ do Órgão Gestor de Cultura")
+    planilha.write(0, 13,"Dados Bancários do Órgão Gestor de Cultura")
+    planilha.write(0, 14, "Situação da Ata do Conselho de Política Cultural")
+    planilha.write(0, 15, "Situação da Lei do Conselho de Política Cultural")
+    planilha.write(0, 16, "CNPJ do Fundo de Cultura")
+    planilha.write(0, 17, "Situação do Comprovante do CNPJ do Fundo de Cultura")
+    planilha.write(0, 18, "Dados Bancários do Fundo de Cultura")
+    planilha.write(0, 19, "Situação da Lei do Fundo de Cultura")
+    planilha.write(0, 20, "Situação do Plano de Cultura")
+    planilha.write(0, 21, "Participou da Conferência Nacional")
+    planilha.write(0, 22, "Endereço")
+    planilha.write(0, 23, "Bairro")
+    planilha.write(0, 24, "CEP")
+    planilha.write(0, 25, "Telefone")
+    planilha.write(0, 26, "Email Prefeito")
+    planilha.write(0, 27, "Email do Cadastrador")
+    planilha.write(0, 28, "Email do Gestor de Cultura")
+    planilha.write(0, 29, "Localização do processo")
+    planilha.write(0, 30, "Última atualização")
 
     ultima_linha = 0
 
@@ -129,6 +134,45 @@ def preenche_planilha(planilha):
         else:
             email_gestor_cultura = "Não cadastrado"
 
+        if sistema.orgao_gestor:
+            #print(str(sistema.orgao_gestor))
+            if sistema.orgao_gestor.cnpj:  
+                orgao_gestor_cnpj = sistema.orgao_gestor.cnpj
+            else:
+                orgao_gestor_cnpj = "Não cadastrado"
+
+            if sistema.orgao_gestor.comprovante_cnpj_orgao:
+                situacaor_comprovante_cnpj_orgao_gestor = "Concluida"
+            else:
+                situacaor_comprovante_cnpj_orgao_gestor = "Não possui"
+
+            if sistema.orgao_gestor.agencia:
+                dados_bancarios_orgao_gestor = sistema.orgao_gestor.banco + " - AG:" + sistema.orgao_gestor.agencia + " / CC:" + sistema.orgao_gestor.conta
+            else:
+                dados_bancarios_orgao_gestor = "Não cadastrado"
+        else:
+            orgao_gestor_cnpj = "Não cadastrado"
+            situacaor_comprovante_cnpj_orgao_gestor = "Não possui"
+            dados_bancarios_orgao_gestor = "Não cadastrado"
+
+        if sistema.fundo_cultura:
+            if sistema.fundo_cultura.cnpj:
+                fundo_cultura_cnpj = sistema.fundo_cultura.cnpj
+            else:
+                fundo_cultura_cnpj = "Não cadastrado"
+            if sistema.fundo_cultura.comprovante_cnpj:
+                situacao_fundo_cultura_comprovante_cnpj = "Concluida"
+            else:
+                situacao_fundo_cultura_comprovante_cnpj = "Não possui"
+            if sistema.fundo_cultura.agencia:
+                dados_bancarios_fundo_cultura = sistema.fundo_cultura.banco + " - AG:" + sistema.fundo_cultura.agencia + " / CC:" + sistema.fundo_cultura.conta
+            else:
+                dados_bancarios_fundo_cultura = "Não cadastrado"
+        else:
+            fundo_cultura_cnpj = "Não cadastrado"
+            situacao_fundo_cultura_comprovante_cnpj = "Não possui"
+            dados_bancarios_fundo_cultura = "Não cadastrado"
+
         local = sistema.localizacao
 
         planilha.write(i, 0, nome)
@@ -142,22 +186,26 @@ def preenche_planilha(planilha):
         planilha.write(i, 8, estado_processo)
         planilha.write(i, 9, verificar_anexo(sistema, "legislacao"))
         planilha.write(i, 10, verificar_anexo(sistema, "orgao_gestor"),)
-        planilha.write(i, 11, verificar_anexo(sistema, "conselho"),)
-        planilha.write(i, 12, verificar_anexo(sistema.conselho, "lei"))
-        planilha.write(i, 13, verificar_anexo(
-            sistema.fundo_cultura, "comprovante_cnpj"))
-        planilha.write(i, 14, verificar_anexo(sistema, "fundo_cultura"))
-        planilha.write(i, 15, verificar_anexo(sistema, "plano"))
-        planilha.write(i, 16, "Sim" if sistema.conferencia_nacional else "Não")
-        planilha.write(i, 17, endereco)
-        planilha.write(i, 18, bairro)
-        planilha.write(i, 19, cep)
-        planilha.write(i, 20, telefone)
-        planilha.write(i, 21, email_gestor)
-        planilha.write(i, 22, email_cadastrador)
-        planilha.write(i, 23, email_gestor_cultura)
-        planilha.write(i, 24, local)
-        planilha.write(i, 25, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
+        planilha.write(i, 11, orgao_gestor_cnpj)
+        planilha.write(i, 12, situacaor_comprovante_cnpj_orgao_gestor)
+        planilha.write(i, 13, dados_bancarios_orgao_gestor)
+        planilha.write(i, 14, verificar_anexo(sistema, "conselho"),)
+        planilha.write(i, 15, verificar_anexo(sistema.conselho, "lei"))
+        planilha.write(i, 16, fundo_cultura_cnpj)
+        planilha.write(i, 17, situacao_fundo_cultura_comprovante_cnpj)
+        planilha.write(i, 18, dados_bancarios_fundo_cultura)
+        planilha.write(i, 19, verificar_anexo(sistema, "fundo_cultura"))
+        planilha.write(i, 20, verificar_anexo(sistema, "plano"))
+        planilha.write(i, 21, "Sim" if sistema.conferencia_nacional else "Não")
+        planilha.write(i, 22, endereco)
+        planilha.write(i, 23, bairro)
+        planilha.write(i, 24, cep)
+        planilha.write(i, 25, telefone)
+        planilha.write(i, 26, email_gestor)
+        planilha.write(i, 27, email_cadastrador)
+        planilha.write(i, 28, email_gestor_cultura)
+        planilha.write(i, 29, local)
+        planilha.write(i, 30, sistema.alterado_em.strftime("%d/%m/%Y às %H:%M:%S"))
 
         ultima_linha = i
 

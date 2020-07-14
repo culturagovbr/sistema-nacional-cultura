@@ -1,0 +1,101 @@
+{% block js %}
+<script type="text/javascript">
+  function BuscaCNPJ(CNPJ, onsuccess) {
+    CNPJ = CNPJ.replace(/[^\d]+/g, '')
+    $.ajax({
+      url: '{% url "adesao:search_cnpj" %}',
+      data: {
+        'cnpj': cnpj
+      },
+      dataType: "json",
+      success: onsuccess
+    })
+  }
+
+  // Valida Cnpj
+  function _cnpj(valor) {
+
+    cnpj = valor.replace(/[^\d]+/g, '');
+
+    if (cnpj == '') return false;
+
+    if (cnpj.length != 14)
+    return false;
+
+    if (cnpj == "00000000000000" ||
+    cnpj == "11111111111111" ||
+    cnpj == "22222222222222" ||
+    cnpj == "33333333333333" ||
+    cnpj == "44444444444444" ||
+    cnpj == "55555555555555" ||
+    cnpj == "66666666666666" ||
+    cnpj == "77777777777777" ||
+    cnpj == "88888888888888" ||
+    cnpj == "99999999999999")
+    return false;
+
+    tamanho = cnpj.length - 2
+    numeros = cnpj.substring(0, tamanho);
+    digitos = cnpj.substring(tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+    soma += numeros.charAt(tamanho - i) * pos--;
+    if (pos < 2)
+        pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0)) return false;
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+    soma += numeros.charAt(tamanho - i) * pos--;
+    if (pos < 2)
+        pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+    return false;
+
+    return true;
+}
+
+function cpfCnpj(v) {
+    //Remove tudo o que nÃ£o Ã© dÃ­gito
+    v = v.replace(/\D/g, "")
+
+    if (v.length < 14) { //CPF
+
+    //Coloca um ponto entre o terceiro e o quarto dÃ­gitos
+    v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+    //Coloca um ponto entre o terceiro e o quarto dÃ­gitos
+    //de novo (para o segundo bloco de nÃºmeros)
+    v = v.replace(/(\d{3})(\d)/, "$1.$2")
+
+    //Coloca um hÃ­fen entre o terceiro e o quarto dÃ­gitos
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+
+    } else { //CNPJ
+
+    //Coloca ponto entre o segundo e o terceiro dÃ­gitos
+    v = v.replace(/^(\d{2})(\d)/, "$1.$2")
+
+    //Coloca ponto entre o quinto e o sexto dÃ­gitos
+    v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+
+    //Coloca uma barra entre o oitavo e o nono dÃ­gitos
+    v = v.replace(/\.(\d{3})(\d)/, ".$1/$2")
+
+    //Coloca um hÃ­fen depois do bloco de quatro dÃ­gitos
+    v = v.replace(/(\d{4})(\d)/, "$1-$2")
+
+    }
+
+    return v
+
+}
+</script>
+{% endblock js %}

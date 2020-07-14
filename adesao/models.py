@@ -629,3 +629,40 @@ class SistemaCultura(models.Model):
         row = cursor.fetchone()
 
         return row[0]
+
+class RequerimentoTrocaCadastrador(models.Model):
+    """
+    Requerimento de Troca Cadastrado
+    """
+    oficio = models.FileField(upload_to='oficio', max_length=255, null=True)
+    ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
+
+class TrocaCadastrador(models.Model):
+    """
+    Requerimento de Troca Cadastrado
+    """
+    STATUS = (
+        ('0', 'Pendente de Análise'),
+        ('1', 'Aprovado'),
+        ('2', 'Rejeitado'),
+    )
+    ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
+    alterado_por = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=1, choices=STATUS, default='0', blank=True, null=True)
+    alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
+    oficio = models.FileField(upload_to='oficio', max_length=255, null=True)
+    laudo = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        """
+        Salva uma nova instancia 
+        """
+
+        if self.pk:
+                self.alterado_em = timezone.now()
+                super().save(*args, **kwargs)
+        else:
+            self.alterado_em = timezone.now()
+            self.alterado_por = get_current_user()
+            super().save(*args, **kwargs)
+

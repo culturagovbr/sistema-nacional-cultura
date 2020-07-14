@@ -1,4 +1,7 @@
 {% load widget_tweaks %}
+{% include "cnpj_functions.html" %}
+{% include "frm_cadastro_functions.html" %}
+
 <div class="row">
   {{form.media}}
 
@@ -30,7 +33,7 @@
     <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão Expeditor <span
       style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_gestor.orgao_expeditor_rg.id_for_label }}" class="col-sm-4 control-label">Órgão
-    Expeditor <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
+      Expeditor <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-3">
       {% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
@@ -39,8 +42,8 @@
   <div class="form-group">
     <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF <span
       style="color:red;font-size:10px">*</span></label>
-    {% comment %} <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF <span
-    style="color:red;font-size:10px">*</span></label> {% endcomment %}
+      {% comment %} <label for="{{ form_gestor.estado_expeditor.id_for_label }}" class="col-sm-4 control-label">UF <span
+        style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-2">
       {% render_field form_gestor.estado_expeditor class="form-control" %}
@@ -132,12 +135,12 @@
       {% render_field form_sede.cnpj class="form-control cnpj" %}
     </div>
   </div>
-
+    <span id="cnpj_invalido" class="alert alert-danger" role="alert">CNPJ Inválido!</span>
 
     <div class="form-group">
     <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span
-    id="hiddencep" style="display:none;color:#ff0000;"> (CEP
+      id="hiddencep" style="display:none;color:#ff0000;"> (CEP
     inválido)</span> <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
     <div class="col-sm-4">
@@ -209,3 +212,27 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+    function validarCNPJ(valor1, valor2) {
+        if (!_cnpj(valor1.value)) {
+        document.getElementById("cnpj_invalido").style.display = "block";
+        valor1.value = "";
+        $("#id_cnpj").focus();
+        } else {
+        BuscaCNPJ(valor2.value, onCNPJSuccess);
+        document.getElementById("cnpj_invalido").style.display = "none";
+        }
+    }
+    $("#id_cnpj").on('blur', (e)=>validarCNPJ(e.currentTarget, e.currentTarget))
+    $("#id_cnpj").on('keypress', (e)=>mascaraMutuario(e.currentTarget, cpfCnpj))
+</script>
+
+<style>
+  #cnpj_invalido {
+    display: none;
+    border: 1px solid #721c24;
+    background: #f8d7da;
+    color: #721c24;
+  }
+</style>

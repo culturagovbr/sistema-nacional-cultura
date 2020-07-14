@@ -208,6 +208,11 @@
                                         <span>Gestor de Cultura</span>
                                       </a>
                                     </li>
+                                    <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                                        <a href="{% url 'adesao:troca_cadastrador' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                            <span>Solicitar Troca Responsável Ente Federado</span>
+                                        </a>
+                                    </li>
                                   {% endif %}
                                 {% endif %}
                               {% endif %}
@@ -456,8 +461,19 @@
         // Mascaras formulário Cadastro Gestor Plano de Trabalho
         $("form input[name='data_publicacao']").mask('99/99/9999');
         $("form input[name='agencia']").mask('9999');
-        $("form input[name='conta']").mask('################99-9');
-       
+        
+        const mask_for_agencia = e =>
+        {
+          const value = e.currentTarget.value.replace('-', '')
+          if(value.length <= 1)
+            return
+
+          e.currentTarget.value = value.substring(0, value.length-1)+ "-"+value.substring(value.length-1, value.length)
+        }
+
+        $("form input[name='conta']").on('keyup', mask_for_agencia)
+        
+
         $("body").prepend('<div id="overlay" style="height: 100%; width: 100%; opacity: 0.3; z-index: 100; position: fixed; background: url({% static "img/spinner.gif"%}) no-repeat center center; background-color: gray; display: none;"></div>');
 
         // $(".date").datepicker({

@@ -41,5 +41,5 @@ class BRCNPJField(BRCNPJField):
 
             if not consulta:
                 raise forms.ValidationError('CNPJ Inválido')
-            
+
         return data

@@ -5,18 +5,20 @@ from adesao.utils import limpar_mascara
 from json.decoder import JSONDecodeError
 
 class Client():
-
     def consulta_cnpj(self, cnpj):
+        infoconv_url = 'http://infoconv.turismo.gov.br/infoconv-proxy/api/cnpj/perfil3?listaCNPJ='
         cnpj = limpar_mascara(cnpj)
-        response = requests.get(settings.RECEITA_URL + cnpj, 
-            auth=HTTPBasicAuth(settings.RECEITA_USER, settings.RECEITA_PASSWORD))
+        response = requests.get(infoconv_url + cnpj)
 
         try:
-            response = response.json()
-            if response.get('erro', None):
-                response = None
+            jsonResponse = response.json()
+            print(jsonResponse[0]['cnpj'])
+            if 'error' in jsonResponse:
+                jsonResponse = None
+            else:
+                jsonResponse = jsonResponse[0]['cnpj']
 
         except JSONDecodeError:
-            response = None
+            jsonResponse = None
 
-        return response
+        return jsonResponse
