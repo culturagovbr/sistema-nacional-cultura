@@ -142,7 +142,7 @@ class CadastrarGestor(ModelForm):
 
 
 class CadastrarSede(ModelForm):
-    # cnpj = BRCNPJField()
+    cnpj = BRCNPJField()
 
     class Meta:
         model = Sede
