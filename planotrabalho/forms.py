@@ -116,6 +116,8 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     agencia = forms.CharField(required=False, max_length=4) 
     conta = forms.CharField(required=False, max_length=20)
 
+    termo_responsabilidade = forms.BooleanField(required=False)
+
     def save(self, commit=True, *args, **kwargs):
         orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
         if 'arquivo' in self.changed_data:
@@ -157,6 +159,14 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         if not num_conta.isdigit() and not str(num_conta) == '': 
             self.add_error('conta', "Digite apenas digitos no número da conta.")
         return num_conta
+
+    def clean_termo_responsabilidade(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        print(cleaned_data.get('termo_responsabilidade', None))
+        if cleaned_data.get('termo_responsabilidade', None) == False:
+            raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
 
     class Meta:
