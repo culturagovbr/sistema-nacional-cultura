@@ -39,6 +39,7 @@ from adesao.models import EnteFederado
 from adesao.models import Gestor
 from adesao.models import Funcionario
 from adesao.models import LISTA_ESTADOS_PROCESSO
+from adesao.models import TrocaCadastrador
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
@@ -1606,3 +1607,39 @@ class AnalisarSolicitacaoCadastrador(AlterarSistemaCultura):
         return reverse_lazy(
             'gestao:detalhar',
             kwargs={'cod_ibge': sistema.ente_federado.cod_ibge})
+
+class DataTableTrocaCadastrador(BaseDatatableView):
+    def get_initial_queryset(self):
+        '''
+        sistema = SistemaCultura.sistema.values_list('id', flat=True)
+
+        return SistemaCultura.objects.filter(id__in=sistema).filter(
+            estado_processo='6',
+            data_publicacao_acordo__isnull=False)
+        '''
+        return TrocaCadastrador.objects.all()
+
+    def filter_queryset(self, qs):
+        search = self.request.POST.get('search[value]', None)
+
+        if search:
+            where = \
+                Q(ente_federado__nome__unaccent__icontains=search)
+            if search.isdigit():
+                where |= Q(prazo=search)
+            return qs.filter(where)
+        return qs
+
+    def prepare_results(self, qs):
+        json_data = []
+        print(qs[1].get_status_display())
+        for item in qs:
+            json_data.append([
+                item.id,
+                escape(item.ente_federado),
+                escape(item.alterado_por),
+                item.alterado_em.strftime("%d/%m/%Y") if item.alterado_em else '',
+                escape(item.get_status_display()),
+            ])
+        return json_data
+

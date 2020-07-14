@@ -169,5 +169,7 @@ urlpatterns = [
         name='ajax_plano_trabalho'),
     url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
         name='ajax_docs_componentes'),
+    url(r'^datatable-troca-cadastrador$', staff_member_required(views.DataTableTrocaCadastrador.as_view()),
+        name='ajax_troca_cadastrador'),
 
 ]
