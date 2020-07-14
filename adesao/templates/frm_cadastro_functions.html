@@ -1,0 +1,106 @@
+{% block js %}
+<script type="text/javascript">
+    // Verificação do CNPJ
+    function onCNPJSuccess(data) {
+        if (data != null) {
+            // Nome fantasia
+            $("input[name='razao_social']").val("RAZÃO SOCIAL: " + data['0']['nomeEmpresarial']);
+            document.getElementById("razao_social").style.display = "block";
+
+            $("input[name='telefone_um']").val(data['0']['telefone1']);
+            $("input[name='email_institucional']").val(data['0']['email']);
+
+            //var cep = data.cep.replace(/[^\d]+/g, '');
+            $("input[name='cep']").val(data['0']['cep']);
+            //pesquisacep(cep, '');
+            //BuscaCep(cep, '');
+            $("input[name='id_endereco']").val(data['0']['logradouro']);
+            $("input[name='id_bairro']").val(data['0']['complemento']);
+        } else {
+            $("#erro-cnpj").html("<div class='Erro'>" +
+            "Mensagem: <b>" + data.status + ":</b> <b>" + data.message +
+            " </div>");
+        }
+    }
+    function limpa_formulário_cep() {
+        //Limpa valores do formulário de cep.
+        document.getElementById('id_endereco').value = ("");
+        document.getElementById('id_bairro').value = ("");
+    }
+
+    function meu_callback(conteudo) {
+        if (!("erro" in conteudo)) {
+        document.getElementById('id_endereco').value = (conteudo.logradouro);
+        document.getElementById('id_bairro').value = (conteudo.bairro);
+        } else {
+        //CEP não Encontrado.
+        limpa_formulário_cep();
+        alert("CEP não encontrado.");
+        }
+    }
+
+    function pesquisacep(valor) {
+
+        //Nova variável "cep" somente com dígitos.
+        var cep = valor.replace(/\D/g, '');
+
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+
+        //Expressão regular para validar o CEP.
+        var validacep = /^[0-9]{8}$/;
+
+        //Valida o formato do CEP.
+        if (validacep.test(cep)) {
+
+            //Preenche os campos com "..." enquanto consulta webservice.
+            document.getElementById('id_endereco').value = "...";
+            document.getElementById('id_bairro').value = "...";
+
+            //Cria um elemento javascript.
+            var script = document.createElement('script');
+
+            //Sincroniza com o callback.
+            script.src = 'https://viacep.com.br/ws/' + cep + '/json/?callback=meu_callback';
+
+            //Insere script no documento e carrega o conteúdo.
+            document.body.appendChild(script);
+
+        } //end if.
+        else {
+            //cep é inválido.
+            limpa_formulário_cep();
+            alert("Formato de CEP inválido.");
+        }
+        } //end if.
+        else {
+        //cep sem valor, limpa formulário.
+        limpa_formulário_cep();
+        }
+    };
+
+    function validarCNPJ(valor1, valor2) {
+        if (!_cnpj(valor1.value)) {
+        document.getElementById("cnpj_invalido").style.display = "block";
+        valor1.value = "";
+        $("#id_cnpj").focus();
+        document.getElementById("razao_social").style.display = "none";
+        } else {
+        BuscaCNPJ(valor2.value, onCNPJSuccess);
+        document.getElementById("cnpj_invalido").style.display = "none";
+        $("#id_cpf").focus();
+
+        }
+    }
+      // Formata o cnpj
+    function mascaraMutuario(o, f) {
+        v_obj = o
+        v_fun = f
+        setTimeout('execmascara()', 1)
+    }
+
+    function execmascara() {
+        v_obj.value = v_fun(v_obj.value)
+    }
+</script>
+{% endblock js %}
