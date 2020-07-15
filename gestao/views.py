@@ -53,6 +53,8 @@ from planotrabalho.views import AlterarOrgaoGestor
 from planotrabalho.views import AlterarFundoCultura
 from planotrabalho.views import AlterarConselhoCultura
 
+from planotrabalho.forms import CriarFundoFormGestao
+
 from gestao.utils import empty_to_none, get_uf_by_mun_cod, scdc_user_group_required
 from django.utils.decorators import method_decorator
 
@@ -819,7 +821,7 @@ class AlterarPlanoCultura(AlterarPlanoCultura):
 
 
 class AlterarFundoCultura(AlterarFundoCultura):
-    form_class = CriarFundoForm
+    form_class = CriarFundoFormGestao
     model = FundoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_fundo_cultura.html'
 
