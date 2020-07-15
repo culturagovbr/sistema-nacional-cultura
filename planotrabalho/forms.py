@@ -554,6 +554,11 @@ class CriarFundoForm(ModelForm):
         fields = ('cnpj', 'arquivo', 'data_publicacao')
 
 
+class CriarFundoFormGestao(CriarFundoForm):
+    def clean_termo_responsabilidade(self):
+        return ''
+
+
 class CriarConselhoForm(ModelForm):
     arquivo_lei = forms.FileField(
         required=False, widget=FileInput, label="Arquivo da Lei")
