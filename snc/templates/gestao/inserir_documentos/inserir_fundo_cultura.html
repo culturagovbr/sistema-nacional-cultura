@@ -83,6 +83,29 @@
                 </div>
               </div>
             </div>
+            <div id="dados_bancarios_form">
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Banco</label>
+                <div class="col-sm-12">
+                  {% render_field form.banco class="form-control" %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Agência</label>
+                <div class="col-sm-12">
+                  {% render_field form.agencia class="form-control" %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Conta</label>
+                <div class="col-sm-12">
+                  {% render_field form.conta class="form-control" %}
+                </div>
+              </div>
+
+            </div>
+
+
 
             <button type="submit" class="btn btn-primary pull-right">Salvar</button>
             <a class="btn btn-secondary pull-right" href="{% url 'gestao:acompanhar_adesao' %}">Cancelar</a>
