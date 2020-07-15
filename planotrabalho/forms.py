@@ -639,11 +639,11 @@ class CriarConselhoForm(ModelForm):
     def clean_data_publicacao(self):
         if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
             raise forms.ValidationError("Este campo é obrigatório")
-        elif self.data.get('possui_ata', None) == 'False':
-            self.cleaned_data['data_publicacao'] = None
         if self.cleaned_data['data_publicacao'] > datetime.date.today():
             raise forms.ValidationError(
                 "A data de assinatura da ata não pode ser maior que a de hoje")
+        elif self.data.get('possui_ata', None) == 'False':
+            self.cleaned_data['data_publicacao'] = None
         return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
