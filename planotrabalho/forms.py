@@ -482,7 +482,7 @@ class CriarFundoForm(ModelForm):
             return ''
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
-        if not num_agencia.isdigit() and not str(num_agencia) == '':
+        if not num_agencia.isdigit():
             self.add_error('agencia', "Digite apenas digitos no número da agência.")
         return num_agencia
 
@@ -492,7 +492,7 @@ class CriarFundoForm(ModelForm):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
         num_conta = num_conta.replace('-','')
-        if not num_conta.isdigit() and not str(num_conta) == '':
+        if not num_conta.isdigit():
             self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
         return num_conta
 
