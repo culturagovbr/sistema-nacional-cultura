@@ -13,11 +13,7 @@
     <label for="{{ form.mesma_lei.id_for_label }}">
       É a mesma lei do sistema municipal de cultura?</br>
     </label>
-    {% if form.sistema.fundo_cultura.situacao != 2 %}
       {% render_field form.mesma_lei class="radio" %}
-    {% else %}
-      {% render_field form.mesma_lei disabled="disabled" class="radio" %}
-    {% endif %}
   </div>
 
   <h5>
@@ -29,11 +25,7 @@
       <label for="{{ form.data_publicacao.id_for_label }}">
         Data de Publicação da Lei do Fundo de Cultura
       </label>
-      {% if form.sistema.fundo_cultura.situacao != 2 %}
         {% render_field form.data_publicacao class="form-control date half-width" %}
-      {% else %}
-        {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
-      {% endif %}
     </div>
 
     <div class="form-group">
@@ -55,11 +47,7 @@
     <label for="{{ form.possui_cnpj.id_for_label }}">
       O Fundo de Cultura possui CNPJ?</br>
     </label>
-    {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
       {% render_field form.possui_cnpj class="radio" %}
-    {% else %}
-      {% render_field form.possui_cnpj disabled="disabled" class="radio" %}
-    {% endif %}
   </div>
 
   <div id="cnpj_form">
@@ -67,11 +55,7 @@
       <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
         CNPJ
       </label>
-      {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
         {% render_field form.cnpj class="form-control cnpj half-width" %}
-      {% else %}
-        {% render_field form.cnpj disabled="disabled" class="form-control cnpj half-width" %}
-      {% endif %}
     </div>
 
     <div class="form-group">
