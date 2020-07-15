@@ -178,7 +178,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         fields = ('perfil', 'arquivo', 'data_publicacao', 'comprovante_cnpj_orgao')
 
 
-
 class CriarPlanoForm(ModelForm):
     exclusivo_cultura = forms.NullBooleanField(
         required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), (False, 'Não')]))
@@ -337,6 +336,12 @@ class CriarPlanoForm(ModelForm):
             self.cleaned_data['perfil_participante'] = None
 
         return self.cleaned_data['perfil_participante']
+    
+    def clean_data_publicacao(self):
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A Data de Publicação da Lei do Plano de Cultura não pode ser maior que a de hoje")
+        return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
         plano = super(CriarPlanoForm, self).save(commit=False)
