@@ -615,11 +615,11 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo_lei']
 
     def clean_data_publicacao_lei(self):
-        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao_lei']:
-            raise forms.ValidationError("Este campo é obrigatório")
-        if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
-            raise forms.ValidationError(
-                "A data de publicação de lei não pode ser maior que a de hoje")
+        if self.data.get('mesma_lei', None) == 'False':
+            if not self.cleaned_data['data_publicacao_lei']:
+                raise forms.ValidationError("Este campo é obrigatório")
+            if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
+                raise forms.ValidationError("A data de publicação de lei não pode ser maior que a de hoje")
         return self.cleaned_data['data_publicacao_lei']
 
     def clean_mesma_lei(self):
