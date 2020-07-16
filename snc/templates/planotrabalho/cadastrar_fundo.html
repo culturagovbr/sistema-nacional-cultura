@@ -165,6 +165,13 @@ var formularioComponente = $('form.componente-fundo-form');
       }
     });
 
+    $('input[name=mesma_lei]').change(function() {
+      if(this.value=='False') {
+        $('#lei_data_form').fadeIn();
+      } else {
+        $('#lei_data_form').fadeOut();
+      }
+    })
 
 </script>
 {% endblock js%}
