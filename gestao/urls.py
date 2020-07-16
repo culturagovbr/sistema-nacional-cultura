@@ -65,7 +65,7 @@ urlpatterns = [
          name='detalhar'),
 
     # Detalhar SOLICITAÇÃO DE CADASTRADOR
-    path('solicitacao-cadastrador/<int:cod_ibge>',
+    path('solicitacao-cadastrador/<int:pk>',
          staff_member_required(views.DetalharSolicitacaoCadastrador.as_view()),
          name='solicitacao_cadastrador'),
 
