@@ -32,14 +32,15 @@
       <label for="{{ form.arquivo.id_for_label }}">
         Lei de criação do Fundo de Cultura
       </label>
-      {% if form.arquivo.value %}
-        <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-        {% if form.sistema.fundo_cultura.situacao != 2 %}
-        <p>Modificar: {% render_field form.arquivo %}</p>
+      <!-- 
+        {% if form.arquivo.value %}
+          <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+          <p>Modificar: {% render_field form.arquivo %}</p>
+        {% else %}
+          <p>{% render_field form.arquivo %}</p>
         {% endif %}
-      {% else %}
-        <p>{% render_field form.arquivo %}</p>
-      {% endif %}
+      -->
+      <p>{% render_field form.arquivo %}</p>
     </div>
   </div>
 

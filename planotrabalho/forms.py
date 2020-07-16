@@ -168,7 +168,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
-        print(cleaned_data.get('termo_responsabilidade', None))
         if cleaned_data.get('termo_responsabilidade', None) == False:
             raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
@@ -442,6 +441,8 @@ class CriarFundoForm(ModelForm):
     def clean_arquivo(self):
         if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
+        if self.data.get('mesma_lei', None) == 'False' and not 'arquivo' in self.changed_data:
+            raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo']
 
@@ -505,7 +506,6 @@ class CriarFundoForm(ModelForm):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
-        print(cleaned_data.get('termo_responsabilidade', None))
         if cleaned_data.get('termo_responsabilidade', None) == False:
             raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
