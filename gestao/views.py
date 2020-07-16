@@ -75,7 +75,7 @@ from .forms import CriarContatoForm
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
 from planotrabalho.forms import CriarConselhoForm
-from planotrabalho.forms import CriarOrgaoGestorForm
+from planotrabalho.forms import CriarOrgaoGestorForm, CriarOrgaoGestorFormGestao
 from planotrabalho.forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
@@ -839,7 +839,7 @@ class AlterarFundoCultura(AlterarFundoCultura):
 
 
 class AlterarOrgaoGestor(AlterarOrgaoGestor):
-    form_class = CriarOrgaoGestorForm
+    form_class = CriarOrgaoGestorFormGestao
     model = OrgaoGestor2
     template_name = 'gestao/inserir_documentos/inserir_orgao_gestor.html'
 
