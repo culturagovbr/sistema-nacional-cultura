@@ -72,6 +72,9 @@ class CriarComponenteForm(ModelForm):
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
                 'label': 'Componente'
             })
+            self.fields['comprovante_cnpj_orgao'].widget = FileUploadWidget(attrs={
+                'label': 'Comprovante do CNPJ'
+            })
 
     def clean_data_publicacao(self):
         if self.cleaned_data['data_publicacao'] > datetime.date.today():
@@ -123,7 +126,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         if 'arquivo' in self.changed_data:
             orgao_gestor.situacao = 1
 
-        if self.cleaned_data['possui_cnpj']:
+        if commit:
             orgao_gestor.tipo = self.componentes.get(self.tipo_componente)
             orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
@@ -138,10 +141,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
             sistema_cultura.add(self.sistema)
             setattr(self.sistema, self.tipo_componente, orgao_gestor)
             self.sistema.save()
-        else:
-            orgao_gestor.comprovante_cnpj_orgao = None
-            orgao_gestor.cnpj = None
-            orgao_gestor.save()
 
         return orgao_gestor
 
@@ -168,7 +167,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
-        print(cleaned_data.get('termo_responsabilidade', None))
         if cleaned_data.get('termo_responsabilidade', None) == False:
             raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
@@ -176,7 +174,6 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     class Meta:
         model = OrgaoGestor2
         fields = ('perfil', 'arquivo', 'data_publicacao', 'comprovante_cnpj_orgao')
-
 
 
 class CriarPlanoForm(ModelForm):
@@ -337,6 +334,12 @@ class CriarPlanoForm(ModelForm):
             self.cleaned_data['perfil_participante'] = None
 
         return self.cleaned_data['perfil_participante']
+    
+    def clean_data_publicacao(self):
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A Data de Publicação da Lei do Plano de Cultura não pode ser maior que a de hoje")
+        return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
         plano = super(CriarPlanoForm, self).save(commit=False)
@@ -437,6 +440,8 @@ class CriarFundoForm(ModelForm):
     def clean_arquivo(self):
         if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo']:
             raise forms.ValidationError("Este campo é obrigatório")
+        if self.data.get('mesma_lei', None) == 'False' and not 'arquivo' in self.changed_data:
+            raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo']
 
@@ -500,7 +505,6 @@ class CriarFundoForm(ModelForm):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
-        print(cleaned_data.get('termo_responsabilidade', None))
         if cleaned_data.get('termo_responsabilidade', None) == False:
             raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
 
@@ -547,6 +551,16 @@ class CriarFundoForm(ModelForm):
     class Meta:
         model = FundoDeCultura
         fields = ('cnpj', 'arquivo', 'data_publicacao')
+
+
+class CriarFundoFormGestao(CriarFundoForm):
+    def clean_termo_responsabilidade(self):
+        return ''
+
+
+class CriarOrgaoGestorFormGestao(CriarOrgaoGestorForm):
+    def clean_termo_responsabilidade(self):
+        return ''
 
 
 class CriarConselhoForm(ModelForm):
@@ -605,11 +619,11 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo_lei']
 
     def clean_data_publicacao_lei(self):
-        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao_lei']:
-            raise forms.ValidationError("Este campo é obrigatório")
-        if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
-            raise forms.ValidationError(
-                "A data de publicação de lei não pode ser maior que a de hoje")
+        if self.data.get('mesma_lei', None) == 'False':
+            if not self.cleaned_data['data_publicacao_lei']:
+                raise forms.ValidationError("Este campo é obrigatório")
+            if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
+                raise forms.ValidationError("A data de publicação de lei não pode ser maior que a de hoje")
         return self.cleaned_data['data_publicacao_lei']
 
     def clean_mesma_lei(self):
@@ -632,13 +646,18 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
-            raise forms.ValidationError("Este campo é obrigatório")
+        if self.data.get('possui_ata', None) == 'True': 
+        
+            if not self.cleaned_data['data_publicacao']:
+                raise forms.ValidationError("Este campo é obrigatório")
+        
+            if self.cleaned_data['data_publicacao'] > datetime.date.today():
+                raise forms.ValidationError(
+                    "A data de assinatura da ata não pode ser maior que a de hoje")
+        
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
-        if self.cleaned_data['data_publicacao'] > datetime.date.today():
-            raise forms.ValidationError(
-                "A data de assinatura da ata não pode ser maior que a de hoje")
+        
         return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
