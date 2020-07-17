@@ -12,6 +12,8 @@ class Client():
 
         try:
             jsonResponse = response.json()
+            print(jsonResponse[0]['cnpj'])
+
             if 'error' in jsonResponse:
                 jsonResponse = None
             else:
