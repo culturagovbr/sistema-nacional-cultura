@@ -34,14 +34,48 @@
         </div>
         <div class="card-body">
           <p><strong>Situação:</strong> {{solicitacao.get_status_display}}  </p>
-          <p><strong>Motivo</strong> </p>
-          <a href="{% url 'gestao:acompanhar_troca_cadastrador' %}" class="btn btn-secondary active" role="button" aria-pressed="true">Voltar</a>
-         
+          <p><strong>Motivo: </strong> </p>
+          <table class="table table-borderless" style="width: 50%;">
+            <tbody>
+              <tr>
+                <td> <a id="btn_aprovar" href="{% url 'gestao:acompanhar_troca_cadastrador' %}" class="btn btn-success active" role="button" aria-pressed="true">Aprovar</a></td>
+                <td> 
+                  
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                    Rejeitar
+                  </button>
+                
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
         </div>
       </div>
     </div>
-  </div>
 
-{% endblock content %}
+    <div class="modal" tabindex="-1" role="dialog" id="exampleModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Motivo da Rejeição</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="comment">Informe o motivo da rejeição:</label>
+            <p><textarea class="form-control" rows="5" id="motivo">{{solicitacao.laudo}} </textarea></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Salvar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+ {% endblock content %}
 
