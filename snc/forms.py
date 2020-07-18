@@ -21,7 +21,7 @@ class RestrictedFileField(forms.FileField):
                     raise forms.ValidationError(
                         'O arquivo deve ter menos de %s. Tamanho atual %s'
                         % (filesizeformat(self.max_upload_size),
-                            filesizeformat(file._size)))
+                           filesizeformat(file._size)))
             else:
                 raise forms.ValidationError(
                     'Arquivos desse tipo não são aceitos.')
@@ -34,7 +34,7 @@ class RestrictedFileField(forms.FileField):
 class BRCNPJField(BRCNPJField):
 
     def clean(self, data):
-        cnpj  = super(BRCNPJField, self).clean(data)
+        cnpj = super(BRCNPJField, self).clean(data)
 
         if data:
             consulta = Client().consulta_cnpj(cnpj)

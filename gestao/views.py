@@ -39,6 +39,7 @@ from adesao.models import EnteFederado
 from adesao.models import Gestor
 from adesao.models import Funcionario
 from adesao.models import LISTA_ESTADOS_PROCESSO
+from adesao.models import TrocaCadastrador
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
@@ -51,6 +52,8 @@ from planotrabalho.views import AlterarPlanoCultura
 from planotrabalho.views import AlterarOrgaoGestor
 from planotrabalho.views import AlterarFundoCultura
 from planotrabalho.views import AlterarConselhoCultura
+
+from planotrabalho.forms import CriarFundoFormGestao
 
 from gestao.utils import empty_to_none, get_uf_by_mun_cod, scdc_user_group_required
 from django.utils.decorators import method_decorator
@@ -67,12 +70,13 @@ from .forms import AlterarDocumentosEnteFederadoForm
 from .forms import AlterarUsuarioForm
 from .forms import AlterarComponenteForm
 from .forms import AlterarDadosEnte
+#from .forms import AlterarSolicitacaoCadastradorForm
 from .forms import CriarContatoForm
 
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
 from planotrabalho.forms import CriarConselhoForm
-from planotrabalho.forms import CriarOrgaoGestorForm
+from planotrabalho.forms import CriarOrgaoGestorForm, CriarOrgaoGestorFormGestao
 from planotrabalho.forms import CriarPlanoForm
 
 from .forms import CadastradorEnte
@@ -242,9 +246,11 @@ def aditivar_prazo(request):
 class AcompanharSistemaCultura(TemplateView):
     template_name = 'gestao/adesao/acompanhar.html'
 
-
 class AcompanharComponente(TemplateView):
     template_name = 'gestao/planotrabalho/acompanhar.html'
+
+class AcompanharTrocaCadastrador(TemplateView):
+    template_name = 'gestao/troca-cadastrador/acompanhar.html'
 
 
 class LookUpAnotherFieldMixin(SingleObjectMixin):
@@ -815,7 +821,7 @@ class AlterarPlanoCultura(AlterarPlanoCultura):
 
 
 class AlterarFundoCultura(AlterarFundoCultura):
-    form_class = CriarFundoForm
+    form_class = CriarFundoFormGestao
     model = FundoDeCultura
     template_name = 'gestao/inserir_documentos/inserir_fundo_cultura.html'
 
@@ -832,8 +838,10 @@ class AlterarFundoCultura(AlterarFundoCultura):
             kwargs={'cod_ibge': ente_pk})
 
 
+
+
 class AlterarOrgaoGestor(AlterarOrgaoGestor):
-    form_class = CriarOrgaoGestorForm
+    form_class = CriarOrgaoGestorFormGestao
     model = OrgaoGestor2
     template_name = 'gestao/inserir_documentos/inserir_orgao_gestor.html'
 
@@ -954,7 +962,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
 
     templated_email_template_name = "diligencia"
     templated_email_from_email = "naoresponda@turismo.gov.br"
-    templated_email_bcc_email = "snc@cidadania.gov.br"
+    templated_email_bcc_email = "snc@turismo.gov.br"
 
     @method_decorator(user_passes_test(scdc_user_group_required))
     def dispatch(self, *args, **kwargs):
@@ -999,7 +1007,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
             recipient_list.append(self.get_sistema_cultura().gestor.email_pessoal)
             recipient_list.append(self.get_sistema_cultura().gestor.email_institucional)
 
-        recipient_list.append('snc@cidadania.gov.br')
+        recipient_list.append('snc@turismo.gov.br')
         return recipient_list
 
     def templated_email_get_send_email_kwargs(self, valid, form):
@@ -1466,3 +1474,116 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data
+
+class DetalharSolicitacaoCadastrador(DetailView):
+    template_name = "detalhe_solicitacao_cadastrador.html"
+    context_object_name = "solicitacao"
+    queryset = TrocaCadastrador.objects.all()
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        solicitacao = context['object']
+        solicitacao = self.get_queryset().get(id=self.object.id)
+        return context
+
+
+class AnalisarSolicitacaoCadastrador(AlterarSistemaCultura):
+    template_name = "alterar_solicitacao_cadastrador.html"
+
+    def get_success_url(self):
+        sistema = TrocaCadastrador.objects.get(id=self.kwargs['pk'])
+        return reverse_lazy(
+            'gestao:solicitacao_cadastrador',
+            kwargs={'pk': sistema.id})
+
+class DataTableTrocaCadastrador(BaseDatatableView):
+    def get_initial_queryset(self):
+        '''
+        sistema = SistemaCultura.sistema.values_list('id', flat=True)
+
+        return SistemaCultura.objects.filter(id__in=sistema).filter(
+            estado_processo='6',
+            data_publicacao_acordo__isnull=False)
+        '''
+        return TrocaCadastrador.objects.all()
+
+    def filter_queryset(self, qs):
+        search = self.request.POST.get('search[value]', None)
+
+        if search:
+            where = \
+                Q(ente_federado__nome__unaccent__icontains=search)
+            if search.isdigit():
+                where |= Q(prazo=search)
+            return qs.filter(where)
+        return qs
+
+    def prepare_results(self, qs):
+        json_data = []
+        print(qs[1].get_status_display())
+        for item in qs:
+            json_data.append([
+                item.id,
+                escape(item.ente_federado),
+                escape(item.alterado_por),
+                item.alterado_em.strftime("%d/%m/%Y") if item.alterado_em else '',
+                escape(item.get_status_display()),
+            ])
+        return json_data
+
+
+    def get_success_url(self):
+        sistema = SistemaCultura.objects.get(id=self.kwargs['pk'])
+        return reverse_lazy(
+            'gestao:detalhar',
+            kwargs={'cod_ibge': sistema.ente_federado.cod_ibge})
+
+class DataTableTrocaCadastrador(BaseDatatableView):
+    def get_initial_queryset(self):
+        '''
+        sistema = SistemaCultura.sistema.values_list('id', flat=True)
+
+        return SistemaCultura.objects.filter(id__in=sistema).filter(
+            estado_processo='6',
+            data_publicacao_acordo__isnull=False)
+        '''
+        return TrocaCadastrador.objects.all()
+
+    def filter_queryset(self, qs):
+        search = self.request.POST.get('search[value]', None)
+
+        if search:
+            where = \
+                Q(ente_federado__nome__unaccent__icontains=search)
+            if search.isdigit():
+                where |= Q(prazo=search)
+            return qs.filter(where)
+        return qs
+
+    def prepare_results(self, qs):
+        json_data = []
+        print(qs[1].get_status_display())
+        for item in qs:
+            json_data.append([
+                item.id,
+                escape(item.ente_federado),
+                escape(item.alterado_por),
+                item.alterado_em.strftime("%d/%m/%Y") if item.alterado_em else '',
+                escape(item.get_status_display()),
+            ])
+        return json_data
+
+
+def alterar_solicitacao_cadastrador(request):
+    
+    if request.method == "POST":
+        id = request.POST.get('id', None)
+        solicitacao = TrocaCadastrador.objects.get(id=id)
+
+        solicitacao.laudo = request.POST.get('laudo', None)
+        solicitacao.status = request.POST.get('status', None)
+        solicitacao.save()
+        
+        print(solicitacao.status)
+    return JsonResponse(data={}, status=200)

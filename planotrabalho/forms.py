@@ -2,10 +2,12 @@ import datetime
 from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import FileInput
+from django.forms import CharField
+from django.forms import TextInput
 
 from snc.forms import RestrictedFileField, BRCNPJField
 
-from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural
+from .models import CriacaoSistema, OrgaoGestor, ConselhoCultural, BANCOS
 from .models import FundoCultura, Componente
 from .models import FundoDeCultura, PlanoDeCultura, ConselhoDeCultura
 from .models import Conselheiro, SITUACAO_CONSELHEIRO
@@ -21,7 +23,6 @@ from gestao.forms import content_types
 from adesao.utils import limpar_mascara
 
 from snc.widgets import FileUploadWidget
-
 
 SETORIAIS = (
     ('0', '-- Selecione um Segmento --'),
@@ -71,6 +72,15 @@ class CriarComponenteForm(ModelForm):
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
                 'label': 'Componente'
             })
+            self.fields['comprovante_cnpj_orgao'].widget = FileUploadWidget(attrs={
+                'label': 'Comprovante do CNPJ'
+            })
+
+    def clean_data_publicacao(self):
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A data de publicação de lei do sistema não pode ser maior que a de hoje")
+        return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarComponenteForm, self).save(commit=False)
@@ -94,18 +104,79 @@ class CriarComponenteForm(ModelForm):
     class Meta:
         model = Componente
         fields = ('arquivo', 'data_publicacao')
+        localized_fields = ('data_publicacao',)
 
 
 class CriarOrgaoGestorForm(CriarComponenteForm):
     perfil = forms.ChoiceField(required=True, choices=LISTA_PERFIS_ORGAO_GESTOR)
+    possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
+                                                                                           (False, 'Não')]))
+    cnpj = BRCNPJField(required=False)
+    #comprovante = forms.FileField(required=False, widget=FileInput)
+    arquivo = forms.FileField(required=False, widget=FileInput)
+    comprovante_cnpj_orgao = forms.FileField(required=False, widget=FileInput)
+    banco = forms.ChoiceField(required=False, choices=BANCOS)
+    agencia = forms.CharField(required=False, max_length=4) 
+    conta = forms.CharField(required=False, max_length=20)
+
+    termo_responsabilidade = forms.BooleanField(required=False)
+
+    def save(self, commit=True, *args, **kwargs):
+        orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
+        if 'arquivo' in self.changed_data:
+            orgao_gestor.situacao = 1
+
+        if commit:
+            orgao_gestor.tipo = self.componentes.get(self.tipo_componente)
+            orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.cnpj = self.cleaned_data['cnpj']
+            orgao_gestor.comprovante_cnpj_orgao = self.cleaned_data['comprovante_cnpj_orgao']
+            orgao_gestor.arquivo = self.cleaned_data['arquivo']
+            orgao_gestor.banco = self.cleaned_data['banco']
+            orgao_gestor.agencia = self.cleaned_data['agencia']
+            orgao_gestor.conta = self.cleaned_data['conta']
+            orgao_gestor.save()
+            sistema_cultura = getattr(orgao_gestor, self.tipo_componente)
+            sistema_cultura.add(self.sistema)
+            setattr(self.sistema, self.tipo_componente, orgao_gestor)
+            self.sistema.save()
+
+        return orgao_gestor
+
+    def clean_agencia(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        num_agencia = cleaned_data.get('agencia')
+        if not num_agencia.isdigit() and not str(num_agencia) == '': 
+            self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        return num_agencia
+
+    def clean_conta(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        num_conta = cleaned_data.get('conta')
+        num_conta = num_conta.replace('-','')
+        if not num_conta.isdigit() and not str(num_conta) == '': 
+            self.add_error('conta', "Digite apenas digitos no número da conta.")
+        return num_conta
+
+    def clean_termo_responsabilidade(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        if cleaned_data.get('termo_responsabilidade', None) == False:
+            raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
+
 
     class Meta:
         model = OrgaoGestor2
-        fields = ('perfil', 'arquivo', 'data_publicacao',)
+        fields = ('perfil', 'arquivo', 'data_publicacao', 'comprovante_cnpj_orgao')
 
 
 class CriarPlanoForm(ModelForm):
-
     exclusivo_cultura = forms.NullBooleanField(
         required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'), (False, 'Não')]))
     arquivo = forms.FileField(widget=FileInput, label="Arquivo da Lei")
@@ -176,7 +247,8 @@ class CriarPlanoForm(ModelForm):
         return self.cleaned_data['anexo_na_lei']
 
     def clean_anexo_lei(self):
-        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and self.cleaned_data['anexo_lei'] is None:
+        if self.cleaned_data.get('possui_anexo', None) and not self.cleaned_data.get('anexo_na_lei', None) and \
+            self.cleaned_data['anexo_lei'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['anexo_lei']
@@ -194,7 +266,8 @@ class CriarPlanoForm(ModelForm):
         return self.cleaned_data['metas_na_lei']
 
     def clean_arquivo_metas(self):
-        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and self.cleaned_data['arquivo_metas'] is None:
+        if self.cleaned_data.get('possui_metas', None) and not self.cleaned_data.get('metas_na_lei', None) and \
+            self.cleaned_data['arquivo_metas'] is None:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo_metas']
@@ -232,9 +305,9 @@ class CriarPlanoForm(ModelForm):
             raise forms.ValidationError("Este campo é obrigatório")
         elif not self.cleaned_data.get('participou_curso', None):
             self.cleaned_data['ano_termino_curso'] = None
-        elif self.cleaned_data['ano_termino_curso'] <= self.cleaned_data['ano_inicio_curso']:
-            raise forms.ValidationError(
-                "O ano de término não pode ser menor ou igual ao ano de início")
+        elif self.cleaned_data['ano_termino_curso'] < self.cleaned_data['ano_inicio_curso']:
+            raise forms.ValidationError("O ano de término não pode ser menor que o ano de início")
+
 
         return self.cleaned_data['ano_termino_curso']
 
@@ -261,6 +334,12 @@ class CriarPlanoForm(ModelForm):
             self.cleaned_data['perfil_participante'] = None
 
         return self.cleaned_data['perfil_participante']
+    
+    def clean_data_publicacao(self):
+        if self.cleaned_data['data_publicacao'] > datetime.date.today():
+            raise forms.ValidationError(
+                "A Data de Publicação da Lei do Plano de Cultura não pode ser maior que a de hoje")
+        return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):
         plano = super(CriarPlanoForm, self).save(commit=False)
@@ -333,6 +412,11 @@ class CriarFundoForm(ModelForm):
                                                                                          (False, 'Não')]))
     possui_cnpj = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                            (False, 'Não')]))
+    banco = forms.ChoiceField(required=False, choices=BANCOS)
+    agencia = forms.CharField(required=False,  max_length=4)
+    conta = forms.CharField(required=False, max_length=20)
+
+    termo_responsabilidade = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -355,6 +439,8 @@ class CriarFundoForm(ModelForm):
 
     def clean_arquivo(self):
         if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['arquivo']:
+            raise forms.ValidationError("Este campo é obrigatório")
+        if self.data.get('mesma_lei', None) == 'False' and not 'arquivo' in self.changed_data:
             raise forms.ValidationError("Este campo é obrigatório")
 
         return self.cleaned_data['arquivo']
@@ -396,6 +482,32 @@ class CriarFundoForm(ModelForm):
 
         return self.cleaned_data['comprovante']
 
+    def clean_agencia(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        num_agencia = cleaned_data.get('agencia')
+        if not num_agencia.isdigit():
+            self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        return num_agencia
+
+    def clean_conta(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        num_conta = cleaned_data.get('conta')
+        num_conta = num_conta.replace('-','')
+        if not num_conta.isdigit():
+            self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
+        return num_conta
+
+    def clean_termo_responsabilidade(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        if cleaned_data.get('termo_responsabilidade', None) == False:
+            raise forms.ValidationError("Você precisa concordar com os termos de responsabilidade")
+
     def save(self, commit=True, *args, **kwargs):
         componente = super(CriarFundoForm, self).save(commit=False)
         FUNDO_CULTURA = 2
@@ -418,6 +530,10 @@ class CriarFundoForm(ModelForm):
         componente.save()
 
         if self.cleaned_data['possui_cnpj']:
+            componente.banco = self.cleaned_data['banco']
+            componente.agencia = self.cleaned_data['agencia']
+            componente.conta = self.cleaned_data['conta']
+            componente.save()
             if 'comprovante' in self.changed_data:
                 componente.comprovante_cnpj = ArquivoComponente2()
                 componente.comprovante_cnpj.situacao = 1
@@ -437,6 +553,16 @@ class CriarFundoForm(ModelForm):
         fields = ('cnpj', 'arquivo', 'data_publicacao')
 
 
+class CriarFundoFormGestao(CriarFundoForm):
+    def clean_termo_responsabilidade(self):
+        return ''
+
+
+class CriarOrgaoGestorFormGestao(CriarOrgaoGestorForm):
+    def clean_termo_responsabilidade(self):
+        return ''
+
+
 class CriarConselhoForm(ModelForm):
     arquivo_lei = forms.FileField(
         required=False, widget=FileInput, label="Arquivo da Lei")
@@ -444,13 +570,15 @@ class CriarConselhoForm(ModelForm):
         required=False, label="Data de publicação da Lei")
     arquivo = forms.FileField(required=False, widget=FileInput, label="Arquivo da Lei")
     mesma_lei = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                                                         (False, 'Não')]), label="Lei é a mesma do sistema")
+                                                                                         (False, 'Não')]),
+                                       label="Lei é a mesma do sistema")
     possui_ata = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                           (False, 'Não')]))
     exclusivo_cultura = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
                                                                                                  (False, 'Não')]))
     paritario = forms.NullBooleanField(required=False, widget=forms.RadioSelect(choices=[(True, 'Sim'),
-                                                                                         (False, 'Não')]), label="Paritário")
+                                                                                         (False, 'Não')]),
+                                       label="Paritário")
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
@@ -491,9 +619,11 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo_lei']
 
     def clean_data_publicacao_lei(self):
-        if self.data.get('mesma_lei', None) == 'False' and not self.cleaned_data['data_publicacao_lei']:
-            raise forms.ValidationError("Este campo é obrigatório")
-
+        if self.data.get('mesma_lei', None) == 'False':
+            if not self.cleaned_data['data_publicacao_lei']:
+                raise forms.ValidationError("Este campo é obrigatório")
+            if self.cleaned_data['data_publicacao_lei'] > datetime.date.today():
+                raise forms.ValidationError("A data de publicação de lei não pode ser maior que a de hoje")
         return self.cleaned_data['data_publicacao_lei']
 
     def clean_mesma_lei(self):
@@ -516,11 +646,18 @@ class CriarConselhoForm(ModelForm):
         return self.cleaned_data['arquivo']
 
     def clean_data_publicacao(self):
-        if self.data.get('possui_ata', None) == 'True' and not self.cleaned_data['data_publicacao']:
-            raise forms.ValidationError("Este campo é obrigatório")
+        if self.data.get('possui_ata', None) == 'True': 
+        
+            if not self.cleaned_data['data_publicacao']:
+                raise forms.ValidationError("Este campo é obrigatório")
+        
+            if self.cleaned_data['data_publicacao'] > datetime.date.today():
+                raise forms.ValidationError(
+                    "A data de assinatura da ata não pode ser maior que a de hoje")
+        
         elif self.data.get('possui_ata', None) == 'False':
             self.cleaned_data['data_publicacao'] = None
-
+        
         return self.cleaned_data['data_publicacao']
 
     def save(self, commit=True, *args, **kwargs):

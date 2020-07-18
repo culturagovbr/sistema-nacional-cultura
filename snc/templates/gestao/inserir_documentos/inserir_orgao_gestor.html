@@ -43,6 +43,63 @@
           </div>
 
           <div class="form-group">
+              <label class="col-sm-12 control-label">Possui CNPJ?</label>
+              <div class="col-sm-12">
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_0" value="True">
+                    Sim
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+                <br/>
+                <div class="form-check form-check-radio">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="possui_cnpj" id="id_possui_cnpj_1" value="False">
+                    Não
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="cnpj_form">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  {% render_field form.comprovante_cnpj_orgao %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">CNPJ</label>
+                <div class="col-sm-12">
+                  {% render_field form.cnpj class="cnpj form-control" %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Banco</label>
+                <div class="col-sm-12">
+                  {% render_field form.banco class="form-control" %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Agência</label>
+                <div class="col-sm-12">
+                  {% render_field form.agencia class="form-control" %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-12 control-label">Conta</label>
+                <div class="col-sm-12">
+                  {% render_field form.conta class="form-control" %}
+                </div>
+              </div>
+            </div>
+
+          <div class="form-group">
             <div class="col-sm-offset-3 col-sm-11">
               <button type="submit" class="btn btn-primary">Salvar</button>
             </div>
@@ -53,3 +110,30 @@
   </div>
 </div>
 {% endblock content %}
+{% block js%}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    if ('{{form.initial.possui_cnpj}}' == 'True') {
+      $('#id_possui_cnpj_0').attr('checked', true)
+    } else if ('{{form.initial.possui_cnpj}}' == 'False'){
+      $('#id_possui_cnpj_1').attr('checked', true)
+    }
+
+    if ($('#id_possui_cnpj_0').is(":checked")) {
+      $('#cnpj_form').css('display', 'block');
+    }
+    if ($('#id_possui_cnpj_1').is(":checked")) {
+      $('#cnpj_form').css('display', 'none');
+    }
+
+    $('input[name=possui_cnpj]').change(function() {
+      if(this.value=='True') {
+        $('#cnpj_form').fadeIn();
+      } else {
+        $('#cnpj_form').fadeOut();
+      }
+    })
+  });
+</script>
+{% endblock js%}

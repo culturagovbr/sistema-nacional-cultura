@@ -1,8 +1,7 @@
 import json
 
-
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect, request
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
@@ -98,11 +97,22 @@ class CadastrarOrgaoGestor(CadastrarComponente):
 
         return kwargs
 
+    def form_valid(self, form):
+        obj=super().form_valid(form)
+
+        return HttpResponseRedirect('/adesao/home/')
+
+
 
 class CadastrarFundoDeCultura(CadastrarComponente):
     model = FundoDeCultura
     form_class = CriarFundoForm
     template_name = 'planotrabalho/cadastrar_fundo.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CadastrarFundoDeCultura, self).get_context_data(**kwargs)
+        context['is_edit'] = True
+        return context
 
 
 class CadastrarConselhoDeCultura(CadastrarComponente):
@@ -208,6 +218,17 @@ class AlterarOrgaoGestor(UpdateView):
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
             kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
 
+        if self.sistema.orgao_gestor.cnpj:
+            kwargs['initial']['possui_cnpj'] = True
+            kwargs['initial']['cnpj'] = self.sistema.orgao_gestor.cnpj
+            kwargs['initial']['banco'] = self.sistema.orgao_gestor.banco
+            kwargs['initial']['agencia'] = self.sistema.orgao_gestor.agencia
+            kwargs['initial']['conta'] = self.sistema.orgao_gestor.conta
+            kwargs['initial']['termo_responsabilidade'] = True
+
+        else:
+            kwargs['initial']['possui_cnpj'] = False
+
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -239,6 +260,11 @@ class AlterarFundoCultura(UpdateView):
         if self.object.comprovante_cnpj:
             kwargs['initial']['possui_cnpj'] = True
             kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
+            kwargs['initial']['banco'] = self.object.banco
+            kwargs['initial']['agencia'] = self.object.agencia
+            kwargs['initial']['conta'] = self.object.conta
+            kwargs['initial']['termo_responsabilidade'] = True
+
         else:
             kwargs['initial']['possui_cnpj'] = False
 

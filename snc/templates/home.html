@@ -137,7 +137,7 @@
             Equipe SNC
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '6' %}
-            {% include "adesao_plano_trabalho.html" %}
+            <meta http-equiv="REFRESH" content="0;url={% url 'planotrabalho:plano_trabalho' pk=request.session.sistema_cultura_selecionado.id %}">
         {% endif %}
 
         {% if request.session.sistema_cultura_selecionado.alterado_em %}

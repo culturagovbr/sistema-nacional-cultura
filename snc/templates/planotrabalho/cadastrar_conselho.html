@@ -6,7 +6,7 @@
 <form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
-    <strong>Estruturação dos Componentes</strong>
+    <strong>Lei de criação do Conselho de Política Cultural</strong>
   </h3>
 
   <div class="form-group">
@@ -27,7 +27,7 @@
   <div id="lei_data_form">
     <div class="form-group">
       <label for="{{ form.data_publicacao_lei.id_for_label }}">
-        Data de Publicação da Lei do Conselho de Cultura
+        Data de publicação da lei do Conselho de Política Cultural
       </label>
       {% if form.sistema.conselho.lei.situacao != 2 %}
         {% render_field form.data_publicacao_lei class="form-control date half-width" %}
@@ -38,7 +38,7 @@
 
     <div class="form-group">
       <label for="{{ form.arquivo_lei.id_for_label }}">
-        Lei de criação do Conselho Estadual/Municipal de Cultura
+        Lei de criação do Conselho de Política Cultural
       </label>
       {% if form.arquivo_lei.value %}
         <p><a href="{{ form.arquivo_lei.value.url }}">Baixar arquivo atual</a></p>
@@ -130,8 +130,11 @@
 </form>
 </div>
 
+{% endblock content %}
+{% block js %}
 
 <script type="text/javascript">
+  $("form input[name='data_publicacao_lei']").mask('99/99/9999');
   $(document).ready(function(){
 
     $('#form').submit(function(){
@@ -222,4 +225,4 @@
   });
 
 </script>
-{% endblock content %}
+{% endblock js%}

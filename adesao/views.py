@@ -37,7 +37,7 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    RequerimentoTrocaCadastrador
+    TrocaCadastrador
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
@@ -47,6 +47,7 @@ from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 from adesao.utils import atualiza_session, preenche_planilha
 from adesao.utils import ir_para_estado_envio_documentacao
+from adesao.utils import concatenacao_municipi_uf
 
 from django_weasyprint import WeasyTemplateView
 from templated_email import send_templated_mail
@@ -87,8 +88,10 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(
-        sistemas_cultura.values('id', 'ente_federado__nome'))
+    #request.session['sistemas'] = list(
+    #    sistemas_cultura.values('id', 'ente_federado__nome'))
+
+    request.session['sistemas'] = concatenacao_municipi_uf(sistemas_cultura)
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")
@@ -730,6 +733,6 @@ def sucesso_troca_cadastrador(request):
 
 class TrocaCadastrador(CreateView):
     template_name = "troca_cadastrador.html"
-    model = RequerimentoTrocaCadastrador
+    model = TrocaCadastrador
     fields = ['ente_federado', 'oficio']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")

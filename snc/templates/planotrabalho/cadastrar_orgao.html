@@ -1,3 +1,4 @@
+#last good cadastar_orgao
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
@@ -6,16 +7,16 @@
 <form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
   <h3>
-    <strong>Estruturação dos Componentes</strong>
+    <strong>Lei de criação do Órgão Gestor de Cultura</strong>
   </h3>
   <h5>
-    <strong>2.1 Estruturação e implementação da Secretaria de Cultura ou órgão equivalente
-      (Secretaria em conjunto com outras políticas, fundação de cultura, departamento, coordenação, diretoria, etc)</strong>
+    <strong>2.1 Estruturação e implementação da Secretaria de Cultura ou órgão gestor equivalente, como secretaria de cultura em conjunto com outras políticas públicas, 
+      fundação de cultura, departamento, entre outros.</strong>
   </h5>
 
   <div class="form-group">
     <label for="{{ form.data_publicacao.id_for_label }}">
-      Data da Publicação do Ato Normativo relativo a criação do Órgão Gestor
+      Data de publicação do ato normativo que cria a estrutura do Órgão Gestor de Cultura no âmbito do estado ou município
     </label>
     {% if form.sistema.orgao_gestor.situacao != 2 %}
       {% render_field form.data_publicacao class="form-control date half-width" %}
@@ -26,15 +27,15 @@
 
   <div class="form-group">
     <label for="{{ form.arquivo.id_for_label }}">
-      Comprovação de criação do órgão gestor
+      Normativo que cria a estrutura do Órgão Gestor de Cultura no âmbito do estado ou município
     </label>
     {% if form.arquivo.value %}
-    <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
-    {% if form.sistema.orgao_gestor.situacao != 2 %}
-    <p>Modificar: {% render_field form.arquivo %}</p>
-    {% endif %}
-    {% else %}
-    <p>{% render_field form.arquivo %}</p>
+      <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+      {% if form.sistema.orgao_gestor.situacao != 2 %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
+      {% endif %}
+      {% else %}
+      <p>{% render_field form.arquivo %}</p>
     {% endif %}
   </div>
 
@@ -46,6 +47,63 @@
   </div>
   </br>
 
+  <div class="form-group">
+    <label for="{{ form.possui_cnpj.id_for_label }}">
+       O Orgão Gestor de Cultura possui CNPJ?</br>
+    </label>
+    {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
+      {% render_field form.possui_cnpj class="radio" value="true" %}
+    {% else %}
+      {% render_field form.possui_cnpj disabled="disabled" class="radio" %}
+    {% endif %}
+  </div>
+
+  <div id="cnpj_form">
+    <div class="form-group {% if form.cnpj.errors %} has-error {% endif %}">
+      <label for="{{ form.cnpj.id_for_label }}" class="col-sm-12">
+        CNPJ
+      </label>
+      {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
+        {% render_field form.cnpj class="form-control cnpj half-width" %}
+      {% else %}
+        {% render_field form.cnpj disabled="disabled" class="form-control cnpj half-width" %}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.comprovante.id_for_label }}">
+        Comprovante do CNPJ
+      </label>
+      {% if form.comprovante_cnpj_orgao.value %}
+        <p><a href="{{ form.comprovante_cnpj_orgao.value.url }}" target="_blank">Baixar arquivo atual</a></p>
+      {% endif %}
+      <p>{% render_field form.comprovante_cnpj_orgao %}</p>
+    </div>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Banco
+    </label>
+        {% render_field form.banco class="form-control" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Agência
+    </label>
+        {% render_field form.agencia class="form-control date half-width" %}
+    <br/>
+    <label for="{{ form.comprovante.id_for_label }}">
+        Conta Corrente
+    </label>
+        {% render_field form.conta class="form-control date half-width" %}
+    <br/>
+    {% render_field form.termo_responsabilidade %}
+    Declaro que possuo responsabilidade pela veracidade das informações e pelos documentos apresentados neste cadastro e que estou ciente de que qualquer inexatidão dos itens informados poderá sujeitar-me às penalidades previstas no artigo 299 do Código Penal Brasileiro, sem prejuízo de outras medidas administrativas cabíveis
+    <br/>
+    </div>
+
+  <div>
+
+  </div>
+
+
   <div class="alert alert-info" role="alert">
     <strong>Para execução, sugerimos as seguintes atividades:</strong><br>
     - Elaborar minuta;<br>
@@ -56,6 +114,9 @@
     <strong>Observação:&nbsp</strong><br>
     - Manuais disponiveis no site: <a href="http://portalsnc.cultura.gov.br/manuais/"> http://portalsnc.cultura.gov.br/manuais/</a><br>
     - Componentes do Sistema: <a href="http://portalsnc.cultura.gov.br/sistemas-de-cultura/"> http://portalsnc.cultura.gov.br/sistemas-de-cultura/</a><br>
+    <strong>Atenção, com as informações:</strong><br>
+    - O Cadastro Nacional da Pessoa Jurídica (CNPJ) do Órgão Gestor de Cultura deve ser diferente do CNPJ do ente federado e do Fundo de Cultura.<br>
+    - A conta bancária informada deve estar vinculada ao CNPJ do Órgão Gestor de Cultura.<br>
   </div>
 
 </form>
@@ -81,6 +142,7 @@
         <button type="submit" id="botaoSalvar"class="btn btn-success">Salvar</button>
       `);
     }
+
     $('#botaoSalvarConfirmacao').on('click', () => {
       var confirmacao = confirm('Deseja mesmo alterar o arquivo? Isso poderá ocasionar o retrocesso do seu processo.');
       if (confirmacao == true) {
@@ -90,6 +152,21 @@
     $('#botaoSalvar').on('click', () => {
       formularioComponente.submit();
     });
+    if($('#id_possui_cnpj_0').is(":checked")){
+      $('#cnpj_form').css('display', 'block');
+    }
+    if($('#id_possui_cnpj_1').is(":checked")){
+      $('#cnpj_form').css('display', 'none');
+    }
+
+    $('input[name=possui_cnpj]').change(function() {
+      if(this.value=='True') {
+        $('#cnpj_form').fadeIn();
+      }
+      else {
+        $('#cnpj_form').fadeOut();
+      }
+    })
 
   });
 </script>

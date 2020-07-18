@@ -20,12 +20,22 @@ urlpatterns = [
     path('alterar/<int:pk>',
          staff_member_required(views.AlterarDadosSistemaCultura.as_view()),
          name='alterar_sistema'),
+    # analise troca cadastrador
+    path('analisar-troca-cadastrador/<int:pk>',
+         staff_member_required(views.AnalisarSolicitacaoCadastrador.as_view()),
+         name='analise_troca_cadastrador'),
+
     path('alterar/funcionario/<int:pk>',
          staff_member_required(views.AlterarFuncionario.as_view()),
          name='alterar_funcionario'),
     path('funcionario/<int:sistema>',
          staff_member_required(views.CadastrarFuncionario.as_view()),
          name='cadastrar_funcionario'),
+
+    # Trocar Cadastrador
+    path('acompanhar-troca-cadastrador', staff_member_required(
+        views.AcompanharTrocaCadastrador.as_view(),
+        login_url='adesao:login'), name='acompanhar_troca_cadastrador'),
 
     # Rota para AlterarCadastrador
     path('ente/<int:cod_ibge>/alterarcadastrador',
@@ -53,6 +63,16 @@ urlpatterns = [
     path('ente/<int:cod_ibge>',
          staff_member_required(views.DetalharEnte.as_view()),
          name='detalhar'),
+
+    # Detalhar SOLICITAÇÃO DE CADASTRADOR
+    path('solicitacao-cadastrador/<int:pk>',
+         staff_member_required(views.DetalharSolicitacaoCadastrador.as_view()),
+         name='solicitacao_cadastrador'),
+
+    # Alterar SOLICITAÇÃO DE CADASTRADOR
+    url(r'^alterar/solicitacao-cadastrador/',
+        staff_member_required(views.alterar_solicitacao_cadastrador, login_url='adesao:login'), name='alterar_solicitacao_cadastrador'),
+
     path('plano/<int:cod_ibge>',
          staff_member_required(views.DetalharPlano.as_view()),
          name='detalhar'),
@@ -153,5 +173,7 @@ urlpatterns = [
         name='ajax_plano_trabalho'),
     url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
         name='ajax_docs_componentes'),
+    url(r'^datatable-troca-cadastrador$', staff_member_required(views.DataTableTrocaCadastrador.as_view()),
+        name='ajax_troca_cadastrador'),
 
 ]
