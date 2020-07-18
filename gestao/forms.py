@@ -266,7 +266,7 @@ class AditivarPrazoForm(ModelForm):
         fields = ('oficio_prorrogacao_prazo',)
 
 
-class AlterarSolicitacaoCadastradorForm(ModelForm):
+""" class AlterarSolicitacaoCadastradorForm(ModelForm):
     laudo = forms.CharField(widget=CKEditorWidget(), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -274,4 +274,4 @@ class AlterarSolicitacaoCadastradorForm(ModelForm):
     
     class Meta:
         model = TrocaCadastrador
-        fields = ('ente_federado', 'status', 'laudo')
+        fields = ('ente_federado', 'status', 'laudo') """
