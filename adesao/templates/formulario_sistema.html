@@ -91,7 +91,7 @@
 
   <div class="form-group">
     <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor (Prefeito ou
-      Governador) </label>
+      Governador) <span style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_gestor.nome.id_for_label }}" class="col-sm-4 control-label">Nome do Gestor
     (Prefeito ou Governador) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
@@ -103,7 +103,7 @@
 
   <div class="form-group">
     <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail
-      Institucional </label>
+      Institucional <span style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_gestor.email_institucional.id_for_label }}" class="col-sm-4 control-label">E-mail
     Institucional <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
 
@@ -125,7 +125,7 @@
 
   <div class="form-group">
     <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou
-      Município) </label>
+      Município) <span style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_sede.cnpj.id_for_label }}" class="col-sm-4 control-label">CNPJ do Ente Federado
     (Estado ou Município) <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
     <div class="col-sm-4">
@@ -135,7 +135,7 @@
 
 
     <div class="form-group">
-    <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP </label>
+    <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span style="color:red;font-size:10px">*</span></label>
     {% comment %} <label for="{{ form_sede.cep.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">CEP <span
     id="hiddencep" style="display:none;color:#ff0000;"> (CEP
     inválido)</span> <span style="color:red;font-size:10px">*</span></label> {% endcomment %}
@@ -149,8 +149,7 @@
 
 
   <div class="form-group">
-    <label for="{{ form_sede.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional <span
-      style="color:red;font-size:10px"></span></label>
+    <label for="{{ form_sede.endereco.id_for_label }}" class="col-sm-4 control-label">Endereço Institucional <span style="color:red;font-size:10px">*</span></label>
     <div class="col-sm-8">
       {% render_field form_sede.endereco class="form-control" %}
     </div>
@@ -166,8 +165,7 @@
   </div>
 
   <div class="form-group">
-    <label for="{{ form_sede.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro <span
-      style="color:red;font-size:10px"></span></label>
+    <label for="{{ form_sede.bairro.id_for_label }}" class="col-sm-4 control-label">Bairro <span style="color:red;font-size:10px">*</span></label>
 
     <div class="col-sm-4">
       {% render_field form_sede.bairro class="form-control" %}
@@ -180,7 +178,7 @@
 
   <div class="form-group">
     <label for="{{ form_sede.endereco_eletronico.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Endereço
-      Eletrônico (Agenda Digital)</label>
+      Eletrônico (Agenda Digital)<span style="color:red;font-size:10px">*</span></label>
 
     <div class="col-sm-4">
       {% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
@@ -191,7 +189,7 @@
   <div class="form-group">
 
     <label for="{{ form_sede.telefone_um.id_for_label }}" class="col-sm-offset-1 col-sm-3 control-label">Telefone
-      Institucional (máximo 3) <span style="color:red;font-size:10px"></span></label>
+      Institucional (máximo 3) <span style="color:red;font-size:10px">*</span></label>
 
     <div class="col-sm-4">
       {% render_field form_sede.telefone_um class="form-control telefone" %}

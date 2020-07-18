@@ -268,211 +268,46 @@
 </style>
 {% endblock %}
 {% block content %}
-<div align="center">
-  <h3>Cadastro de Ente Federado</h3>
-  <p>Preencha o formulário abaixo com os dados do município ou estado.</p>
+<div>
+  <h2>Solicitar troca de Cadastrador de Ente Federado</h2>
+  <p>
+   Caso queira trocar de responsável, imprima o modelo de Ofício clicando aqui
+  </p>
+  <p> Faça o upload do Ofício digitalizado com os dados do novo responsável e assinado pelo prefeito
+      ou Governador no campo "Ofício para alterar o responsável"
+  </p>
+  <p> <b style="color:red">ATENÇÃO!</b> É imprescindível que o novo responsável indicado no Ofício
+      já tenha feito seu cadastro pessol na plataforma do SNC. 
+  </p>
 </div>
-<div style="float: right; padding-bottom: 25px">
-  <span style="color:#ff0000;">( * ) Campo(s) Obrigatório(s)</span>
-</div>
-<br>
-<form class="form-horizontal" method="post" enctype="multipart/form-data" id="form1"
+
+<form class="form-horizontal" method="post" enctype="multipart/form-data" id="form"
       data-validate-username-url="{% url 'adesao:validate_username' %}">
   {% csrf_token %}
 
-  <span id="aviso" class="alert alert-danger" role="alert">
-    O Ente Federado já está cadastrado!
-    <br>
-    Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
-  </span>
-  <span id="aviso_cnpj" class="alert alert-danger" role="alert">
-    O CNPJ já está cadastrado! <br>
-    Por favor entre em contato pelo email: <a targer="top" href="mailto:snc@cidadania.gov.br">snc@cidadania.gov.br</a>
- </span>
-  <span id="cnpj_invalido" class="alert alert-danger" role="alert">CNPJ Inválido!</span>
 
   <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DADOS ENTE FEDERADO
+    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">Solicitar Troca de Cadastrador
     </legend>
     <div class="form-group">
       <label for="ente_federado" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span
         style="color:red;font-size:10px">*</span></label>
       <div class="col-sm-2">
-        {% render_field form_sistema.ente_federado class="form-control" %}
+        {% render_field form.ente_federado class="form-control" %}
       </div>
-    </div>
-    <div class="form-group">
-      <label for="cnpj" class="col-sm-4 control-label">CNPJ do Ente Federado (Estado ou Município) <span
-        style="color:red;font-size:10px">*</span></label>
-      <div class="col-sm-4">
-        <input type="text" name="cnpj" maxlength="18" class="form-control" required id="id_cnpj"
-               onBlur="validarCNPJ(this, this);" onkeypress='mascaraMutuario(this, cpfCnpj)'>
-        <input type="text" name="razao_social" maxlength="18" class="form-control" id="razao_social"
-               style="display:none; border: 1px solid #155724; color:#155724; font-size: 12px; background: #d4edda; margin-top: 3px; padding: 3px">
-      </div>
-    </div>
-  </fieldset>
   <div class="row">
-    {{form.media}}
-    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DADOS DO
-        PREFEITO/GOVERNADOR
-      </legend>
-      <div class="form-group">
-        <label for="id_cpf" class="col-sm-4 control-label">CPF do Prefeito/Governador <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-4">
-          {% render_field form_gestor.cpf class="form-control cpf" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="rg" class="col-sm-4 control-label">RG do Prefeito/Governador<span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-3">
-          {% render_field form_gestor.rg class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="orgao_expeditor_rg" class="col-sm-4 control-label">Órgão Expeditor<span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-3">
-          {% render_field form_gestor.orgao_expeditor_rg class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="estado_expeditor" class="col-sm-4 control-label">UF <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-2">
-          {% render_field form_gestor.estado_expeditor class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="nome" class="col-sm-4 control-label">Nome do Prefeito/Governador <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-8">
-          {% render_field form_gestor.nome class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="email_institucional" class="col-sm-4 control-label">E-mail Institucional <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-8">
-          {% render_field form_gestor.email_institucional class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="email_pessoal" class="col-sm-4 control-label">E-mail Pessoal </label>
-        <div class="col-sm-8">
-          {% render_field form_gestor.email_pessoal class="form-control" %}
-        </div>
-      </div>
-    </fieldset>
-
-
-    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">ENDEREREÇO DO
-        PREFEITO/GOVERNADOR
-      </legend>
-      <div class="form-group">
-        <label for="cep" class="col-sm-4 control-label">CEP <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-4">
-          <input type="text" name="cep" maxlength="10" class="form-control" required="" id="id_cep"
-                 onchange="pesquisacep(this.value, '')">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">Endereço Institucional <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-8">
-          <textarea name="endereco" cols="40" rows="10" class="form-control" required="" id="id_endereco"></textarea>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-offset-1 col-sm-3 control-label">Complemento
-          <span style="color:red;font-size:10px"></span></label>
-        <div class="col-sm-3">
-          {% render_field form_sede.complemento class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-4 control-label">Bairro <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-4">
-          {% render_field form_sede.bairro class="form-control" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-offset-1 col-sm-3 control-label">Site Institucional</label>
-        <div class="col-sm-4">
-          {% render_field form_sede.endereco_eletronico class="form-control" placeholder="http://www.exemplo.com.br" %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-offset-1 col-sm-3 control-label">1º Telefone Institucional <span
-          style="color:red;font-size:10px">*</span></label>
-        <div class="col-sm-4">
-          {% render_field form_sede.telefone_um class="form-control telefone" %}
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-sm-offset-1 col-sm-3 control-label">2º Telefone Institucional </label>
-        <div class="col-sm-4">
-          {% render_field form_sede.telefone_dois class="form-control telefone" %}
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-sm-offset-1 col-sm-3 control-label">3º Telefone Institucional</label>
-        <div class="col-sm-4">
-          {% render_field form_sede.telefone_tres class="form-control telefone" %}
-        </div>
-      </div>
-
-
-    </fieldset>
-
-
-    <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-      <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DOCUMENTOS DO
-        PREFEITO/GOVERNADOR
-      </legend>
+    {{form.media}}  
       <div class="form-group">
         <div class="col-sm-offset-4 col-sm-4">
           <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-            <legend style="font-size: 12px; font-weight: bold;">Termo de Posse <span
+            <legend style="font-size: 12px; font-weight: bold;">Ofício para alterar o responsável <span
               style="color:red;font-size:10px">*</span></legend>
             <span class="btn btn-default btn-file">
-            <input type="file" name="termo_posse" id="id_termo_posse" required value="{{request.POST.termo_posse}}"/>
+            <input type="file" name="oficio" id="id_oficio" required value="{{request.POST.oficio}}"/>
             </span>
           </fieldset>
         </div>
       </div>
-      <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-4">
-
-          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-            <legend><strong>Cópia do CPF <span style="color:red;font-size:10px">*</span></strong></legend>
-            <span class="btn btn-default btn-file">
-              <input type="file" name="cpf_copia" id="id_cpf_copia" required value="{{request.POST.cpf_copia}}"/>
-            </span>
-          </fieldset>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-4">
-          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-            <legend style="font-size: 12px; font-weight: bold;">Cópia do RG <span
-              style="color:red;font-size:10px">*</span></legend>
-            <span class="btn btn-default btn-file">
-              <input type="file" name="rg_copia" id="id_rg_copia" required value="{{request.POST.rg_copia}}"/>
-            </span>
-          </fieldset>
-        </div>
-      </div>
-    </fieldset>
-
   </div>
   <div style="margin-top: 15px">&nbsp;</div>
   <div class="form-group">

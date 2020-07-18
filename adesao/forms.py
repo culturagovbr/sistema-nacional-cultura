@@ -13,7 +13,7 @@ from localflavor.br.forms import BRCPFField
 from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import Usuario, Municipio, Responsavel, Uf
-from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor
+from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor, RequerimentoTrocaCadastrador
 
 from snc.widgets import FileUploadWidget
 from .utils import limpar_mascara
@@ -179,7 +179,8 @@ class CadastrarFuncionarioForm(ModelForm):
     cargo = forms.CharField(required=True)
     instituicao = forms.CharField(required=True)
     telefone_um = forms.CharField(required=True)
-    email = forms.CharField(required=True)
+    email_institucional = forms.EmailField(required=True)
+    email_pessoal = forms.EmailField(required=False)
     endereco = forms.CharField(required=True)
     complemento = forms.CharField(required=False)
     cep = forms.CharField(required=True)
@@ -194,3 +195,12 @@ class CadastrarFuncionarioForm(ModelForm):
     class Meta:
         model = Funcionario
         exclude = ('tipo_funcionario',)
+
+
+class TrocaCadastradorForm(ModelForm):
+
+    class Meta:
+        model = RequerimentoTrocaCadastrador
+        fields = ('ente_federado', 'oficio')
+        widgets = {
+            'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}

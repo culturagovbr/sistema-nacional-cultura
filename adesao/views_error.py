@@ -37,11 +37,10 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    RequerimentoTrocaCadastrador
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm, TrocaCadastradorForm
+from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
@@ -87,8 +86,14 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    request.session['sistemas'] = list(
-        sistemas_cultura.values('id', 'ente_federado__nome'))
+    sistema_ente_federados = list(sistemas_cultura.values('id', 'ente_federado__nome'))
+
+    for item in sistemas_cultura:
+        for item2 in sistema_ente_federados:
+            if item2['ente_federado__nome'] in str(item.ente_federado):
+                item2['ente_federado__nome'] = str(item.ente_federado)
+
+    request.session['sistemas'] = sistema_ente_federados
 
     if request.user.is_staff:
         return redirect("gestao:dashboard")
@@ -288,7 +293,7 @@ class CadastrarUsuario(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_usuario")
 
     templated_email_template_name = "usuario"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -323,7 +328,7 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
     success_url = reverse_lazy("adesao:sucesso_municipio")
 
     templated_email_template_name = "adesao"
-    templated_email_from_email = "naoresponda@cidadania.gov.br"
+    templated_email_from_email = "naoresponda@turismo.gov.br"
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -345,16 +350,24 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
             sistema = form_sistema.save()
 
             if not self.request.session.get('sistemas', False):
+                print('SISTEMA SELECIONADO 1 ')
                 self.request.session['sistemas'] = list()
                 sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
                 atualiza_session(sistema_atualizado, self.request)
             else:
                 if self.request.session.get('sistema_cultura_selecionado', False):
+                    print('SISTEMA SELECIONADO 2 ')
                     self.request.session['sistema_cultura_selecionado'].clear()
                     self.request.session.modified = True
+                print('SISTEMA SELECIONADO 3 ')
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id = sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
 
+            print('SISTEMA SELECIONADO 4 ')
+            
             self.request.session['sistemas'].append(
                 {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
 
             return super(CadastrarSistemaCultura, self).form_valid(form)
         else:
@@ -391,7 +404,6 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         context["sistema_atualizado"] = SistemaCultura.sistema.get(ente_federado__id=self.object.ente_federado.id)
 
         return context
-
 
 
 class AlterarSistemaCultura(UpdateView):
@@ -506,28 +518,12 @@ class AlterarFuncionario(UpdateView):
 class GeraPDF(WeasyTemplateView):
 
     def dispatch(self, request, *args, **kwargs):
-        '''
         self.ente_federado = self.request.session.get('sistema_ente', True)
         self.sistema_sede = self.request.session.get('sistema_sede', False)
         self.sistema_gestor = self.request.session.get('sistema_gestor', False)
         self.gestor_cultura = self.request.session.get('sistema_gestor_cultura', False)
         self.sistema = self.request.session.get('sistema_cultura_selecionado', False)
-        '''
 
-        try:
-            sistema = SistemaCultura.objects.get(id=self.kwargs['pk'])
-            ente_federado = sistema.ente_federado
-            self.sistema = sistema
-            sistema_sede = sistema.sede
-            sistema_gestor = sistema.gestor
-            gestor_cultura = sistema.gestor_cultura
-            if not sistema or not sistema.ente_federado or not sistema.gestor_cultura or \
-               not self.sistema.gestor.cpf or sistema.estado_processo == 0:
-               return redirect('adesao:erro_impressao')
-        except Exception as e:
-           return redirect('adesao:erro_impressao')
-
-        '''
         if not self.ente_federado or \
             not self.gestor_cultura or \
             not self.sistema or \
@@ -535,7 +531,7 @@ class GeraPDF(WeasyTemplateView):
             len(self.sistema_sede['cnpj']) != 18 or \
             not self.sistema_gestor['cpf']:
             return redirect('adesao:erro_impressao')
-        '''
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -677,6 +673,14 @@ def validate_username(request):
     # Retirando os tres ultimos caracteres  /DF
     # municipio = codigo_ibge[:-3]
 
+    #ente_federado = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+    #print("Codigo IBGE" + codigo_ibge)
+    nome_cadastrador = ""
+
+    for item in SistemaCultura.objects.all():
+        if item.ente_federado.pk == int(codigo_ibge):
+            nome_cadastrador = item.cadastrador.nome_usuario
+
     '''
     data = {
         'ibge': codigo_ibge
@@ -689,9 +693,9 @@ def validate_username(request):
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
         # 'municipio': codigo_ibge
     }
-
     if data['validacao']:
         data['error_message'] = 'O ente federado já existe'
+        data['cadastrador'] = nome_cadastrador,
 
     return JsonResponse(data)
 
@@ -722,14 +726,3 @@ def search_cnpj(request):
     data = response.json()
 
     return JsonResponse(data, safe=False)
-
-@login_required
-def sucesso_troca_cadastrador(request):
-    return render(request, "mensagem_sucesso_troca_cadastrador.html")
-
-
-class TrocaCadastrador(CreateView):
-    template_name = "troca_cadastrador.html"
-    model = RequerimentoTrocaCadastrador
-    fields = ['ente_federado', 'oficio']
-    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")

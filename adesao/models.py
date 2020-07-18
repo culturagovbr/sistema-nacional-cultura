@@ -197,7 +197,7 @@ class Municipio(models.Model):
                                          related_name='estado_expeditor',
                                          on_delete=models.CASCADE)
     endereco = models.CharField(max_length=255)
-    complemento = models.CharField(max_length=255)
+    complemento = models.CharField(max_length=255, default='', blank=True)
     cep = models.CharField(max_length=10)
     bairro = models.CharField(max_length=50)
     estado = models.ForeignKey('Uf', on_delete=models.CASCADE)
@@ -361,7 +361,7 @@ class Sede(models.Model):
         max_length=18,
         verbose_name='CNPJ')
     endereco = models.TextField()
-    complemento = models.CharField(max_length=255)
+    complemento = models.CharField(max_length=255, default='', blank=True)
     cep = models.CharField(max_length=10)
     bairro = models.CharField(max_length=50)
     telefone_um = models.CharField(max_length=100)
@@ -399,7 +399,7 @@ class Funcionario(models.Model):
                                         choices=UFS.items(),
                                         null=True)
     endereco = models.CharField(max_length=255, null=True)
-    complemento = models.CharField(max_length=255, null=True)
+    complemento = models.CharField(max_length=255, default='', blank=True)
     cep = models.CharField(max_length=10, null=True)
     bairro = models.CharField(max_length=50, null=True)
 
@@ -629,3 +629,10 @@ class SistemaCultura(models.Model):
         row = cursor.fetchone()
 
         return row[0]
+
+class RequerimentoTrocaCadastrador(models.Model):
+    """
+    Requerimento de Troca Cadastrado
+    """
+    oficio = models.FileField(upload_to='oficio', max_length=255, null=True)
+    ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
