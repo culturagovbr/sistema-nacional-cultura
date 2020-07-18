@@ -1,5 +1,7 @@
-{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} 
+{% block content %}
   <menu data-target="troca-cadastrador"></menu>
+  <form id="form-solicitacao" role="form" class="form-horizontal" method="post">{% csrf_token %}
   <div class="row">
     <div class="col-sm-12 col-md-6">
       <div class="card">
@@ -38,7 +40,7 @@
           <table class="table table-borderless" style="width: 50%;">
             <tbody>
               <tr>
-                <td> <a id="btn_aprovar" href="{% url 'gestao:acompanhar_troca_cadastrador' %}" class="btn btn-success active" role="button" aria-pressed="true">Aprovar</a></td>
+                <td> <a id="btn_aprovar" type="submit" class="btn btn-success active" role="button" aria-pressed="true" >Aprovar</a></td>
                 <td> 
                   
                   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
@@ -65,7 +67,7 @@
           </div>
           <div class="modal-body">
             <label for="comment">Informe o motivo da rejeição:</label>
-            <p><textarea class="form-control" rows="5" id="motivo">{{solicitacao.laudo}} </textarea></p>
+            <p><textarea id="id-motivo" class="form-control" rows="5" id="motivo">{% if not solicitacao.laudo == null %} {{solicitacao.laudo}} {% endif %} </textarea></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">Salvar</button>
@@ -74,8 +76,59 @@
         </div>
       </div>
     </div>
-
-
   </div>
+  </form>
  {% endblock content %}
+ {% block js%}
+ <script type="text/javascript">
+ $(document).ready(function(){
+ 
+   csrf_token = '{{ csrf_token }}';
+ 
+   var salvarLaudo = () => {
+     let id_solcitacao = {{ solicitacao.id }};
+     let laudo = $('#id-motivo').val();
+     let status = 1;
 
+     if( laudo ){
+       let status = 2;
+     }
+ 
+     $('#form-solicitacao').ajaxSubmit({
+       url: "{% url 'gestao:alterar_solicitacao_cadastrador' %}",
+       type: 'POST',
+       data: {
+         id: id_solcitacao,
+         status : status,
+         laudo : laudo,
+         csrfmiddlewaretoken: csrf_token
+       },
+       cache: false,
+       success: function (response) {
+         tabela.ajax.reload(null, false)
+         $.notify(
+           {
+             icon: "check_circle",
+             message: 'Prazo aditivado com sucesso.',
+           },
+           { type: "success" }
+         );
+       },
+       error: function (error) {
+         tabela.ajax.reload(null, false)
+         $.notify(
+           {
+             icon: "error",
+             message: 'Erro ao salvar dados.',
+           },
+           { type: "danger" }
+         );
+       },
+     });
+   }
+ 
+   $('#btn_aprovar').on('click', salvarLaudo);
+  
+ });
+ </script>
+ {% endblock js %}

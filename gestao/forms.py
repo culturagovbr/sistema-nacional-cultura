@@ -264,3 +264,14 @@ class AditivarPrazoForm(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('oficio_prorrogacao_prazo',)
+
+
+class AlterarSolicitacaoCadastradorForm(ModelForm):
+    laudo = forms.CharField(widget=CKEditorWidget(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(AlterarSolicitacaoCadastradorForm, self).__init__(*args, **kwargs)
+    
+    class Meta:
+        model = TrocaCadastrador
+        fields = ('ente_federado', 'status', 'laudo')

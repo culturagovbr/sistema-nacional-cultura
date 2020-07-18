@@ -70,6 +70,7 @@ from .forms import AlterarDocumentosEnteFederadoForm
 from .forms import AlterarUsuarioForm
 from .forms import AlterarComponenteForm
 from .forms import AlterarDadosEnte
+from .forms import AlterarSolicitacaoCadastradorForm
 from .forms import CriarContatoForm
 
 from planotrabalho.forms import CriarComponenteForm
@@ -244,7 +245,6 @@ def aditivar_prazo(request):
 
 class AcompanharSistemaCultura(TemplateView):
     template_name = 'gestao/adesao/acompanhar.html'
-
 
 class AcompanharComponente(TemplateView):
     template_name = 'gestao/planotrabalho/acompanhar.html'
@@ -1483,8 +1483,8 @@ class DetalharSolicitacaoCadastrador(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        sistema = context['object']
-        sistema = self.get_queryset().get(id=self.object.id)
+        solicitacao = context['object']
+        solicitacao = self.get_queryset().get(id=self.object.id)
         return context
 
 
@@ -1575,3 +1575,52 @@ class DataTableTrocaCadastrador(BaseDatatableView):
         return json_data
 
 
+""" class AlterarSolicitacaoCadastrador(AlterarSolicitacaoCadastrador, UpdateView):
+    form_class = AlterarSolicitacaoCadastrador
+    model = TrocaCadastrador
+    template_name = 'detalhe_solicitacao_cadastrador.html'
+
+    @method_decorator(user_passes_test(scdc_user_group_required))
+    def dispatch(self, *args, **kwargs):
+        return super(SolicitacaoCadastrador, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        print("SUCESSSSOOOO!!!!!!!!")
+        kwgs = {'pk': self.kwargs.get('pk')}
+        solicitacao_pk = TrocaCadastrador.objects.get(id=self.kwargs['pk'])
+        return reverse_lazy(
+            'gestao:solicitacao_cadastrador',
+            kwargs={'pk': solicitacao_pk}) """
+
+def alterar_solicitacao_cadastrador(request):
+    
+    if request.method == "POST":
+        id = request.POST.get('id', None)
+        solicitacao = TrocaCadastrador.objects.get(id=id)
+
+        print("PASSEI AQUUIIII!!!")
+
+        print(solicitacao[0]['id'])
+
+        form = AlterarSolicitacaoCadastradorForm(request.POST)
+        field_name = 'status'
+
+        if form.is_valid():
+            solicitacao.laudo = request.POST.get('laudo', None)
+            solicitacao.status = request.POST.get('status', None)
+            solicitacao.save()
+        else:
+            return JsonResponse(data={}, status=422)
+    return JsonResponse(data={}, status=200)
+
+
+""" template_name = "detalhe_solicitacao_cadastrador.html"
+    context_object_name = "solicitacao"
+    queryset = TrocaCadastrador.objects.all()
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        solicitacao = context['object']
+        solicitacao = self.get_queryset().get(id=self.object.id)
+        return context """
