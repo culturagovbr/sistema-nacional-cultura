@@ -36,7 +36,10 @@
         </div>
         <div class="card-body">
           <p><strong>Situação:</strong> {{ solicitacao.get_status_display }} </p>
-          <p><strong>Motivo: </strong> {{ solicitacao.get_laudo_display }} </p>
+          {% if solicitacao.laudo %}
+          <p><strong>Motivo: </strong> {{ solicitacao.laudo }} </p>
+          {% endif %}
+          {% if solicitacao.status == '0' %}
           <table class="table table-borderless" style="width: 50%;">
             <tbody>
               <tr>
@@ -51,11 +54,12 @@
                 </td>
                 <td>
                   <a id="btn_aprovar" class="btn btn-secondary" role="button" aria-pressed="true"
-                    onclick="window.close();">Fechar</a>
+                    onclick="window.close();">Voltar</a>
                 </td>
               </tr>
             </tbody>
           </table>
+          {% endif %}
 
         </div>
       </div>
