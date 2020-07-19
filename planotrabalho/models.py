@@ -201,7 +201,7 @@ class OrgaoGestor2(Componente):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name='comprovantes_orgao_gestor')
+        related_name='comprovantes_cnpj')
     comprovante_cnpj_orgao = models.FileField(upload_to='media/', blank=True, null=True)
 
     banco = models.CharField(max_length=20, verbose_name='Banco', choices=BANCOS, null=True, blank=True)
