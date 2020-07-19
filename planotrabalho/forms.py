@@ -64,6 +64,7 @@ class CriarComponenteForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
+        print(kwargs)
         self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
         super(CriarComponenteForm, self).__init__(*args, **kwargs)
@@ -72,7 +73,7 @@ class CriarComponenteForm(ModelForm):
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
                 'label': 'Componente'
             })
-            self.fields['comprovante_cnpj_orgao'].widget = FileUploadWidget(attrs={
+            self.fields['comprovante_cnpj'].widget = FileUploadWidget(attrs={
                 'label': 'Comprovante do CNPJ'
             })
 
@@ -114,7 +115,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
     cnpj = BRCNPJField(required=False)
     #comprovante = forms.FileField(required=False, widget=FileInput)
     arquivo = forms.FileField(required=False, widget=FileInput)
-    comprovante_cnpj_orgao = forms.FileField(required=False, widget=FileInput)
+    comprovante_cnpj = forms.FileField(required=False, widget=FileInput)
     banco = forms.ChoiceField(required=False, choices=BANCOS)
     agencia = forms.CharField(required=False, max_length=4) 
     conta = forms.CharField(required=False, max_length=20)
@@ -123,6 +124,8 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
     def save(self, commit=True, *args, **kwargs):
         orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
+        FUNDO_CULTURA = 2
+        orgao_gestor.tipo = FUNDO_CULTURA
         if 'arquivo' in self.changed_data:
             orgao_gestor.situacao = 1
 
@@ -131,16 +134,25 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
             orgao_gestor.data_publicacao = self.cleaned_data['data_publicacao']
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
             orgao_gestor.cnpj = self.cleaned_data['cnpj']
-            orgao_gestor.comprovante_cnpj_orgao = self.cleaned_data['comprovante_cnpj_orgao']
             orgao_gestor.arquivo = self.cleaned_data['arquivo']
             orgao_gestor.banco = self.cleaned_data['banco']
             orgao_gestor.agencia = self.cleaned_data['agencia']
             orgao_gestor.conta = self.cleaned_data['conta']
             orgao_gestor.save()
+            if 'comprovante' in self.changed_data:
+                orgao_gestor.comprovante_cnpj = ArquivoComponente2()
+                orgao_gestor.comprovante_cnpj.situacao = 1
+                orgao_gestor.comprovante_cnpj.save()
+                orgao_gestor.comprovante_cnpj.comprovantes.add(orgao_gestor)
+                orgao_gestor.comprovante_cnpj.arquivo = self.cleaned_data['comprovante_cnpj']
+                orgao_gestor.comprovante_cnpj.save()
+
+            #orgao_gestor.comprovante_cnpj = Componente.objects.create(arquivo=self.cleaned_data['comprovante_cnpj'], situacao=1)
             sistema_cultura = getattr(orgao_gestor, self.tipo_componente)
             sistema_cultura.add(self.sistema)
             setattr(self.sistema, self.tipo_componente, orgao_gestor)
             self.sistema.save()
+
 
         return orgao_gestor
 

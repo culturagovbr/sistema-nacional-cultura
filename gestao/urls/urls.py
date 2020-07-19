@@ -71,6 +71,10 @@ urlpatterns = [
          staff_member_required(views.DetalharSolicitacaoCadastrador.as_view()),
          name='solicitacao_cadastrador'),
 
+    # Alterar SOLICITAÇÃO DE CADASTRADOR
+    url(r'^alterar/solicitacao-cadastrador/',
+        staff_member_required(views.alterar_solicitacao_cadastrador, login_url='adesao:login'), name='alterar_solicitacao_cadastrador'),
+
     path('plano/<int:cod_ibge>',
          staff_member_required(views.DetalharPlano.as_view()),
          name='detalhar'),
