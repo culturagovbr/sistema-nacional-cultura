@@ -189,6 +189,11 @@
                             <span>Criar Novo Ente Federado</span>
                           </a>
                         </li>
+                                    <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
+                                        <a href="{% url 'adesao:troca_cadastrador' %}" title="" class="state-published navTreeFolderish contenttype-folder">
+                                            <span>Solicitar Troca Responsável Ente Federado</span>
+                                        </a>
+                                    </li>
                           {% if request.session.sistema_cultura_selecionado %}
                             {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
                               <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
@@ -208,15 +213,11 @@
                                         <span>Gestor de Cultura</span>
                                       </a>
                                     </li>
-                                    <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-b">
-                                        <a href="{% url 'adesao:troca_cadastrador' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                            <span>Solicitar Troca Responsável Ente Federado</span>
-                                        </a>
-                                    </li>
                                   {% endif %}
                                 {% endif %}
                               {% endif %}
                           {% endif %}
+
                           {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
                             {% if request.session.sistema_gestor_cultura.cpf != ''  and request.session.sistema_sede.cnpj %}
                               {% if request.session.sistema_cultura_selecionado.estado_processo in "13" %}
