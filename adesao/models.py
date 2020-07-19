@@ -630,14 +630,14 @@ class SistemaCultura(models.Model):
         row = cursor.fetchone()
 
         return row[0]
-'''
+
 class RequerimentoTrocaCadastrador(models.Model):
     """
     Requerimento de Troca Cadastrado
     """
     oficio = models.FileField(upload_to='oficio', max_length=255, null=True)
     ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
-'''
+
 class TrocaCadastrador(models.Model):
     """
     Requerimento de Troca Cadastrado
