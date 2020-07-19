@@ -13,7 +13,7 @@ from localflavor.br.forms import BRCPFField
 from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import Usuario, Municipio, Responsavel, Uf
-from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor, RequerimentoTrocaCadastrador
+from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor, TrocaCadastrador
 
 from snc.widgets import FileUploadWidget
 from .utils import limpar_mascara
@@ -196,11 +196,19 @@ class CadastrarFuncionarioForm(ModelForm):
         model = Funcionario
         exclude = ('tipo_funcionario',)
 
-
 class TrocaCadastradorForm(ModelForm):
+    oficio = RestrictedFileField(content_types=content_types, max_upload_size=52428800)
 
+    def clean(self):
+        super(TrocaCadastradorForm, self).clean()
+        '''
+        if 'ente_federado' in self.changed_data:
+            sistema_cultura = SistemaCultura.sistema.filter(
+                ente_federado=self.cleaned_data['ente_federado'])
+        '''
     class Meta:
-        model = RequerimentoTrocaCadastrador
+        model = TrocaCadastrador
         fields = ('ente_federado', 'oficio')
         widgets = {
             'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
+
