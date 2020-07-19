@@ -12,7 +12,6 @@ from snc.widgets import FileUploadWidget
 from adesao.models import Usuario
 from adesao.models import LISTA_ESTADOS_PROCESSO
 from adesao.models import SistemaCultura, Gestor, Usuario
-from adesao.models import TrocaCadastrador
 
 
 from planotrabalho.models import CriacaoSistema, FundoCultura, Componente
@@ -22,7 +21,6 @@ from planotrabalho.models import LISTA_TIPOS_COMPONENTES
 
 from gestao.models import Diligencia, DiligenciaSimples, LISTA_SITUACAO_ARQUIVO
 from gestao.models import Contato
-
 
 from .utils import enviar_email_alteracao_situacao
 
@@ -264,14 +262,3 @@ class AditivarPrazoForm(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('oficio_prorrogacao_prazo',)
-
-
-""" class AlterarSolicitacaoCadastradorForm(ModelForm):
-    laudo = forms.CharField(widget=CKEditorWidget(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(AlterarSolicitacaoCadastradorForm, self).__init__(*args, **kwargs)
-    
-    class Meta:
-        model = TrocaCadastrador
-        fields = ('ente_federado', 'status', 'laudo') """
