@@ -1,0 +1,47 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+  <menu data-target="solicitacao-de-adesao"></menu>
+  <div class="row">
+
+
+    <div class="col-sm-12 col-md-6">
+      <div class="card">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title">Analisar Solicitação</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+
+          </div>
+          <div class="card-body">
+            <p><strong>Data de Solicitação:</strong> {{ object.alterado_em }}</p>
+            <p><strong>Usuário:</strong> {{ object.alterado_por.nome_usuario }}</p>
+            <p><strong>CPF:</strong> {{ object.alterado_por.user.username }}</p>
+            <p><strong>Email:</strong> {{ object.alterado_por.user.email }}</p>
+            <p><strong>Ente Federado:</strong> {{ object.ente_federado }}</p>
+            <p><strong>Acordo de Cooperação:</strong> <a href="{{ object.oficio.url }}">{{ object.oficio }}</a></p>
+            {% if object.status != '0' %}
+              <p><strong>Situação:</strong> {{ object.get_estado_processo_display }}</p>
+              <p><strong>Avaliador:</strong> {{ object.avaliador }}</p>
+              <p><strong>Data de Análise :</strong> {{ object.data_analise }}</p>
+            {% endif %}
+            {% if object.status == '2' %}
+              <p><strong>Motivo:</strong> {{ object.laudo }}</p>
+            {% endif %}
+            
+            {% if object.status == '0' %}
+              <div style="display: flex">
+                <form method="post" action="{% url 'gestao:solicitacao_de_adesao:aprovar' object.pk %}">
+                  {% csrf_token %}
+                  <button type="submit">Aprovar</button>
+                </form>
+                <button style="margin-left: 20px;" data-toggle="modal" data-target="#alterarAdesaoEnte">Rejeitar</button>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  {% include "solicitacaodeadesao_rejeitar.html" %}
+{% endblock content %}

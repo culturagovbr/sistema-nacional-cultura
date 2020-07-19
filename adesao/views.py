@@ -37,7 +37,8 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    TrocaCadastrador
+    TrocaCadastrador,
+    SolicitacaoDeAdesao
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
@@ -736,6 +737,7 @@ class TrocaCadastrador(CreateView):
     template_name = "troca_cadastrador.html"
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
 
+
     def form_valid(self, form):
         context = self.get_context_data()
         form_sistema = context['form_sistema']
@@ -769,3 +771,15 @@ class TrocaCadastrador(CreateView):
         else:
             context['form_sistema'] = TrocaCadastradorForm()
         return context
+
+@login_required
+def sucesso_solicitar_adesao(request):
+    return render(request, "mensagem_sucesso_solicitar_adesao.html")
+
+
+class SolicitarAdesaoView(CreateView):
+    template_name = "solicitar_adesao.html"
+    model = SolicitacaoDeAdesao
+    fields = ['ente_federado', 'oficio']
+    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+

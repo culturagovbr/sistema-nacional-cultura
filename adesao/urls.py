@@ -51,6 +51,10 @@ urlpatterns = [
     path('sistema/troca-cadastrador/', login_required(views.TrocaCadastrador.as_view()), name='troca_cadastrador'),
     path('sucesso-troca-cadastrador/', views.sucesso_troca_cadastrador, name='sucesso_troca_cadastrador'),
 
+    # troca de Casdastrador
+    path('sistema/solicitar_adesao/', login_required(views.SolicitarAdesaoView.as_view()), name='solicitar_adesao'),
+    path('sucesso-solicitar_adesao/', views.sucesso_solicitar_adesao, name='sucesso_solicitar_adesao'),
+
     # Minuta de acordo e termo de solicitação
     path('termo/<int:pk>/<str:template>/<str:nome_arquivo>', login_required(views.GeraPDF.as_view()), name='gera_pdf'),
 

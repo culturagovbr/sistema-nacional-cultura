@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<h2>Adesão ao Sistema Nacional de Cultura
+    <a class="anchorjs-link" href="#auto-truncating">
+      <span class="anchorjs-icon"></span>
+    </a>
+  </h2>
+  <p style="text-align: justify;">
+    <strong> {{ request.session.sistema_ente.nome }} </strong>,
+    sua Adesão ao Sistema Nacional de Cultura – SNC está quase concluída.
+    Para efetivar a adesão, é necessário que o Acordo de Cooperação Federativa
+    (disponível no “menu principal” na coluna à esquerda) seja enviado para a equipe do SNC.
+    <br/>
+    <a href="{% url 'adesao:gera_pdf' pk=request.session.sistema_cultura_selecionado.id template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+        <span>Gerar Acordo de Cooperação Federativa e Termo de Adesão</span>
+      </a>
+  </p>
+  <p style="text-align: justify;"></pstyle>
+    Para tanto, imprima o Acordo de Cooperação Federativa para a assinatura do Governador(a) ou
+    do Prefeito(a) e insira o Acordo assinado no formuário abaixo.
+    
+  
+  </p><p style="text-align: justify;"></pstyle>A Equipe do Sistema Nacional de Cultura (SNC) concluirá a formalização da adesão do seu estado ou município e enviará uma mensagem de confirmação da adesão para o e-mail cadastrado.
+  </p><p style="text-align: justify;"></pstyle>Lembramos que são de responsabilidade do ente federado, sob as penas da lei, a autenticidade dos documentos apresentados e a veracidade das informações prestadas.
+  </p>
+
+  
+  <p style="color:red">( * ) Campo(s) Obrigatório(s)</p>
+</div>
+
+<form class="form-horizontal" method="post" enctype="multipart/form-data" id="form"
+      data-validate-username-url="{% url 'adesao:validate_username' %}">
+  {% csrf_token %}
+
+
+  <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">Adesão ao Sistema Nacional de Cultura
+    </legend>
+    <div class="form-group">
+    <legend style="font-size: 12px; font-weight: bold;">Ente Federado (Estado ou Município) <span
+        style="color:red;font-size:10px">*</span></legend>
+
+      <div class="col-sm-2">
+        {% render_field form.ente_federado class="form-control" %}
+      </div>
+  <div class="row">
+    {{form.media}}  
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-4">
+          <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
+            <legend style="font-size: 12px; font-weight: bold;">Acordo de Cooperação Federativa e Termo de Solicitação <span
+              style="color:red;font-size:10px">*</span></legend>
+            <span class="btn btn-default btn-file">
+            <input type="file" name="oficio" id="id_oficio" required value="{{request.POST.oficio}}"/>
+            </span>
+          </fieldset>
+        </div>
+      </div>
+  </div>
+  <div style="margin-top: 15px">&nbsp;</div>
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-10">
+      <a class="btn btn-warning" href="{% url 'adesao:home' %}"
+         style="border:1px solid #f6a800;border-radius:4px;display:inline-block;cursor:pointer;font-family:Verdana;font-weight:bold;font-size:13px;padding:6px 10px;text-decoration:none; background: #f6a800; color: white"/>Cancelar</a>
+      <input type="submit" class="btn btn-success" value="Salvar" id="btn_salvar"
+             style="border:1px solid #1659bf;border-radius:4px;display:inline-block;cursor:pointer;font-family:Verdana;font-weight:bold;font-size:13px;padding:6px 10px;text-decoration:none; background: #0a6ebd; color: white"/>
+    </div>
+  </div>
+</form>
+{% endblock content %}

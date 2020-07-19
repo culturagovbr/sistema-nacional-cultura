@@ -34,9 +34,10 @@ LISTA_ESTADOS_PROCESSO = (
     ('2', 'Aguardando renovação da adesão'),
     ('3', 'Diligência Documental'),
     ('4', 'Aguardando análise do Plano de Trabalho'),
-    ('5', ''),
+    ('5', 'Diligência Documental'),
     ('6', 'Publicado no DOU'),
-    ('7', ''),)
+    ('7', 'Acordo de Cooperação e Termo de Adesão aprovados'),
+    )
 
 LISTA_TIPOS_FUNCIONARIOS = (
     (0, 'Gestor de Cultura'),
@@ -666,3 +667,41 @@ class TrocaCadastrador(models.Model):
             self.alterado_por = get_current_user()
             super().save(*args, **kwargs)
 
+
+class SolicitacaoDeAdesao(models.Model):
+    """
+    Requerimento de Troca Cadastrado
+    """
+    STATUS = (
+        ('0', 'Pendente de Análise'),
+        ('1', 'Aprovado'),
+        ('2', 'Rejeitado'),
+    )
+    ente_federado = models.ForeignKey("EnteFederado", on_delete=models.SET_NULL, null=True)
+    alterado_por = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name="solicitacao_alterado_por")
+    status = models.CharField(max_length=1, choices=STATUS, default='0', blank=True, null=True)
+    alterado_em = models.DateTimeField("Alterado em", default=timezone.now)
+    oficio = models.FileField(upload_to='oficio', max_length=255, null=True)
+    laudo = models.TextField(blank=True, null=True)
+    avaliador = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name="solicitacao_avaliador")
+    data_analise = models.DateTimeField("Data de Análise", blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        """
+        Salva uma nova instancia 
+        """
+
+        if self.pk:
+                self.alterado_em = timezone.now()
+                super().save(*args, **kwargs)
+        else:
+            self.alterado_em = timezone.now()
+            self.alterado_por = get_current_user()
+            super().save(*args, **kwargs)
+
+    def get_estado_processo_display(self):
+        estado_index = int(self.status)
+        return self.STATUS[estado_index][1]
+
+    def __str__(self):
+        return "Solicitação de "+str(self.ente_federado)
