@@ -1,7 +1,5 @@
-{% extends "gestao/base_gestao.html" %} {% load gestao_tags %}
-{% block content %}
-<menu data-target="troca-cadastrador"></menu>
-<form id="form-solicitacao" role="form" class="form-horizontal" method="post">{% csrf_token %}
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+  <menu data-target="troca-cadastrador"></menu>
   <div class="row">
     <div class="col-sm-12 col-md-6">
       <div class="card">
@@ -23,8 +21,8 @@
         </div>
         <div class="card-body">
           <p><strong>Ofício:</strong>
-            <a href="{% if solicitacao.oficio %} {{ solicitacao.oficio.url }} {% endif %}" target="_blank">
-              {{ solicitacao.oficio }}</a></p>
+            <a href="{% if solicitacao.oficio %} {{ solicitacao.oficio.url }} {% endif %}"
+               target="_blank"> {{ solicitacao.oficio }}</a></p>
         </div>
       </div>
     </div>
@@ -35,132 +33,15 @@
           <h4 class="card-title">Análise</h4>
         </div>
         <div class="card-body">
-          <p><strong>Situação:</strong> {{ solicitacao.get_status_display }} </p>
-          {% if solicitacao.laudo %}
-          <p><strong>Motivo: </strong> {{ solicitacao.laudo }} </p>
-          {% endif %}
-          {% if solicitacao.status == '0' %}
-          <table class="table table-borderless" style="width: 50%;">
-            <tbody>
-              <tr>
-                <td> <a id="btn_aprovar" type="submit" class="btn btn-success active" role="button"
-                    aria-pressed="true">Aprovar</a></td>
-                <td>
+          <p><strong>Situação:</strong> {{solicitacao.get_status_display}}  </p>
+          <p><strong>Motivo</strong> </p>
+          <a href="{% url 'gestao:acompanhar_troca_cadastrador' %}" class="btn btn-secondary active" role="button" aria-pressed="true">Voltar</a>
+         
 
-                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejeitarModal">
-                    Rejeitar
-                  </button>
-
-                </td>
-                <td>
-                  <a id="btn_aprovar" class="btn btn-secondary" role="button" aria-pressed="true"
-                    onclick="window.close();">Voltar</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          {% endif %}
-
-        </div>
-      </div>
-    </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="rejeitarModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Motivo da Rejeição</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <label for="comment">Informe o motivo da rejeição:</label>
-            <p><textarea id="id-motivo" class="form-control" rows="5"
-                id="motivo">{% if not solicitacao.laudo == null %} {{solicitacao.laudo}} {% endif %} </textarea></p>
-          </div>
-          <div class="modal-footer">
-            <button id="btn_salvar" type="button" class="btn btn-primary">Salvar</button>
-            <button id="btn_fechar" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-          </div>
         </div>
       </div>
     </div>
   </div>
-</form>
+
 {% endblock content %}
-{% block js%}
-<script type="text/javascript">
-  $(document).ready(function () {
 
-    csrf_token = '{{ csrf_token }}';
-
-    var salvarLaudo = () => {
-      
-      let id_solcitacao = {{ solicitacao.id }};
-      let laudo = $('#id-motivo').val();
-      let status = 1;
-
-      if (laudo.length > 0) {
-        status = 2;
-      }
-
-      $('#form-solicitacao').ajaxSubmit({
-        url: "{% url 'gestao:alterar_solicitacao_cadastrador' %}",
-        type: 'POST',
-        data: {
-          id: id_solcitacao,
-          status: status,
-          laudo: laudo,
-          csrfmiddlewaretoken: csrf_token
-        },
-        cache: false,
-        success: function (response) {
-          $.notify(
-            {
-              icon: "check_circle",
-              message: 'Operação realizada com sucesso.',
-            },
-            { type: "success" }
-          );
-        },
-        error: function (error) {
-          $.notify(
-            {
-              icon: "error",
-              message: 'Erro ao salvar dados.',
-            },
-            { type: "danger" }
-          );
-        },
-      });
-    };
-
-    $('#btn_aprovar').on('click', function (event) {
-
-      $('#id-motivo').val("");
-      salvarLaudo();
-
-    });
-
-    $('#btn_salvar').on('click', function (event) {
-
-      let motivo = $('#id-motivo').val().trim();
-
-      if (motivo == "" || motivo == null) {
-        $.notify(
-          {
-            icon: "error",
-            message: "Motivo para rejeição da solicitação deve ser preenchido.",
-          },
-          { type: "danger" }
-        );
-      } else {
-        $('#rejeitarModal').modal('hide');
-        salvarLaudo();
-      }
-
-    });
-  });
-</script>
-{% endblock js %}
