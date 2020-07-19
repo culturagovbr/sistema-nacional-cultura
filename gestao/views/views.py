@@ -1,6 +1,6 @@
 import json
-
 from django_datatables_view.base_datatable_view import BaseDatatableView
+
 from django.utils.html import escape
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
@@ -32,14 +32,7 @@ from dal import autocomplete
 
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
-from adesao.models import Usuario
-from adesao.models import Municipio
-from adesao.models import SistemaCultura
-from adesao.models import EnteFederado
-from adesao.models import Gestor
-from adesao.models import Funcionario
-from adesao.models import LISTA_ESTADOS_PROCESSO
-from adesao.models import TrocaCadastrador
+from adesao.models import Usuario,Municipio,SistemaCultura,EnteFederado,Gestor,Funcionario,LISTA_ESTADOS_PROCESSO,TrocaCadastrador, SolicitacaoDeAdesao
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
@@ -62,15 +55,15 @@ from django.contrib.auth.models import Group
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DiligenciaSimples, Contato
+from gestao.models import DiligenciaSimples, Contato
 
-from .forms import DiligenciaComponenteForm
-from .forms import DiligenciaGeralForm
-from .forms import AlterarDocumentosEnteFederadoForm
-from .forms import AlterarUsuarioForm
-from .forms import AlterarComponenteForm
-from .forms import AlterarDadosEnte
-from .forms import CriarContatoForm
+from gestao.forms import DiligenciaComponenteForm
+from gestao.forms import DiligenciaGeralForm
+from gestao.forms import AlterarDocumentosEnteFederadoForm
+from gestao.forms import AlterarUsuarioForm
+from gestao.forms import AlterarComponenteForm
+from gestao.forms import AlterarDadosEnte
+from gestao.forms import CriarContatoForm
 
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
@@ -78,8 +71,8 @@ from planotrabalho.forms import CriarConselhoForm
 from planotrabalho.forms import CriarOrgaoGestorForm, CriarOrgaoGestorFormGestao
 from planotrabalho.forms import CriarPlanoForm
 
-from .forms import CadastradorEnte
-from .forms import AditivarPrazoForm
+from gestao.forms import CadastradorEnte
+from gestao.forms import AditivarPrazoForm
 
 from adesao.views import AlterarSistemaCultura
 from adesao.views import AlterarFuncionario
@@ -607,6 +600,8 @@ class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
 
 class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
+
+
 
 
 def alterar_usuario(request):
@@ -1573,5 +1568,6 @@ class DataTableTrocaCadastrador(BaseDatatableView):
                 escape(item.get_status_display()),
             ])
         return json_data
+
 
 

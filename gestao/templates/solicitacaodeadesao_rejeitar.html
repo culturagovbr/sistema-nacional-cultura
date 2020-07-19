@@ -1,0 +1,33 @@
+<div class="modal fade" id="alterarAdesaoEnte" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Motivo da rejeição</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form name="form" id="detalhe_municipio_form"
+            action="{% url 'gestao:solicitacao_de_adesao:rejeitar' object.pk%}" method="post">
+        <div class="modal-body">
+          <div class="card-body">
+            {% csrf_token %}
+            <div class="list-group-item col-md-12">
+
+              <div class="form-group">
+                <textarea id="justificativa_situacao" name="justificativa"rows="8"
+                cols="40"></textarea>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-xs" title="Rejeitar">Rejeitar</button>
+          <a href="{% url 'gestao:solicitacao_de_adesao:detalhar-solicitacao' object.pk %}" class="btn btn-default btn-xs"
+             value="Cancelar">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,12 +1,14 @@
 from django.conf.urls import url
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.contrib.admin.views.decorators import staff_member_required
 
-from . import views
+from gestao.views import views, solicitacao_de_adesao
 
 app_name = 'gestao'
 
 urlpatterns = [
+    url(r'^solicitacao-de-adesao/', include('gestao.urls.solicitacao_de_adesao', namespace="solicitacao_de_adesao")),
+    
     # Acompanhar andamento dos processos de adesão
     path('', staff_member_required(
         views.dashboard,
@@ -36,7 +38,7 @@ urlpatterns = [
     path('acompanhar-troca-cadastrador', staff_member_required(
         views.AcompanharTrocaCadastrador.as_view(),
         login_url='adesao:login'), name='acompanhar_troca_cadastrador'),
-
+        
     # Rota para AlterarCadastrador
     path('ente/<int:cod_ibge>/alterarcadastrador',
          staff_member_required(views.AlterarCadastradorEnte.as_view()),
@@ -173,3 +175,4 @@ urlpatterns = [
         name='ajax_troca_cadastrador'),
 
 ]
+

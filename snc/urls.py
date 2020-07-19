@@ -21,7 +21,8 @@ urlpatterns = [
     url(r'^planotrabalho/',
         include('planotrabalho.urls', namespace="planotrabalho")),
 
-    url(r'^gestao/', include('gestao.urls', namespace="gestao")),
+    url(r'^gestao/', include('gestao.urls.urls', namespace="gestao")),
+    
     url(r'^admin/', admin.site.urls),
 
     url(r'^password_reset/$',
