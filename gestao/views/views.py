@@ -1570,4 +1570,15 @@ class DataTableTrocaCadastrador(BaseDatatableView):
         return json_data
 
 
+def alterar_solicitacao_cadastrador(request):
+    if request.method == "POST":
+        id = request.POST.get('id', None)
+        solicitacao = TrocaCadastrador.objects.get(id=id)
+
+        solicitacao.laudo = request.POST.get('laudo', None)
+        solicitacao.status = request.POST.get('status', None)
+        solicitacao.save()
+
+        print(solicitacao.status)
+    return JsonResponse(data={}, status=200)
 
