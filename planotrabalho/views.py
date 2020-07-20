@@ -220,6 +220,7 @@ class AlterarOrgaoGestor(UpdateView):
 
         if self.sistema.orgao_gestor.cnpj:
             kwargs['initial']['possui_cnpj'] = True
+            kwargs['initial']['comprovante_cnpj'] = self.object.comprovante_cnpj.arquivo
             kwargs['initial']['cnpj'] = self.sistema.orgao_gestor.cnpj
             kwargs['initial']['banco'] = self.sistema.orgao_gestor.banco
             kwargs['initial']['agencia'] = self.sistema.orgao_gestor.agencia

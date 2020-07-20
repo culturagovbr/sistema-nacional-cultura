@@ -51,6 +51,9 @@
         {% else %}
           <strong>Situação da Lei: </strong>{{ sistema.orgao_gestor.get_situacao_display|default:"Não possui" }}</br>
           <br/>
+          <strong>Situação do Comprovante do CNPJ: </strong>
+            {{ sistema.orgao_gestor.comprovante_cnpj.get_situacao_display|default:"Não possui" }}</br>
+          </br>
           <a class="btn btn-warning" style="color:#FFF"
              href="{% url 'planotrabalho:alterar_orgao' pk=sistema.orgao_gestor.id %}">Editar Componente</a>
           <br/>
