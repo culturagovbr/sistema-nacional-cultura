@@ -343,6 +343,58 @@
                       </div>
                     </div>
                   {% endif %}
+                  {% if ente.orgao_gestor.comprovante_cnpj.arquivo %}
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                      <div class="card card-stats">
+                        <div class="card-header card-header-danger card-header-icon">
+                          <div class="card-icon">
+                            <i class="material-icons">list_alt</i>
+                          </div>
+                          <p class="card-category">Orgão Gestor - Comprovante CNPJ</p>
+                          <p class="card-category">Data de inserção: {{ ente.orgao_gestor.comprovante_cnpj.data_envio}}</p>
+                          <h3 class="card-title">
+                              {% if ente.orgao_gestor.comprovante_cnpj.situacao == 1 %}
+                                  {% if ente.orgao_gestor.comprovante_cnpj.diligencia %}
+                                    <a class="btn btn-info btn-sm"
+                                      href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='orgao_gestor' arquivo='comprovante_cnpj' pk=ente.orgao_gestor.comprovante_cnpj.diligencia.id %}">
+                                      Avaliar
+                                    </a>
+                                  {% else %}
+                                    <a class="btn btn-info btn-sm"
+                                      href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' arquivo='comprovante_cnpj' %}">Avaliar</a>
+                                  {% endif %}
+
+                              {% elif ente.orgao_gestor.comprovante_cnpj.situacao > 1 %}
+
+                                  {% if ente.orgao_gestor.comprovante_cnpj.diligencia %}
+                                    <a class="btn btn-info btn-sm"
+                                      href="{% url 'gestao:alterar_diligencia_componente' ente=ente.id componente='orgao_gestor' arquivo='comprovante_cnpj' pk=ente.orgao_gestor.comprovante_cnpj.diligencia.id %}">
+                                  {% else %}
+                                    <a class="btn btn-info btn-sm"
+                                      href="{% url 'gestao:diligencia_componente' pk=ente.id componente='orgao_gestor' arquivo='comprovante_cnpj' %}">
+                                  {% endif %}
+                              {{ ente.orgao_gestor.comprovante_cnpj.get_situacao_display }}
+                              </a>
+                              {% else %}
+                                  {{ ente.orgao_gestor.comprovante_cnpj.get_situacao_display }}
+                              {% endif %}
+                          </h3>
+                        </div>
+                        <div class="card-footer">
+                          <div class="stats">
+                            <i class="material-icons">edit</i>
+                            <a href="{% url 'gestao:alterar_orgao' ente.orgao_gestor.id %}"
+                              class="warning-link">Editar</a>
+                          </div>
+                          <div class="stats">
+                            <i class="material-icons">save_alt</i>
+                            <a href="{{ ente.fundo_cultura.comprovante_cnpj.arquivo.url }}" class="warning-link"
+                              target="_blank">Download</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
                   {% if ente.fundo_cultura.arquivo %}
                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
                       <div class="card card-stats">
