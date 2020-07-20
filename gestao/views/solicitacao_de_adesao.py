@@ -202,7 +202,7 @@ def processar_solicitacao(request, pk, status_solicitacao, status_sistema):
     return solicitacao
     
 def aprovar_solicitacao(request, pk):
-    processar_solicitacao(request, pk, '1', '7')
+    processar_solicitacao(request, pk, '1', '6')
 
     return HttpResponseRedirect(reverse('gestao:solicitacao_de_adesao:list'))
 
