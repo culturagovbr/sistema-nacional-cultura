@@ -226,6 +226,11 @@
                                     <span>Acordo de Cooperação</span>
                                   </a>
                                 </li>
+                                <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
+                                  <a href="{% url 'adesao:solicitar_adesao' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
+                                    <span>Solicitar Adesão ao Sistema Nacional de Cultura</span>
+                                  </a>
+                                </li>
                                 {% else %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                                   <a href="{% url 'adesao:erro_impressao'%}" title=""
@@ -233,6 +238,7 @@
                                     <span>Acordo de Cooperação</span>
                                   </a>
                                 </li>
+                                
                                 {% endif %}
                               {% endif %}
                             {% endif %}
