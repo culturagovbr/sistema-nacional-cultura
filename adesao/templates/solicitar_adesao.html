@@ -38,13 +38,7 @@
   <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
     <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">Adesão ao Sistema Nacional de Cultura
     </legend>
-    <div class="form-group">
-    <legend style="font-size: 12px; font-weight: bold;">Ente Federado (Estado ou Município) <span
-        style="color:red;font-size:10px">*</span></legend>
-
-      <div class="col-sm-2">
-        {% render_field form.ente_federado class="form-control" %}
-      </div>
+    <input type="hidden" name="ente_federado" value="{{request.session.sistema_ente.cod_ibge}}" />
   <div class="row">
     {{form.media}}  
       <div class="form-group">

@@ -22,7 +22,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+from django.views.generic.edit import ModelFormMixin
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 from adesao.models import (
@@ -746,5 +746,16 @@ def sucesso_solicitar_adesao(request):
 class SolicitarAdesaoView(CreateView):
     template_name = "solicitar_adesao.html"
     model = SolicitacaoDeAdesao
-    fields = ['ente_federado', 'oficio']
+    fields = ['oficio']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        cod_ibge = self.request.POST.get('ente_federado')
+        print(cod_ibge)
+        instance = EnteFederado.objects.get(cod_ibge=cod_ibge)
+        print(instance)
+        self.object.ente_federado = instance
+        self.object.save()
+        return super(ModelFormMixin, self).form_valid(form)
+
