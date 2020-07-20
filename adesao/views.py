@@ -22,7 +22,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+from django.views.generic.edit import ModelFormMixin
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 from adesao.models import (
@@ -37,7 +37,8 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    TrocaCadastrador
+    TrocaCadastrador,
+    SolicitacaoDeAdesao
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
@@ -730,42 +731,31 @@ def search_cnpj(request):
 def sucesso_troca_cadastrador(request):
     return render(request, "mensagem_sucesso_troca_cadastrador.html")
 
+
 class TrocaCadastrador(CreateView):
-    form_class = TrocaCadastradorForm
-    model = TrocaCadastrador
     template_name = "troca_cadastrador.html"
+    model = TrocaCadastrador
+    fields = ['ente_federado', 'oficio']
+    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+
+@login_required
+def sucesso_solicitar_adesao(request):
+    return render(request, "mensagem_sucesso_solicitar_adesao.html")
+
+
+class SolicitarAdesaoView(CreateView):
+    template_name = "solicitar_adesao.html"
+    model = SolicitacaoDeAdesao
+    fields = ['oficio']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        form_sistema = context['form_sistema']
+        self.object = form.save(commit=False)
+        cod_ibge = self.request.POST.get('ente_federado')
+        print(cod_ibge)
+        instance = EnteFederado.objects.get(cod_ibge=cod_ibge)
+        print(instance)
+        self.object.ente_federado = instance
+        self.object.save()
+        return super(ModelFormMixin, self).form_valid(form)
 
-        if form_sistema.is_valid():
-            sistema = form_sistema.save()
-
-            if not self.request.session.get('sistemas', False):
-                self.request.session['sistemas'] = list()
-                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
-                atualiza_session(sistema_atualizado, self.request)
-            else:
-                if self.request.session.get('sistema_cultura_selecionado', False):
-                    self.request.session['sistema_cultura_selecionado'].clear()
-                    self.request.session.modified = True
-
-            self.request.session['sistemas'].append(
-                {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
-
-            return super(TrocaCadastrador, self).form_valid(form)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
-
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def get_context_data(self, **kwargs):
-        context = super(TrocaCadastrador, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['form_sistema'] = TrocaCadastradorForm(self.request.POST, self.request.FILES)
-        else:
-            context['form_sistema'] = TrocaCadastradorForm()
-        return context
