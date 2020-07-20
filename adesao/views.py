@@ -730,9 +730,42 @@ def search_cnpj(request):
 def sucesso_troca_cadastrador(request):
     return render(request, "mensagem_sucesso_troca_cadastrador.html")
 
-
 class TrocaCadastrador(CreateView):
-    template_name = "troca_cadastrador.html"
+    form_class = TrocaCadastradorForm
     model = TrocaCadastrador
-    fields = ['ente_federado', 'oficio']
+    template_name = "troca_cadastrador.html"
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        form_sistema = context['form_sistema']
+
+        if form_sistema.is_valid():
+            sistema = form_sistema.save()
+
+            if not self.request.session.get('sistemas', False):
+                self.request.session['sistemas'] = list()
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
+            else:
+                if self.request.session.get('sistema_cultura_selecionado', False):
+                    self.request.session['sistema_cultura_selecionado'].clear()
+                    self.request.session.modified = True
+
+            self.request.session['sistemas'].append(
+                {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
+            return super(TrocaCadastrador, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(TrocaCadastrador, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['form_sistema'] = TrocaCadastradorForm(self.request.POST, self.request.FILES)
+        else:
+            context['form_sistema'] = TrocaCadastradorForm()
+        return context
