@@ -1536,17 +1536,29 @@ class DataTableTrocaCadastrador(BaseDatatableView):
 
 class DataTableTrocaCadastrador(BaseDatatableView):
     def get_initial_queryset(self):
+        '''
+        sistema = SistemaCultura.sistema.values_list('id', flat=True)
+
+        return SistemaCultura.objects.filter(id__in=sistema).filter(
+            estado_processo='6',
+            data_publicacao_acordo__isnull=False)
+        '''
         return TrocaCadastrador.objects.all()
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
 
         if search:
-            return qs.filter(Q(ente_federado__nome__icontains=search))
+            where = \
+                Q(ente_federado__nome__unaccent__icontains=search)
+            if search.isdigit():
+                where |= Q(prazo=search)
+            return qs.filter(where)
         return qs
 
     def prepare_results(self, qs):
         json_data = []
+        print(qs[1].get_status_display())
         for item in qs:
             json_data.append([
                 item.id,
@@ -1557,15 +1569,5 @@ class DataTableTrocaCadastrador(BaseDatatableView):
             ])
         return json_data
 
-def alterar_solicitacao_cadastrador(request):
-    
-    if request.method == "POST":
-        id = request.POST.get('id', None)
-        solicitacao = TrocaCadastrador.objects.get(id=id)
 
-        solicitacao.laudo = request.POST.get('laudo', None)
-        solicitacao.status = request.POST.get('status', None)
-        solicitacao.save()
-        
-    return JsonResponse(data={}, status=200)
 
