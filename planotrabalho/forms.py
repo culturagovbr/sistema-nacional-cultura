@@ -137,6 +137,7 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
                 orgao_gestor.comprovante_cnpj.tipo = 1
                 orgao_gestor.comprovante_cnpj.situacao = 1
                 orgao_gestor.comprovante_cnpj.save()
+                orgao_gestor.save()
                 orgao_gestor.comprovante_cnpj.comprovantes_orgao_gestor.add(orgao_gestor)
                 orgao_gestor.comprovante_cnpj.arquivo = self.cleaned_data['comprovante_cnpj']
                 orgao_gestor.comprovante_cnpj.save()
