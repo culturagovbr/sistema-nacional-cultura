@@ -757,7 +757,7 @@ class SolicitarAdesaoView(CreateView):
         solicitacoes = SolicitacaoDeAdesao.objects.filter(ente_federado__cod_ibge=cod_ibge)
         print(len(solicitacoes))
         for sol in solicitacoes:
-            if sol.status == '1':
+            if sol.status == '0':
                 context["enviou_documento"] = True
         return context
 
