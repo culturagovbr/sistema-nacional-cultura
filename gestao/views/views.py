@@ -1507,11 +1507,7 @@ class DataTableTrocaCadastrador(BaseDatatableView):
         search = self.request.POST.get('search[value]', None)
 
         if search:
-            where = \
-                Q(ente_federado__nome__unaccent__icontains=search)
-            if search.isdigit():
-                where |= Q(prazo=search)
-            return qs.filter(where)
+            return qs.filter(Q(ente_federado__nome__icontains=search))
         return qs
 
     def prepare_results(self, qs):
