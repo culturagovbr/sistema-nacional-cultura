@@ -218,7 +218,9 @@ class AlterarOrgaoGestor(UpdateView):
         if self.sistema.orgao_gestor and self.sistema.orgao_gestor.perfil:
             kwargs['initial']['perfil'] = self.sistema.orgao_gestor.perfil
 
-        if self.sistema.orgao_gestor.cnpj:
+        if self.object.comprovante_cnpj is None:
+            kwargs['initial']['possui_cnpj'] = False
+        else:
             kwargs['initial']['possui_cnpj'] = True
             kwargs['initial']['comprovante_cnpj'] = self.object.comprovante_cnpj.arquivo
             kwargs['initial']['cnpj'] = self.sistema.orgao_gestor.cnpj
@@ -226,9 +228,6 @@ class AlterarOrgaoGestor(UpdateView):
             kwargs['initial']['agencia'] = self.sistema.orgao_gestor.agencia
             kwargs['initial']['conta'] = self.sistema.orgao_gestor.conta
             kwargs['initial']['termo_responsabilidade'] = True
-
-        else:
-            kwargs['initial']['possui_cnpj'] = False
 
         return kwargs
 
@@ -258,7 +257,9 @@ class AlterarFundoCultura(UpdateView):
         else:
             kwargs['initial']['mesma_lei'] = False
 
-        if self.object.comprovante_cnpj:
+        if self.object.comprovante_cnpj is None:
+            kwargs['initial']['possui_cnpj'] = False
+        else:
             kwargs['initial']['possui_cnpj'] = True
             kwargs['initial']['comprovante'] = self.object.comprovante_cnpj.arquivo
             kwargs['initial']['banco'] = self.object.banco
@@ -266,8 +267,7 @@ class AlterarFundoCultura(UpdateView):
             kwargs['initial']['conta'] = self.object.conta
             kwargs['initial']['termo_responsabilidade'] = True
 
-        else:
-            kwargs['initial']['possui_cnpj'] = False
+        
 
         return kwargs
 
