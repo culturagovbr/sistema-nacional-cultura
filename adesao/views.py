@@ -782,6 +782,18 @@ class SolicitarAdesaoView(CreateView):
     model = SolicitacaoDeAdesao
     fields = ['oficio']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+    
+    def get_context_data(self, **kwargs):
+        context = super(SolicitarAdesaoView, self).get_context_data(**kwargs)
+        context["enviou_documento"] = False
+        print(self.request.session.get('sistema_ente').get('cod_ibge'))
+        cod_ibge = self.request.session.get('sistema_ente').get('cod_ibge')
+        solicitacoes = SolicitacaoDeAdesao.objects.filter(ente_federado__cod_ibge=cod_ibge)
+        print(len(solicitacoes))
+        for sol in solicitacoes:
+            if sol.status == '1':
+                context["enviou_documento"] = True
+        return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

@@ -7,6 +7,8 @@
       <span class="anchorjs-icon"></span>
     </a>
   </h2>
+  {% if enviou_documento == False %}
+
   <p style="text-align: justify;">
     <strong> {{ request.session.sistema_ente.nome }} </strong>,
     sua Adesão ao Sistema Nacional de Cultura – SNC está quase concluída.
@@ -63,4 +65,14 @@
     </div>
   </div>
 </form>
+
+{% endif %}
+
+{% if enviou_documento == True %}
+<p style="text-align: justify;">
+  <strong> {{ request.session.sistema_ente.nome }} </strong>,
+  sua Adesão ao Sistema Nacional de Cultura – SNC está sob análise.
+</p>
+{% endif %}
+
 {% endblock content %}

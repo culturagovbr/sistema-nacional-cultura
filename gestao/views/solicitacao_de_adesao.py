@@ -208,7 +208,7 @@ def aprovar_solicitacao(request, pk):
 
 
 def rejeitar_solicitacao(request, pk):
-    solicitacao = processar_solicitacao(request, pk, '2', '5')
+    solicitacao = processar_solicitacao(request, pk, '2', '1')
     solicitacao.laudo = request.POST['justificativa']
     solicitacao.save()
     
