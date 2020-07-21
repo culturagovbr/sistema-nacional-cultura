@@ -53,7 +53,7 @@
     {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
       {% render_field form.possui_cnpj class="radio" value="true" %}
     {% else %}
-      {% render_field form.possui_cnpj disabled="disabled" class="radio" %}
+      {% render_field form.possui_cnpj class="radio" %}
     {% endif %}
   </div>
 
@@ -65,7 +65,7 @@
       {% if form.sistema.fundo_cultura.comprovante_cnpj.situacao != 2 %}
         {% render_field form.cnpj class="form-control cnpj half-width" %}
       {% else %}
-        {% render_field form.cnpj disabled="disabled" class="form-control cnpj half-width" %}
+        {% render_field form.cnpj class="form-control cnpj half-width" %}
       {% endif %}
     </div>
 
