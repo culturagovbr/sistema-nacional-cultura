@@ -380,7 +380,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
-
+        print(context)
         return context
 
     def get_descricao_componente(self, id):
@@ -1568,11 +1568,23 @@ class DataTableTrocaCadastrador(BaseDatatableView):
 
 def alterar_solicitacao_cadastrador(request):
     if request.method == "POST":
+
         id = request.POST.get('id', None)
         solicitacao = TrocaCadastrador.objects.get(id=id)
+        sistema = SistemaCultura.objects.filter(ente_federado_id=solicitacao.ente_federado_id).first()
 
         solicitacao.laudo = request.POST.get('laudo', None)
         solicitacao.status = request.POST.get('status', None)
+
+        solicitacaosistema = SistemaCultura.objects.create(oficio_cadastrador=sistema.oficio_cadastrador, oficio_prorrogacao_prazo=sistema.oficio_prorrogacao_prazo,
+                                      cadastrador= solicitacao.alterado_por, ente_federado=solicitacao.ente_federado, legislacao=sistema.legislacao,
+                                      orgao_gestor=sistema.orgao_gestor, fundo_cultura=sistema.fundo_cultura, conselho=sistema.conselho, plano=sistema.plano,
+                                      gestor_cultura=sistema.gestor_cultura, gestor=sistema.gestor, sede=sistema.sede, estado_processo=sistema.estado_processo,
+                                      data_publicacao_acordo=sistema.data_publicacao_acordo, data_publicacao_retificacao=sistema.data_publicacao_retificacao,
+                                      link_publicacao_acordo=sistema.link_publicacao_acordo, link_publicacao_retificacao=sistema.link_publicacao_retificacao,
+                                      processo_sei=sistema.processo_sei, numero_processo=sistema.numero_processo, localizacao=sistema.localizacao,justificativa=sistema.justificativa,
+                                      diligencia=sistema.diligencia, prazo=sistema.prazo, conferencia_nacional=sistema.conferencia_nacional, alterado_por=request.user)
+        solicitacaosistema.save()
         solicitacao.save()
 
         print(solicitacao.status)
