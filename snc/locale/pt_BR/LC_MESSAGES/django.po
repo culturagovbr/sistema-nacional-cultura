@@ -206,7 +206,7 @@ msgid "Data final para sanção da Lei do Plano de Cultura:"
 msgstr "Data final para sanção da Lei do Plano de Cultura:"
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:4
-msgid "Cadastro Realizado com Sucesso!"
+msgid "Cadastro realizado com sucesso!"
 msgstr ""
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:5
