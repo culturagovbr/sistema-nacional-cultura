@@ -56,7 +56,7 @@
                     {% endblocktrans %}
                    </a>
                     {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
-                    seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
+                    seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                     fundação de cultura)
                     {% endblocktrans %}</p>
                 {% endif %}
@@ -108,7 +108,7 @@
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '4' %}
           <p>
-            Prezad@ {{ request.user.usuario.nome_usuario }},
+            Prezado (a) {{ request.user.usuario.nome_usuario }},
           </p>
           <p>
             O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante
@@ -123,7 +123,7 @@
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '5' %}
           <p>
-            Prezad@ {{ request.user.usuario.nome_usuario }}
+            Prezado (a) {{ request.user.usuario.nome_usuario }}
           </p>
           <p>
             Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no

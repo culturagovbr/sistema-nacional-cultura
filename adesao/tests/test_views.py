@@ -59,7 +59,7 @@ def test_envio_email_novo_usuario(client):
 
     usuario = Usuario.objects.get(user__username='05447081130')
 
-    texto = f"""Prezad@ Nome Teste,
+    texto = f"""Prezado (a) Nome Teste,
 
 Recebemos o seu cadastro no Sistema Nacional de Cultura.
 Por favor confirme seu e-mail clicando no endereço abaixo:
