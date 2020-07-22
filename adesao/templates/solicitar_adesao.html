@@ -13,7 +13,7 @@
     <strong> {{ request.session.sistema_ente.nome }} </strong>,
     sua adesão ao Sistema Nacional de Cultura – SNC está quase concluída.
     Para efetivar a adesão, é necessário que o Acordo de Cooperação Federativa
-    (disponível no “menu principal” na coluna à esquerda) seja enviado para a equipe do SNC.
+    (disponível no menu principal da coluna esquerda)  seja enviado para a equipe do SNC.
     <br/>
     <a href="{% url 'adesao:gera_pdf' pk=request.session.sistema_cultura_selecionado.id template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder" target="_blank">
         <span>Gerar Acordo de Cooperação Federativa</span>

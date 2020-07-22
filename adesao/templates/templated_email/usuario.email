@@ -1,5 +1,5 @@
 {% block subject %}Secretaria Especial da Cultura / Ministério do Turismo - SNC - CREDENCIAIS DE ACESSO{% endblock %}
-{% block plain %}Prezad@ {{object.usuario.nome_usuario}},
+{% block plain %}Prezado (a) {{object.usuario.nome_usuario}},
 
 Recebemos o seu cadastro no Sistema Nacional de Cultura.
 Por favor confirme seu e-mail clicando no endereço abaixo:
