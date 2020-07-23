@@ -1,0 +1,10 @@
+{% block subject %}SNC - Solicitação de Adesão ao Sistema Nacional de Cultura{% endblock %}
+{% block plain %}Prezado(a) {{cadastrador}},
+
+Sua solicitação de Adesão do Ente Federado {{ente_federado}}foi rejeitada, pelo motivo:
+{{motivo}}
+
+Atenciosamente,
+
+Equipe SNC
+Secretaria Especial da Cultura / Ministério do Turismo{% endblock %}
