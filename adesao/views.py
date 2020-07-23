@@ -774,22 +774,20 @@ class TrocaCadastrador(CreateView):
 
 @login_required
 def sucesso_solicitar_adesao(request):
-    return render(request, "mensagem_sucesso_solicitar_adesao.html")
+    return render(request, "mensagem_sucesso_solicita_adesao.html")
 
 
 class SolicitarAdesaoView(CreateView):
     template_name = "solicitar_adesao.html"
     model = SolicitacaoDeAdesao
     fields = ['oficio']
-    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+    success_url = reverse_lazy("adesao:sucesso_solicitar_adesao")
     
     def get_context_data(self, **kwargs):
         context = super(SolicitarAdesaoView, self).get_context_data(**kwargs)
         context["enviou_documento"] = False
-        print(self.request.session.get('sistema_ente').get('cod_ibge'))
         cod_ibge = self.request.session.get('sistema_ente').get('cod_ibge')
         solicitacoes = SolicitacaoDeAdesao.objects.filter(ente_federado__cod_ibge=cod_ibge)
-        print(len(solicitacoes))
         for sol in solicitacoes:
             if sol.status == '0':
                 context["enviou_documento"] = True
@@ -798,9 +796,7 @@ class SolicitarAdesaoView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         cod_ibge = self.request.POST.get('ente_federado')
-        print(cod_ibge)
         instance = EnteFederado.objects.get(cod_ibge=cod_ibge)
-        print(instance)
         self.object.ente_federado = instance
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
