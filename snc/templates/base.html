@@ -223,19 +223,19 @@
                                 {% if request.session.sistema_gestor_cultura %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                                   <a href="{% url 'adesao:gera_pdf' pk=request.session.sistema_cultura_selecionado.id template='minuta_acordo' nome_arquivo='minuta_acordo.pdf' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                    <span>Acordo de Cooperação</span>
+                                    <span>Gerar Acordo de Cooperação Federativa</span>
                                   </a>
                                 </li>
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                                   <a href="{% url 'adesao:solicitar_adesao' %}" title="" class="state-published navTreeFolderish contenttype-folder">
-                                    <span>Solicitar Adesão ao Sistema Nacional de Cultura</span>
+                                    <span>Enviar o Acordo de Cooperação Federativa</span>
                                   </a>
                                 </li>
                                 {% else %}
                                 <li class="navTreeItem visualNoMarker navTreeFolderish section-assunto-d">
                                   <a href="{% url 'adesao:erro_impressao'%}" title=""
                                     class="state-published navTreeFolderish contenttype-folder">
-                                    <span>Acordo de Cooperação</span>
+                                    <span>Gerar Acordo de Cooperação Federativa</span>
                                   </a>
                                 </li>
                                 
