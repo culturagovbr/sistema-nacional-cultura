@@ -37,12 +37,12 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    TrocaCadastrador,
+    SolicitacaoDeTrocaDeCadastrador,
     SolicitacaoDeAdesao
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm, TrocaCadastradorForm
+from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
@@ -729,11 +729,11 @@ def search_cnpj(request):
 @login_required
 def sucesso_troca_cadastrador(request):
     return render(request, "mensagem_sucesso_troca_cadastrador.html")
-
+'''
 
 class TrocaCadastrador(CreateView):
     form_class = TrocaCadastradorForm
-    model = TrocaCadastrador
+    model = SolicitacaoDeTrocaDeCadastrador
     template_name = "troca_cadastrador.html"
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
 
@@ -770,7 +770,7 @@ class TrocaCadastrador(CreateView):
         else:
             context['form_sistema'] = TrocaCadastradorForm()
         return context
-
+'''
 
 @login_required
 def sucesso_solicitar_adesao(request):
@@ -800,3 +800,14 @@ class SolicitarAdesaoView(CreateView):
         self.object.ente_federado = instance
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
+
+class TrocarCadastradorView(CreateView):
+    template_name = "troca_cadastrador.html"
+    model = SolicitacaoDeTrocaDeCadastrador
+    fields = ['oficio','ente_federado']
+    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+
+    def get_context_data(self, **kwargs):
+        context = super(TrocarCadastradorView, self).get_context_data(**kwargs)
+        context["enviou_documento"] = False
+        return context
