@@ -121,6 +121,10 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
     termo_responsabilidade = forms.BooleanField(required=False)
 
+    dados_bancarios = forms.CharField(required=False, widget=forms.HiddenInput(), initial = "0")
+
+    checa_dados_bancarios = "0"
+
     def save(self, commit=True, *args, **kwargs):
         orgao_gestor = super(CriarOrgaoGestorForm, self).save(commit=False)
         orgao_gestor.tipo = 1
@@ -153,13 +157,24 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
 
         return orgao_gestor
 
+    def clean_banco(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        banco = cleaned_data.get('banco')
+        if banco == str(0):
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(1)
+        return banco
+
     def clean_agencia(self):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
-        if not num_agencia.isdigit() and not str(num_agencia) == '': 
+        if not num_agencia.isdigit() and not str(num_agencia) == '':
             self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        elif str(num_agencia) == '':
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(2)
         return num_agencia
 
     def clean_conta(self):
@@ -168,9 +183,29 @@ class CriarOrgaoGestorForm(CriarComponenteForm):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
         num_conta = num_conta.replace('-','')
-        if not num_conta.isdigit() and not str(num_conta) == '': 
-            self.add_error('conta', "Digite apenas digitos no número da conta.")
+        if not num_conta.isdigit() and not str(num_conta) == '':
+            self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
+        elif str(num_conta) == '':
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(3)
         return num_conta
+
+    def clean_dados_bancarios(self):
+        cleaned_data = self.clean()
+        dados_bancarios = cleaned_data.get('dados_bancarios')
+        ck_dt_bancarios = self.checa_dados_bancarios
+        if ck_dt_bancarios == "01":
+            self.add_error('conta', "Preencha o campo  banco")
+        elif ck_dt_bancarios == "02":
+            self.add_error('conta', "Preencha o número da agencia.")
+        elif ck_dt_bancarios == "03":
+            self.add_error('conta', "Preencha número da conta.")
+        elif ck_dt_bancarios == "012":
+            self.add_error('conta', "Preencha o campo  banco e número da agẽncia.")
+        elif ck_dt_bancarios == "013":
+            self.add_error('conta', "Preencha o campo  banco e número da conta.")
+        elif ck_dt_bancarios == "023":
+            self.add_error('conta', "Preencha número da agẽncia e número da conta.")
+        return dados_bancarios
 
     def clean_termo_responsabilidade(self):
         if self.data.get('possui_cnpj', None) == 'False':
@@ -427,6 +462,10 @@ class CriarFundoForm(ModelForm):
 
     termo_responsabilidade = forms.BooleanField(required=False)
 
+    dados_bancarios = forms.CharField(required=False, widget=forms.HiddenInput(), initial = "0")
+
+    checa_dados_bancarios = "0"
+
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
         logged_user = kwargs.pop('logged_user')
@@ -491,13 +530,24 @@ class CriarFundoForm(ModelForm):
 
         return self.cleaned_data['comprovante']
 
+    def clean_banco(self):
+        if self.data.get('possui_cnpj', None) == 'False':
+            return ''
+        cleaned_data = self.clean()
+        banco = cleaned_data.get('banco')
+        if banco == str(0):
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(1)
+        return banco
+
     def clean_agencia(self):
         if self.data.get('possui_cnpj', None) == 'False':
             return ''
         cleaned_data = self.clean()
         num_agencia = cleaned_data.get('agencia')
-        if not num_agencia.isdigit():
+        if not num_agencia.isdigit() and not str(num_agencia) == '':
             self.add_error('agencia', "Digite apenas digitos no número da agência.")
+        elif str(num_agencia) == '':
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(2)
         return num_agencia
 
     def clean_conta(self):
@@ -506,9 +556,29 @@ class CriarFundoForm(ModelForm):
         cleaned_data = self.clean()
         num_conta = cleaned_data.get('conta')
         num_conta = num_conta.replace('-','')
-        if not num_conta.isdigit():
+        if not num_conta.isdigit() and not str(num_conta) == '':
             self.add_error('conta', "Digite apenas digitos no número da conta. Caso haja x, troque por 0")
+        elif str(num_conta) == '':
+            self.checa_dados_bancarios = self.checa_dados_bancarios + str(3)
         return num_conta
+
+    def clean_dados_bancarios(self):
+        cleaned_data = self.clean()
+        dados_bancarios = cleaned_data.get('dados_bancarios')
+        ck_dt_bancarios = self.checa_dados_bancarios
+        if ck_dt_bancarios == "01":
+            self.add_error('conta', "Preencha o campo  banco")
+        elif ck_dt_bancarios == "02":
+            self.add_error('conta', "Preencha o número da agencia.")
+        elif ck_dt_bancarios == "03":
+            self.add_error('conta', "Preencha número da conta.")
+        elif ck_dt_bancarios == "012":
+            self.add_error('conta', "Preencha o campo  banco e número da agẽncia.")
+        elif ck_dt_bancarios == "013":
+            self.add_error('conta', "Preencha o campo  banco e número da conta.")
+        elif ck_dt_bancarios == "023":
+            self.add_error('conta', "Preencha número da agẽncia e número da conta.")
+        return dados_bancarios
 
     def clean_termo_responsabilidade(self):
         if self.data.get('possui_cnpj', None) == 'False':
