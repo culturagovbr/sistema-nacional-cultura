@@ -196,11 +196,11 @@ def processar_solicitacao(request, pk, status_solicitacao, status_sistema, email
     solicitacao.data_analise = timezone.now()
     solicitacao.status = status_solicitacao
     solicitacao.save()
-    
+    '''
     sc = SistemaCultura.sistema.get(ente_federado__cod_ibge=solicitacao.ente_federado.cod_ibge)
     sc.estado_processo = status_sistema
     sc.save()
-    
+    '''
     send_templated_mail(
         template_name=email_template,
         from_email='naoresponda@turismo.gov.br',
