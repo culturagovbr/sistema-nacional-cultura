@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Importando os models
 from .models import Municipio, Responsavel, Secretario, Usuario, EnteFederado, Funcionario, SolicitacaoDeAdesao, \
-    SistemaCultura, TrocaCadastrador
+    SistemaCultura, SolicitacaoDeTrocaDeCadastrador
 
 
 # Mostrando no datagrid Municipio
@@ -49,4 +49,4 @@ admin.site.register(EnteFederado, EnteFederadoAdmin)
 admin.site.register(Funcionario, FuncionarioAdmin)
 admin.site.register(SolicitacaoDeAdesao)
 admin.site.register(SistemaCultura, SistemaAdimin)
-admin.site.register(TrocaCadastrador, TrocaAdmin)
+admin.site.register(SolicitacaoDeTrocaDeCadastrador, TrocaAdmin)

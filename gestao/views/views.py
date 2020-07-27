@@ -32,7 +32,7 @@ from dal import autocomplete
 
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
-from adesao.models import Usuario,Municipio,SistemaCultura,EnteFederado,Gestor,Funcionario,LISTA_ESTADOS_PROCESSO,TrocaCadastrador, SolicitacaoDeAdesao
+from adesao.models import Usuario,Municipio,SistemaCultura,EnteFederado,Gestor,Funcionario,LISTA_ESTADOS_PROCESSO,SolicitacaoDeTrocaDeCadastrador, SolicitacaoDeAdesao
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
@@ -1469,11 +1469,11 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data
-
+'''
 class DetalharSolicitacaoCadastrador(DetailView):
     template_name = "detalhe_solicitacao_cadastrador.html"
     context_object_name = "solicitacao"
-    queryset = TrocaCadastrador.objects.all()
+    queryset = SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def get_context_data(self, **kwargs):
 
@@ -1487,21 +1487,14 @@ class AnalisarSolicitacaoCadastrador(AlterarSistemaCultura):
     template_name = "alterar_solicitacao_cadastrador.html"
 
     def get_success_url(self):
-        sistema = TrocaCadastrador.objects.get(id=self.kwargs['pk'])
+        sistema = SolicitacaoDeTrocaDeCadastrador.objects.get(id=self.kwargs['pk'])
         return reverse_lazy(
             'gestao:solicitacao_cadastrador',
             kwargs={'pk': sistema.id})
 
 class DataTableTrocaCadastrador(BaseDatatableView):
     def get_initial_queryset(self):
-        '''
-        sistema = SistemaCultura.sistema.values_list('id', flat=True)
-
-        return SistemaCultura.objects.filter(id__in=sistema).filter(
-            estado_processo='6',
-            data_publicacao_acordo__isnull=False)
-        '''
-        return TrocaCadastrador.objects.all()
+        return SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
@@ -1532,14 +1525,12 @@ class DataTableTrocaCadastrador(BaseDatatableView):
 
 class DataTableTrocaCadastrador(BaseDatatableView):
     def get_initial_queryset(self):
-        '''
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
 
         return SistemaCultura.objects.filter(id__in=sistema).filter(
             estado_processo='6',
             data_publicacao_acordo__isnull=False)
-        '''
-        return TrocaCadastrador.objects.all()
+        return SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
@@ -1570,7 +1561,7 @@ def alterar_solicitacao_cadastrador(request):
     if request.method == "POST":
 
         id = request.POST.get('id', None)
-        solicitacao = TrocaCadastrador.objects.get(id=id)
+        solicitacao = SolicitacaoDeTrocaDeCadastrador.objects.get(id=id)
         sistema = SistemaCultura.objects.filter(ente_federado_id=solicitacao.ente_federado_id).first()
 
         solicitacao.laudo = request.POST.get('laudo', None)
@@ -1590,3 +1581,4 @@ def alterar_solicitacao_cadastrador(request):
         print(solicitacao.status)
     return JsonResponse(data={}, status=200)
 
+'''
