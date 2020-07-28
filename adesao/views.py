@@ -676,24 +676,20 @@ class ConsultarPlanoTrabalhoEstado(ListView):
 def validate_username(request):
     # Recuperando o ente-federado
     codigo_ibge = request.GET.get('codigo_ibge_form', None)
-    # Retirando os tres ultimos caracteres  /DF
-    # municipio = codigo_ibge[:-3]
+    mensagem = ""
 
-    '''
-    data = {
-        'ibge': codigo_ibge
-    }
-    '''
+    if SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists() :
+        sistema = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+        usuario = Usuario.objects.filter(id=sistema[0].cadastrador_id)
+        mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
+
     # Realizando a consulta no model EnteFederado pelo nome do Ente Federado
     data = {
-        # 'validacao': EnteFederado.objects.filter(nome=codigo_ibge).exists()
-        # 'validacao': EnteFederado.objects.filter(nome=municipio).exists(),
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
-        # 'municipio': codigo_ibge
     }
 
     if data['validacao']:
-        data['error_message'] = 'O ente federado já existe'
+        data['error_message'] = mensagem
 
     return JsonResponse(data)
 
