@@ -22,7 +22,7 @@
 
 
   <fieldset style="border: 1px #ccc solid; border-radius: 10px;">
-    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">Solicitar Troca de Cadastrador
+    <legend style="font-size: 12px; font-weight: bold; padding-top: 25px; padding-bottom: 15px">DADOS ENTE FEDERADO
     </legend>
     <div class="form-group">
       <label for="ente_federado" class="col-sm-4 control-label">Ente Federado (Estado ou Município) <span
@@ -30,6 +30,8 @@
       <div class="col-sm-2">
         {% render_field form.ente_federado class="form-control" %}
       </div>
+    </div>
+  </fieldset>
       <input type="hidden" name="alterado_por" value="{{request.session.user}}" />
   <div class="row">
     {{form.media}}  

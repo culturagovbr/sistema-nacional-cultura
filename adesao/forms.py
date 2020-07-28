@@ -19,6 +19,8 @@ from snc.widgets import FileUploadWidget
 from .utils import limpar_mascara
 import re
 
+from adesao.models import SolicitacaoDeTrocaDeCadastrador
+
 content_types = [
     'image/png',
     'image/jpg',
@@ -165,6 +167,14 @@ class CadastrarSistemaCulturaForm(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('ente_federado', 'conferencia_nacional')
+        widgets = {
+            'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
+
+class TrocarCadastradorForm(ModelForm):
+
+    class Meta:
+        model = SolicitacaoDeTrocaDeCadastrador
+        fields = ('oficio','ente_federado')
         widgets = {
             'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
 
