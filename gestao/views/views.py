@@ -236,7 +236,7 @@ def aditivar_prazo(request):
 
 
 class AcompanharSistemaCultura(TemplateView):
-    template_name = 'gestao/adesao/acompanhar.html'
+    template_name = 'gestao/acompanhar.html'
 
 
 class AcompanharComponente(TemplateView):
