@@ -806,7 +806,19 @@ class TrocarCadastradorView(CreateView):
     model = SolicitacaoDeTrocaDeCadastrador
     fields = ['oficio','ente_federado']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+    
+    def form_valid(self, form):
+        ente_federado = form.cleaned_data['ente_federado']
+        user = self.request.user.id
 
+        solicitacoes = SolicitacaoDeTrocaDeCadastrador.objects.filter(alterado_por__user__id = user, ente_federado = ente_federado, status = '0')
+        print(solicitacoes)
+        if len(solicitacoes) > 0:
+            form.add_error('oficio','Você já possui uma solicitação pendente, aguarde sua análise')
+            return super().form_invalid(form)
+        
+        return super().form_valid(form)
+    
     def get_context_data(self, **kwargs):
         context = super(TrocarCadastradorView, self).get_context_data(**kwargs)
         context["enviou_documento"] = False
