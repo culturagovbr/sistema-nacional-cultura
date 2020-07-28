@@ -75,7 +75,7 @@ class BaseDataTableSolicitacao(BaseDatatableView):
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
-        custom_search = self.request.POST.get('columns[0][search][value]', None)
+        situacoes_search = self.request.POST.get('columns[4][search][value]', None)
 
         print(search)
 
@@ -90,6 +90,10 @@ class BaseDataTableSolicitacao(BaseDatatableView):
                 query |= filtro
 
             qs = qs.filter(query)
+        
+        if situacoes_search:
+            situacoes_search = situacoes_search.split(',')
+            qs = qs.filter(status__in=situacoes_search)
 
         return qs
 

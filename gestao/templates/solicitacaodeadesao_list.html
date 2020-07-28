@@ -94,7 +94,7 @@ $(document).ready(function(){
             var str = data[4]
             if(str == '0')return'Pendente de Análise'
             if(str == '1')return'Aprovado'
-            if(str == '2')return'Reprovado'
+            if(str == '2')return'Rejeitado'
             
           }
         },
@@ -125,6 +125,19 @@ $(document).ready(function(){
         $(`#${tipoExportacao.id}`).on('click', (e) => {
           $(`.buttons-${e.target.id}`).trigger('click')
         });
+      });
+
+      $('#filtro-situacao').html(`
+        <select title="filtrar situação" data-style="btn btn-success btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Pendente de Análise</option>
+          <option value="1">Aprovado</option>
+          <option value="2">Rejeitado</option>
+        </select>
+      `);
+      $('#filtro-situacao select').selectpicker();
+       $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(4).search(pesquisa_filtro).draw()
       });
     }
   });
