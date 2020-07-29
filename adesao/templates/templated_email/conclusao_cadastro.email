@@ -1,5 +1,5 @@
-{% block subject %}Sistema Nacional de Cultura - Solicitação de Adesão ao SNC{% endblock %}
-{% block plain %}{{ request.session.sistema_ente.nome }}, sua Solicitação de Adesão ao Sistema Nacional de Cultura foi recebida em nosso sistema.
+{% block subject %}Sistema Nacional de Cultura - Solicitação de adesão ao SNC{% endblock %}
+{% block plain %}{{ request.session.sistema_ente.nome }}, sua solicitação de adesão ao Sistema Nacional de Cultura foi recebida em nosso sistema.
 Para efetivar seu processo de adesão é necessário o envio dos documentos listados abaixo,
 devidamente assinados pelo(a) Sr(a) {{ request.session.sistema_gestor.nome }}.
 

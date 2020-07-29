@@ -1,12 +1,15 @@
 from django.conf.urls import url
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.contrib.admin.views.decorators import staff_member_required
 
-from . import views
+from gestao.views import views, solicitacao_de_adesao, solicitacao_de_troca_de_cadastrador
 
 app_name = 'gestao'
 
 urlpatterns = [
+    url(r'^solicitacao-de-adesao/', include('gestao.urls.solicitacao_de_adesao', namespace="solicitacao_de_adesao")),
+    url(r'^solicitacao-de-troca-de-cadastrador/', include('gestao.urls.solicitacao_de_troca_de_cadastrador', namespace="solicitacao_de_troca_de_cadastrador")),
+    
     # Acompanhar andamento dos processos de adesão
     path('', staff_member_required(
         views.dashboard,
@@ -20,10 +23,6 @@ urlpatterns = [
     path('alterar/<int:pk>',
          staff_member_required(views.AlterarDadosSistemaCultura.as_view()),
          name='alterar_sistema'),
-    # analise troca cadastrador
-    path('analisar-troca-cadastrador/<int:pk>',
-         staff_member_required(views.AnalisarSolicitacaoCadastrador.as_view()),
-         name='analise_troca_cadastrador'),
 
     path('alterar/funcionario/<int:pk>',
          staff_member_required(views.AlterarFuncionario.as_view()),
@@ -31,16 +30,6 @@ urlpatterns = [
     path('funcionario/<int:sistema>',
          staff_member_required(views.CadastrarFuncionario.as_view()),
          name='cadastrar_funcionario'),
-
-    # Trocar Cadastrador
-    path('acompanhar-troca-cadastrador', staff_member_required(
-        views.AcompanharTrocaCadastrador.as_view(),
-        login_url='adesao:login'), name='acompanhar_troca_cadastrador'),
-
-    # Rota para AlterarCadastrador
-    path('ente/<int:cod_ibge>/alterarcadastrador',
-         staff_member_required(views.AlterarCadastradorEnte.as_view()),
-         name='alterar_cadastrador'),
 
     # Acompanhar e aditivar prazos dos municípios
     url(r'^acompanhar/prazo/',
@@ -63,11 +52,6 @@ urlpatterns = [
     path('ente/<int:cod_ibge>',
          staff_member_required(views.DetalharEnte.as_view()),
          name='detalhar'),
-
-    # Detalhar SOLICITAÇÃO DE CADASTRADOR
-    path('solicitacao-cadastrador/<int:pk>',
-         staff_member_required(views.DetalharSolicitacaoCadastrador.as_view()),
-         name='solicitacao_cadastrador'),
 
     path('plano/<int:cod_ibge>',
          staff_member_required(views.DetalharPlano.as_view()),
@@ -116,14 +100,16 @@ urlpatterns = [
         views.AlterarComponente.as_view(),
         login_url='adesao:login'), name='alterar_componente'),
 
-    # ajax mudança de cadastrador
-    url(r'^ajax_cadastrador_cpf$', staff_member_required(
-        views.ajax_cadastrador_cpf), name='ajax_cadastrador_cpf'),
-
     # Diligência de Componente
 
     # url(r'^(?P<pk>[0-9]+)/diligencia/(?P<componente>[A-z]+)/(?P<resultado>[0-1])',
     #     staff_member_required(views.DiligenciaComponenteView.as_view()), name="diligencia_componente"),
+
+        
+    # Rota para AlterarCadastrador
+    path('ente/<int:cod_ibge>/alterarcadastrador',
+         staff_member_required(views.AlterarCadastradorEnte.as_view()),
+         name='alterar_cadastrador'),
 
     path("<int:pk>/diligencia/add",
          staff_member_required(views.DiligenciaGeralCreateView.as_view()),
@@ -169,7 +155,6 @@ urlpatterns = [
         name='ajax_plano_trabalho'),
     url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
         name='ajax_docs_componentes'),
-    url(r'^datatable-troca-cadastrador$', staff_member_required(views.DataTableTrocaCadastrador.as_view()),
-        name='ajax_troca_cadastrador'),
 
 ]
+

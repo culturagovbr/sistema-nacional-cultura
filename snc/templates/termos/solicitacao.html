@@ -7,15 +7,16 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 
-<center align="justify">
+<align="justify">
   <div class="row" style="margin:0; padding:0;">
     <center>
-      <div class="col-xs-9 col-xs-offset-1">
-        <h4><br><strong>Solicitação de Integração ao Sistema Nacional de Cultura</strong></h4>
-      </div>
-      <div class="col-xs-2">
+      <div class="col-xs-12">
         <img src="http://{{static}}/static/images/logo_snc_small.png">
       </div>
+      <div class="col-xs-12">
+        <h4><br><strong>Solicitação de Integração ao Sistema Nacional de Cultura</strong></h4>
+      </div>
+      
     </center>
   </div>
   </head>
@@ -31,46 +32,46 @@
     <hr style="background-color:black;" />
     {% if request.session.sistema_ente.cod_ibge > 100 %}
       <div class="col-xs-6">
-        <center>
+        <left>
           Município: {{ ente_federado }}
-        </center>
+        </left>
       </div>
     {% else %}
       <div class="col-xs-6">
-       <center>
+       <left>
         Estado: {{ request.session.sistema_ente.nome }}
-       <center>
+       <left>
       </div>
     {% endif %}
     <div class="col-xs-6">
-     <center>
+     <left>
       CNPJ: {{ request.session.sistema_sede.cnpj }}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       CEP: {{ request.session.sistema_sede.cep }}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Logradouro: {{ request.session.sistema_sede.endereco }}
-      <center>
+      <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Complemento: {{ request.session.sistema_sede.complemento }}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Bairro: {{ request.session.sistema_sede.bairro }}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Telefone Institucional: {{ request.session.sistema_sede.telefone_um }}; {{ request.session.sistema_sede.telefone_dois }}; {{ request.session.sistema_sede.telefone_tres }}
-     <center>
+     <left>
     </div>
   </div>
 
@@ -81,29 +82,29 @@
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-6">
-     <center>
+     <left>
       CPF: {{request.session.sistema_gestor.cpf}}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Nome Completo: {{request.session.sistema_gestor.nome}}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       RG: {{request.session.sistema_gestor.rg}}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Órgão Expeditor: {{request.session.sistema_gestor.orgao_expeditor_rg}}
-     <center>
+     <left>
     </div>
     <div class="col-xs-6">
-     <center>
+     <left>
       Email Institucional: {{request.session.sistema_gestor.email_institucional}}
-     <center>
+     <left>
     </div>
   </div>
 
@@ -114,9 +115,9 @@
     </center>
     <hr style="background-color:black;" />
     <div class="col-xs-12">
-     <center>
+     <left>
       CPF: {{request.session.sistema_gestor_cultura.cpf}}
-     </center>
+     </left>
     </div>
     <div class="col-xs-12">
       Nome Completo: {{request.session.sistema_gestor_cultura.nome}}

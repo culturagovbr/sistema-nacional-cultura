@@ -32,15 +32,12 @@
       <label for="{{ form.arquivo.id_for_label }}">
         Lei de criação do Fundo de Cultura
       </label>
-      <!-- 
         {% if form.arquivo.value %}
           <p><a href="{{ form.arquivo.value.url }}" target="_blank">Baixar arquivo atual</a></p>
           <p>Modificar: {% render_field form.arquivo %}</p>
         {% else %}
           <p>{% render_field form.arquivo %}</p>
         {% endif %}
-      -->
-      <p>{% render_field form.arquivo %}</p>
     </div>
   </div>
 
@@ -83,6 +80,7 @@
       </label>
           {% render_field form.conta class="form-control date half-width" %}
           <br/>
+          {% render_field form.dados_bancarios class="form-control" %}
         </label>
         {% render_field form.termo_responsabilidade %}
         Declaro que possuo responsabilidade pela veracidade das informações e pelos documentos apresentados neste cadastro e que estou ciente de que qualquer inexatidão dos itens informados poderá sujeitar-me às penalidades previstas no artigo 299 do Código Penal Brasileiro, sem prejuízo de outras medidas administrativas cabíveis

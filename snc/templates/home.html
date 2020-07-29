@@ -33,30 +33,30 @@
                 
                    <a href="{% url 'adesao:cadastrar_sistema' %}" >
                   {% blocktrans %}
-                      Criar Novo Ente Federado               
+                      criar novo ente federado               
                   {% endblocktrans %}
                     </a>
                   {% blocktrans %}
-                  ”</b> para iniciar o cadastro de um novo estado/município"
+                  ”</b> para iniciar o cadastro de um novo estado ou município"
                   {% endblocktrans %}
                   <p style="text-align: justify;">{% blocktrans %} Clique na aba {% endblocktrans %}<b>“
 
                    <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" >
                   {% blocktrans %}
-                      Alterar Novo ente Federado              
+                      alterar novo ente federado              
                    {% endblocktrans %}
                     </a>
                   {% blocktrans %}  
-                  "</b> para alterar informações e dados do estado/município já cadastrado. 
+                  "</b> para alterar informações e dados do estado ou município já cadastrado. 
                   {% endblocktrans %}
                   <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
                     <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
                     {% blocktrans %}
-                    Gestor de Cultura              
+                    gestor de cultura              
                     {% endblocktrans %}
                    </a>
                     {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
-                    seu estado/município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
+                    seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                     fundação de cultura)
                     {% endblocktrans %}</p>
                 {% endif %}
@@ -67,7 +67,7 @@
               descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
               com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
 
-              <p style="text-align: justify;">{% blocktrans %}Clique em <b>“Criar Novo Ente Federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
+              <p style="text-align: justify;">{% blocktrans %}Clique em <b>“criar novo ente federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
               {% endblocktrans %}</p>
            
             {% endif %}
@@ -76,7 +76,7 @@
             {% include "conclusao_cadastro.html" %}
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '2' %}
           <p>
-            Informamos o recebimento da documentação física necessária para efetivar a Adesão ao SNC.
+            Informamos o recebimento da documentação física necessária para efetivar a adesão ao SNC.
           </p>
 
           <p>
@@ -84,7 +84,7 @@
           </p>
 
           <p>
-            Aguarde nosso contato.
+            Por favor, aguarde nosso contato.
           </p>
 
           <p>
@@ -94,7 +94,7 @@
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '3' %}
           <p>
             Consta em nossos registros a pendência da seguinte documentação física necessária para
-            efetivar a Adesão ao SNC:<br><br>
+            efetivar a adesão ao SNC:<br><br>
             <strong>{{ historico.0.descricao }}</strong>
           </p>
 
@@ -108,14 +108,14 @@
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '4' %}
           <p>
-            Prezad@ {{ request.user.usuario.nome_usuario }},
+            Prezado (a) {{ request.user.usuario.nome_usuario }},
           </p>
           <p>
             O acordo de cooperação foi enviado para assinatura do Secretário de Articulação Institucional, representante
             do ministério na assinatura do acordo. Em seguida, providenciaremos a publicação no Diário Oficial da União.
           </p>
           <p>
-            Aguarde nosso contato.
+            Por favor, aguarde nosso contato.
           </p>
           <p>
             Atenciosamente,<br>
@@ -123,14 +123,14 @@
           </p>
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '5' %}
           <p>
-            Prezad@ {{ request.user.usuario.nome_usuario }}
+            Prezado (a) {{ request.user.usuario.nome_usuario }}
           </p>
           <p>
             Sua solicitação foi confirmada pela nossa equipe. Estamos providenciando a publicação do seu acordo no
-            Diário Oficial da União.
+            Diário Oficial da união (DOU) e o (a) notificaremos por e-mail
           </p>
           <p>
-            Aguarde nosso contato
+            Por favor, aguarde nosso contato.
           </p>
           <p>
             Atenciosamente,<br>

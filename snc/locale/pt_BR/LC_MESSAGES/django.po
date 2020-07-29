@@ -101,10 +101,10 @@ msgstr ""
 "Clique em "Criar Novo Ente Federado" no menu principal para iniciar o cadastro "
 "do seu estado ou município na plataforma do SNC."
 "Clique na aba “Criar Novo Ente Federado” para iniciar o cadastro de um novo"
-"estado/município ou clique na aba “Alterar Novo ente Federado” para alterar"
-"informações e dados do estado/município já cadastrado."
+"estado ou município ou clique na aba “Alterar Novo ente Federado” para alterar"
+"informações e dados do estado ou município já cadastrado."
 "Clique na aba “Gestor de Cultura” para iniciar o cadastro do gestor responsável"
-"pela pasta da cultura no seu estado/município (Ex: secretário de cultura, diretor"
+"pela pasta da cultura no seu estadoou município (Ex: secretário de cultura, diretor"
 "do departamento de cultura, presidente da fundação de cultura)."
 
 #: templates/planotrabalho/plano_trabalho.html:6
@@ -206,7 +206,7 @@ msgid "Data final para sanção da Lei do Plano de Cultura:"
 msgstr "Data final para sanção da Lei do Plano de Cultura:"
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:4
-msgid "Cadastro Realizado com Sucesso!"
+msgid "Cadastro realizado com sucesso!"
 msgstr ""
 
 #: templates/prefeitura/mensagem_sucesso_prefeitura.html:5

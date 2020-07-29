@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Importando os models
-from .models import Municipio, Responsavel, Secretario, Usuario, EnteFederado, Funcionario
+from .models import Municipio, Responsavel, Secretario, Usuario, EnteFederado, Funcionario, SolicitacaoDeAdesao, \
+    SistemaCultura, SolicitacaoDeTrocaDeCadastrador
 
 
 # Mostrando no datagrid Municipio
@@ -32,6 +33,12 @@ class EnteFederadoAdmin(admin.ModelAdmin):
 class FuncionarioAdmin(admin.ModelAdmin):
     list_display = ('cpf', 'nome', 'cargo')
 
+class SistemaAdimin(admin.ModelAdmin):
+    list_display = ('cadastrador', 'ente_federado', 'orgao_gestor')
+
+class TrocaAdmin(admin.ModelAdmin):
+    list_display = ('status',)
+
 
 # Registrando no Admin o model e mostrando os campos
 admin.site.register(Municipio, MunicipioAdmin)
@@ -40,3 +47,6 @@ admin.site.register(Secretario)
 admin.site.register(Usuario)
 admin.site.register(EnteFederado, EnteFederadoAdmin)
 admin.site.register(Funcionario, FuncionarioAdmin)
+admin.site.register(SolicitacaoDeAdesao)
+admin.site.register(SistemaCultura, SistemaAdimin)
+admin.site.register(SolicitacaoDeTrocaDeCadastrador, TrocaAdmin)

@@ -1,0 +1,146 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+<style>
+li a.selected {
+    background-color: rgba(0,0,0,0.1);
+}
+
+@media (max-width: 1780px){
+  .col-lg-custom {
+      flex: 0 0 50%;
+      max-width: 17% ;
+  }
+}
+
+.card-body {
+   overflow: inherit;
+}
+</style>
+<menu data-target="troca-cadastrador" ></menu>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-default">
+          <div class="card-header card-plain card-header-primary">
+              <h4 class="card-title">Consultar Solicitações de Troca de Cadastrador</h4>
+              <p class="card-category"></p>
+          </div>
+          <div class="card-body table-responsive">
+              <table id="tabela-ente" class="datatable table table-hover">
+                  <thead>
+                      <tr>
+                          <th>Município/Estado</th>
+                          <th>Solicitante</th>
+                          <th>Data Solicitação</th>
+                          <th>Situação</th>
+                          <th>&nbsp</th>
+                      </tr>
+                  </thead>
+              </table>
+          </div>
+        </div>
+      </div>
+</div>
+
+{% endblock content %}
+{% block js%}
+<script type="text/javascript">
+$(document).ready(function(){
+  var colunasParaExportacao = [0,1,2,3,7];
+
+  var tabela = $('#tabela-ente').DataTable({
+    order: [0, 'asc'],
+    aLengthMenu: [
+        [10, 25, 50, 100, -1],
+        [10, 25, 50, 100, "Todos"]
+    ],
+    dom:
+      `<'row'<'col-md-auto col-lg-3 col-lg-custom'l>
+      <'col-md-2 col-lg-auto col-sm-auto'B>
+      <'col-sm-auto col-md-auto'f>
+      <'col-sm-auto col-md-auto'<"#filtro-estados">>
+      <"#filtro-tipo-ente">
+      <"#filtro-componente.col-sm-auto col-md-auto">
+      <"#filtro-situacao.col-sm-auto col-md-auto">
+      <"#filtro-pendente.col-sm-auto col-md-auto">
+      <"#filtro-situacao-compenente.col-sm-auto col-md-auto">>
+      <'row'<'col-sm-auto col-md-12'tr>>
+      <'row'<'col-sm-12 col-md-5'i>
+      <'col-sm-12 col-md-7'p>>`,
+    buttons: [
+    ],
+    language:{
+            "url": "http://cdn.datatables.net/plug-ins/1.10.19/i18n/Portuguese-Brasil.json"
+          },
+    columns: [
+        {
+          data: null,
+          name: "ente_federado",
+          render: (data) => data[1]
+        },
+        {
+          data: null,
+          name: "alterado_por",
+          render: (data) => data[2]
+        },
+        {
+          data: null,
+          name: "alterado_em",
+          render: (data) => data[3]
+        },
+        {
+          data: null,
+          name: "status",
+          render: (data) => {
+            var str = data[4]
+            if(str == '0')return'Pendente de Análise'
+            if(str == '1')return'Aprovado'
+            if(str == '2')return'Rejeitado'
+            
+          }
+        },
+        {//ONCLICK:
+          width: '5%',
+          data: null,
+          name: "id",
+          orderable: false,
+          render: (data) => `
+            <a rel="tooltip" title="" href="/gestao/solicitacao-de-troca-de-cadastrador/${data[0]}" class="btn btn-primary btn-link btn-sm" target="_blank">
+              <i class="material-icons">zoom_in</i>
+            </a>
+          `
+        },
+    ],
+    searching: true,
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: "{% url 'gestao:solicitacao_de_troca_de_cadastrador:ajax_list' %}",
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+      },
+      type: "POST",
+    },
+    initComplete: () => {
+      $('.export').each((chave, tipoExportacao) => {
+        $(`#${tipoExportacao.id}`).on('click', (e) => {
+          $(`.buttons-${e.target.id}`).trigger('click')
+        });
+      });
+
+      $('#filtro-situacao').html(`
+        <select title="filtrar situação" data-style="btn btn-success btn-sm" data-class="selectpicker" multiple>
+          <option value="0">Pendente de Análise</option>
+          <option value="1">Aprovado</option>
+          <option value="2">Rejeitado</option>
+        </select>
+      `);
+      $('#filtro-situacao select').selectpicker();
+       $('#filtro-situacao select').on('change.bs.select', function (e, componenteId, isSelected, previousValue) {
+        var pesquisa_filtro = $(this).val();
+        tabela.columns(4).search(pesquisa_filtro).draw()
+      });
+    }
+  });
+});
+</script>
+{% endblock js %}

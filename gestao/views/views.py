@@ -1,6 +1,6 @@
 import json
-
 from django_datatables_view.base_datatable_view import BaseDatatableView
+
 from django.utils.html import escape
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
@@ -32,14 +32,7 @@ from dal import autocomplete
 
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
-from adesao.models import Usuario
-from adesao.models import Municipio
-from adesao.models import SistemaCultura
-from adesao.models import EnteFederado
-from adesao.models import Gestor
-from adesao.models import Funcionario
-from adesao.models import LISTA_ESTADOS_PROCESSO
-from adesao.models import TrocaCadastrador
+from adesao.models import Usuario,Municipio,SistemaCultura,EnteFederado,Gestor,Funcionario,LISTA_ESTADOS_PROCESSO,SolicitacaoDeTrocaDeCadastrador, SolicitacaoDeAdesao
 
 from planotrabalho.models import Componente
 from planotrabalho.models import FundoDeCultura
@@ -62,15 +55,15 @@ from django.contrib.auth.models import Group
 
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import DiligenciaSimples, Contato
+from gestao.models import DiligenciaSimples, Contato
 
-from .forms import DiligenciaComponenteForm
-from .forms import DiligenciaGeralForm
-from .forms import AlterarDocumentosEnteFederadoForm
-from .forms import AlterarUsuarioForm
-from .forms import AlterarComponenteForm
-from .forms import AlterarDadosEnte
-from .forms import CriarContatoForm
+from gestao.forms import DiligenciaComponenteForm
+from gestao.forms import DiligenciaGeralForm
+from gestao.forms import AlterarDocumentosEnteFederadoForm
+from gestao.forms import AlterarUsuarioForm
+from gestao.forms import AlterarComponenteForm
+from gestao.forms import AlterarDadosEnte
+from gestao.forms import CriarContatoForm
 
 from planotrabalho.forms import CriarComponenteForm
 from planotrabalho.forms import CriarFundoForm
@@ -78,8 +71,8 @@ from planotrabalho.forms import CriarConselhoForm
 from planotrabalho.forms import CriarOrgaoGestorForm, CriarOrgaoGestorFormGestao
 from planotrabalho.forms import CriarPlanoForm
 
-from .forms import CadastradorEnte
-from .forms import AditivarPrazoForm
+from gestao.forms import CadastradorEnte
+from gestao.forms import AditivarPrazoForm
 
 from adesao.views import AlterarSistemaCultura
 from adesao.views import AlterarFuncionario
@@ -243,7 +236,7 @@ def aditivar_prazo(request):
 
 
 class AcompanharSistemaCultura(TemplateView):
-    template_name = 'gestao/adesao/acompanhar.html'
+    template_name = 'gestao/acompanhar.html'
 
 
 class AcompanharComponente(TemplateView):
@@ -387,7 +380,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
-
+        print(context)
         return context
 
     def get_descricao_componente(self, id):
@@ -607,6 +600,8 @@ class AlterarCadastradorEnte(UpdateView, LookUpAnotherFieldMixin):
 
 class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
+
+
 
 
 def alterar_usuario(request):
@@ -1474,11 +1469,11 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data
-
+'''
 class DetalharSolicitacaoCadastrador(DetailView):
     template_name = "detalhe_solicitacao_cadastrador.html"
     context_object_name = "solicitacao"
-    queryset = TrocaCadastrador.objects.all()
+    queryset = SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def get_context_data(self, **kwargs):
 
@@ -1492,31 +1487,20 @@ class AnalisarSolicitacaoCadastrador(AlterarSistemaCultura):
     template_name = "alterar_solicitacao_cadastrador.html"
 
     def get_success_url(self):
-        sistema = TrocaCadastrador.objects.get(id=self.kwargs['pk'])
+        sistema = SolicitacaoDeTrocaDeCadastrador.objects.get(id=self.kwargs['pk'])
         return reverse_lazy(
             'gestao:solicitacao_cadastrador',
             kwargs={'pk': sistema.id})
 
 class DataTableTrocaCadastrador(BaseDatatableView):
     def get_initial_queryset(self):
-        '''
-        sistema = SistemaCultura.sistema.values_list('id', flat=True)
-
-        return SistemaCultura.objects.filter(id__in=sistema).filter(
-            estado_processo='6',
-            data_publicacao_acordo__isnull=False)
-        '''
-        return TrocaCadastrador.objects.all()
+        return SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
 
         if search:
-            where = \
-                Q(ente_federado__nome__unaccent__icontains=search)
-            if search.isdigit():
-                where |= Q(prazo=search)
-            return qs.filter(where)
+            return qs.filter(Q(ente_federado__nome__icontains=search))
         return qs
 
     def prepare_results(self, qs):
@@ -1541,14 +1525,12 @@ class DataTableTrocaCadastrador(BaseDatatableView):
 
 class DataTableTrocaCadastrador(BaseDatatableView):
     def get_initial_queryset(self):
-        '''
         sistema = SistemaCultura.sistema.values_list('id', flat=True)
 
         return SistemaCultura.objects.filter(id__in=sistema).filter(
             estado_processo='6',
             data_publicacao_acordo__isnull=False)
-        '''
-        return TrocaCadastrador.objects.all()
+        return SolicitacaoDeTrocaDeCadastrador.objects.all()
 
     def filter_queryset(self, qs):
         search = self.request.POST.get('search[value]', None)
@@ -1575,3 +1557,28 @@ class DataTableTrocaCadastrador(BaseDatatableView):
         return json_data
 
 
+def alterar_solicitacao_cadastrador(request):
+    if request.method == "POST":
+
+        id = request.POST.get('id', None)
+        solicitacao = SolicitacaoDeTrocaDeCadastrador.objects.get(id=id)
+        sistema = SistemaCultura.objects.filter(ente_federado_id=solicitacao.ente_federado_id).first()
+
+        solicitacao.laudo = request.POST.get('laudo', None)
+        solicitacao.status = request.POST.get('status', None)
+
+        solicitacaosistema = SistemaCultura.objects.create(oficio_cadastrador=sistema.oficio_cadastrador, oficio_prorrogacao_prazo=sistema.oficio_prorrogacao_prazo,
+                                      cadastrador= solicitacao.alterado_por, ente_federado=solicitacao.ente_federado, legislacao=sistema.legislacao,
+                                      orgao_gestor=sistema.orgao_gestor, fundo_cultura=sistema.fundo_cultura, conselho=sistema.conselho, plano=sistema.plano,
+                                      gestor_cultura=sistema.gestor_cultura, gestor=sistema.gestor, sede=sistema.sede, estado_processo=sistema.estado_processo,
+                                      data_publicacao_acordo=sistema.data_publicacao_acordo, data_publicacao_retificacao=sistema.data_publicacao_retificacao,
+                                      link_publicacao_acordo=sistema.link_publicacao_acordo, link_publicacao_retificacao=sistema.link_publicacao_retificacao,
+                                      processo_sei=sistema.processo_sei, numero_processo=sistema.numero_processo, localizacao=sistema.localizacao,justificativa=sistema.justificativa,
+                                      diligencia=sistema.diligencia, prazo=sistema.prazo, conferencia_nacional=sistema.conferencia_nacional, alterado_por=request.user)
+        solicitacaosistema.save()
+        solicitacao.save()
+
+        print(solicitacao.status)
+    return JsonResponse(data={}, status=200)
+
+'''

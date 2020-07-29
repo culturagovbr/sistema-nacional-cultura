@@ -13,11 +13,13 @@ from localflavor.br.forms import BRCPFField
 from snc.forms import RestrictedFileField, BRCNPJField
 
 from .models import Usuario, Municipio, Responsavel, Uf
-from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor, RequerimentoTrocaCadastrador
+from .models import Secretario, Funcionario, SistemaCultura, Sede, Gestor
 
 from snc.widgets import FileUploadWidget
 from .utils import limpar_mascara
 import re
+
+from adesao.models import SolicitacaoDeTrocaDeCadastrador, SolicitacaoDeAdesao
 
 content_types = [
     'image/png',
@@ -33,6 +35,11 @@ content_types = [
     'application/octet-stream',
     'text/plain']
 
+content_types_solicitacao = [
+    'image/png',
+    'image/jpg',
+    'image/jpeg',
+    'application/pdf',]
 
 class CadastrarUsuarioForm(UserCreationForm):
     username = BRCPFField()
@@ -168,6 +175,20 @@ class CadastrarSistemaCulturaForm(ModelForm):
         widgets = {
             'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
 
+class TrocarCadastradorForm(ModelForm):
+    oficio = RestrictedFileField(content_types=content_types_solicitacao, max_upload_size=52428800)
+
+    class Meta:
+        model = SolicitacaoDeTrocaDeCadastrador
+        fields = ('ente_federado',)
+        widgets = {
+            'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
+
+class SolicitacaoDeAdesaoForm(ModelForm):
+    oficio = RestrictedFileField(content_types=content_types_solicitacao, max_upload_size=52428800)
+    class Meta:
+        model = SolicitacaoDeAdesao
+        fields = ('oficio',)
 
 class CadastrarFuncionarioForm(ModelForm):
     cpf = BRCPFField()
@@ -196,7 +217,7 @@ class CadastrarFuncionarioForm(ModelForm):
         model = Funcionario
         exclude = ('tipo_funcionario',)
 
-
+'''
 class TrocaCadastradorForm(ModelForm):
 
     class Meta:
@@ -204,3 +225,4 @@ class TrocaCadastradorForm(ModelForm):
         fields = ('ente_federado', 'oficio')
         widgets = {
             'ente_federado': autocomplete.ModelSelect2(url='gestao:ente_chain')}
+'''

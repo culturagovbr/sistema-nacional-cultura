@@ -14,7 +14,7 @@
         {{ request.user.usuario.municipio.estado.nome_uf }}
       {% endif %}
     </strong>,
-    sua solicitação de Adesão ao Sistema Nacional de Cultura foi recebida em nossa plataforma.
+    sua solicitação de adesão ao Sistema Nacional de Cultura foi recebida em nossa plataforma.
   </p>
 
   <p style="text-align: justify;">

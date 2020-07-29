@@ -57,7 +57,7 @@ def preenche_planilha(planilha):
     planilha.write(0, 7, "Faixa Populacional")
     planilha.write(0, 8, "Situação")
     planilha.write(0, 9, "Situação da Lei do Sistema de Cultura")
-    planilha.write(0, 10, "Situação do Órgão Gestor")
+    planilha.write(0, 10,"Situação do Órgão Gestor")
     planilha.write(0, 11,"CNPJ do Órgão Gestor de Cultura")
     planilha.write(0, 12,"Situação do Comprovante do CNPJ do Órgão Gestor de Cultura")
     planilha.write(0, 13,"Dados Bancários do Órgão Gestor de Cultura")
@@ -141,8 +141,8 @@ def preenche_planilha(planilha):
             else:
                 orgao_gestor_cnpj = "Não cadastrado"
 
-            if sistema.orgao_gestor.comprovante_cnpj_orgao:
-                situacaor_comprovante_cnpj_orgao_gestor = "Concluida"
+            if sistema.orgao_gestor.comprovante_cnpj_id:
+                situacaor_comprovante_cnpj_orgao_gestor = LISTA_SITUACAO_ARQUIVO[sistema.orgao_gestor.comprovante_cnpj.situacao][1]
             else:
                 situacaor_comprovante_cnpj_orgao_gestor = "Não possui"
 
@@ -160,8 +160,8 @@ def preenche_planilha(planilha):
                 fundo_cultura_cnpj = sistema.fundo_cultura.cnpj
             else:
                 fundo_cultura_cnpj = "Não cadastrado"
-            if sistema.fundo_cultura.comprovante_cnpj:
-                situacao_fundo_cultura_comprovante_cnpj = "Concluida"
+            if sistema.fundo_cultura.comprovante_cnpj_id:
+                situacao_fundo_cultura_comprovante_cnpj = LISTA_SITUACAO_ARQUIVO[sistema.fundo_cultura.comprovante_cnpj.situacao][1]
             else:
                 situacao_fundo_cultura_comprovante_cnpj = "Não possui"
             if sistema.fundo_cultura.agencia:

@@ -13,11 +13,7 @@
     <label for="{{ form.mesma_lei.id_for_label }}">
       É a mesma lei do sistema municipal de cultura?</br>
     </label>
-    {% if form.sistema.conselho.lei.situacao != 2 %}
-      {% render_field form.mesma_lei class="radio" %}
-    {% else %}
-      {% render_field form.mesma_lei disabled="disabled" class="radio" %}
-    {% endif %}
+    {% render_field form.mesma_lei class="radio" %}
   </div>
 
   <h5>
@@ -29,11 +25,7 @@
       <label for="{{ form.data_publicacao_lei.id_for_label }}">
         Data de publicação da lei do Conselho de Política Cultural
       </label>
-      {% if form.sistema.conselho.lei.situacao != 2 %}
-        {% render_field form.data_publicacao_lei class="form-control date half-width" %}
-      {% else %}
-        {% render_field form.data_publicacao_lei disabled="disabled" class="form-control date half-width" %}
-      {% endif %}
+      {% render_field form.data_publicacao_lei class="form-control date half-width" %}
     </div>
 
     <div class="form-group">
@@ -42,9 +34,7 @@
       </label>
       {% if form.arquivo_lei.value %}
         <p><a href="{{ form.arquivo_lei.value.url }}">Baixar arquivo atual</a></p>
-        {% if form.sistema.conselho.lei.situacao != 2 %}
-          <p>Modificar: {% render_field form.arquivo_lei %}</p>
-        {% endif %}
+        <p>Modificar: {% render_field form.arquivo_lei %}</p>
       {% else %}
         <p>{% render_field form.arquivo_lei %}</p>
       {% endif %}

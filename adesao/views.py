@@ -22,7 +22,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, Count
 from django.conf import settings
 from django.forms.models import model_to_dict
-
+from django.views.generic.edit import ModelFormMixin
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 from adesao.models import (
@@ -37,12 +37,14 @@ from adesao.models import (
     Funcionario,
     EnteFederado,
     Sede,
-    TrocaCadastrador
+    SolicitacaoDeTrocaDeCadastrador,
+    SolicitacaoDeAdesao
 )
 
 from planotrabalho.models import Conselheiro, PlanoTrabalho
-from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm, TrocaCadastradorForm
+from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
+from adesao.forms import TrocarCadastradorForm, SolicitacaoDeAdesaoForm
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 from adesao.utils import atualiza_session, preenche_planilha
@@ -59,7 +61,6 @@ from localflavor.br.forms import BRCNPJField
 from apiv2 import serializers
 from rest_framework.renderers import JSONRenderer
 from rest_framework import serializers
-
 
 app_name = "adesao"
 
@@ -88,7 +89,7 @@ def home(request):
     if not sistemas_cultura:
         request.session.pop('sistema_cultura_selecionado', None)
 
-    #request.session['sistemas'] = list(
+    # request.session['sistemas'] = list(
     #    sistemas_cultura.values('id', 'ente_federado__nome'))
 
     request.session['sistemas'] = concatenacao_municipi_uf(sistemas_cultura)
@@ -396,7 +397,6 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
 
-
 class AlterarSistemaCultura(UpdateView):
     form_class = CadastrarSistemaCulturaForm
     model = SistemaCultura
@@ -525,10 +525,10 @@ class GeraPDF(WeasyTemplateView):
             sistema_gestor = sistema.gestor
             gestor_cultura = sistema.gestor_cultura
             if not sistema or not sistema.ente_federado or not sistema.gestor_cultura or \
-               not self.sistema.gestor.cpf or sistema.estado_processo == 0:
-               return redirect('adesao:erro_impressao')
+                not self.sistema.gestor.cpf or sistema.estado_processo == 0:
+                return redirect('adesao:erro_impressao')
         except Exception as e:
-           return redirect('adesao:erro_impressao')
+            return redirect('adesao:erro_impressao')
 
         '''
         if not self.ente_federado or \
@@ -677,24 +677,20 @@ class ConsultarPlanoTrabalhoEstado(ListView):
 def validate_username(request):
     # Recuperando o ente-federado
     codigo_ibge = request.GET.get('codigo_ibge_form', None)
-    # Retirando os tres ultimos caracteres  /DF
-    # municipio = codigo_ibge[:-3]
+    mensagem = ""
 
-    '''
-    data = {
-        'ibge': codigo_ibge
-    }
-    '''
+    if SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists() :
+        sistema = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
+        usuario = Usuario.objects.filter(id=sistema[0].cadastrador_id)
+        mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
+
     # Realizando a consulta no model EnteFederado pelo nome do Ente Federado
     data = {
-        # 'validacao': EnteFederado.objects.filter(nome=codigo_ibge).exists()
-        # 'validacao': EnteFederado.objects.filter(nome=municipio).exists(),
         'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
-        # 'municipio': codigo_ibge
     }
 
     if data['validacao']:
-        data['error_message'] = 'O ente federado já existe'
+        data['error_message'] = mensagem
 
     return JsonResponse(data)
 
@@ -726,13 +722,105 @@ def search_cnpj(request):
 
     return JsonResponse(data, safe=False)
 
+
 @login_required
 def sucesso_troca_cadastrador(request):
     return render(request, "mensagem_sucesso_troca_cadastrador.html")
-
+'''
 
 class TrocaCadastrador(CreateView):
+    form_class = TrocaCadastradorForm
+    model = SolicitacaoDeTrocaDeCadastrador
     template_name = "troca_cadastrador.html"
-    model = TrocaCadastrador
-    fields = ['ente_federado', 'oficio']
     success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        form_sistema = context['form_sistema']
+
+        if form_sistema.is_valid():
+            sistema = form_sistema.save()
+
+            if not self.request.session.get('sistemas', False):
+                self.request.session['sistemas'] = list()
+                sistema_atualizado = SistemaCultura.sistema.get(ente_federado__id=sistema.ente_federado.id)
+                atualiza_session(sistema_atualizado, self.request)
+            else:
+                if self.request.session.get('sistema_cultura_selecionado', False):
+                    self.request.session['sistema_cultura_selecionado'].clear()
+                    self.request.session.modified = True
+
+            self.request.session['sistemas'].append(
+                {"id": sistema.id, "ente_federado__nome": sistema.ente_federado.nome})
+
+            return super(TrocaCadastrador, self).form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(TrocaCadastrador, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['form_sistema'] = TrocaCadastradorForm(self.request.POST, self.request.FILES)
+        else:
+            context['form_sistema'] = TrocaCadastradorForm()
+        return context
+'''
+
+@login_required
+def sucesso_solicitar_adesao(request):
+    return render(request, "mensagem_sucesso_solicita_adesao.html")
+
+
+class SolicitarAdesaoView(CreateView):
+    form_class = SolicitacaoDeAdesaoForm
+    template_name = "solicitar_adesao.html"
+    model = SolicitacaoDeAdesao
+    success_url = reverse_lazy("adesao:sucesso_solicitar_adesao")
+    
+    def get_context_data(self, **kwargs):
+        context = super(SolicitarAdesaoView, self).get_context_data(**kwargs)
+        context["enviou_documento"] = False
+        cod_ibge = self.request.session.get('sistema_ente').get('cod_ibge')
+        solicitacoes = SolicitacaoDeAdesao.objects.filter(ente_federado__cod_ibge=cod_ibge)
+        for sol in solicitacoes:
+            if sol.status == '0':
+                context["enviou_documento"] = True
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        cod_ibge = self.request.POST.get('ente_federado')
+        instance = EnteFederado.objects.get(cod_ibge=cod_ibge)
+        self.object.ente_federado = instance
+        form.instance.oficio = form.cleaned_data['oficio']
+        self.object = form.save()
+        self.object.save()
+        return super(ModelFormMixin, self).form_valid(form)
+
+class TrocarCadastradorView(CreateView):
+    form_class = TrocarCadastradorForm
+    template_name = "troca_cadastrador.html"
+    model = SolicitacaoDeTrocaDeCadastrador
+    success_url = reverse_lazy("adesao:sucesso_troca_cadastrador")
+    
+    def form_valid(self, form):
+        ente_federado = form.cleaned_data['ente_federado']
+        user = self.request.user.id
+
+        solicitacoes = SolicitacaoDeTrocaDeCadastrador.objects.filter(alterado_por__user__id = user, ente_federado = ente_federado, status = '0')
+        print(solicitacoes)
+        if len(solicitacoes) > 0:
+            form.add_error('oficio','Você já possui uma solicitação pendente, aguarde sua análise')
+            return super().form_invalid(form)
+        
+        form.instance.oficio = form.cleaned_data['oficio']
+        self.object = form.save()
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super(TrocarCadastradorView, self).get_context_data(**kwargs)
+        context["enviou_documento"] = False
+        return context

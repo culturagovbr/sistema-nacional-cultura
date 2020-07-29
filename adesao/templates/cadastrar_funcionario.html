@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% load widget_tweaks %} {% block content %}
   <div align="center">
     <h3>Cadastro do Gestor de Cultura</h3>
-    <p>Preencha o formulário abaixo com os dados do dirigente responsável pela área de cultura do município/estado.</p>
+    <p>Preencha o formulário abaixo com os dados do dirigente responsável pela área de cultura do município ou estado.</p>
   </div>
 
   <form class="form-horizontal" method="post">{% csrf_token %}
@@ -190,12 +190,15 @@
 
     </div>
 
+    <div><p>Campo(s) Obrigatório(s) *<br></p></div>
     <div class="form-group">
       <div class="col-sm-offset-3 col-sm-10">
         <a class="btn btn-default" href="{% url 'adesao:home' %}">Cancelar</a>
         <input type="submit" class="btn btn-success" value="Salvar"/>
       </div>
     </div>
+   
+    
   </form>
 
 {% endblock content %}

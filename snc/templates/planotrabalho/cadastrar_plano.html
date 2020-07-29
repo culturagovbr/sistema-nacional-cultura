@@ -23,11 +23,7 @@
       <label for="{{ form.data_publicacao.id_for_label }}">
         Data de Publicação da Lei do Plano de Cultura
       </label>
-      {% if form.sistema.plano.situacao != 2 %}
-        {% render_field form.data_publicacao class="form-control date half-width" %}
-      {% else %}
-        {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
-      {% endif %}
+      {% render_field form.data_publicacao class="form-control date half-width" %}
     </div>
 
     <div class="form-group">
@@ -36,9 +32,7 @@
       </label>
       {% if form.arquivo.value %}
         <p><a href="{{ form.arquivo.value.url }}">Baixar arquivo atual</a></p>
-        {% if form.sistema.plano.situacao != 2 %}
-          <p>Modificar: {% render_field form.arquivo %}</p>
-        {% endif %}
+        <p>Modificar: {% render_field form.arquivo %}</p>
       {% else %}
         <p>{% render_field form.arquivo %}</p>
       {% endif %}

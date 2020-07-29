@@ -16,7 +16,7 @@
     ATENÇÃO! É importante manter suas informações sempre atualizadas. Lembramos que são de responsabilidade do ente federado, sob as penas da lei, a autenticidade dos documentos apresentados e a veracidade das informações prestadas.
   </p>
   <p style="text-align: justify;">
-    Em caso de dúvida, clique no tutorial “Como preencher o Plano de Trabalho”, disponível em http://portalsnc.cultura.gov.br.
+    Em caso de dúvida, clique no tutorial “Como preencher o Plano de Trabalho”, disponível em <a href="http://portalsnc.cultura.gov.br" target="blank">http://portalsnc.cultura.gov.br</a>.
   </p>
 
   <ul class="list-group">
@@ -51,6 +51,9 @@
         {% else %}
           <strong>Situação da Lei: </strong>{{ sistema.orgao_gestor.get_situacao_display|default:"Não possui" }}</br>
           <br/>
+          <strong>Situação do Comprovante do CNPJ: </strong>
+            {{ sistema.orgao_gestor.comprovante_cnpj.get_situacao_display|default:"Não possui" }}</br>
+          </br>
           <a class="btn btn-warning" style="color:#FFF"
              href="{% url 'planotrabalho:alterar_orgao' pk=sistema.orgao_gestor.id %}">Editar Componente</a>
           <br/>
