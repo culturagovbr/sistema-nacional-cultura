@@ -44,7 +44,7 @@ from adesao.models import (
 from planotrabalho.models import Conselheiro, PlanoTrabalho
 from adesao.forms import CadastrarUsuarioForm, CadastrarSistemaCulturaForm
 from adesao.forms import CadastrarSede, CadastrarGestor
-from adesao.forms import TrocarCadastradorForm
+from adesao.forms import TrocarCadastradorForm, SolicitacaoDeAdesaoForm
 from adesao.forms import CadastrarFuncionarioForm
 from adesao.utils import enviar_email_conclusao, verificar_anexo
 from adesao.utils import atualiza_session, preenche_planilha
@@ -779,9 +779,9 @@ def sucesso_solicitar_adesao(request):
 
 
 class SolicitarAdesaoView(CreateView):
+    form_class = SolicitacaoDeAdesaoForm
     template_name = "solicitar_adesao.html"
     model = SolicitacaoDeAdesao
-    fields = ['oficio']
     success_url = reverse_lazy("adesao:sucesso_solicitar_adesao")
     
     def get_context_data(self, **kwargs):
@@ -799,6 +799,8 @@ class SolicitarAdesaoView(CreateView):
         cod_ibge = self.request.POST.get('ente_federado')
         instance = EnteFederado.objects.get(cod_ibge=cod_ibge)
         self.object.ente_federado = instance
+        form.instance.oficio = form.cleaned_data['oficio']
+        self.object = form.save()
         self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
 
@@ -818,6 +820,8 @@ class TrocarCadastradorView(CreateView):
             form.add_error('oficio','Você já possui uma solicitação pendente, aguarde sua análise')
             return super().form_invalid(form)
         
+        form.instance.oficio = form.cleaned_data['oficio']
+        self.object = form.save()
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
