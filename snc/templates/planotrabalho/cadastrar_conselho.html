@@ -45,11 +45,9 @@
     <label for="{{ form.possui_ata.id_for_label }}">
       Possui alguma ata da última reunião do conselho?</br>
     </label>
-    {% if form.sistema.conselho.situacao != 2 %}
+    
       {% render_field form.possui_ata class="radio" %}
-    {% else %}
-      {% render_field form.possui_ata disabled="disabled" class="radio" %}
-    {% endif %}
+    
   </div>
 
   <div id="ata_form">
@@ -57,11 +55,9 @@
       <label for="{{ form.data_publicacao.id_for_label }}">
         Data de Assinatura da Ata da última reunião
       </label>
-      {% if form.sistema.conselho.situacao != 2 %}
+      
         {% render_field form.data_publicacao class="form-control date half-width" %}
-      {% else %}
-        {% render_field form.data_publicacao disabled="disabled" class="form-control date half-width" %}
-      {% endif %}
+      
     </div>
 
     <div class="form-group">
