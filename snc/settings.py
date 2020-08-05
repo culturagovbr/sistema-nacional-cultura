@@ -164,7 +164,7 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.s
 # MANAGER CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
-    ("""Your Name""", 'Your email'),
+    ("""Daniel D. Fernandes""", 'daniel.fernandes@basis.com.br'),
 )
 
 CACHES = {
