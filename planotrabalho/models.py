@@ -76,7 +76,7 @@ LISTA_ESFERAS_FEDERACAO = (
 
 BANCOS = (
     (0, "Selecione o Banco"),
-    (1, "001 - BANCODO BRASIL S.A"),
+    (1, "001 - BANCO DO BRASIL S.A"),
     (2, "104 - CAIXA ECONOMICA FEDERAL"),
 )
 

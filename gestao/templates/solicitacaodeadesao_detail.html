@@ -32,9 +32,11 @@
               <div style="display: flex">
                 <form method="post" action="{% url 'gestao:solicitacao_de_adesao:aprovar' object.pk %}">
                   {% csrf_token %}
-                  <button type="submit">Aprovar</button>
+                  <button class="btn btn-primary pull-right" type="submit">Aprovar</button>
                 </form>
-                <button style="margin-left: 20px;" data-toggle="modal" data-target="#alterarAdesaoEnte">Rejeitar</button>
+                <button class="btn btn-danger pull-right" style="margin-left: 20px;" data-toggle="modal" data-target="#alterarAdesaoEnte">Rejeitar</button>
+                <a href="{% url 'gestao:solicitacao_de_adesao:list' %}" class="btn btn-secondary pull-right" style="margin-left: 20px;">Cancelar</a>
+              
               </div>
             {% endif %}
           </div>
