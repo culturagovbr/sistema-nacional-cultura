@@ -33,6 +33,10 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='orgao_gestor__data_publicacao', lookup_expr=('gte'))
     data_orgao_gestor_max = filters.DateFilter(
         field_name='orgao_gestor__data_publicacao', lookup_expr=('lte'))
+    data_orgao_gestor_cnpj_min = filters.DateFilter(
+        field_name='orgao_gestor__comprovante_cnpj__data_envio', lookup_expr=('gte'))
+    data_orgao_gestor_cnpj_max = filters.DateFilter(
+        field_name='orgao_gestor__comprovante_cnpj__data_envio', lookup_expr=('lte'))
     data_conselho_min = filters.DateFilter(
         field_name='conselho__data_publicacao', lookup_expr=('gte'))
     data_conselho_max = filters.DateFilter(
@@ -49,8 +53,6 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='fundo_cultura__comprovante_cnpj__data_envio', lookup_expr=('gte'))
     data_fundo_cultura_cnpj_max = filters.DateFilter(
         field_name='fundo_cultura__comprovante_cnpj__data_envio', lookup_expr=('lte'))
-
-
     data_plano_min = filters.DateFilter(
         field_name='plano__data_publicacao', lookup_expr=('gte'))
     data_plano_max = filters.DateFilter(
@@ -59,6 +61,10 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='plano__metas__data_envio', lookup_expr=('gte'))
     data_plano_meta_max = filters.DateFilter(
         field_name='plano__metas__data_envio', lookup_expr=('lte'))
+
+    orgao_gestor_dados_bancarios = filters.BooleanFilter(method='gestor_dados_bancarios_filter')
+    fundo_cultura_dados_bancarios = filters.BooleanFilter(method='fundo_cultura_dados_bancarios_filter')
+
     situacao_lei_sistema = filters.ModelMultipleChoiceFilter(
         queryset=Componente.objects.all(),
         field_name='legislacao__situacao',
@@ -84,6 +90,7 @@ class SistemaCulturaFilter(filters.FilterSet):
         field_name='plano__situacao',
         to_field_name='situacao'
     )
+
     municipal = filters.BooleanFilter(method='municipal_filter')
     estadual = filters.BooleanFilter(method='estadual_filter')
 
@@ -92,6 +99,17 @@ class SistemaCulturaFilter(filters.FilterSet):
         exclude = (
             'oficio_cadastrador',
             'oficio_prorrogacao_prazo',)
+
+    def gestor_dados_bancarios_filter(self, queryset, name, value):
+        queryset = queryset.exclude(orgao_gestor__banco='').exclude(orgao_gestor__agencia='').exclude(orgao_gestor__conta='').exclude(orgao_gestor__banco__isnull=True).exclude(orgao_gestor__agencia__isnull=True).exclude(orgao_gestor__conta__isnull=True)
+        
+        return queryset
+
+    def fundo_cultura_dados_bancarios_filter(self, queryset, name, value):
+        queryset = queryset.exclude(fundo_cultura__banco='').exclude(fundo_cultura__agencia='').exclude(fundo_cultura__conta='').exclude(fundo_cultura__banco__isnull=True).exclude(fundo_cultura__agencia__isnull=True).exclude(fundo_cultura__conta__isnull=True)
+
+        return queryset
+
 
     def sigla_filter(self, queryset, name, value):
         try:
