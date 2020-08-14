@@ -98,7 +98,6 @@ def preenche_planilha(planilha, codigos):
             else:
                 planilha.write(i, 8, 'Não')
 
-            print("Dados ancários" + sistema.orgao_gestor.banco)
             if sistema.orgao_gestor.banco != '0':
                 planilha.write(i, 10, 'Sim')
             else:
