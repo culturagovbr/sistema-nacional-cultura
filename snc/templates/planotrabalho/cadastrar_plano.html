@@ -93,22 +93,18 @@
     <label for="{{ form.possui_metas.id_for_label }}">
       Possui metas?</br>
     </label>
-    {% if form.sistema.plano.metas.situacao != 2 %}
+   
       {% render_field form.possui_metas class="radio" %}
-    {% else %}
-      {% render_field form.possui_metas disabled="disabled" class="radio" %}
-    {% endif %}
+   
   </div>
 
   <div class="form-group" id="metas_na_lei" style="display: none">
     <label for="{{ form.metas_na_lei.id_for_label }}">
       As metas estão descritas no mesmo documento da Lei do Plano de Cultura e seu anexo (se houver)?</br>
     </label>
-    {% if form.sistema.plano.metas.situacao != 2 %}
+   
       {% render_field form.metas_na_lei class="radio" %}
-    {% else %}
-      {% render_field form.metas_na_lei disabled="disabled" class="radio" %}
-    {% endif %}
+   
   </div>
 
   <div class="form-group" id="metas" style="display: none">
@@ -117,12 +113,10 @@
     </label>
     {% if form.arquivo_metas.value %}
       <p><a href="{{ form.arquivo_metas.value.url }}">Baixar arquivo atual</a></p>
-      {% if form.sistema.plano.metas.situacao != 2 %}
+      
         <p>Modificar: {% render_field form.arquivo_metas %}</p>
       {% endif %}
-    {% else %}
-      <p>{% render_field form.arquivo_metas %}</p>
-    {% endif %}
+    
   </div>
 
   <div class="form-group">
