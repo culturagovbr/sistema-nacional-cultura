@@ -2,5 +2,20 @@
 
 {% block content %}
 <h3>Solicitação realizado com sucesso!</h3>
+<p>Prezado (a) {{ request.user.usuario.nome_usuario }},</p>
+<p>
+    Sua solicitação foi enviada para análise da equipe do Sistema Nacional de Cultura. 
+</p>
+<p>
+    A Equipe do Sistema Nacional de Cultura (SNC) concluirá a alteração do seu perfil de cadastrador e enviará uma mensagem de confirmação para o seu e-mail cadastrado.
+    Caso seja necessária alguma diligência, esta será registrada na plataforma.
+</p>
+<p>
+    Atenciosamente,
+</p>
+<p>   
+    Equipe do Sistema Nacional de Cultura
+    <br/>
+</p>
 <a class="btn btn-success" href="{% url 'adesao:index' %}">OK</a>
 {% endblock content %}
