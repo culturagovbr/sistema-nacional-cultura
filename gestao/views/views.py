@@ -1,88 +1,50 @@
 import json
-from django_datatables_view.base_datatable_view import BaseDatatableView
+from datetime import date
 
-from django.utils.html import escape
+from adesao.models import (LISTA_ESTADOS_PROCESSO, Cidade, EnteFederado,
+                           Funcionario, Gestor, Municipio, SistemaCultura,
+                           SolicitacaoDeAdesao,
+                           SolicitacaoDeTrocaDeCadastrador, Usuario)
+from adesao.views import (AlterarFuncionario, AlterarSistemaCultura,
+                          CadastrarFuncionario)
+from dal import autocomplete
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import Group, User
+from django.core.files.storage import FileSystemStorage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.utils.translation import gettext as _
-from django.http import QueryDict
-
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-
-from django.http import Http404
-from django.http import JsonResponse
-from django.http import HttpResponse
-
-from django.contrib.auth.models import User
-from django.contrib import messages
-
-from django.views.generic.detail import SingleObjectMixin
-
-from django.views.generic import CreateView
-from django.views.generic import DetailView
-from django.views.generic import ListView
-from django.views.generic import TemplateView
-
-from django.views.generic.edit import UpdateView
-
+from django.http import (Http404, HttpResponse, HttpResponseRedirect,
+                         JsonResponse, QueryDict)
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-
-from dal import autocomplete
-
-from templated_email.generic_views import TemplatedEmailFormViewMixin
-
-from adesao.models import Usuario,Municipio,SistemaCultura,EnteFederado,Gestor,Funcionario,LISTA_ESTADOS_PROCESSO,SolicitacaoDeTrocaDeCadastrador, SolicitacaoDeAdesao
-
-from planotrabalho.models import Componente
-from planotrabalho.models import FundoDeCultura
-from planotrabalho.models import PlanoDeCultura
-from planotrabalho.models import ConselhoDeCultura
-from planotrabalho.models import OrgaoGestor2
-from planotrabalho.models import LISTA_TIPOS_COMPONENTES
-
-from planotrabalho.views import AlterarPlanoCultura
-from planotrabalho.views import AlterarOrgaoGestor
-from planotrabalho.views import AlterarFundoCultura
-from planotrabalho.views import AlterarConselhoCultura
-
-from planotrabalho.forms import CriarFundoFormGestao
-
-from gestao.utils import empty_to_none, get_uf_by_mun_cod, scdc_user_group_required
 from django.utils.decorators import method_decorator
-
-from django.contrib.auth.models import Group
-
-from django.contrib.auth.decorators import user_passes_test
-
-from gestao.models import DiligenciaSimples, Contato
-
-from gestao.forms import DiligenciaComponenteForm
-from gestao.forms import DiligenciaGeralForm
-from gestao.forms import AlterarDocumentosEnteFederadoForm
-from gestao.forms import AlterarUsuarioForm
-from gestao.forms import AlterarComponenteForm
-from gestao.forms import AlterarDadosEnte
-from gestao.forms import CriarContatoForm
-
-from planotrabalho.forms import CriarComponenteForm
-from planotrabalho.forms import CriarFundoForm
-from planotrabalho.forms import CriarConselhoForm
-from planotrabalho.forms import CriarOrgaoGestorForm, CriarOrgaoGestorFormGestao
-from planotrabalho.forms import CriarPlanoForm
-
-from gestao.forms import CadastradorEnte
-from gestao.forms import AditivarPrazoForm
-
-from adesao.views import AlterarSistemaCultura
-from adesao.views import AlterarFuncionario
-from adesao.views import CadastrarFuncionario
-
+from django.utils.html import escape
+from django.utils.translation import gettext as _
+from django.views.generic import (CreateView, DetailView, FormView, ListView,
+                                  TemplateView)
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import UpdateView
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from gestao.forms import (AditivarPrazoForm, AlterarComponenteForm,
+                          AlterarDadosEnte, AlterarDocumentosEnteFederadoForm,
+                          AlterarUsuarioForm, CadastradorEnte,
+                          CriarContatoForm, DiligenciaComponenteForm,
+                          DiligenciaGeralForm, GerarListaDeEmailsForm)
+from gestao.models import Contato, DiligenciaSimples
+from gestao.utils import (empty_to_none, get_uf_by_mun_cod,
+                          scdc_user_group_required)
+from planotrabalho.forms import (CriarComponenteForm, CriarConselhoForm,
+                                 CriarFundoForm, CriarFundoFormGestao,
+                                 CriarOrgaoGestorForm,
+                                 CriarOrgaoGestorFormGestao, CriarPlanoForm)
+from planotrabalho.models import (LISTA_TIPOS_COMPONENTES, Componente,
+                                  ConselhoDeCultura, FundoDeCultura,
+                                  OrgaoGestor2, PlanoDeCultura)
+from planotrabalho.views import (AlterarConselhoCultura, AlterarFundoCultura,
+                                 AlterarOrgaoGestor, AlterarPlanoCultura)
 from snc.client import Client
-
-from django.core.files.storage import FileSystemStorage
-
-from datetime import date
+from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 
 def dashboard(request, **kwargs):
@@ -602,8 +564,6 @@ class ListarUsuarios(TemplateView):
     template_name = 'gestao/listar_usuarios.html'
 
 
-
-
 def alterar_usuario(request):
     field_name = request.POST.get('name', None)
     field_value = request.POST.get('value', None)
@@ -831,8 +791,6 @@ class AlterarFundoCultura(AlterarFundoCultura):
         return reverse_lazy(
             'gestao:detalhar',
             kwargs={'cod_ibge': ente_pk})
-
-
 
 
 class AlterarOrgaoGestor(AlterarOrgaoGestor):
@@ -1469,3 +1427,97 @@ class DataTableListarDocumentos(BaseDatatableView):
                 item.legislacao.arquivo.url if item.legislacao and item.legislacao.arquivo else '',
             ])
         return json_data
+
+
+class GerarListaDeEmail(FormView):
+    template_name = 'gerar_lista_de_email.html'
+    form_class = GerarListaDeEmailsForm
+
+    def form_valid(self, form):
+        self.form = form    
+        query = self.consultar(self.form.cleaned_data)
+        emails = self.get_emails(query)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="Lista de email.csv'
+
+        return self.write_csv(emails, response)
+
+
+    def consultar(self, dados):
+        situacoes = []
+        if dados['aguardando_preenchimento_dos_dados_cadastrais']:
+            situacoes.append('0')
+        if dados['aguardando_envio_da_documentacao']:
+            situacoes.append('1')
+        if dados['aguardando_renovacao_da_adesao']:
+            situacoes.append('2')
+        if dados['diligencia_documental']:
+            situacoes.append('5')
+        if dados['aguardando_analise_do_plano_de_trabalho']:
+            situacoes.append('4')
+        if dados['publicado_no_dou']:
+            situacoes.append('6')
+        if dados['acordo_de_cooperação_e_termo_de_adesao_aprovados']:
+            situacoes.append('7')
+        
+        if len(situacoes) == 0:
+            situacoes = ['0','1','2','4','5','6','7']
+
+        results = []
+        for situacao in situacoes:
+            if dados['uf'] == '0':
+                results += SistemaCultura.sistema.filter(estado_processo = situacao)
+            else:
+                results += SistemaCultura.sistema.filter(ente_federado__cod_ibge__startswith=dados['uf'],
+                                              estado_processo = situacao)
+                
+            print(situacao, len(results))
+
+        return self.filter_estado_municipio(dados['estados'], dados['municipios'], results)
+        
+    def get_emails(self, queries):
+        emails = []
+        for query in queries:
+            if query.cadastrador:
+                emails.append(self.add_record(str(query.ente_federado), query.cadastrador.user.email, 'cadastrador'))
+                continue
+            if query.gestor_cultura:
+                emails.append(self.add_record(str(query.ente_federado), str(query.gestor_cultura.email_institucional), 'gestor de cultura'))
+                continue
+            if query.ente_federado:
+                cid = Cidade.objects.filter(nome_municipio=query.ente_federado.nome)
+                if len(cid) > 0:
+                    mun = cid[0].municipio_set.all()
+                    if len(mun) > 0:
+                        if mun[0].email_institucional_prefeito:
+                            emails.append(self.add_record(str(query.ente_federado), str(mun[0].email_institucional_prefeito), 'Prefeito'))
+                            print(mun[0].email_institucional_prefeito)            
+        return emails
+
+    def add_record(self, ente_federado, email, added_from):
+        #print('email found for', ente_federado, 'in', added_from)
+        return {"ente_federado":ente_federado, "email":email}
+
+    def filter_estado_municipio(self, is_estado, is_municipio, results):
+        if is_estado and is_municipio:
+            return results
+        if (not is_estado) and (not is_municipio):
+            return results
+        
+        output = []
+        for sistema in results:
+            if sistema.ente_federado:
+                if sistema.ente_federado.is_municipio and is_municipio:
+                    output.append(sistema)
+                elif not sistema.ente_federado.is_municipio and is_estado:
+                    output.append(sistema)
+        return output
+
+    def write_csv(self, data, response):
+        import csv
+        csv_writter = csv.writer(response)
+        csv_writter.writerow(["Estado/Município", "Email"])
+        print(data)
+        for d in data:
+            csv_writter.writerow([d.get('ente_federado'), d.get('email')])
+        return response
