@@ -156,5 +156,8 @@ urlpatterns = [
     url(r'^datatable-docs-componentes$', staff_member_required(views.DataTableListarDocumentos.as_view()),
         name='ajax_docs_componentes'),
 
+    url(r'^gerar-lista-de-email$', staff_member_required(views.GerarListaDeEmail.as_view()),
+        name='gerar_lista_de_email'),
+
 ]
 

@@ -1,0 +1,73 @@
+{% extends "gestao/base_gestao.html" %} {% load gestao_tags %} {% block content %}
+{% load widget_tweaks %}
+  <menu data-target="gerar-lista-de-email"></menu>
+  
+  <div class="card">
+    <div class="card-header card-header-primary">
+      <h4 class="card-title">Gerar lista de email</h4>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <form method="post">{% csrf_token %}
+          <div class="container">
+            <div class="row">
+  
+              <div class="col-3">
+                <b>Tipo de ente</b>
+                <div class="fieldWrapper">
+                  {{ form.estados }}
+                  <label for="{{ form.estados.id_for_label }}">Estados</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.municipios }}
+                  <label for="{{ form.municipios.id_for_label }}">Municipios</label>
+                </div>
+                <div class="fieldWrapper">
+                  <b>Estados</b>
+                </div>
+                <div class="fieldWrapper dropdown">
+                {{ form.uf }}
+                </div>
+              </div>
+  
+              <div class="col-6">
+                <b>Situação</b>
+                <div class="fieldWrapper">
+                  {{ form.aguardando_preenchimento_dos_dados_cadastrais }}
+                  <label for="{{ form.aguardando_preenchimento_dos_dados_cadastrais.id_for_label }}">Aguardando preenchimento dos dados cadastrais</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.aguardando_envio_da_documentacao }}
+                  <label for="{{ form.aguardando_envio_da_documentacao.id_for_label }}">Aguardando envio da documentação</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.aguardando_renovacao_da_adesao }}
+                  <label for="{{ form.aguardando_renovacao_da_adesao.id_for_label }}">Aguardando renovação da adesão</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.diligencia_documental }}
+                  <label for="{{ form.diligencia_documental.id_for_label }}">Diligência Documental</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.aguardando_analise_do_plano_de_trabalho }}
+                  <label for="{{ form.aguardando_analise_do_plano_de_trabalho.id_for_label }}">Aguardando análise do Plano de Trabalho</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.publicado_no_dou }}
+                  <label for="{{ form.publicado_no_dou.id_for_label }}">Publicado no DOU</label>
+                </div>
+                <div class="fieldWrapper">
+                  {{ form.acordo_de_cooperação_e_termo_de_adesao_aprovados }}
+                  <label for="{{ form.acordo_de_cooperação_e_termo_de_adesao_aprovados.id_for_label }}">Acordo de Cooperação e Termo de Adesão aprovados</label>
+                </div>
+              </div>
+            </div>
+
+            <input type="submit" value='Gerar Lista'>
+          </div>
+            
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
