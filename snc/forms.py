@@ -46,6 +46,13 @@ class BRCNPJField(BRCNPJField):
         return data
 
 class CPFPasswordResetForm(PasswordResetForm):
-    CPF = forms.CharField()
+    CPF = forms.CharField(widget=forms.TextInput(attrs={'data-mask':"000.000.000-00"}))
     email = forms.CharField(required=False)
+
+    def clean_CPF(self):
+        dirty_cpf = self.data.get('CPF')
+        semi_dirty_cpf = dirty_cpf.translate({ord('.'): None})
+        cpf = semi_dirty_cpf.translate({ord('-'): None})
+        self.cleaned_data['CPF'] = cpf
+        return self.cleaned_data['CPF']
     
