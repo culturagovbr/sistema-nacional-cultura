@@ -12,6 +12,8 @@ from django.contrib.auth.views import PasswordResetCompleteView
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.views import PasswordChangeDoneView
 
+from snc.views import CPFPasswordResetView, CPFPasswordResetDoneView
+
 from adesao import views
 
 urlpatterns = [
@@ -26,13 +28,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^password_reset/$',
-        PasswordResetView.as_view(),
-        {'template_name': 'registration/password_reset_form.html'},
+        CPFPasswordResetView.as_view(),
         name='password_reset'),
 
     url(r'^password_reset_done/$',
-        PasswordResetDoneView.as_view(),
-        {'template_name': 'registration/password_reset_done.html'},
+        CPFPasswordResetDoneView.as_view(),
         name='password_reset_done'),
 
     url(r'^password_reset_confirm/' +
