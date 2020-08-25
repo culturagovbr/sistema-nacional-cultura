@@ -262,3 +262,47 @@ class AditivarPrazoForm(ModelForm):
     class Meta:
         model = SistemaCultura
         fields = ('oficio_prorrogacao_prazo',)
+
+class GerarListaDeEmailsForm(forms.Form):
+    UFS = [
+        (0, "Todos"),
+        (12, "AC"),
+        (27, "AL"),
+        (13, "AM"),
+        (16, "AP"),
+        (29, "BA"),
+        (23, "CE"),
+        (53, "DF"),
+        (32, "ES"),
+        (52, "GO"),
+        (21, "MA"),
+        (31, "MG"),
+        (50, "MS"),
+        (51, "MT"),
+        (15, "PA"),
+        (25, "PB"),
+        (26, "PE"),
+        (22, "PI"),
+        (41, "PR"),
+        (33, "RJ"),
+        (24, "RN"),
+        (11, "RO"),
+        (14, "RR"),
+        (43, "RS"),
+        (42, "SC"),
+        (28, "SE"),
+        (35, "SP"),
+        (17, "TO")
+    ]
+    uf = forms.CharField(label='UF', widget=forms.Select(choices=UFS))
+    estados = forms.BooleanField(required=False)
+    municipios = forms.BooleanField(required=False)
+    aguardando_preenchimento_dos_dados_cadastrais = forms.BooleanField(required=False)
+    aguardando_envio_da_documentacao = forms.BooleanField(required=False)
+    aguardando_renovacao_da_adesao = forms.BooleanField(required=False)
+    diligencia_documental = forms.BooleanField(required=False)
+    aguardando_analise_do_plano_de_trabalho = forms.BooleanField(required=False)
+    publicado_no_dou = forms.BooleanField(required=False)
+    acordo_de_cooperação_e_termo_de_adesao_aprovados = forms.BooleanField(required=False)
+    
+    

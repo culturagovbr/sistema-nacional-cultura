@@ -111,7 +111,7 @@ class CadastrarFundoDeCultura(CadastrarComponente):
 
     def get_context_data(self, **kwargs):
         context = super(CadastrarFundoDeCultura, self).get_context_data(**kwargs)
-        context['is_edit'] = True
+        context['is_edit'] = False
         return context
 
 
@@ -266,9 +266,7 @@ class AlterarFundoCultura(UpdateView):
             kwargs['initial']['agencia'] = self.object.agencia
             kwargs['initial']['conta'] = self.object.conta
             kwargs['initial']['termo_responsabilidade'] = True
-
-        
-
+            
         return kwargs
 
     def get_context_data(self, **kwargs):

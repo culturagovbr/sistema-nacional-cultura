@@ -2,6 +2,7 @@ from django import forms
 from django.template.defaultfilters import filesizeformat
 from localflavor.br.forms import BRCNPJField
 from snc.client import Client
+from django.contrib.auth.forms import PasswordResetForm
 
 
 class RestrictedFileField(forms.FileField):
@@ -43,3 +44,15 @@ class BRCNPJField(BRCNPJField):
                 raise forms.ValidationError('CNPJ Inválido')
 
         return data
+
+class CPFPasswordResetForm(PasswordResetForm):
+    CPF = forms.CharField(widget=forms.TextInput(attrs={'data-mask':"000.000.000-00"}))
+    email = forms.CharField(required=False)
+
+    def clean_CPF(self):
+        dirty_cpf = self.data.get('CPF')
+        semi_dirty_cpf = dirty_cpf.translate({ord('.'): None})
+        cpf = semi_dirty_cpf.translate({ord('-'): None})
+        self.cleaned_data['CPF'] = cpf
+        return self.cleaned_data['CPF']
+    

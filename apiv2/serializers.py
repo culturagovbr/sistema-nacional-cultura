@@ -6,6 +6,7 @@ from adesao.models import Municipio
 from adesao.models import Uf
 from adesao.models import Cidade
 from planotrabalho.models import Componente
+from planotrabalho.models import OrgaoGestor2
 from planotrabalho.models import Conselheiro
 from planotrabalho.models import FundoDeCultura
 from planotrabalho.models import PlanoDeCultura
@@ -82,18 +83,29 @@ class FundoComponenteSerializer(hal_serializers.HalModelSerializer):
 
     class Meta:
         model = FundoDeCultura
-        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj')
+        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
+
+
+class OrgaoComponenteSerializer(hal_serializers.HalModelSerializer):
+    situacao = serializers.CharField(source='get_situacao_display')
+    cod_situacao = serializers.CharField(source='situacao')
+
+    class Meta:
+        model = OrgaoGestor2
+        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
 
 
 class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
     criacao_lei_sistema = ComponenteSCSerializer(source='legislacao')
-    criacao_orgao_gestor = ComponenteSCSerializer(source='orgao_gestor')
-    criacao_plano_cultura = ComponenteSCSerializer(source='plano')
-    criacao_plano_metas = serializers.SerializerMethodField()
+    criacao_orgao_gestor = OrgaoComponenteSerializer(source='orgao_gestor')
+    criacao_orgao_gestor_cnpj = serializers.SerializerMethodField()
     criacao_conselho_cultural_ata = ComponenteSCSerializer(source='conselho')
     criacao_conselho_cultural_lei = serializers.SerializerMethodField()
     criacao_fundo_cultura = FundoComponenteSerializer(source='fundo_cultura')
     criacao_fundo_cultura_cnpj = serializers.SerializerMethodField()
+    criacao_plano_cultura = ComponenteSCSerializer(source='plano')
+    criacao_plano_metas = serializers.SerializerMethodField()
+    
     self = HalHyperlinkedIdentityField(view_name='api:planotrabalho-detail')
 
     def get_criacao_conselho_cultural_lei(self, obj):
@@ -114,6 +126,14 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
                 context=self.context
             ).data
         return None
+    
+    def get_criacao_orgao_gestor_cnpj(self, obj):
+        if getattr(obj.orgao_gestor, 'comprovante_cnpj', None):
+            return ComponenteSCSerializer(
+                instance=obj.orgao_gestor.comprovante_cnpj,
+                context=self.context
+            ).data
+        return None
 
     def get_criacao_plano_metas(self, obj):
         if getattr(obj.plano, 'metas', None):
@@ -125,6 +145,8 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
 
     def to_representation(self, instance):
         context = super(PlanoTrabalhoSCSerializer, self).to_representation(instance)
+        context['_embedded']['criacao_orgao_gestor_cnpj'] = context['criacao_orgao_gestor_cnpj']
+        del context['criacao_orgao_gestor_cnpj']
         context['_embedded']['criacao_conselho_cultural_lei'] = context['criacao_conselho_cultural_lei']
         del context['criacao_conselho_cultural_lei']
         context['_embedded']['criacao_fundo_cultura_cnpj'] = context['criacao_fundo_cultura_cnpj']
@@ -140,12 +162,13 @@ class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):
             'self',
             'criacao_lei_sistema',
             'criacao_orgao_gestor',
-            'criacao_plano_cultura',
-            'criacao_plano_metas',
+            'criacao_orgao_gestor_cnpj',
+            'criacao_conselho_cultural_lei',
+            'criacao_conselho_cultural_ata',
             'criacao_fundo_cultura',
             'criacao_fundo_cultura_cnpj',
-            'criacao_conselho_cultural_lei',
-            'criacao_conselho_cultural_ata')
+            'criacao_plano_cultura',
+            'criacao_plano_metas',)
 
 
 class PlanoTrabalhoSerializer(PlanoTrabalhoSCSerializer):
@@ -266,6 +289,7 @@ class SistemaCulturaDetailSerializer(PlanoTrabalhoSCSerializer):
             "id",
             "criacao_lei_sistema",
             "criacao_orgao_gestor",
+            "criacao_orgao_gestor_cnpj",
             "criacao_conselho_cultural_ata",
             "criacao_conselho_cultural_lei",
             "criacao_plano_cultura",

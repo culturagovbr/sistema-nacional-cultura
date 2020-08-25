@@ -2,6 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
 <div class="container">
+<div id="form-type" data-form-type="{{is_edit}}"></div>
 <form id="form" method="post" class="componente-form" enctype="multipart/form-data">
   {% csrf_token %}
 
@@ -55,6 +56,7 @@
     });
 
     var formularioComponente = $('form.componente-form');
+
     if ($('#form-type').data('form-type') === 'True'){
       formularioComponente.after(`
         <a type="button" id="botaoSalvarConfirmacao" class="btn btn-success">Salvar</a>
