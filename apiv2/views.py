@@ -69,7 +69,7 @@ class SistemaCulturaAPIList(generics.ListAPIView):
         planilha = workbook.add_worksheet("SNC")
         ultima_linha = preenche_planilha(planilha, ids)
 
-        planilha.autofilter(0, 0, ultima_linha, 3)
+        planilha.autofilter(0, 0, ultima_linha, 35)
         workbook.close()
         output.seek(0)
 
