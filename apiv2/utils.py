@@ -19,14 +19,14 @@ def preenche_planilha(planilha, codigos):
     planilha.write(0, 9, "Órgão Gestor - CNPJ")
     planilha.write(0, 10, "Órgão Gestor - Possui Dados Bancários?")
 
-    planilha.write(0, 11, "Lei Fundo Cultural") #11
-    planilha.write(0, 12, "Mesma lei do sistema de cultura") #12
-    planilha.write(0, 13, "Fundo Cultural - Possui CNPJ?") #13
-    planilha.write(0, 14, "Fundo Cultural - CNPJ") #14
+    planilha.write(0, 11, "Lei Fundo Cultural") 
+    planilha.write(0, 12, "Mesma lei do sistema de cultura") 
+    planilha.write(0, 13, "Fundo Cultural - Possui CNPJ?") 
+    planilha.write(0, 14, "Fundo Cultural - CNPJ") 
 
     planilha.write(0, 15, "Fundo Cultural - Possui Dados Bancários?")
 
-    planilha.write(0, 16, "Lei Plano de Cultura") #16
+    planilha.write(0, 16, "Lei Plano de Cultura") 
     planilha.write(0, 17, "Plano é Exclusivo de Cultura?")
     planilha.write(0, 18, "Data Publicação da Lei (Plano)")
     planilha.write(0, 19, "Lei possuí anexo?")
@@ -57,10 +57,12 @@ def preenche_planilha(planilha, codigos):
 
     for i, sistema in enumerate(sistemaCultura, start=1):
         if sistema.ente_federado:
-            nome = "Estado de " + sistema.ente_federado.nome
+            
             if sistema.ente_federado.cod_ibge > 100 or \
                 sistema.ente_federado.cod_ibge == 53:
                 nome = sistema.ente_federado.nome
+            elif sistema.ente_federado.cod_ibge < 100 and sistema.ente_federado.cod_ibge != 53:
+                nome = "Estado de " + sistema.ente_federado.nome
             else:
                 nome = "Não cadastrado"
 
