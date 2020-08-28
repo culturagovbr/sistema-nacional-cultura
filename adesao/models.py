@@ -526,7 +526,7 @@ class SistemaCultura(models.Model):
         Retornar uma lista contendo a situação de cada componente de um SistemaCultura
         """
 
-        componentes = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
+        componentes = ('legislacao', 'orgao_gestor', 'orgao_gestor_cnpj','fundo_cultura', 'fundo_cultura_cnpj', 'conselho', 'plano')
         objetos = (getattr(self, componente, None) for componente in componentes)
 
         situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if

@@ -270,6 +270,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             2: "fundo_cultura",
             3: "conselho",
             4: "plano",
+            5: "orgao_gestor_cnpj",
+            6: "fundo_cultura_cnpj",
         }
 
         for componente_id, componente_nome in componentes.items():
@@ -279,6 +281,9 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             if not arquivo_componente:
                 descricao = self.get_descricao_componente(componente_id)
                 if componente_nome == 'fundo_cultura':
+                    descricao += ' (Lei e Comprovante do CNPJ)'
+
+                if componente_nome == 'orgao_gestor':
                     descricao += ' (Lei e Comprovante do CNPJ)'
 
                 if componente_nome == 'conselho':
@@ -342,7 +347,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
-        print(context)
+        #print(context)
         return context
 
     def get_descricao_componente(self, id):
@@ -399,6 +404,8 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
             2: "fundo_cultura",
             3: "conselho",
             4: "plano",
+            5: "orgao_gestor_cnpj",
+            6: "fundo_cultura_cnpj",
         }
 
         for componente_id, componente_nome in componentes.items():
@@ -408,6 +415,9 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
             if not arquivo_componente:
                 descricao = self.get_descricao_componente(componente_id)
                 if componente_nome == 'fundo_cultura':
+                    descricao += ' (Lei e Comprovante do CNPJ)'
+
+                if componente_nome == 'orgao_gestor':
                     descricao += ' (Lei e Comprovante do CNPJ)'
 
                 if componente_nome == 'conselho':
@@ -885,9 +895,20 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
+        print(self.kwargs)
+        print(self.kwargs['arquivo'])
+        if self.kwargs['arquivo'] == "arquivo":
+            context['tipo_componente'] = ""
+        else:
+            if self.kwargs['componente'] == "orgao_gestor":
+                context['tipo_componente'] = "Órgao Gestor - Comprovante CNPJ"
+            if self.kwargs['componente'] == "fundo_cultura":
+                context['tipo_componente'] = "Fundo Cultura - Comprovante CNPJ"
+
         context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias(
             componente=self.kwargs['componente'],
             arquivo=self.kwargs['arquivo'])
+
         return context
 
     def form_invalid(self, form):
@@ -1389,6 +1410,16 @@ class DataTablePlanoTrabalho(BaseDatatableView):
                         item.fundo_cultura.comprovante_cnpj.arquivo.url
                     )
 
+            if (componente == 'orgao_gestor'):
+                json_response[2] = [
+                    escape(item.sede.cnpj) if item.sede else '',
+                    escape(item.orgao_gestor.cnpj) if item.orgao_gestor.cnpj else '',
+                ]
+                if getattr(item.orgao_gestor, 'comprovante_cnpj', None):
+                    json_response.append(
+                        item.orgao_gestor.comprovante_cnpj.arquivo.url
+                    )
+
             if getattr(getattr(item, componente), 'lei', None):
                 json_response.append(
                     getattr(item, componente).lei.arquivo.url
@@ -1470,8 +1501,6 @@ class GerarListaDeEmail(FormView):
             else:
                 results += SistemaCultura.sistema.filter(ente_federado__cod_ibge__startswith=dados['uf'],
                                               estado_processo = situacao)
-                
-            print(situacao, len(results))
 
         return self.filter_estado_municipio(dados['estados'], dados['municipios'], results)
         
@@ -1517,7 +1546,6 @@ class GerarListaDeEmail(FormView):
         import csv
         csv_writter = csv.writer(response)
         csv_writter.writerow(["Estado/Município", "Email"])
-        print(data)
         for d in data:
             csv_writter.writerow([d.get('ente_federado'), d.get('email')])
         return response
