@@ -38,7 +38,7 @@ from planotrabalho.forms import (CriarComponenteForm, CriarConselhoForm,
                                  CriarFundoForm, CriarFundoFormGestao,
                                  CriarOrgaoGestorForm,
                                  CriarOrgaoGestorFormGestao, CriarPlanoForm)
-from planotrabalho.models import (LISTA_TIPOS_COMPONENTES, Componente,
+from planotrabalho.models import (LISTA_SITUACAO_ARQUIVO, LISTA_TIPOS_COMPONENTES, Componente,
                                   ConselhoDeCultura, FundoDeCultura,
                                   OrgaoGestor2, PlanoDeCultura)
 from planotrabalho.views import (AlterarConselhoCultura, AlterarFundoCultura,
@@ -895,8 +895,6 @@ class DiligenciaComponenteView(CreateView):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['data_envio'] = self.get_componente().data_envio
         context['componente'] = componente
-        print(self.kwargs)
-        print(self.kwargs['arquivo'])
         if self.kwargs['arquivo'] == "arquivo":
             context['tipo_componente'] = ""
         else:

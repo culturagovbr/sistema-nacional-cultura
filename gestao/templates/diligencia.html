@@ -33,32 +33,40 @@
             <div class="row">
               <div class="col-md-4">
                   {% if componente == plano_trabalho %}
-                    <table class="table">
-                      <tr>
-                        <td>Ente Federado</td>
-                        <td>{{ sistema_cultura.ente_federado.nome }}</td>
-                      </tr>
-                      <tr>
-                        <td>Criação Sistema</td>
-                        <td>{{ situacoes.legislacao }}</td>
-                      </tr>
-                      <tr>
-                        <td>Fundo Cultura</td>
-                        <td>{{ situacoes.fundo_cultura }}</td>
-                      </tr>
-                      <tr>
-                        <td>Conselho Cultural</td>
-                        <td>{{ situacoes.conselho }}</td>
-                      </tr>
-                      <tr>
-                        <td>Orgão Gestor</td>
-                        <td>{{ situacoes.orgao_gestor }}</td>
-                      </tr>
-                      <tr>
-                        <td>Plano Cultura</td>
-                        <td>{{ situacoes.plano }}</td>
-                      </tr>
-                    </table>
+                  <table class="table">
+                    <tr>
+                      <td>Ente Federado</td>
+                      <td>{{ sistema_cultura.ente_federado.nome }}</td>
+                    </tr>
+                    <tr>
+                      <td>Criação Sistema</td>
+                      <td>{{ situacoes.legislacao }}</td>
+                    </tr>
+                    <tr>
+                      <td>Fundo Cultura</td>
+                      <td>{{ situacoes.fundo_cultura }}</td>
+                    </tr>
+                    <tr>
+                      <td>Fundo Cultura - Comprovante CNPJ</td>
+                      <td>{{ situacoes.fundo_cultura_cnpj }}</td>
+                    </tr>
+                    <tr>
+                      <td>Conselho Cultural</td>
+                      <td>{{ situacoes.conselho }}</td>
+                    </tr>
+                    <tr>
+                      <td>Orgão Gestor</td>
+                      <td>{{ situacoes.orgao_gestor }}</td>
+                    </tr>
+                    <tr>
+                      <td>Orgão Gestor - Comprovante CNPJ</td>
+                      <td>{{ situacoes.orgao_gestor_cnpj }}</td>
+                    </tr>
+                    <tr>
+                      <td>Plano Cultura</td>
+                      <td>{{ situacoes.plano }}</td>
+                    </tr>
+                  </table>
                   {% else %}
                     <table class="table">
                       <tr>
