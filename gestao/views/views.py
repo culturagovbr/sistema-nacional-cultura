@@ -1466,8 +1466,8 @@ class GerarListaDeEmail(FormView):
         self.form = form    
         query = self.consultar(self.form.cleaned_data)
         emails = self.get_emails(query)
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="Lista de email.csv'
+        response = HttpResponse(content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="Lista de email.txt'
 
         return self.write_csv(emails, response)
 
@@ -1543,7 +1543,8 @@ class GerarListaDeEmail(FormView):
     def write_csv(self, data, response):
         import csv
         csv_writter = csv.writer(response)
-        csv_writter.writerow(["Estado/Município", "Email"])
+        print(data)
+
         for d in data:
-            csv_writter.writerow([d.get('ente_federado'), d.get('email')])
+            csv_writter.writerow([d.get('email')+': '])
         return response
