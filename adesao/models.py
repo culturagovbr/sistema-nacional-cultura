@@ -13,6 +13,7 @@ from planotrabalho.models import PlanoDeCultura
 from planotrabalho.models import Componente
 from planotrabalho.models import ConselhoDeCultura
 from planotrabalho.models import OrgaoGestor2
+from planotrabalho.models import LISTA_SITUACAO_ARQUIVO
 
 from gestao.models import Diligencia
 
@@ -523,14 +524,26 @@ class SistemaCultura(models.Model):
 
     def get_situacao_componentes(self):
         """
-        Retornar uma lista contendo a situação de cada componente de um SistemaCultura
+        Retornar uma lista contendo a situação de cada componente e comporvante CNPJ de um SistemaCultura
         """
-
-        componentes = ('legislacao', 'orgao_gestor', 'fundo_cultura', 'conselho', 'plano')
+               
+        componentes = ('legislacao', 'orgao_gestor', 'orgao_gestor_cnpj','fundo_cultura', 'fundo_cultura_cnpj', 'conselho', 'plano')
         objetos = (getattr(self, componente, None) for componente in componentes)
 
         situacoes = {componente: objeto.get_situacao_display() for (componente, objeto) in zip(componentes, objetos) if
-                     objeto is not None}
+                     objeto is not None }
+        comp = {}
+
+        if self.orgao_gestor:
+            if self.orgao_gestor.comprovante_cnpj:
+                comp.update({'orgao_gestor_cnpj' : LISTA_SITUACAO_ARQUIVO[self.orgao_gestor.comprovante_cnpj.situacao][1]} )
+
+        if self.fundo_cultura:
+            if self.fundo_cultura.comprovante_cnpj:
+                comp.update({'fundo_cultura_cnpj' : LISTA_SITUACAO_ARQUIVO[self.fundo_cultura.comprovante_cnpj.situacao][1]} )
+
+        if comp:
+            situacoes.update(comp)
 
         return situacoes
 
