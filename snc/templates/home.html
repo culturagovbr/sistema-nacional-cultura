@@ -28,37 +28,45 @@
         {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
             {% if request.session.sistema_cultura_selecionado %}
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                <p style="text-align: justify;"> 
-                  {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
-                
-                   <a href="{% url 'adesao:cadastrar_sistema' %}" >
-                  {% blocktrans %}
-                      criar novo ente federado               
-                  {% endblocktrans %}
-                    </a>
-                  {% blocktrans %}
-                  ”</b> para iniciar o cadastro de um novo estado ou município"
-                  {% endblocktrans %}
-                  <p style="text-align: justify;">{% blocktrans %} Clique na aba {% endblocktrans %}<b>“
-
-                   <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" >
-                  {% blocktrans %}
-                      alterar novo ente federado              
-                   {% endblocktrans %}
-                    </a>
-                  {% blocktrans %}  
-                  "</b> para alterar informações e dados do estado ou município já cadastrado. 
-                  {% endblocktrans %}
-                  <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
-                    <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
-                    {% blocktrans %}
-                    gestor de cultura              
-                    {% endblocktrans %}
-                   </a>
-                    {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
-                    seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
-                    fundação de cultura)
-                    {% endblocktrans %}</p>
+                  {% if request.session.sistema_sede.cnpj !=  '' %}
+                    {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
+                      {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
+                      <p style="text-align: justify;"> 
+                        {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
+                      
+                        <a href="{% url 'adesao:cadastrar_sistema' %}" >
+                        {% blocktrans %}
+                            criar novo ente federado               
+                        {% endblocktrans %}
+                          </a>
+                        {% blocktrans %}
+                        ”</b> para iniciar o cadastro de um novo estado ou município"
+                        {% endblocktrans %}
+                        <p style="text-align: justify;">{% blocktrans %} Clique na aba {% endblocktrans %}<b>“
+      
+                        <a href="{% url 'adesao:alterar_sistema' pk=request.session.sistema_cultura_selecionado.id %}" >
+                        {% blocktrans %}
+                            alterar novo ente federado              
+                        {% endblocktrans %}
+                          </a>
+                        {% blocktrans %}  
+                        "</b> para alterar informações e dados do estado ou município já cadastrado. 
+                        {% endblocktrans %}
+                        <p style="text-align: justify;">Caso as informações do seu estado ou município já estejam atualizadas, clique em <br><b>”
+                          <a href="{% url 'adesao:cadastrar_funcionario' sistema=request.session.sistema_cultura_selecionado.id %}">
+                          {% blocktrans %}
+                          gestor de cultura              
+                          {% endblocktrans %}
+                        </a>
+                          {% blocktrans %}”</b> para iniciar o cadastro do gestor responsável pela pasta da cultura no
+                          seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
+                          fundação de cultura)
+                          {% endblocktrans %}</p>
+                      {% endif %}
+                    {% endif %}
+                  {% else %}
+                    {% include "conclusao_cadastro_ente_federado.html" %}
+                  {% endif %}
                 {% endif %}
             {% else %}
               <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
@@ -73,7 +81,15 @@
             {% endif %}
 
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
-            {% include "conclusao_cadastro.html" %}
+          {% if request.session.sistema_sede.cnpj !=  '' %}
+            {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
+              {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
+                {% include "conclusao_cadastro.html" %}
+              {% endif %}
+              {% else %}
+                {% include "conclusao_cadastro_ente_federado.html" %}
+              {% endif %}
+            {% endif %}
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '2' %}
           <p>
             Informamos o recebimento da documentação física necessária para efetivar a adesão ao SNC.
