@@ -131,9 +131,34 @@ class DiligenciaComponenteForm(DiligenciaForm):
     classificacao_arquivo = forms.TypedChoiceField(
         choices=LISTA_SITUACAO_ARQUIVO[1:7], required=False)
 
+    def get_tipo_componente(self, kwargs):
+        arg_list = kwargs
+        tipo_comp = arg_list.pop("componente")
+        arq = arg_list.pop("arquivo")
+
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
+            tipo_comp = "orgao_gestor_cnpj"
+        
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
+            tipo_comp = "fundo_cultura_cnpj"
+
+        return tipo_comp
+
+
     def __init__(self, *args, **kwargs):
-        self.tipo_componente = kwargs.pop("componente")
-        self.arquivo = kwargs.pop("arquivo")
+        arg_list = kwargs
+        tipo_comp = arg_list.pop("componente")
+        arq = arg_list.pop("arquivo")
+
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
+            tipo_comp = "orgao_gestor_cnpj"
+
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
+            tipo_comp = "fundo_cultura_cnpj"
+
+        self.tipo_componente = tipo_comp   
+
+        self.arquivo = arq
         super(DiligenciaComponenteForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):

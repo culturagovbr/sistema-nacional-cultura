@@ -72,9 +72,9 @@ class CriarComponenteForm(ModelForm):
             self.fields['arquivo'].widget = FileUploadWidget(attrs={
                 'label': 'Componente'
             })
-            self.fields['comprovante_cnpj'].widget = FileUploadWidget(attrs={
-                'label': 'Comprovante do CNPJ'
-            })
+            #self.fields['comprovante_cnpj'].widget = FileUploadWidget(attrs={
+            #    'label': 'Comprovante do CNPJ'
+            #})
 
     def clean_data_publicacao(self):
         if self.cleaned_data['data_publicacao'] > datetime.date.today():
