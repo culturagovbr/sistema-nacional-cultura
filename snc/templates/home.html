@@ -26,11 +26,11 @@
       </form>
     {% else %}
         {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
-            {% if request.session.sistema_cultura_selecionado %}
+
+        {% if request.session.sistema_sede.cnpj is None or request.session.sistema_gestor.cpf is  None or request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  '' %}
+          {% include "conclusao_cadastro_ente_federado.html" %}
+            {% elif request.session.sistema_cultura_selecionado %}
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
-                  {% if request.session.sistema_sede.cnpj !=  '' %}
-                    {% if request.session.sistema_sede.cnpj is not None and request.session.sistema_gestor.cpf is not None %}
-                      {% if request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  ''   %}
                       <p style="text-align: justify;"> 
                         {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
                       
@@ -62,12 +62,7 @@
                           seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                           fundação de cultura)
                           {% endblocktrans %}</p>
-                      {% endif %}
                     {% endif %}
-                  {% else %}
-                    {% include "conclusao_cadastro_ente_federado.html" %}
-                  {% endif %}
-                {% endif %}
             {% else %}
               <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
               promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
