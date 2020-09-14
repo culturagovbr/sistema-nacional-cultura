@@ -1546,5 +1546,5 @@ class GerarListaDeEmail(FormView):
         print(data)
 
         for d in data:
-            csv_writter.writerow([d.get('email')+': '])
+            csv_writter.writerow([d.get('email')+'; '])
         return response
