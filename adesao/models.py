@@ -544,7 +544,7 @@ class SistemaCultura(models.Model):
 
         if self.plano:
             if self.plano.metas:
-                comp.update({'metas' : LISTA_SITUACAO_ARQUIVO[self.fundo_cultura.metas.situacao][1]} )
+                comp.update({'metas' : LISTA_SITUACAO_ARQUIVO[self.plano.metas.situacao][1]} )
 
         if comp:
             situacoes.update(comp)
