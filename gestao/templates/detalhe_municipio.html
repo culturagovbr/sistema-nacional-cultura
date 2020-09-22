@@ -383,12 +383,12 @@
                         <div class="card-footer">
                           <div class="stats">
                             <i class="material-icons">edit</i>
-                            <a href="{% url 'gestao:alterar_orgao' ente.orgao_gestor.id %}"
+                            <a href="{% url 'gestao:alterar_orgao' ente.orgao_gestor.id %}" 
                               class="warning-link">Editar</a>
                           </div>
                           <div class="stats">
                             <i class="material-icons">save_alt</i>
-                            <a href="{{ ente.fundo_cultura.comprovante_cnpj.arquivo.url }}" class="warning-link"
+                            <a href="{{ ente.orgao_gestor.comprovante_cnpj.arquivo.url }}" class="warning-link"
                               target="_blank">Download</a>
                           </div>
                         </div>

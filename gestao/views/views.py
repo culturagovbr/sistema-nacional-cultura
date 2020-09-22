@@ -44,6 +44,7 @@ from planotrabalho.models import (LISTA_SITUACAO_ARQUIVO, LISTA_TIPOS_COMPONENTE
 from planotrabalho.views import (AlterarConselhoCultura, AlterarFundoCultura,
                                  AlterarOrgaoGestor, AlterarPlanoCultura)
 from snc.client import Client
+
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 
 
@@ -270,29 +271,45 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             2: "fundo_cultura",
             3: "conselho",
             4: "plano",
-            5: "orgao_gestor_cnpj",
-            6: "fundo_cultura_cnpj",
         }
 
         for componente_id, componente_nome in componentes.items():
             componente_sistema = getattr(sistema, componente_nome, None)
             arquivo_componente = getattr(componente_sistema, 'arquivo', None)
+            
             descricao = ''
-            if not arquivo_componente:
+            if arquivo_componente == None:
                 descricao = self.get_descricao_componente(componente_id)
+
                 if componente_nome == 'fundo_cultura':
                     descricao += ' (Lei e Comprovante do CNPJ)'
 
                 if componente_nome == 'orgao_gestor':
                     descricao += ' (Lei e Comprovante do CNPJ)'
-
+ 
                 if componente_nome == 'conselho':
                     descricao += ' (Lei e Ata)'
 
-                context['componentes_restantes'].append({
-                    'nome': componente_nome,
-                    'descricao': descricao
-                })
+                if componente_nome == 'plano':
+                    descricao += ' (Lei)'
+
+                context['componentes_restantes'].append({'nome': componente_nome, 'descricao': descricao })
+        
+        arquivo_comprovante = getattr(sistema.orgao_gestor, 'comprovante_cnpj_orgao', None)
+
+        str1 = json.dumps(context['componentes_restantes'])
+
+        if arquivo_comprovante == None and str1.find("Gestor (Lei e Comprovante do CNPJ)") == -1:
+            descricao = 'Órgão Gestor (Lei e Comprovante do CNPJ)'
+            context['componentes_restantes'].append({'nome': 'orgao_gestor_cnpj', 'descricao': descricao })
+
+        arquivo_comprovante = getattr(sistema.fundo_cultura, 'comprovante_cnpj', None)
+        arquivo_comprovante_arquivo = getattr(arquivo_comprovante, 'arquivo', None)
+
+        if arquivo_comprovante_arquivo == None and str1.find("Fundo Cultura") == -1:
+            descricao = 'Fundo de Cultura (Lei e Comprovante do CNPJ)'
+            context['componentes_restantes'].append({'nome': 'fundo_cultura_cnpj', 'descricao': descricao })
+
 
         context['form'] = CadastradorEnte()
 
@@ -347,7 +364,6 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
             has_gestor_termo_posse and has_gestor_cpf_copia and has_gestor_rg_copia)
         context['has_formalizar_adesao'] = sistema.estado_processo == '3'
         context['has_fase_institucionalizar'] = has_legislacao_concluido and has_fundo_cultura_concluido
-        #print(context)
         return context
 
     def get_descricao_componente(self, id):
@@ -404,29 +420,44 @@ class DetalharPlano(DetailView, LookUpAnotherFieldMixin):
             2: "fundo_cultura",
             3: "conselho",
             4: "plano",
-            5: "orgao_gestor_cnpj",
-            6: "fundo_cultura_cnpj",
         }
 
         for componente_id, componente_nome in componentes.items():
             componente_sistema = getattr(sistema, componente_nome, None)
             arquivo_componente = getattr(componente_sistema, 'arquivo', None)
+            
             descricao = ''
-            if not arquivo_componente:
+            if arquivo_componente == None:
                 descricao = self.get_descricao_componente(componente_id)
+
                 if componente_nome == 'fundo_cultura':
                     descricao += ' (Lei e Comprovante do CNPJ)'
 
                 if componente_nome == 'orgao_gestor':
                     descricao += ' (Lei e Comprovante do CNPJ)'
-
+ 
                 if componente_nome == 'conselho':
                     descricao += ' (Lei e Ata)'
 
-                context['componentes_restantes'].append({
-                    'nome': componente_nome,
-                    'descricao': descricao
-                })
+                if componente_nome == 'plano':
+                    descricao += ' (Lei)'
+
+                context['componentes_restantes'].append({'nome': componente_nome, 'descricao': descricao })
+        
+        arquivo_comprovante = getattr(sistema.orgao_gestor, 'comprovante_cnpj_orgao', None)
+
+        str1 = json.dumps(context['componentes_restantes'])
+
+        if arquivo_comprovante == None and str1.find("Gestor (Lei e Comprovante do CNPJ)") == -1:
+            descricao = 'Órgão Gestor (Lei e Comprovante do CNPJ)'
+            context['componentes_restantes'].append({'nome': 'orgao_gestor_cnpj', 'descricao': descricao })
+
+        arquivo_comprovante = getattr(sistema.fundo_cultura, 'comprovante_cnpj', None)
+        arquivo_comprovante_arquivo = getattr(arquivo_comprovante, 'arquivo', None)
+
+        if arquivo_comprovante_arquivo == None and str1.find("Fundo Cultura") == -1:
+            descricao = 'Fundo de Cultura (Lei e Comprovante do CNPJ)'
+            context['componentes_restantes'].append({'nome': 'fundo_cultura_cnpj', 'descricao': descricao })
 
         context['form'] = CadastradorEnte()
 
@@ -819,6 +850,7 @@ class AlterarOrgaoGestor(AlterarOrgaoGestor):
         return reverse_lazy(
             'gestao:detalhar',
             kwargs={'cod_ibge': ente_pk})
+            
 
 
 class Prorrogacao(ListView):
@@ -1518,7 +1550,7 @@ class GerarListaDeEmail(FormView):
                     if len(mun) > 0:
                         if mun[0].email_institucional_prefeito:
                             emails.append(self.add_record(str(query.ente_federado), str(mun[0].email_institucional_prefeito), 'Prefeito'))
-                            print(mun[0].email_institucional_prefeito)            
+                            #print(mun[0].email_institucional_prefeito)            
         return emails
 
     def add_record(self, ente_federado, email, added_from):
@@ -1543,8 +1575,7 @@ class GerarListaDeEmail(FormView):
     def write_csv(self, data, response):
         import csv
         csv_writter = csv.writer(response)
-        print(data)
-
+        
         for d in data:
             csv_writter.writerow([d.get('email')+'; '])
         return response

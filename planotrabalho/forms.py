@@ -64,7 +64,8 @@ class CriarComponenteForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.sistema = kwargs.pop('sistema')
-        self.tipo_componente = kwargs.pop('tipo')
+        if kwargs.get("tipo") != None:
+            self.tipo_componente = kwargs.pop('tipo')
         logged_user = kwargs.pop('logged_user')
         super(CriarComponenteForm, self).__init__(*args, **kwargs)
 
