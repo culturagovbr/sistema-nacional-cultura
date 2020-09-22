@@ -20,7 +20,7 @@ LISTA_TIPOS_COMPONENTES = (
     (3, 'Conselho Cultural'),
     (4, 'Plano Cultura'),
     (5, 'Órgão Gestor - Comprovante CNPJ'),
-    (6, 'Plano Cultura - Comprovante CNPJ'),
+    (6, 'Fundo Cultura - Comprovante CNPJ'),
 )
 
 LISTA_PERIODICIDADE = (
