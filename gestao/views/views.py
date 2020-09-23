@@ -994,7 +994,7 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
             .ente_federado.cod_ibge)
-
+        print(historico_diligencias)
         return historico_diligencias
 
     def get_sistema_cultura(self):
