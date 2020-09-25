@@ -987,14 +987,21 @@ class DiligenciaGeralCreateView(TemplatedEmailFormViewMixin, CreateView):
         context['situacoes'] = sistema.get_situacao_componentes()
         context['historico_diligencias'] = self.get_historico_diligencias()
         context['historico_diligencias_componentes'] = sistema.get_componentes_diligencias()
-
+        context['historico_diligencias_comprovantes'] = []
+        for compObj in sistema.get_componentes_diligencias():
+            if type(compObj) is OrgaoGestor2:
+                #if len(SistemaCultura.objects.filter(orgao_gestor_id = compObj)) > -1:
+                context['historico_diligencias_comprovantes'].append({'tipo_componente': 'Órgão Gestor - Comprovante CNPJ', 'diligencia':compObj.comprovante_cnpj.diligencia})
+            if type(compObj) is FundoDeCultura:
+                #if len(SistemaCultura.objects.filter(fundo_cultura_id = compObj)) > -1:
+                context['historico_diligencias_comprovantes'].append({'tipo_componente': 'Fundo Cultura - Comprovante CNPJ', 'diligencia': compObj.comprovante_cnpj.diligencia})
+        
         return context
 
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
             sistema_cultura__ente_federado__cod_ibge=self.get_sistema_cultura()
             .ente_federado.cod_ibge)
-        print(historico_diligencias)
         return historico_diligencias
 
     def get_sistema_cultura(self):

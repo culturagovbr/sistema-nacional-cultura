@@ -493,7 +493,6 @@ class SistemaCultura(models.Model):
 
         for componente in componentes:
             componente = getattr(self, componente)
-
             if arquivo != 'arquivo':
                 componente = getattr(componente, arquivo)
 
