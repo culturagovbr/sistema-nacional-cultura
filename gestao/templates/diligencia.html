@@ -134,6 +134,19 @@
                       </ul>
                     </div>
                   {% endfor %}
+                  {% for componente in historico_diligencias_comprovantes %}
+                    <div class="col-md-12 lista-diligencia">
+                      <ul class="list-group"></ul>
+                      <li class="list-group-item"><b>Componente:</b> {{ componente.tipo_componente }} </li>
+                      <li class="list-group-item"><b>Usuário:</b> {{ componente.diligencia.usuario.nome_usuario }}</li>
+                      <li class="list-group-item">
+                        <b>Motivo:</b> {{ componente.diligencia.get_classificacao_arquivo_display }}</li>
+                      <li class="list-group-item"><b>Data:</b> {{ componente.diligencia.data_criacao }}</li>
+                      <li class="list-group-item">
+                        <b>Resumo:</b> {{ componente.diligencia.texto_diligencia | striptags | safe }}</li>
+                      </ul>
+                    </div>
+                  {% endfor %}
               {% else %}
                   {% for componente in historico_diligencias_componentes %}
                       {% for diligencia_historica in componente.historico_diligencia %}
