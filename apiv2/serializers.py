@@ -83,7 +83,7 @@ class FundoComponenteSerializer(hal_serializers.HalModelSerializer):
 
     class Meta:
         model = FundoDeCultura
-        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
+        fields = ('cod_situacao', 'situacao', 'data_publicacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
 
 
 class OrgaoComponenteSerializer(hal_serializers.HalModelSerializer):
@@ -92,7 +92,7 @@ class OrgaoComponenteSerializer(hal_serializers.HalModelSerializer):
 
     class Meta:
         model = OrgaoGestor2
-        fields = ('cod_situacao', 'situacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
+        fields = ('cod_situacao', 'situacao', 'data_publicacao', 'data_envio', 'arquivo', 'cnpj', 'banco')
 
 
 class PlanoTrabalhoSCSerializer(hal_serializers.HalModelSerializer):

@@ -111,7 +111,7 @@
     <label for="{{ form.arquivo_metas.id_for_label }}">
       Arquivo com as metas
     </label>
-    {% if form.arquivo_metas.value %}
+    {% if form.arquivo_metas %}
       <p><a href="{{ form.arquivo_metas.value.url }}">Baixar arquivo atual</a></p>
       
         <p>Modificar: {% render_field form.arquivo_metas %}</p>
