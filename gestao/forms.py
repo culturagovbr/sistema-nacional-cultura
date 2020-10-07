@@ -139,7 +139,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
         if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
             tipo_comp = "orgao_gestor_cnpj"
         
-        if tipo_comp == 'fundo_cultura' and arq == 'comprovante_cnpj':
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
             tipo_comp = "fundo_cultura_cnpj"
 
         return tipo_comp
@@ -153,7 +153,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
         if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
             tipo_comp = "orgao_gestor_cnpj"
 
-        if tipo_comp == 'fundo_cultura' and arq == 'comprovante_cnpj':
+        if tipo_comp == 'orgao_gestor' and arq == 'comprovante_cnpj':
             tipo_comp = "fundo_cultura_cnpj"
 
         self.tipo_componente = tipo_comp   
@@ -165,14 +165,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
         diligencia = super(DiligenciaForm, self).save()
 
         if commit:
-            if self.tipo_componente == 'orgao_gestor_cnpj':
-                self.tipo_comp = 'orgao_gestor'
-
-            if self.tipo_componente == 'fundo_cultura_cnpj':
-                self.tipo_comp = 'fundo_cultura'
-
             componente = getattr(self.sistema_cultura, self.tipo_componente)
-            
             if self.arquivo == 'arquivo':
                 componente.diligencia = diligencia
                 componente.situacao = self.cleaned_data['classificacao_arquivo']
