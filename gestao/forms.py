@@ -171,7 +171,7 @@ class DiligenciaComponenteForm(DiligenciaForm):
             if self.tipo_componente == 'fundo_cultura_cnpj':
                 self.tipo_comp = 'fundo_cultura'
 
-            componente = getattr(self.sistema_cultura, self.tipo_componente)
+            componente = getattr(self.sistema_cultura, self.tipo_comp)
             
             if self.arquivo == 'arquivo':
                 componente.diligencia = diligencia
