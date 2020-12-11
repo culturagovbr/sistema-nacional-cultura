@@ -13,7 +13,7 @@ def preenche_planilha(planilha, codigos):
     planilha.write(0, 3, "Situação da lei do Sistema de Cultura")
     planilha.write(0, 4, "Data Publicação da Lei do Sistema de Culura")
     planilha.write(0, 5, "Lei do Órgão Gestor de Cultura")
-    planilha.write(0, 6, "Data da Publicação Lei do Sistema de Cultura (Normativo)")
+    planilha.write(0, 6, "Data de publicação da Lei do Órgão Gestor de Cultura")
     planilha.write(0, 7, "Perfil órgão gestor de cultura")
     planilha.write(0, 8, "Situação da Lei do Fundo de Cultura")
     planilha.write(0, 9, "Data da Publicação da Lei do Fundo de Cultura (Normativo)")
@@ -68,6 +68,7 @@ def preenche_planilha(planilha, codigos):
 
         valores_colunas = []
 
+        # Coluna 0
         if sistema.ente_federado:
             if sistema.ente_federado.cod_ibge > 100 or sistema.ente_federado.cod_ibge == 53:
                 valores_colunas.append(sistema.ente_federado.nome)
@@ -78,15 +79,19 @@ def preenche_planilha(planilha, codigos):
         else:
             valores_colunas.append("Não cadastrado")
 
+        # Coluna 1
         valores_colunas.append(sistema.ente_federado.sigla)
 
+        # Coluna 2
         if sistema.data_publicacao_acordo:
             valores_colunas.append(sistema.data_publicacao_acordo.strftime("%d/%m/%Y"))
         else:
             valores_colunas.append("Não cadastrado")
 
+        # Coluna 3
         situacoes = sistema.get_situacao_componentes()
 
+        # Coluna 4
         valores_colunas.append(situacoes.get('legislacao'))
 
         if sistema.legislacao:
@@ -97,21 +102,22 @@ def preenche_planilha(planilha, codigos):
         else:
             valores_colunas.append('')
 
+        # Coluna 5
         valores_colunas.append(situacoes.get('orgao_gestor'))
 
+        # Coluna 6 e 7
         if sistema.orgao_gestor:
             if sistema.orgao_gestor.data_publicacao:
                 valores_colunas.append(sistema.orgao_gestor.data_publicacao.strftime("%d/%m/%Y"))
             else:
                 valores_colunas.append('')
-
             perfil_gestor = sistema.orgao_gestor.get_perfil_display()
             valores_colunas.append(perfil_gestor)
         else:
             valores_colunas.append('')
             valores_colunas.append('')
             
-
+        # Coluna 8 e 9
         valores_colunas.append(situacoes.get('fundo_cultura'))
 
         if sistema.fundo_cultura:
@@ -122,13 +128,14 @@ def preenche_planilha(planilha, codigos):
         else:
             valores_colunas.append('')
 
-
+        # Coluna 10
         if sistema.legislacao and sistema.fundo_cultura:
             mesma_lei = (sistema.legislacao.arquivo == sistema.fundo_cultura.arquivo and 'Sim' or 'Não')
             valores_colunas.append(mesma_lei)
         else:
             valores_colunas.append('')
 
+        # Coluna 11
         if sistema.fundo_cultura:
             if sistema.fundo_cultura.cnpj:
                 valores_colunas.append((sistema.fundo_cultura.cnpj and 'Sim' or 'Não'))
@@ -137,29 +144,36 @@ def preenche_planilha(planilha, codigos):
         else:
             valores_colunas.append('Não')
 
+        # Coluna 12 a 26
         valores_colunas.append(situacoes.get('plano'))
 
         if sistema.plano:
+            # Coluna 13
             valores_colunas.append((sistema.plano.exclusivo_cultura and 'Sim' or 'Não'))
 
+            # Coluna 14
             if sistema.plano.data_publicacao:
                 valores_colunas.append(sistema.plano.data_publicacao.strftime("%d/%m/%Y"))
             else:   
                 valores_colunas.append("Não informada")
 
+            # Coluna 15
             valores_colunas.append((sistema.plano.anexo_na_lei and 'Sim' or 'Não'))
 
+            # Coluna 16
             if sistema.plano.ultimo_ano_vigencia:
                 valores_colunas.append(sistema.plano.ultimo_ano_vigencia)
             else:
                 valores_colunas.append('')
 
+            # Coluna 17
             if sistema.plano.periodicidade:
                 valores_colunas.append(dict(LISTA_PERIODICIDADE).get(
                     int(sistema.plano.periodicidade)))
             else:
-                                valores_colunas.append('')
+                valores_colunas.append('')
 
+            # Coluna 18
             if sistema.plano.metas: 
                 valores_colunas.append(LISTA_SITUACAO_ARQUIVO[sistema.plano.metas.situacao][1]) 
                 valores_colunas.append((sistema.plano.metas and 'Sim' or 'Não'))
@@ -167,21 +181,25 @@ def preenche_planilha(planilha, codigos):
                 valores_colunas.append('')
                 valores_colunas.append('Não')
             
+            # Coluna 19 e 20
             valores_colunas.append((sistema.plano.local_monitoramento and 'Sim' or 'Não'))
 
+            # Coluna 21
             valores_colunas.append((sistema.plano.tipo_curso and 'Sim' or 'Não'))
             
+            # Coluna 22
             if sistema.plano.ano_inicio_curso:
                 valores_colunas.append(sistema.plano.ano_inicio_curso)
             else:
                 valores_colunas.append('')
 
+            # Coluna 23
             if sistema.plano.ano_termino_curso:
                 valores_colunas.append(sistema.plano.ano_termino_curso)
             else:
                 valores_colunas.append('')
                 
-
+            # Coluna 24
             if sistema.plano.esfera_federacao_curso:
                 esferas = map(lambda esfera: dict(LISTA_ESFERAS_FEDERACAO).get(int(esfera)),
                             sistema.plano.esfera_federacao_curso)
@@ -189,13 +207,13 @@ def preenche_planilha(planilha, codigos):
             else:
                 valores_colunas.append('')
                 
-
+            # Coluna 25
             if sistema.plano.tipo_curso:
                 valores_colunas.append(sistema.plano.tipo_curso)
             else:
                 valores_colunas.append('')
                 
-
+            # Coluna 26
             if sistema.plano.perfil_participante:
                 if len(sistema.plano.perfil_participante) > 0:
                     perfils = map(lambda perfil: dict(LISTA_PERFIL_PARTICIPANTE_CURSOS).get(int(perfil)),
@@ -206,6 +224,7 @@ def preenche_planilha(planilha, codigos):
             else:
                 valores_colunas.append('')
         else:
+            # Se não dados das colunas 13 a 26
             valores_colunas.append('') 
             valores_colunas.append('')
             valores_colunas.append('')
@@ -221,32 +240,40 @@ def preenche_planilha(planilha, codigos):
             valores_colunas.append('')
             valores_colunas.append('')
 
-
+        # Coluna 27
         valores_colunas.append(situacoes.get('conselho'))
 
         if sistema.conselho:
-            
+            # Coluna 28
             if sistema.conselho.data_publicacao:
                 valores_colunas.append(sistema.conselho.data_publicacao.strftime("%d/%m/%Y"))
             else:
                 valores_colunas.append('')
             
+            # Coluna 29
             if sistema.conselho.lei:
                 valores_colunas.append(LISTA_SITUACAO_ARQUIVO[sistema.conselho.lei.situacao][1])
             else:
                 valores_colunas.append('')
 
+            # Coluna 30
             valores_colunas.append((sistema.conselho.arquivo and 'Sim' or 'Não'))
+            
+            # Coluna 31
             valores_colunas.append((sistema.conselho.exclusivo_cultura and 'Sim' or 'Não'))
+            
+            # Coluna 32
             valores_colunas.append((sistema.conselho.paritario and 'Sim' or 'Não'))
                 
 
         if sistema.orgao_gestor:
+            # Coluna 33
             if sistema.orgao_gestor.comprovante_cnpj:
                 valores_colunas.append(sistema.orgao_gestor.comprovante_cnpj.situacao)
             else:
                 valores_colunas.append('')
 
+            # Coluna 34
             if sistema.orgao_gestor.cnpj:
                 if len(sistema.orgao_gestor.cnpj) == 14:
                     cnpj = '{}.{}.{}/{}-{}'.format(sistema.orgao_gestor.cnpj[:2], sistema.orgao_gestor.cnpj[2:5],
@@ -258,22 +285,26 @@ def preenche_planilha(planilha, codigos):
             else:
                 valores_colunas.append('')
 
+            # Coluna 35
             if sistema.orgao_gestor.banco != '0' and sistema.orgao_gestor.banco != None :
                 valores_colunas.append('Sim')
             else:
                 valores_colunas.append('Não')
         else:
+            # Se não valores Coluna 33 a 35
             valores_colunas.append('')
             valores_colunas.append('')
             valores_colunas.append('Não')
 
         if sistema.fundo_cultura:
+            # Coluna 36
             if sistema.fundo_cultura.comprovante_cnpj:
                 valores_colunas.append(sistema.fundo_cultura.comprovante_cnpj.situacao)
             else:
                 valores_colunas.append('')
 
             if sistema.fundo_cultura.cnpj:
+                # Coluna 37
                 if len(sistema.fundo_cultura.cnpj) == 14:
                     cnpj = '{}.{}.{}/{}-{}'.format(sistema.fundo_cultura.cnpj[:2], sistema.fundo_cultura.cnpj[2:5],
                                                 sistema.fundo_cultura.cnpj[5:7], sistema.fundo_cultura.cnpj[7:11],
@@ -284,28 +315,47 @@ def preenche_planilha(planilha, codigos):
             else:
                 valores_colunas.append('')
 
+            # Coluna 38
             if sistema.fundo_cultura.banco != '0' and sistema.fundo_cultura.banco != None:
                 valores_colunas.append('Sim')
             else:
                 valores_colunas.append('Não')
         else:
+            # Se não valor colunas 36 a 38
             valores_colunas.append('')
             valores_colunas.append('')
             valores_colunas.append('Não')
             
 
         if sistema.ente_federado:
+            # Coluna 39
             valores_colunas.append(sistema.ente_federado.populacao)
+            
+            # Coluna 40
             valores_colunas.append(sistema.ente_federado.idh)
+
+            # Coluna 41
             valores_colunas.append(sistema.ente_federado.pib)
+            
+            # Coluna 42
             valores_colunas.append(sistema.ente_federado.mandatario)
+
+            # Coluna 43
             if sistema.gestor_cultura:
                 valores_colunas.append(sistema.gestor_cultura.nome)
             else:
                 valores_colunas.append('')
+            
+            # Coluna 44
             valores_colunas.append(get_email_municipio(sistema))
+            
+            # Coluna 45
             valores_colunas.append(sistema.sede.telefone_um)
+            
+            # Coluna 46
             valores_colunas.append(sistema.sede.endereco)
+            
+            # Coluna 47
             valores_colunas.append(sistema.sede.cep)
        
         # gera linhas e colunas na planilha
