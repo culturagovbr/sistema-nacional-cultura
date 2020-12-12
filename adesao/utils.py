@@ -109,7 +109,7 @@ def preenche_planilha(planilha):
 
         estado_processo = sistema.get_estado_processo_display()
 
-        if sistema.sistema.data_publicacao_acordo:
+        if sistema.data_publicacao_acordo:
             data_adesao = sistema.data_publicacao_acordo.strftime("%d/%m/%Y")
         else:
             data_adesao ="Não cadastrado"
