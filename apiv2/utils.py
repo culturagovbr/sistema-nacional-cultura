@@ -11,7 +11,7 @@ def preenche_planilha(planilha, codigos):
     planilha.write(0, 1, "UF")
     planilha.write(0, 2, "Data da adesão")
     planilha.write(0, 3, "Situação da lei do Sistema de Cultura")
-    planilha.write(0, 4, "Data Publicação da Lei do Sistema de Culura")
+    planilha.write(0, 4, "Data Publicação da Lei do Sistema de Cultura")
     planilha.write(0, 5, "Lei do Órgão Gestor de Cultura")
     planilha.write(0, 6, "Data de publicação da Lei do Órgão Gestor de Cultura")
     planilha.write(0, 7, "Perfil órgão gestor de cultura")
