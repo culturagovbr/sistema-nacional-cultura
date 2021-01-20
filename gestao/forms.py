@@ -167,10 +167,11 @@ class DiligenciaComponenteForm(DiligenciaForm):
         if commit:
             if self.tipo_componente == 'orgao_gestor_cnpj':
                 self.tipo_comp = 'orgao_gestor'
-
-            if self.tipo_componente == 'fundo_cultura_cnpj':
+            elif self.tipo_componente == 'fundo_cultura_cnpj':
                 self.tipo_comp = 'fundo_cultura'
-
+            else:
+                self.tipo_comp = self.tipo_componente
+                
             componente = getattr(self.sistema_cultura, self.tipo_comp)
             
             if self.arquivo == 'arquivo':
