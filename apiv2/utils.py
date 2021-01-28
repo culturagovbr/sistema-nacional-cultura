@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.db import connection
 
 
-def preenche_planilha(planilha, codigos):
+def preenche_planilha(planilha, codigos, request):
 
     planilha.write(0, 0, "Ente federado")
     planilha.write(0, 1, "UF")
@@ -61,8 +61,35 @@ def preenche_planilha(planilha, codigos):
     for codigo in codigos:
         codigosWhere.append(codigo)
 
-    sistemaCultura = SistemaCultura.sistema.filter(
-        ente_federado__isnull=False).filter(pk__in=codigosWhere)
+    qd = request.query_params
+    
+    filters = []
+
+    for k, v in qd.items(): 
+        if k.find('data_lei_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(legislacao__situacao=2) | Q(legislacao__situacao=3))')
+        if k.find('data_orgao_gestor_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(orgao_gestor__situacao=2) | Q(orgao_gestor__situacao=3))')
+        if k.find('data_conselho_lei_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(conselho__situacao=2) | Q(conselho__situacao=3))')
+        if k.find('data_fundo_cultura_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(fundo_cultura__situacao=2) | Q(fundo_cultura__situacao=3))')
+        if k.find('data_plano_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(plano__situacao=2) | Q(plano__situacao=3))')
+
+    command_eval = 'SistemaCultura.sistema.filter(Q(ente_federado__isnull=False) & Q(pk__in=codigosWhere)) '
+
+    for cmd in filters:
+        command_eval = command_eval + ' & ' + cmd 
+
+    
+    sistemaCultura = eval(command_eval)
+
+    #sistemaCultura = SistemaCultura.sistema.filter(
+    #    ente_federado__isnull=False).filter(pk__in=codigosWhere).filter(legislacao__situacao=2) | SistemaCultura.sistema.filter(
+    #    ente_federado__isnull=False).filter(pk__in=codigosWhere).filter(legislacao__situacao=3)
+
+    #sistemaCultura = SistemaCultura.sistema.filter(Q(ente_federado__isnull=False) & Q(pk__in=codigosWhere)) & SistemaCultura.sistema.filter(Q(legislacao__situacao=2) | Q(legislacao__situacao=3))
 
     for i, sistema in enumerate(sistemaCultura, start=1):
 
@@ -91,22 +118,23 @@ def preenche_planilha(planilha, codigos):
         # Coluna 3
         situacoes = sistema.get_situacao_componentes()
 
-        # Coluna 4
-        valores_colunas.append(situacoes.get('legislacao'))
+        
 
         if sistema.legislacao:
+            # Coluna 4
+            valores_colunas.append(situacoes.get('legislacao'))
+
             if sistema.legislacao.data_publicacao:
                 valores_colunas.append(sistema.legislacao.data_publicacao.strftime("%d/%m/%Y"))
             else:
                 valores_colunas.append('')
         else:
             valores_colunas.append('')
+            valores_colunas.append('')
 
-        # Coluna 5
-        valores_colunas.append(situacoes.get('orgao_gestor'))
-
-        # Coluna 6 e 7
+        # Coluna 5, 6 e 7
         if sistema.orgao_gestor:
+            valores_colunas.append(situacoes.get('orgao_gestor'))
             if sistema.orgao_gestor.data_publicacao:
                 valores_colunas.append(sistema.orgao_gestor.data_publicacao.strftime("%d/%m/%Y"))
             else:
@@ -116,16 +144,20 @@ def preenche_planilha(planilha, codigos):
         else:
             valores_colunas.append('')
             valores_colunas.append('')
+            valores_colunas.append('')
             
         # Coluna 8 e 9
-        valores_colunas.append(situacoes.get('fundo_cultura'))
+        
 
         if sistema.fundo_cultura:
+            valores_colunas.append(situacoes.get('fundo_cultura'))
+            #print(sistema.fundo_cultura.data_publicacao)
             if sistema.fundo_cultura.data_publicacao:
                 valores_colunas.append(sistema.fundo_cultura.data_publicacao.strftime("%d/%m/%Y"))
             else:
                 valores_colunas.append('')
         else:
+            valores_colunas.append('')
             valores_colunas.append('')
 
         # Coluna 10
@@ -145,9 +177,12 @@ def preenche_planilha(planilha, codigos):
             valores_colunas.append('Não')
 
         # Coluna 12 a 26
-        valores_colunas.append(situacoes.get('plano'))
+        
 
         if sistema.plano:
+            # Coluna 12 
+            valores_colunas.append(situacoes.get('plano'))
+
             # Coluna 13
             valores_colunas.append((sistema.plano.exclusivo_cultura and 'Sim' or 'Não'))
 
@@ -239,11 +274,14 @@ def preenche_planilha(planilha, codigos):
             valores_colunas.append('')
             valores_colunas.append('')
             valores_colunas.append('')
+            valores_colunas.append('')
 
-        # Coluna 27
-        valores_colunas.append(situacoes.get('conselho'))
+        
 
         if sistema.conselho:
+            # Coluna 27
+            valores_colunas.append(situacoes.get('conselho'))
+
             # Coluna 28
             if sistema.conselho.data_publicacao:
                 valores_colunas.append(sistema.conselho.data_publicacao.strftime("%d/%m/%Y"))
@@ -264,7 +302,14 @@ def preenche_planilha(planilha, codigos):
             
             # Coluna 32
             valores_colunas.append((sistema.conselho.paritario and 'Sim' or 'Não'))
-                
+        else:
+            # Se não valores Coluna 27 a 32
+            valores_colunas.append('')
+            valores_colunas.append('')
+            valores_colunas.append('')
+            valores_colunas.append('Não')
+            valores_colunas.append('Não')
+            valores_colunas.append('Não')
 
         if sistema.orgao_gestor:
             # Coluna 33
