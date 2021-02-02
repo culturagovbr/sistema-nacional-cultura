@@ -276,9 +276,8 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
         for componente_id, componente_nome in componentes.items():
             componente_sistema = getattr(sistema, componente_nome, None)
             arquivo_componente = getattr(componente_sistema, 'arquivo', None)
-            
             descricao = ''
-            if arquivo_componente == None:
+            if arquivo_componente == None or arquivo_componente == '':
                 descricao = self.get_descricao_componente(componente_id)
 
                 if componente_nome == 'fundo_cultura':
@@ -286,7 +285,7 @@ class DetalharEnte(DetailView, LookUpAnotherFieldMixin):
 
                 if componente_nome == 'orgao_gestor':
                     descricao += ' (Lei e Comprovante do CNPJ)'
- 
+
                 if componente_nome == 'conselho':
                     descricao += ' (Lei e Ata)'
 
