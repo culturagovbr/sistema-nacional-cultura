@@ -39,6 +39,7 @@ class SistemaCulturaAPIList(generics.ListAPIView):
     ordering_fields = ('ente_federado__nome', 'ente_federado')
 
     def list(self, request):
+        #print(request)
         if request.accepted_renderer.format == 'xls':
             return self.xls(request)
         if request.accepted_renderer.format == 'ods':
@@ -60,14 +61,18 @@ class SistemaCulturaAPIList(generics.ListAPIView):
 
     def xls(self, request):
         queryset = self.filter_queryset(self.get_queryset())
+        
+        #print(self.get_queryset())
 
         ids = queryset.values_list('id', flat=True)
+
+        #print(ids)
 
         output = BytesIO()
 
         workbook = xlsxwriter.Workbook(output)
         planilha = workbook.add_worksheet("SNC")
-        ultima_linha = preenche_planilha(planilha, ids)
+        ultima_linha = preenche_planilha(planilha, ids,request)
 
         planilha.autofilter(0, 0, ultima_linha,47)
         workbook.close()
