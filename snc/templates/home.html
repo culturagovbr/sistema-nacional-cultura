@@ -26,10 +26,17 @@
       </form>
     {% else %}
         {% if request.session.sistema_cultura_selecionado.estado_processo == '0' or not request.session.sistema_cultura_selecionado %}
+        {% if request.session.sistema_sede.cnpj is None or request.session.sistema_gestor.cpf is None or request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  '' %}
+          <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
+          promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
+          (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
+          descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
+          com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
 
-        {% if request.session.sistema_sede.cnpj is None or request.session.sistema_gestor.cpf is  None or request.session.sistema_sede.cnpj !=  '' and request.session.sistema_gestor.cpf !=  '' %}
-          {% include "conclusao_cadastro_ente_federado.html" %}
+          <p style="text-align: justify;">{% blocktrans %}Clique em <b>“criar novo ente federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
+          {% endblocktrans %}</p>
             {% elif request.session.sistema_cultura_selecionado %}
+                
                 {% if request.session.sistema_cultura_selecionado.estado_processo in "01367" %}
                       <p style="text-align: justify;"> 
                         {% blocktrans %} Clique na aba {% endblocktrans %}<b>“
@@ -62,17 +69,10 @@
                           seu estado ou município (Ex: secretário de cultura, diretor do departamento de cultura, presidente da
                           fundação de cultura)
                           {% endblocktrans %}</p>
+                    {% else %}
+                      {% include "conclusao_cadastro_ente_federado.html" %}
                     {% endif %}
-            {% else %}
-              <p style="text-align: justify;">{% blocktrans %}O Sistema Nacional de Cultura é um processo de gestão e
-              promoção das políticas públicas de cultura democráticas e permanentes, pactuadas entre os entes da Federação
-              (União, Estados, DF e Municípios) e a sociedade. O SNC é organizado em regime de colaboração, de forma
-              descentralizada e participativa, tendo por objetivo promover o desenvolvimento humano, social e econômico
-              com pleno exercício dos direitos culturais.{% endblocktrans %}</p>
-
-              <p style="text-align: justify;">{% blocktrans %}Clique em <b>“criar novo ente federado”</b> no menu principal para iniciar o cadastro do seu estado ou município na plataforma do SNC.
-              {% endblocktrans %}</p>
-           
+                    
             {% endif %}
 
         {% elif request.session.sistema_cultura_selecionado.estado_processo == '1' %}
