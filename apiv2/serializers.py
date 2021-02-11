@@ -268,7 +268,6 @@ class SistemaCulturaSerializer(hal_serializers.HalModelSerializer):
             "acoes_plano_trabalho",
             "ente_federado",
             "governo",
-            "legislacao",
             "cultura",
             "conselho",
             "sede")
