@@ -156,7 +156,7 @@ class CadastrarSede(ModelForm):
         fields = '__all__'
 
 
-class CadastrarSistemaCulturaForm(ModelForm):
+class CadastrarSistemaCulturaForm(ModelForm, forms.Form):
 
     def clean(self):
         super(CadastrarSistemaCulturaForm, self).clean()
@@ -169,13 +169,13 @@ class CadastrarSistemaCulturaForm(ModelForm):
                 self.add_error(
                     'ente_federado', 'Este ente federado já foi cadastrado!')
             '''
-
-        for form in self.forms:
+        
+        """ for form in forms:
             name = form.cleaned_data['name'].upper()
             form.cleaned_data['name'] = name
             # update the instance value.
             form.instance.name = name
-
+ """
     class Meta:
         model = SistemaCultura
         fields = ('ente_federado', 'conferencia_nacional')

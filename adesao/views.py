@@ -678,19 +678,27 @@ def validate_username(request):
     # Recuperando o ente-federado
     codigo_ibge = request.GET.get('codigo_ibge_form', None)
     mensagem = ""
+    data = {
+                'validacao': False,
+                'error_message' : mensagem,
+    }
 
     if SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists() :
         sistema = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
         usuario = Usuario.objects.filter(id=sistema[0].cadastrador_id)
-        mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
+        print(len(usuario))
+        if len(usuario) > 0 :
+            print(usuario[0].nome_usuario)
+            mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
 
     # Realizando a consulta no model EnteFederado pelo nome do Ente Federado
-    data = {
-        'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
-    }
+            data['validacao'] = True
+            
 
-    if data['validacao']:
-        data['error_message'] = mensagem
+    #print(data['validacao'])
+
+    #if data['validacao']:
+            data['error_message'] = mensagem
 
     return JsonResponse(data)
 
