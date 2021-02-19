@@ -94,7 +94,7 @@ class SistemaCulturaAPIList(generics.ListAPIView):
 
         workbook = xlsxwriter.Workbook(output)
         planilha = workbook.add_worksheet("SNC")
-        ultima_linha = preenche_planilha(planilha, ids,request)
+        ultima_linha = preenche_planilha(planilha, ids, request)
 
         planilha.autofilter(0, 0, ultima_linha,47)
         workbook.close()
@@ -120,7 +120,7 @@ class SistemaCulturaAPIList(generics.ListAPIView):
 
         workbook = xlwt.Workbook()
         planilha = workbook.add_sheet("SNC")
-        preenche_planilha(planilha, ids)
+        preenche_planilha(planilha, ids, request)
 
         workbook.save(response)
 
