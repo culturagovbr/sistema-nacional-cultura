@@ -678,19 +678,20 @@ def validate_username(request):
     # Recuperando o ente-federado
     codigo_ibge = request.GET.get('codigo_ibge_form', None)
     mensagem = ""
+    data = {
+                'validacao': False,
+                'error_message' : mensagem,
+    }
 
     if SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists() :
         sistema = SistemaCultura.objects.filter(ente_federado_id=codigo_ibge)
         usuario = Usuario.objects.filter(id=sistema[0].cadastrador_id)
-        mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
+        if len(usuario) > 0 :
+            mensagem = 'Ente federado já cadastrado pelo usuário ' + usuario[0].nome_usuario
 
     # Realizando a consulta no model EnteFederado pelo nome do Ente Federado
-    data = {
-        'validacao': SistemaCultura.objects.filter(ente_federado_id=codigo_ibge).exists(),
-    }
-
-    if data['validacao']:
-        data['error_message'] = mensagem
+            data['validacao'] = True
+            data['error_message'] = mensagem
 
     return JsonResponse(data)
 
@@ -811,7 +812,7 @@ class TrocarCadastradorView(CreateView):
         user = self.request.user.id
 
         solicitacoes = SolicitacaoDeTrocaDeCadastrador.objects.filter(alterado_por__user__id = user, ente_federado = ente_federado, status = '0')
-        print(solicitacoes)
+        #print(solicitacoes)
         if len(solicitacoes) > 0:
             form.add_error('oficio','Você já possui uma solicitação pendente, aguarde sua análise')
             return super().form_invalid(form)

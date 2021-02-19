@@ -4,6 +4,37 @@ from planotrabalho.models import LISTA_PERIODICIDADE, LISTA_ESFERAS_FEDERACAO, L
 from django.db.models import Q
 from django.db import connection
 
+def sistema_cultura_filtros( request, codigosWhere):
+    qd = request.query_params
+    
+    filters = []
+
+    for k, v in qd.items(): 
+        if k.find('data_lei_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(legislacao__situacao=2) | Q(legislacao__situacao=3))')
+        if k.find('data_orgao_gestor_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(orgao_gestor__situacao=2) | Q(orgao_gestor__situacao=3))')
+        if k.find('data_conselho_lei_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(conselho__situacao=2) | Q(conselho__situacao=3))')
+        if k.find('data_fundo_cultura_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(fundo_cultura__situacao=2) | Q(fundo_cultura__situacao=3))')
+        if k.find('data_plano_max') > -1:
+            filters.append('SistemaCultura.sistema.filter(Q(plano__situacao=2) | Q(plano__situacao=3))')
+
+    if len(codigosWhere) > 0:
+        command_eval = 'SistemaCultura.sistema.filter(Q(ente_federado__isnull=False) & Q(pk__in=codigosWhere)) '
+    else:
+        command_eval = 'SistemaCultura.sistema.filter(Q(ente_federado__isnull=False)) '
+
+    for cmd in filters:
+        command_eval = command_eval + ' & ' + cmd 
+
+    
+    sistemaCultura = eval(command_eval)
+
+    return sistemaCultura
+
+
 
 def preenche_planilha(planilha, codigos, request):
 
@@ -61,7 +92,9 @@ def preenche_planilha(planilha, codigos, request):
     for codigo in codigos:
         codigosWhere.append(codigo)
 
-    qd = request.query_params
+    sistemaCultura = sistema_cultura_filtros( request, codigosWhere)
+
+    """ qd = request.query_params
     
     filters = []
 
@@ -84,7 +117,7 @@ def preenche_planilha(planilha, codigos, request):
 
     
     sistemaCultura = eval(command_eval)
-
+ """
     #sistemaCultura = SistemaCultura.sistema.filter(
     #    ente_federado__isnull=False).filter(pk__in=codigosWhere).filter(legislacao__situacao=2) | SistemaCultura.sistema.filter(
     #    ente_federado__isnull=False).filter(pk__in=codigosWhere).filter(legislacao__situacao=3)
@@ -407,7 +440,7 @@ def preenche_planilha(planilha, codigos, request):
         for c, elem in enumerate(valores_colunas):
             planilha.write(i, c, valores_colunas[c])
 
-    ultima_linha = i
+        ultima_linha = i
 
     return ultima_linha
 
