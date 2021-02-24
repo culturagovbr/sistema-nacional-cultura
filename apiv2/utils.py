@@ -406,6 +406,7 @@ def preenche_planilha(planilha, codigos, request):
             
 
         if sistema.ente_federado:
+            municipio = get_municipio_data(sistema)
             # Coluna 39
             valores_colunas.append(sistema.ente_federado.populacao)
             
@@ -425,16 +426,16 @@ def preenche_planilha(planilha, codigos, request):
                 valores_colunas.append('')
             
             # Coluna 44
-            valores_colunas.append(get_email_municipio(sistema))
+            valores_colunas.append(municipio['email'])
             
             # Coluna 45
-            valores_colunas.append(sistema.sede.telefone_um)
+            valores_colunas.append(municipio['telefone_um'])
             
             # Coluna 46
-            valores_colunas.append(sistema.sede.endereco)
+            valores_colunas.append(municipio['endereco'])
             
             # Coluna 47
-            valores_colunas.append(sistema.sede.cep)
+            valores_colunas.append(municipio['cep'])
        
         # gera linhas e colunas na planilha
         for c, elem in enumerate(valores_colunas):
@@ -444,13 +445,29 @@ def preenche_planilha(planilha, codigos, request):
 
     return ultima_linha
 
-def get_email_municipio(sistema):
-    result = ''
+def get_municipio_data(sistema):
+    result = {}
     if sistema.ente_federado:
         cid = Cidade.objects.filter(nome_municipio=sistema.ente_federado.nome)
         if len(cid) > 0:
             mun = cid[0].municipio_set.all()
             if len(mun) > 0:
                 if mun[0].email_institucional_prefeito:
-                    result = str(mun[0].email_institucional_prefeito)
+                    result['email'] = str(mun[0].email_institucional_prefeito)
+                else :
+                    result['email'] = ''
+                if mun[0].telefone_um :    
+                    result['telefone_um'] = str(mun[0].telefone_um)
+                else:
+                    result['telefone_um'] = ''
+                if mun[0].endereco :    
+                    result['endereco'] = str(mun[0].endereco)
+                else:
+                    result['endereco'] = '' 
+                if mun[0].telefone_um :    
+                    result['cep'] = str(mun[0].cep)
+                else:
+                    result['cep'] = ''   
+    else:
+        result = {'email': '', 'telefone_um': '', 'endereco': '', 'cep': ''}
     return result
