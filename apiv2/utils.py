@@ -82,8 +82,8 @@ def preenche_planilha(planilha, codigos, request):
     planilha.write(0, 41, "PIB")
     planilha.write(0, 42, "Prefeito")
     planilha.write(0, 43, "Gestor de Cultura")
-    planilha.write(0, 44, "E-mail")
-    planilha.write(0, 45, "Telefone")
+   # planilha.write(0, 44, "E-mail")
+   # planilha.write(0, 45, "Telefone")
     planilha.write(0, 46, "Endereço")
     planilha.write(0, 47, "CEP")
 
@@ -426,16 +426,16 @@ def preenche_planilha(planilha, codigos, request):
                 valores_colunas.append('')
             
             # Coluna 44
-            valores_colunas.append(municipio['email'])
+            #valores_colunas.append(municipioget('email'))
             
             # Coluna 45
-            valores_colunas.append(municipio['telefone_um'])
+            #valores_colunas.append(municipio.get('telefone_um')
             
             # Coluna 46
-            valores_colunas.append(municipio['endereco'])
+            valores_colunas.append(municipio.get('endereco'))
             
             # Coluna 47
-            valores_colunas.append(municipio['cep'])
+            valores_colunas.append(municipio.get('cep'))
        
         # gera linhas e colunas na planilha
         for c, elem in enumerate(valores_colunas):
