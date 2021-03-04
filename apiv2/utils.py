@@ -84,8 +84,8 @@ def preenche_planilha(planilha, codigos, request):
     planilha.write(0, 43, "Gestor de Cultura")
    # planilha.write(0, 44, "E-mail")
    # planilha.write(0, 45, "Telefone")
-    planilha.write(0, 46, "Endereço")
-    planilha.write(0, 47, "CEP")
+    planilha.write(0, 44, "Endereço")  #46
+    planilha.write(0, 45, "CEP") #47
 
     ultima_linha = 0
     codigosWhere = []
