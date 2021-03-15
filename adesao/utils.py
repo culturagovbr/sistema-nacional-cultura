@@ -21,6 +21,8 @@ def enviar_email_conclusao(request):
         recipient_list.append(request.session['sistema_gestor']['email_institucional'])
         recipient_list.append(request.session['sistema_gestor']['email_pessoal'])
 
+    print(recipient_list)
+
     send_templated_mail(
         template_name='conclusao_cadastro',
         from_email='naoresponda@turismo.gov.br',
