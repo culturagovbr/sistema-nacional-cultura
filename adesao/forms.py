@@ -170,12 +170,12 @@ class CadastrarSistemaCulturaForm(ModelForm, forms.Form):
                     'ente_federado', 'Este ente federado já foi cadastrado!')
             '''
         
-        """ for form in forms:
+        """ for form in super.form:
             name = form.cleaned_data['name'].upper()
             form.cleaned_data['name'] = name
             # update the instance value.
-            form.instance.name = name
- """
+            form.instance.name = name """
+
     class Meta:
         model = SistemaCultura
         fields = ('ente_federado', 'conferencia_nacional')

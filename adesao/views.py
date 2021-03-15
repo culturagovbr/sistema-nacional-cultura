@@ -381,10 +381,24 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         return context
 
     def templated_email_get_recipients(self, form):
-        gestor_pessoal = self.request.session.get('sistema_gestor', 'email_pessoal')
-        gestor_institucional = self.request.session.get('sistema_gestor', 'email_institucional')
-        recipient_list = [self.request.user.email, self.request.user.usuario.email_pessoal, gestor_pessoal,
-                          gestor_institucional]
+        gestor_pessoal = str(self.request.session.get('sistema_gestor', 'email_pessoal'))
+        gestor_institucional = str(self.request.session.get('sistema_gestor', 'email_institucional'))
+        user_mail = str(self.request.user.email)
+        user_email_pessoal = str(self.request.user.usuario.email_pessoal)
+
+        recipient_list = []
+
+        if user_mail.strip() :
+            recipient_list.append(user_mail)
+
+        if user_email_pessoal.strip() :
+            recipient_list.append(user_email_pessoal)
+
+        if gestor_pessoal.strip() :
+            recipient_list.append(gestor_pessoal)
+
+        if gestor_institucional.strip() :
+            recipient_list.append(gestor_institucional)
 
         return recipient_list
 
@@ -393,7 +407,6 @@ class CadastrarSistemaCultura(TemplatedEmailFormViewMixin, CreateView):
         context["object"] = self.object
         context["cadastrador"] = self.request.user.usuario
         context["sistema_atualizado"] = SistemaCultura.sistema.get(ente_federado__id=self.object.ente_federado.id)
-
         return context
 
 
