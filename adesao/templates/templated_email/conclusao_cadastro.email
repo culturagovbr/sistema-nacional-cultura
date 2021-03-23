@@ -1,10 +1,17 @@
 {% block subject %}Sistema Nacional de Cultura - Solicitação de adesão ao SNC{% endblock %}
 {% block plain %}{{ request.session.sistema_ente.nome }}, sua solicitação de adesão ao Sistema Nacional de Cultura foi recebida em nosso sistema.
+
 Para efetivar seu processo de adesão é necessário o envio dos documentos listados abaixo,
 devidamente assinados pelo(a) Sr(a) {{ request.session.sistema_gestor.nome }}.
 
-- 1 (uma) via do formulário de Solicitação de Integração ao SNC;
-- Acesse o link <a href="http://aplicacoes6.mds.gov.br/sei-usuarioexterno">http://aplicacoes6.mds.gov.br/sei-usuarioexterno</a>, e efetue o cadastro do Governador/Prefeito.
+- 1 (uma) via do Acordo de Cooperação Federativa;
+- 1 (uma) via do formulário de Solicitação de Integração ao SNC; e
+- 1 (uma) via da Declaração de Responsabilidade do(a) Prefeito(a) e respectiva Autorização de
+divulgação das informações de interesse público contidas na Plataforma do Sistema Nacional
+de Cultura.
+
+(Ressalta-se a necessidade das assinaturas estarem em conformidade com a assinatura do
+documento de identificação (anexo na plataforma) do(a) prefeito(a).
 
 Equipe SNC
 

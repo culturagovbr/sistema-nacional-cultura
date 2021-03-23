@@ -180,7 +180,7 @@ MANAGERS = ADMINS
 # DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': env.db("DATABASE_URL", default="postgres://postgres:postgres123@localhost/dbsnc"),
+    'default': env.db("DATABASE_URL", default="postgres://postgres:postgres123@localhost/dbsnc")
 }
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True
