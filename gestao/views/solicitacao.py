@@ -77,8 +77,6 @@ class BaseDataTableSolicitacao(BaseDatatableView):
         search = self.request.POST.get('search[value]', None)
         situacoes_search = self.request.POST.get('columns[4][search][value]', None)
 
-        print(search)
-
         if search:
             query = Q()
             filtros_queryset = [

@@ -1556,11 +1556,11 @@ class GerarListaDeEmail(FormView):
                     if len(mun) > 0:
                         if mun[0].email_institucional_prefeito:
                             emails.append(self.add_record(str(query.ente_federado), str(mun[0].email_institucional_prefeito), 'Prefeito'))
-                            #print(mun[0].email_institucional_prefeito)            
+      
         return emails
 
     def add_record(self, ente_federado, email, added_from):
-        #print('email found for', ente_federado, 'in', added_from)
+
         return {"ente_federado":ente_federado, "email":email}
 
     def filter_estado_municipio(self, is_estado, is_municipio, results):

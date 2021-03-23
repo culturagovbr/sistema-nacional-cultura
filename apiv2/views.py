@@ -47,7 +47,7 @@ class SistemaCulturaAPIList(generics.ListAPIView):
         if request.accepted_renderer.format == 'ods':
             return self.ods(request)
 
-        """ qd = request.query_params
+        qd = request.query_params
     
         filters = []
 
@@ -63,14 +63,14 @@ class SistemaCulturaAPIList(generics.ListAPIView):
             if k.find('data_plano_max') > -1:
                 filters.append('SistemaCultura.sistema.filter(Q(plano__situacao=2) | Q(plano__situacao=3))')
 
-        command_eval = 'SistemaCultura.sistema.filter(Q(ente_federado__isnull=False)) '
+        command_eval = 'SistemaCultura.sistema.filter(Q(ente_federado__isnull=False)) ' 
 
         for cmd in filters:
             command_eval = command_eval + ' & ' + cmd 
     
-        sistemaCultura = eval(command_eval) """
+        sistemaCultura = eval(command_eval) 
 
-        sistemaCultura = sistema_cultura_filtros( request, [])
+        #sistemaCultura = sistema_cultura_filtros( request, [])
 
         queryset = self.filter_queryset(sistemaCultura)
 
@@ -78,12 +78,20 @@ class SistemaCulturaAPIList(generics.ListAPIView):
         estados = queryset.filter(ente_federado__cod_ibge__lte=100)
 
         response = super().list(self, request)
-        response.data['municipios'] = municipios.count()
-        response.data['municipios_aderidos'] = municipios.filter(
-            estado_processo=6).count()
-        response.data['estados'] = estados.count()
-        response.data['estados_aderidos'] = estados.filter(estado_processo=6).count()
+        if request.GET['municipal'] :
+            response.data['municipios'] = municipios.count()
+            response.data['municipios_aderidos'] = municipios.filter(estado_processo=6).count()
+        else :
+            response.data['municipios'] = 0
+            response.data['municipios_aderidos'] = 0
 
+        if request.GET['estadual'] :
+            response.data['estados'] = estados.count()
+            response.data['estados_aderidos'] = estados.filter(estado_processo=6).count()
+        else :
+            response.data['estados'] = 0
+            response.data['estados_aderidos'] = 0
+        
         return response
 
     def xls(self, request):
