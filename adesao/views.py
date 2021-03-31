@@ -825,7 +825,7 @@ class TrocarCadastradorView(CreateView):
         user = self.request.user.id
 
         solicitacoes = SolicitacaoDeTrocaDeCadastrador.objects.filter(alterado_por__user__id = user, ente_federado = ente_federado, status = '0')
-        #print(solicitacoes)
+
         if len(solicitacoes) > 0:
             form.add_error('oficio','Você já possui uma solicitação pendente, aguarde sua análise')
             return super().form_invalid(form)
