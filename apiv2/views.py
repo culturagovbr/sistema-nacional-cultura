@@ -78,14 +78,19 @@ class SistemaCulturaAPIList(generics.ListAPIView):
         estados = queryset.filter(ente_federado__cod_ibge__lte=100)
 
         response = super().list(self, request)
-        if request.GET['municipal'] :
+
+        is_municipal = qd['municipal']
+
+        if is_municipal :
             response.data['municipios'] = municipios.count()
             response.data['municipios_aderidos'] = municipios.filter(estado_processo=6).count()
         else :
             response.data['municipios'] = 0
             response.data['municipios_aderidos'] = 0
 
-        if request.GET['estadual'] :
+        is_estadual = qd['estadual']
+
+        if is_estadual :
             response.data['estados'] = estados.count()
             response.data['estados_aderidos'] = estados.filter(estado_processo=6).count()
         else :
